@@ -56,14 +56,15 @@
 44. return-path drop control에서 B-only server packet drop은 2/2 PASS였지만 A+B return path loss는 2/2 FAIL이어서, transport evidence와 application completion을 분리해야 함을 확인했다.
 45. transient return-path outage sweep에서는 A+B return path를 250ms/1500ms/3000ms/4000ms 막은 1MiB downlink/upload가 8/8 PASS였지만, 5000ms/6000ms/9000ms는 6/6 FAIL이었다. 이 local workload의 outage-tolerance boundary는 4초와 5초 사이로 좁혀졌다.
 46. transient boundary repetition에서는 4000ms와 4500ms가 각각 6/6 PASS였고, 5000ms는 downlink 3/3 PASS와 upload 0/3 PASS로 갈려 outage tolerance가 workload-sensitive transition zone임을 확인했다.
-47. upload-only fine boundary에서는 4600ms upload가 3/3 PASS, 4750ms가 1/3 PASS, 4900ms와 5000ms가 6/6 FAIL이어서 upload 안정 완료 구간과 실패 구간을 더 좁혔다.
-48. 같은 4900ms/5000ms upload 실패 구간에서 application-level upload retry를 1회 허용하면 6/6 PASS로 작업 완료가 회복됐다. 다만 모든 row가 Chrome target QUIC session 2개로 분류되어, 이는 single-session CM 성공이 아니라 retry/reconnect 기반 작업 회복 control로 해석해야 한다.
-49. 더 긴 6000ms/9000ms upload outage에서도 1회 retry는 6/6 PASS로 작업 완료를 회복했다. 그러나 Chrome target QUIC session count가 2-3개로 관찰되어, outage가 길수록 retry recovery와 browser session continuity의 차이를 더 명확히 분리해야 한다.
-50. 12000ms/15000ms retry stress boundary에서는 12000ms가 3/3 PASS, 15000ms가 0/3 PASS였다. 즉 application-level retry도 무제한 보장이 아니며, 이 local upload workload의 1회 retry recovery boundary는 12초와 15초 사이로 관찰됐다.
-51. 같은 15000ms outage에서 retry를 2회로 늘리면 3/3 PASS로 회복됐지만 DOM complete timing은 약 24.5초였고 Chrome target QUIC session count는 4개였다. 이는 사용자 작업 완료 회복의 근거이지 single-session browser CM 성공 근거가 아니다.
-52. 18000ms/21000ms retry2 stress boundary에서는 18000ms가 3/3 PASS, 21000ms가 3/3 FAIL이었다. 2회 retry도 local recovery boundary가 18초와 21초 사이에서 다시 깨지며, 실패 row에도 qlog path evidence와 Chrome session evidence가 남았다.
-53. Application recovery tradeoff synthesis는 no-retry 안정 구간 4600ms, 1회 retry 안정 구간 12000ms, 2회 retry 안정 구간 18000ms로 boundary가 오른쪽으로 이동하지만 completion latency와 Chrome QUIC session churn도 함께 증가함을 보여준다.
-54. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+47. downlink-only fine boundary에서는 5000ms와 5500ms가 각각 2/3 PASS로 혼재했고, 6000ms는 0/3 PASS였다. downlink 역시 단조 threshold가 아니라 packet/timer alignment에 민감한 transition zone을 보였다.
+48. upload-only fine boundary에서는 4600ms upload가 3/3 PASS, 4750ms가 1/3 PASS, 4900ms와 5000ms가 6/6 FAIL이어서 upload 안정 완료 구간과 실패 구간을 더 좁혔다.
+49. 같은 4900ms/5000ms upload 실패 구간에서 application-level upload retry를 1회 허용하면 6/6 PASS로 작업 완료가 회복됐다. 다만 모든 row가 Chrome target QUIC session 2개로 분류되어, 이는 single-session CM 성공이 아니라 retry/reconnect 기반 작업 회복 control로 해석해야 한다.
+50. 더 긴 6000ms/9000ms upload outage에서도 1회 retry는 6/6 PASS로 작업 완료를 회복했다. 그러나 Chrome target QUIC session count가 2-3개로 관찰되어, outage가 길수록 retry recovery와 browser session continuity의 차이를 더 명확히 분리해야 한다.
+51. 12000ms/15000ms retry stress boundary에서는 12000ms가 3/3 PASS, 15000ms가 0/3 PASS였다. 즉 application-level retry도 무제한 보장이 아니며, 이 local upload workload의 1회 retry recovery boundary는 12초와 15초 사이로 관찰됐다.
+52. 같은 15000ms outage에서 retry를 2회로 늘리면 3/3 PASS로 회복됐지만 DOM complete timing은 약 24.5초였고 Chrome target QUIC session count는 4개였다. 이는 사용자 작업 완료 회복의 근거이지 single-session browser CM 성공 근거가 아니다.
+53. 18000ms/21000ms retry2 stress boundary에서는 18000ms가 3/3 PASS, 21000ms가 3/3 FAIL이었다. 2회 retry도 local recovery boundary가 18초와 21초 사이에서 다시 깨지며, 실패 row에도 qlog path evidence와 Chrome session evidence가 남았다.
+54. Application recovery tradeoff synthesis는 no-retry 안정 구간 4600ms, 1회 retry 안정 구간 12000ms, 2회 retry 안정 구간 18000ms로 boundary가 오른쪽으로 이동하지만 completion latency와 Chrome QUIC session churn도 함께 증가함을 보여준다.
+55. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -225,6 +226,7 @@
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
 - [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
 - [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
+- [Chrome H3 local transient downlink fine boundary](docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)
 - [Chrome H3 local transient upload fine boundary](docs/results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md)
 - [Chrome H3 local transient upload retry boundary](docs/results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md)
 - [Chrome H3 local transient upload retry long outage](docs/results/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.md)

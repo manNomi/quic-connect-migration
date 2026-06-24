@@ -6,15 +6,15 @@ Generated: `2026-06-24`
 
 | metric | value |
 | --- | --- |
-| disk free | `22.5 GiB` |
-| disk free GiB | `22.51` |
-| local artifact roots total | `15.4 GiB` |
+| disk free | `22.2 GiB` |
+| disk free GiB | `22.18` |
+| local artifact roots total | `17.0 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `15.4 GiB` | 34096 | 12905 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `17.0 GiB` | 36132 | 13780 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -24,6 +24,7 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624` | `3.3 GiB` | 4083 | 1747 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624` | `2.5 GiB` | 3175 | 1359 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624` | `2.1 GiB` | 2725 | 1165 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624` | `1.6 GiB` | 2036 | 874 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624` | `1.1 GiB` | 1384 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624` | `1.1 GiB` | 1367 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624` | `1.1 GiB` | 1364 | 583 |
@@ -40,7 +41,6 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-timing-late-20260624` | `32.6 MiB` | 824 | 289 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-home-20260624` | `26.2 MiB` | 433 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-old-path-drop-repetition-20260624` | `25.9 MiB` | 617 | 217 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624` | `25.9 MiB` | 617 | 217 |
 
 ## Cleanup Note
 

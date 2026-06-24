@@ -1903,7 +1903,34 @@ cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repe
 - 5000ms downlink `3/3 PASS`, upload `0/3 PASS`
 - local workload-sensitive transition-zone control이며, public active handover 결과가 아니다.
 
-## 54. Chrome transient upload fine boundary
+## 54. Chrome transient downlink fine boundary
+
+`run-chrome-h3-rebinding-transient-boundary-repetition.sh`의 `DROP_WINDOWS_MS`와 `WORKLOADS`를 사용해 downlink workload만 5000ms/5500ms/6000ms에서 반복한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-downlink-fine-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624 \
+BASE_PORT=8800 \
+WORKLOADS=downlink \
+DROP_WINDOWS_MS="5000 5500 6000" \
+REPETITIONS=3 \
+TIMEOUT=90s \
+CHROME_TIMEOUT_SECONDS=80 \
+CHROME_HOLD_SECONDS=42 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+현재 결과:
+
+- 5000ms downlink `2/3 PASS`
+- 5500ms downlink `2/3 PASS`
+- 6000ms downlink `3/3 FAIL`
+- local downlink transition zone은 5.0-5.5초에서 혼재했고 6초에서 반복 실패했다.
+
+## 55. Chrome transient upload fine boundary
 
 `run-chrome-h3-rebinding-transient-boundary-repetition.sh`의 `DROP_WINDOWS_MS`와 `WORKLOADS`를 사용해 upload workload만 4600ms/4750ms/4900ms/5000ms에서 반복한다.
 
@@ -1931,7 +1958,7 @@ WORKLOADS="upload" \
 - 4900ms/5000ms upload `6/6 FAIL`
 - local upload-specific transition-zone control이며, public active handover 결과가 아니다.
 
-## 55. Chrome transient upload retry boundary
+## 56. Chrome transient upload retry boundary
 
 `run-chrome-h3-rebinding-transient-boundary-repetition.sh`는 upload page의 `retry_attempts`와 `retry_delay_ms`를 넘길 수 있다. no-retry fine boundary에서 반복 실패한 4900ms/5000ms 구간을 application-level retry control로 재검수한다.
 
@@ -1962,7 +1989,7 @@ EXPECTED_REQUESTS=3 \
 - 모든 row가 `/upload-sink` 2회와 최종 1MiB 수신을 기록했다.
 - 모든 row의 Chrome target QUIC session count는 2였으므로, 이 결과는 application task recovery control이지 single-session browser CM evidence가 아니다.
 
-## 56. Chrome transient upload retry long outage
+## 57. Chrome transient upload retry long outage
 
 같은 retry strategy를 6000ms/9000ms outage window로 확장한다. no-retry transient sweep에서는 6000ms/9000ms가 실패했으므로, retry가 longer outage에서 task completion을 회복하는지와 latency/session-count cost가 어떻게 나타나는지 확인한다.
 
@@ -1993,7 +2020,7 @@ EXPECTED_REQUESTS=3 \
 - DOM complete timing은 6000ms row 약 15.5초, 9000ms row 약 19.7초였다.
 - Chrome target QUIC session count는 2-3개였으므로, longer outage retry도 single-session browser CM evidence가 아니다.
 
-## 57. Chrome transient upload retry stress boundary
+## 58. Chrome transient upload retry stress boundary
 
 12000ms/15000ms outage window로 1회 retry recovery의 failure side를 확인한다.
 
@@ -2024,7 +2051,7 @@ EXPECTED_REQUESTS=3 \
 - 15000ms 실패 row는 second `/upload-sink` request가 서버에 도달하지 못했고 upload bytes가 0이었다.
 - qlog H3/path evidence가 있어도 application retry recovery는 12-15초 사이에서 깨질 수 있다.
 
-## 58. Chrome transient upload retry2 15000ms recovery
+## 59. Chrome transient upload retry2 15000ms recovery
 
 1회 retry가 실패한 15000ms outage window에서 `UPLOAD_RETRY_ATTEMPTS=2`를 적용해 recovery budget 증가의 효과와 비용을 확인한다.
 
@@ -2054,7 +2081,7 @@ CHROME_HOLD_SECONDS=65 \
 - Chrome target QUIC session count는 4개였다.
 - recovery budget 증가는 작업 완료를 회복했지만 latency와 replacement/multiple-session behavior를 키웠으므로 browser CM success로 해석하지 않는다.
 
-## 59. Chrome transient upload retry2 stress boundary
+## 60. Chrome transient upload retry2 stress boundary
 
 2회 retry strategy의 failure side를 18000ms/21000ms outage window에서 확인한다.
 
@@ -2085,7 +2112,7 @@ CHROME_HOLD_SECONDS=90 \
 - 21000ms FAIL row의 DOM error timing은 20950-20955ms였고 upload bytes는 0이었다.
 - 모든 row가 qlog H3/path evidence와 Chrome target QUIC session count 4를 남겼으므로, browser/session evidence와 application task completion을 분리해서 해석해야 한다.
 
-## 60. `tools/build_application_recovery_tradeoff.py`
+## 61. `tools/build_application_recovery_tradeoff.py`
 
 Chrome local upload boundary CSV들을 읽어 retry budget별 recovery boundary, completion latency, Chrome QUIC session count를 논문용 표로 묶는다.
 

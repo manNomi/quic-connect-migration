@@ -217,6 +217,21 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - 5초 downlink는 3/3 PASS였으므로 “5초부터 항상 실패”라고 표현하면 안 된다.
 - 5초 upload 실패 row도 proxy switch와 qlog H3/path evidence를 남겼으므로, transport evidence와 application completion은 여전히 분리해야 한다.
 
+[Chrome H3 Local Rebinding Downlink Fine Boundary](./chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)는 downlink-only window를 5000ms/5500ms/6000ms로 세분화했다.
+
+| downlink-only window | rows | status | interpretation |
+| ---: | ---: | --- | --- |
+| 5000ms | 3 | 2/3 PASS | downlink도 5초 근처에서 혼재 transition을 보였다. |
+| 5500ms | 3 | 2/3 PASS | 더 긴 window에서도 PASS/FAIL이 갈려 단조 threshold가 아님을 보였다. |
+| 6000ms | 3 | 0/3 PASS | 반복 실패 구간으로 관찰됐다. |
+
+Downlink fine boundary의 핵심:
+
+- 5000ms와 5500ms는 각각 2/3 PASS로 혼재했다.
+- 6000ms는 3/3 FAIL이었다.
+- PASS row는 12276-14114ms에 완료됐고, FAIL row는 6922-6927ms에 실패했다.
+- 모든 row가 qlog H3/path evidence를 남겼으므로, downlink도 transport evidence와 DOM completion을 분리해야 한다.
+
 [Chrome H3 Local Rebinding Transient Upload Fine Boundary](./chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md)는 upload-only window를 4600ms/4750ms/4900ms/5000ms로 세분화했다.
 
 | upload-only window | rows | status | interpretation |

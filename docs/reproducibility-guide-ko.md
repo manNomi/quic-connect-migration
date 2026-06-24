@@ -1180,7 +1180,51 @@ cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repe
 - 5초 근처는 단일 threshold가 아니라 workload-sensitive transition zone으로 해석한다.
 - 이 결과도 local outage-tolerance control이며 실제 public handover evidence가 아니다.
 
-## 25. Chrome local upload fine boundary 재현
+## 25. Chrome local downlink fine boundary 재현
+
+5000ms 근처의 downlink 결과가 단일 threshold인지 mixed transition zone인지 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-downlink-fine-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624 \
+BASE_PORT=8800 \
+WORKLOADS=downlink \
+DROP_WINDOWS_MS="5000 5500 6000" \
+REPETITIONS=3 \
+TIMEOUT=90s \
+CHROME_TIMEOUT_SECONDS=80 \
+CHROME_HOLD_SECONDS=42 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep01-downlink-1m-drop-ab-5000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep01-downlink-1m-drop-ab-5500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep01-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep02-downlink-1m-drop-ab-5000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep02-downlink-1m-drop-ab-5500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep02-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep03-downlink-1m-drop-ab-5000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep03-downlink-1m-drop-ab-5500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624/rep03-downlink-1m-drop-ab-6000ms \
+  --output docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 5000ms downlink는 `2/3 PASS`
+- 5500ms downlink는 `2/3 PASS`
+- 6000ms downlink는 `0/3 PASS`
+- 모든 row가 qlog H3/path evidence를 남겼으므로, downlink DOM completion도 transport evidence와 별도로 봐야 한다.
+
+## 26. Chrome local upload fine boundary 재현
 
 5000ms에서 upload만 반복 실패했으므로, upload workload만 더 촘촘하게 측정한다.
 
@@ -1229,7 +1273,7 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 4900ms와 5000ms upload는 `6/6 FAIL`
 - 이 결과도 local upload-specific transition-zone control이며 public handover evidence가 아니다.
 
-## 26. Chrome local upload retry recovery boundary 재현
+## 27. Chrome local upload retry recovery boundary 재현
 
 4900ms/5000ms upload는 no-retry 조건에서 반복 실패했으므로, 동일한 outage window에서 application-level retry가 작업 완료를 회복하는지 확인한다.
 
@@ -1276,7 +1320,7 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 모든 row가 `nat_rebinding_multiple_quic_sessions`였으므로, 이는 application retry/reconnect recovery control이며 single-session browser CM success가 아니다.
 - 이 결과도 local recovery control이며 public active handover evidence가 아니다.
 
-## 27. Chrome local upload retry long outage 재현
+## 28. Chrome local upload retry long outage 재현
 
 동일한 retry strategy가 6000ms/9000ms처럼 더 긴 outage에서도 작업 완료를 회복하는지 확인한다. 9000ms row는 완료 시간이 길어지므로 Chrome hold/timeout과 server timeout을 더 길게 둔다.
 
@@ -1322,7 +1366,7 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 6000ms row는 약 15.5초, 9000ms row는 약 19.7초에 완료됐다.
 - Chrome target QUIC session count는 2-3개였으므로, 이 결과도 application retry/reconnect recovery control이며 single-session browser CM success가 아니다.
 
-## 28. Chrome local upload retry stress boundary 재현
+## 29. Chrome local upload retry stress boundary 재현
 
 1회 retry recovery도 무제한 보장이 아니므로, 12000ms/15000ms에서 failure-side boundary를 확인한다.
 
@@ -1368,7 +1412,7 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 15000ms 실패 row는 DOM error timing이 15936-15943ms였고 두 번째 `/upload-sink`가 서버에 도달하지 못했다.
 - 이 local 1MiB upload workload에서 1회 retry recovery boundary는 12초와 15초 사이로 관찰됐다.
 
-## 29. Chrome local upload retry2 15000ms recovery 재현
+## 30. Chrome local upload retry2 15000ms recovery 재현
 
 1회 retry가 실패한 15000ms outage에서 retry budget을 2회로 늘려 application-level recovery가 어디까지 확장되는지 확인한다.
 
@@ -1410,7 +1454,7 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - Chrome target QUIC session count는 4개였으므로, 이 결과는 retry/reconnect 기반 task recovery이며 single-session browser CM success가 아니다.
 - 1회 retry 실패 region을 2회 retry가 회복했지만, recovery latency와 session churn cost가 함께 증가했다.
 
-## 30. Chrome local upload retry2 stress boundary 재현
+## 31. Chrome local upload retry2 stress boundary 재현
 
 2회 retry recovery도 무제한 보장이 아니므로, 18000ms/21000ms에서 failure-side boundary를 확인한다.
 
@@ -1455,7 +1499,7 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - PASS row의 DOM complete timing은 28196-28199ms였고, FAIL row의 DOM error timing은 20950-20955ms였다.
 - 모든 row의 Chrome target QUIC session count는 4개였으므로, 이 결과도 browser CM success가 아니라 application recovery boundary evidence다.
 
-## 31. Application recovery tradeoff 표 재생성
+## 32. Application recovery tradeoff 표 재생성
 
 no-retry, 1회 retry, 2회 retry upload boundary CSV를 논문용 tradeoff 표로 합친다.
 
@@ -1472,7 +1516,7 @@ python3 tools/build_application_recovery_tradeoff.py \
 - 2회 retry 최신 all-pass window는 18000ms, first later all-fail window는 21000ms다.
 - retry budget 증가는 recovery boundary를 오른쪽으로 이동시키지만 completion latency와 Chrome QUIC session count도 함께 증가한다.
 
-## 32. Artifact 정책
+## 33. Artifact 정책
 
 commit 가능한 것:
 
