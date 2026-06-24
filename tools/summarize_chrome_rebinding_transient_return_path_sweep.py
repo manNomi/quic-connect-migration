@@ -74,7 +74,7 @@ def read_text(path: Path) -> str:
 
 def parse_run_spec(raw: str) -> tuple[str, Path]:
     workload, artifact = raw.split(":", 1)
-    if workload not in {"downlink", "upload"}:
+    if workload not in {"downlink", "upload", "poll"}:
         raise ValueError(f"unsupported workload {workload!r}")
     return workload, Path(artifact)
 

@@ -21,6 +21,8 @@ DOWNLINK_RETRY_ATTEMPTS="${DOWNLINK_RETRY_ATTEMPTS:-0}"
 DOWNLINK_RETRY_DELAY_MS="${DOWNLINK_RETRY_DELAY_MS:-500}"
 UPLOAD_RETRY_ATTEMPTS="${UPLOAD_RETRY_ATTEMPTS:-0}"
 UPLOAD_RETRY_DELAY_MS="${UPLOAD_RETRY_DELAY_MS:-500}"
+POLL_COUNT="${POLL_COUNT:-5}"
+POLL_INTERVAL_MS="${POLL_INTERVAL_MS:-500}"
 
 mkdir -p "$ARTIFACT_ROOT/results"
 
@@ -39,12 +41,12 @@ write_spec() {
   local drop_window="$7"
   local drop_window_ms="$8"
   local repetition="$9"
-  python3 - "$artifact_dir" "$profile" "$workload" "$bytes" "$chunks" "$duration_ms" "$REBIND_AFTER" "$drop_window" "$drop_window_ms" "$repetition" "$DOWNLINK_RETRY_ATTEMPTS" "$DOWNLINK_RETRY_DELAY_MS" "$UPLOAD_RETRY_ATTEMPTS" "$UPLOAD_RETRY_DELAY_MS" <<'PY'
+  python3 - "$artifact_dir" "$profile" "$workload" "$bytes" "$chunks" "$duration_ms" "$REBIND_AFTER" "$drop_window" "$drop_window_ms" "$repetition" "$DOWNLINK_RETRY_ATTEMPTS" "$DOWNLINK_RETRY_DELAY_MS" "$UPLOAD_RETRY_ATTEMPTS" "$UPLOAD_RETRY_DELAY_MS" "$POLL_COUNT" "$POLL_INTERVAL_MS" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-artifact_dir, profile, workload, bytes_value, chunks, duration_ms, rebind_after, drop_window, drop_window_ms, repetition, downlink_retry_attempts, downlink_retry_delay_ms, upload_retry_attempts, upload_retry_delay_ms = sys.argv[1:]
+artifact_dir, profile, workload, bytes_value, chunks, duration_ms, rebind_after, drop_window, drop_window_ms, repetition, downlink_retry_attempts, downlink_retry_delay_ms, upload_retry_attempts, upload_retry_delay_ms, poll_count, poll_interval_ms = sys.argv[1:]
 path = Path(artifact_dir) / "results" / "transient-return-path-spec.json"
 path.parent.mkdir(parents=True, exist_ok=True)
 path.write_text(
@@ -65,6 +67,8 @@ path.write_text(
             "downlink_retry_delay_ms": int(downlink_retry_delay_ms),
             "upload_retry_attempts": int(upload_retry_attempts),
             "upload_retry_delay_ms": int(upload_retry_delay_ms),
+            "poll_count": int(poll_count),
+            "poll_interval_ms": int(poll_interval_ms),
             "expected_status": "MEASURE",
         },
         indent=2,
@@ -119,6 +123,8 @@ run_case() {
     UPLOAD_DURATION_MS="$duration_ms" \
     UPLOAD_RETRY_ATTEMPTS="$UPLOAD_RETRY_ATTEMPTS" \
     UPLOAD_RETRY_DELAY_MS="$UPLOAD_RETRY_DELAY_MS" \
+    POLL_COUNT="$POLL_COUNT" \
+    POLL_INTERVAL_MS="$POLL_INTERVAL_MS" \
     ./scripts/run-chrome-h3-rebinding-proxy.sh
 
   run_index=$((run_index + 1))
@@ -130,7 +136,7 @@ for repetition in $(seq 1 "$REPETITIONS"); do
     drop_window="${drop_window_ms}ms"
     for workload in "${workloads[@]}"; do
       case "$workload" in
-        downlink | upload) ;;
+        downlink | upload | poll) ;;
         *)
           echo "unsupported workload in WORKLOADS: $workload" >&2
           exit 2

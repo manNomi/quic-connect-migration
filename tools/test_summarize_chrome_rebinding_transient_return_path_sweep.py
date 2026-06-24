@@ -127,9 +127,19 @@ def test_csv_writer_uses_stable_header() -> None:
         assert "dump_task_elapsed_ms" in text.splitlines()[0]
 
 
+def test_poll_workload_is_supported() -> None:
+    with TemporaryDirectory() as tmp:
+        artifact = Path(tmp) / "poll-pass"
+        write_sweep_artifact(artifact, workload="poll", status="PASS", drop_window_ms=1500)
+        row = row_from_spec(f"poll:{artifact}")
+        assert row["workload"] == "poll"
+        assert row["status"] == "PASS"
+
+
 def main() -> int:
     test_rows_and_markdown()
     test_csv_writer_uses_stable_header()
+    test_poll_workload_is_supported()
     print("summarize_chrome_rebinding_transient_return_path_sweep=ok")
     return 0
 

@@ -6,15 +6,15 @@ Generated: `2026-06-24`
 
 | metric | value |
 | --- | --- |
-| disk free | `19.9 GiB` |
-| disk free GiB | `19.86` |
-| local artifact roots total | `19.2 GiB` |
+| disk free | `18.2 GiB` |
+| disk free GiB | `18.22` |
+| local artifact roots total | `20.8 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `19.2 GiB` | 38857 | 14948 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `20.8 GiB` | 40904 | 15823 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -25,6 +25,7 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624` | `2.5 GiB` | 3175 | 1359 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624` | `2.1 GiB` | 2725 | 1165 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624` | `1.6 GiB` | 2036 | 874 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624` | `1.6 GiB` | 2047 | 874 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624` | `1.1 GiB` | 1384 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624` | `1.1 GiB` | 1365 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624` | `1.1 GiB` | 1367 | 583 |
@@ -40,7 +41,6 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624` | `49.0 MiB` | 1237 | 433 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-bing-home-20260624` | `40.2 MiB` | 688 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-timing-early-20260624` | `32.7 MiB` | 826 | 289 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-timing-late-20260624` | `32.6 MiB` | 824 | 289 |
 
 ## Cleanup Note
 

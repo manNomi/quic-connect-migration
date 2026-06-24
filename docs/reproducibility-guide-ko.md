@@ -1625,7 +1625,54 @@ python3 tools/build_downlink_recovery_comparison.py \
 - wait-only 실패 row의 DOM error timing은 6923-6935ms로 모였다.
 - 이 비교는 downlink recovery PASS가 단순한 wait-time artifact가 아님을 보여주지만, retry-enabled PASS 역시 single-session browser CM evidence는 아니다.
 
-## 36. Artifact 정책
+## 36. Chrome transient polling/dashboard boundary 재현
+
+dashboard형 반복 fetch workload가 short outage에서 어떻게 보이는지 측정한다. 이 실험은 교수님 피드백의 "대시보드 데이터 갱신 복구 시간"류 지표를 transport CM과 분리해 다루기 위한 local control이다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-poll-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624 \
+BASE_PORT=9000 \
+DROP_WINDOWS_MS="250 1500 3000" \
+WORKLOADS="poll" \
+POLL_COUNT=6 \
+POLL_INTERVAL_MS=1000 \
+POLL_COMPLETION_GRACE_MS=15000 \
+EXPECTED_REQUESTS=2 \
+TIMEOUT=45s \
+CHROME_TIMEOUT_SECONDS=32 \
+CHROME_HOLD_SECONDS=18 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep01-poll-1m-drop-ab-250ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep01-poll-1m-drop-ab-1500ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep01-poll-1m-drop-ab-3000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep02-poll-1m-drop-ab-250ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep02-poll-1m-drop-ab-1500ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep02-poll-1m-drop-ab-3000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep03-poll-1m-drop-ab-250ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep03-poll-1m-drop-ab-1500ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-boundary-20260624/rep03-poll-1m-drop-ab-3000ms \
+  --output docs/results/chrome-h3-rebinding-transient-poll-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 250ms/1500ms/3000ms polling control은 모두 `3/3 PASS`였다.
+- 각 row는 `GET /browser-poll` 1회와 `/poll` 6회를 합쳐 server request 7개를 남겼다.
+- 모든 row가 server remote addr count 2와 Chrome target QUIC session count 2로 분류됐다.
+- qlog PATH_CHALLENGE/PATH_RESPONSE count는 0/0이었으므로, 이 결과는 single-session browser CM success가 아니라 repeated fetch replacement/multiple-session continuity evidence다.
+
+## 37. Artifact 정책
 
 commit 가능한 것:
 

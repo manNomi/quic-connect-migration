@@ -199,6 +199,20 @@ REBIND_AFTER=2s \
 ./scripts/run-chrome-h3-rebinding-proxy.sh
 ```
 
+dashboard형 반복 fetch workload를 보려면 poll mode를 사용한다. Chrome page가 `GET /browser-poll`을 연 뒤 지정된 count/interval로 `/poll`을 반복 호출한다.
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-rebinding-poll-smoke-20260624 \
+PROXY_ADDR=127.0.0.1:4747 \
+SERVER_ADDR=127.0.0.1:4748 \
+WORKLOAD=poll \
+POLL_COUNT=6 \
+POLL_INTERVAL_MS=1000 \
+REBIND_AFTER=500ms \
+./scripts/run-chrome-h3-rebinding-proxy.sh
+```
+
 rebinding proxy 실험에서 추가로 쓰는 classification:
 
 | classification | 의미 |
@@ -208,6 +222,8 @@ rebinding proxy 실험에서 추가로 쓰는 classification:
 | `nat_rebinding_possible_session_continuity` | local proxy 조건에서 server tuple 변화, qlog path validation, 단일 Chrome target QUIC session이 동시에 관찰된 후보 라벨 |
 
 이 실험은 실제 Wi-Fi/LTE handover가 아니라 NAT rebinding에 가까운 local control이다. qlog `PATH_CHALLENGE`/`PATH_RESPONSE`와 server tuple 변화가 있어도 Chrome NetLog에서 target QUIC session이 2개이면 session continuity claim으로 쓰면 안 된다.
+
+`tools/summarize_chrome_rebinding_transient_return_path_sweep.py`는 `downlink:`, `upload:`, `poll:` artifact spec을 모두 지원한다. `poll` 결과는 dashboard-like repeated fetch continuity를 보기 위한 것이며, 반복 fetch가 완료돼도 Chrome target QUIC session이 여러 개면 single-session browser CM 성공으로 해석하지 않는다.
 
 classifier regression:
 

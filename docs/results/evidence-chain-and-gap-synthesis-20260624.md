@@ -332,6 +332,24 @@ Downlink wait/retry comparison의 핵심:
 - 따라서 retry-enabled PASS는 단순히 긴 hold/grace 때문이라고 볼 수 없다.
 - 그러나 retry-enabled PASS도 `retries_used=0`과 `retries_used=1`이 섞이므로, single-session browser CM success가 아니라 downlink recovery/timer/session-management evidence로 보고해야 한다.
 
+### 4.10 Polling/dashboard control은 UI-level continuity와 session continuity를 분리한다
+
+[Chrome H3 Local Rebinding Transient Polling Boundary](./chrome-h3-rebinding-transient-poll-boundary-20260624.md)는 dashboard-like repeated fetch workload를 250ms/1500ms/3000ms outage window에서 반복했다.
+
+| polling window | rows | status | server requests | Chrome target sessions | qlog PATH C/R | interpretation |
+| ---: | ---: | --- | ---: | ---: | --- | --- |
+| 250ms | 3 | 3/3 PASS | 7 per row | 2 per row | 0/0 | 짧은 outage에서 repeated fetch 작업은 완료됐다. |
+| 1500ms | 3 | 3/3 PASS | 7 per row | 2 per row | 0/0 | 완료는 유지됐지만 single-session continuity evidence는 아니다. |
+| 3000ms | 3 | 3/3 PASS | 7 per row | 2 per row | 0/0 | multiple-session fetch completion으로 해석해야 한다. |
+
+Polling/dashboard control의 핵심:
+
+- 모든 row가 application complete였고 server는 `GET /browser-poll` 1회와 `/poll` 6회를 기록했다.
+- 모든 row가 server remote addr count 2와 Chrome target QUIC session count 2로 분류됐다.
+- qlog PATH_CHALLENGE/PATH_RESPONSE count는 0/0이었다.
+- 따라서 dashboard refresh류 workload는 사용자 관점 작업 완료를 유지할 수 있지만, 그것만으로 browser CM success를 주장할 수 없다.
+- 대시보드 복구 시간이나 polling success rate를 논문 지표로 사용할 때는 browser session attribution을 함께 보고해야 한다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.
@@ -341,7 +359,7 @@ Downlink wait/retry comparison의 핵심:
 | 1. Application H3 baseline | server request `HTTP/3.0`, TLS ALPN `h3`, qlog H3 frame, browser NetLog | local forced Chrome에서 관찰; controlled public origin은 pending |
 | 2. 실제 client path 변화 | before/after route/interface/public IP 변화 | inactive toggle은 no-change; real active path pending |
 | 3. 같은 logical QUIC connection 유지 | tuple change와 함께 qlog path validation, replacement session 아님 | quic-go controlled client에서 관찰; Chrome browser pending |
-| 4. application task continuity | downlink/upload/polling task complete, manual refresh 없음 | local controls pass; retry can recover local upload failure via multiple sessions; downlink retry control mixes retransmission-only and retry/multiple-session completion; public active path-change pending |
+| 4. application task continuity | downlink/upload/polling task complete, manual refresh 없음 | local controls pass; retry can recover local upload failure via multiple sessions; downlink retry control mixes retransmission-only and retry/multiple-session completion; polling/dashboard can complete via multiple sessions without qlog path validation; public active path-change pending |
 | 5. deployment continuity | LB/CDN/proxy가 changed tuple을 같은 logical backend로 유지 | AWS NLB TCP_QUIC positive/negative controls 있음; CDN pending |
 
 machine-readable rubric은 [data/evidence-chain-rubric.csv](../../data/evidence-chain-rubric.csv)에 고정했다.
