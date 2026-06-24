@@ -665,6 +665,7 @@ python3 tools/capture_network_path_snapshot.py --url https://www.google.com/gene
 python3 tools/compare_network_path_snapshots.py /tmp/quic-cm-path-before.json /tmp/quic-cm-path-before.json
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py tools/run_android_chrome_navigation.py
 python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md
+python3 tools/test_final_browser_handover_trial_audit.py
 bash -n repro/quic-go-min-repro/scripts/run-safari-controlled-public-network-change.sh
 bash -n repro/quic-go-min-repro/scripts/run-android-chrome-controlled-public-network-change.sh
 
@@ -780,3 +781,11 @@ python3 tools/audit_final_browser_handover_trials.py --require-complete
 | Safari 또는 Android Chrome feasibility | 최소 1회 |
 
 이 audit은 local Chrome forced-QUIC baseline이나 inactive interface toggle을 본 실험으로 세지 않는다. `controlled-public`, `network-change`, classification, negative-control exclusion 조건을 모두 만족해야 한다.
+
+회귀 검증:
+
+```bash
+python3 tools/test_final_browser_handover_trial_audit.py
+```
+
+이 테스트는 synthetic complete fixture가 모든 requirement를 만족하는지, 그리고 `reconnect_or_multiple_sessions` negative control이 active CM requirement에 잘못 집계되지 않는지 확인한다.

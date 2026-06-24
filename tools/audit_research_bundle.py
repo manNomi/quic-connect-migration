@@ -39,6 +39,7 @@ REQUIRED_FILES = [
     "docs/results/research-completion-audit-20260624.md",
     "paper/results-section-ko.md",
     "paper/results-section-en.md",
+    "tools/test_final_browser_handover_trial_audit.py",
     "tools/build_paper_tables.py",
     "tools/audit_final_browser_handover_trials.py",
     "tools/report_artifact_storage.py",
