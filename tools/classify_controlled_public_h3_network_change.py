@@ -55,6 +55,7 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
     network_change = summary["network_change"]
     netlog = summary["netlog"]
     qlog_has_path_validation = summary["server_qlog_has_path_validation"]
+    browser_kind = summary["browser_kind"]
     remote_addr_count = int(server_requests["remote_addr_count"])
     quic_sessions = int(netlog.get("target_quic_session_count") or 0)
 
@@ -69,6 +70,8 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
     if network_change["exit"] not in (0, None):
         return "FAIL", "controlled_public_network_change_command_failed"
 
+    if browser_kind != "chrome" and remote_addr_count > 1 and qlog_has_path_validation:
+        return "PASS_FEASIBILITY", "possible_connection_migration_server_qlog_only"
     if remote_addr_count > 1 and qlog_has_path_validation and quic_sessions <= 1:
         return "PASS", "possible_connection_migration"
     if remote_addr_count > 1 and qlog_has_path_validation and quic_sessions > 1:
@@ -88,12 +91,16 @@ def main() -> int:
     parser.add_argument("--server-artifact-dir", help="server artifact directory; defaults to artifact_dir")
     parser.add_argument("--url", required=True)
     parser.add_argument("--expected-requests", type=int)
-    parser.add_argument("--chrome-exit", type=int, default=0)
+    parser.add_argument("--browser-kind", choices=["chrome", "safari"], default="chrome")
+    parser.add_argument("--browser-exit", type=int)
+    parser.add_argument("--chrome-exit", type=int)
+    parser.add_argument("--allow-missing-browser-netlog", action="store_true")
     parser.add_argument("--output")
     args = parser.parse_args()
 
     artifact_dir = Path(args.artifact_dir)
     server_dir = Path(args.server_artifact_dir) if args.server_artifact_dir else artifact_dir
+    browser_exit = args.browser_exit if args.browser_exit is not None else (args.chrome_exit if args.chrome_exit is not None else 0)
     server, server_error = read_json(server_dir / "results" / "server.json")
     readiness, readiness_error = read_json(artifact_dir / "results" / "public-origin-readiness.json")
     qcounts = qlog_counts(server_dir / "qlog")
@@ -109,9 +116,14 @@ def main() -> int:
         "artifact_dir": str(artifact_dir),
         "server_artifact_dir": str(server_dir),
         "url": args.url,
-        "chrome_exit": args.chrome_exit,
-        "chrome_completed_cleanly": args.chrome_exit == 0,
-        "chrome_timed_out_after_request": args.chrome_exit == 124 and server_requests["reached_expected_count"],
+        "browser_kind": args.browser_kind,
+        "browser_exit": browser_exit,
+        "browser_completed_cleanly": browser_exit == 0,
+        "browser_timed_out_after_request": browser_exit == 124 and server_requests["reached_expected_count"],
+        "chrome_exit": browser_exit if args.browser_kind == "chrome" else None,
+        "chrome_completed_cleanly": browser_exit == 0 if args.browser_kind == "chrome" else None,
+        "chrome_timed_out_after_request": browser_exit == 124 and server_requests["reached_expected_count"] if args.browser_kind == "chrome" else None,
+        "allow_missing_browser_netlog": args.allow_missing_browser_netlog,
         "server_error": server_error,
         "readiness_error": readiness_error,
         "server_ok": server.get("ok") is True,

@@ -29,7 +29,8 @@
 17. Chrome forced-QUIC local H3에서 downlink-dominant streaming workload와 optional heartbeat variant가 HTTP/3로 정상 관찰되는 것을 확인했다.
 18. Chrome CDP real-time runner 기준, heartbeat fetch는 network-change가 없어도 별도 QUIC session/source tuple을 만들 수 있었다. 따라서 tuple 변화 단독으로는 Connection Migration evidence가 아니다.
 19. inactive interface toggle 대조군에서는 command exit은 0이었지만 client path snapshot은 `no_client_path_change_observed`였고 qlog path validation도 없었다.
-20. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+20. Safari controlled public network-change harness를 추가하고, Chrome NetLog가 없는 Safari 결과는 `PASS_FEASIBILITY` 수준으로 별도 분류하도록 했다.
+21. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -99,6 +100,7 @@
 - [Controlled public origin operations runbook](docs/results/controlled-public-origin-operations-runbook-20260624.md)
 - [Browser CM observability readiness](docs/results/browser-cm-observability-readiness-20260624.md)
 - [Safari controlled public H3 baseline harness](docs/results/safari-controlled-public-baseline-harness-20260624.md)
+- [Safari controlled public H3 network-change harness](docs/results/safari-controlled-public-network-change-harness-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)

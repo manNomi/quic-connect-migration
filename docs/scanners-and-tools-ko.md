@@ -479,11 +479,11 @@ PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6
 ./scripts/run-safari-controlled-public-baseline.sh
 ```
 
-Safari baseline은 Chrome NetLog가 없으므로 `classify_controlled_public_h3_baseline.py --allow-missing-browser-summary` 경로를 사용한다.
+Safari baseline은 Chrome NetLog가 없으므로 `classify_controlled_public_h3_baseline.py --allow-missing-browser-summary` 경로를 사용한다. 실제 network-change 실험에서는 `scripts/run-safari-controlled-public-network-change.sh`를 사용하고, classifier에는 `--browser-kind safari --allow-missing-browser-netlog`를 전달한다.
 
 ## 16. `tools/classify_controlled_public_h3_network_change.py`
 
-controlled public origin에서 Chrome workload 중 network-change trigger를 넣은 결과를 분류한다.
+controlled public origin에서 browser workload 중 network-change trigger를 넣은 결과를 분류한다. 기본은 Chrome NetLog를 포함한 Chrome mode이고, Safari는 `--browser-kind safari --allow-missing-browser-netlog`로 server/qlog/client-path 중심 판정을 수행한다.
 
 실행:
 
@@ -493,6 +493,18 @@ python3 tools/classify_controlled_public_h3_network_change.py \
   --server-artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001 \
   --url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
   --output repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
+```
+
+Safari mode:
+
+```bash
+python3 tools/classify_controlled_public_h3_network_change.py \
+  repro/quic-go-min-repro/artifacts/safari-controlled-public-h3-network-change-001 \
+  --server-artifact-dir repro/quic-go-min-repro/artifacts/safari-controlled-public-h3-network-change-001 \
+  --url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=safari-handover-slow' \
+  --browser-kind safari \
+  --allow-missing-browser-netlog \
+  --output repro/quic-go-min-repro/artifacts/safari-controlled-public-h3-network-change-001/results/safari-controlled-public-h3-network-change-summary.json
 ```
 
 주요 output:
@@ -511,6 +523,7 @@ classification:
 | classification | 의미 |
 | --- | --- |
 | `possible_connection_migration` | tuple change와 qlog path validation이 함께 관찰됨 |
+| `possible_connection_migration_server_qlog_only` | Safari처럼 browser-internal QUIC log가 없는 상태에서 server tuple change와 qlog path validation만 관찰됨 |
 | `reconnect_or_multiple_sessions` | tuple change가 있으나 여러 QUIC session evidence |
 | `tuple_changed_without_path_validation` | tuple change가 있으나 path validation evidence 없음 |
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
@@ -599,6 +612,7 @@ bash harness/scripts/controlled-public-preflight.sh
 | `scripts/run-controlled-public-h3-browser-baseline.sh` | controlled public origin readiness + Chrome application H3 baseline wrapper |
 | `scripts/run-controlled-public-h3-network-change.sh` | baseline PASS 이후 Chrome controlled public network-change 실험 wrapper |
 | `scripts/run-safari-controlled-public-baseline.sh` | Safari WebDriver navigation + server/qlog 기반 controlled public H3 baseline wrapper |
+| `scripts/run-safari-controlled-public-network-change.sh` | Safari WebDriver navigation + active network-change + server/qlog 기반 classifier wrapper |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -635,6 +649,7 @@ bash harness/scripts/controlled-public-preflight.sh || true
 python3 tools/capture_network_path_snapshot.py --url https://www.google.com/generate_204 --output /tmp/quic-cm-path-before.json
 python3 tools/compare_network_path_snapshots.py /tmp/quic-cm-path-before.json /tmp/quic-cm-path-before.json
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py
+bash -n repro/quic-go-min-repro/scripts/run-safari-controlled-public-network-change.sh
 
 cd repro/quic-go-min-repro
 go test ./...
