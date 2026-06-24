@@ -32,11 +32,14 @@
   -> AWS NLB CID-aware routing positive/negative controls
   -> HTTP/3 post-migration request continuity
   -> HTTP/3 mid-flight upload/download continuity
+  -> Chrome browser H3 baseline, downlink/heartbeat workload, multiple-session negative control
 ```
 
 중립적 결론:
 
 > QUIC Connection Migration은 여러 구현체에서 실제로 존재하고, controlled 환경에서는 HTTP/3 작업까지 이어질 수 있다. 그러나 실제 웹/모바일 배포로 일반화하려면 CDN/proxy/LB/browser/application 계층을 별도로 검증해야 한다.
+
+특히 Chrome CDP downlink/heartbeat 대조군은 server remote tuple 변화만으로 CM을 주장하면 안 됨을 보였다. heartbeat request는 network-change가 없어도 별도 QUIC session/source tuple을 만들 수 있었고, inactive interface toggle에서는 client path snapshot이 `no_client_path_change_observed`였다.
 
 ## 3. 실험 환경
 

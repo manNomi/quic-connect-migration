@@ -44,6 +44,7 @@
 │   ├── experiment-results.csv
 │   ├── browser-cm-observability-20260624.json
 │   ├── controlled-public-experiment-readiness-20260624.json
+│   ├── evidence-chain-rubric.csv
 │   ├── implementation-survey.csv
 │   ├── handover-readiness-20260624.json
 │   ├── literature-review-tracker.csv
@@ -97,6 +98,7 @@
 - [Safari controlled public H3 baseline harness](docs/results/safari-controlled-public-baseline-harness-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)
+- [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)
