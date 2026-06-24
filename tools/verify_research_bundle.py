@@ -74,6 +74,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
     final_next_trial = "docs/results/final-handover-next-trial-20260624.md"
     final_next_trial_readiness = "docs/results/final-handover-next-trial-readiness-20260624.md"
+    controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
@@ -84,6 +85,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
         final_next_trial = str(generated_dir / "final-handover-next-trial.md")
         final_next_trial_readiness = str(generated_dir / "final-handover-next-trial-readiness.md")
+        controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
         research_audit = str(generated_dir / "research-bundle-audit.md")
@@ -98,6 +100,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_final_browser_handover_trials.py",
                 "tools/audit_research_bundle.py",
                 "tools/append_final_handover_result_row.py",
+                "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_next_final_handover_trial_readiness.py",
                 "tools/draft_final_handover_result_row.py",
@@ -106,6 +109,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/select_next_final_handover_trial.py",
                 "tools/validate_final_handover_trial_artifact.py",
                 "tools/test_append_final_handover_result_row.py",
+                "tools/test_check_controlled_public_config.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
                 "tools/test_draft_final_handover_result_row.py",
                 "tools/test_final_browser_handover_trial_audit.py",
@@ -171,6 +175,18 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             "final_handover_next_trial_readiness_regression",
             [python_bin, "tools/test_check_next_final_handover_trial_readiness.py"],
             {0},
+            30,
+        ),
+        (
+            "controlled_public_config_regression",
+            [python_bin, "tools/test_check_controlled_public_config.py"],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_config_expected_incomplete",
+            [python_bin, "tools/check_controlled_public_config.py", "--output", controlled_public_config],
+            {1},
             30,
         ),
         (

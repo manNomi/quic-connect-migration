@@ -1074,3 +1074,40 @@ python3 tools/check_next_final_handover_trial_readiness.py \
 ```bash
 python3 tools/test_check_next_final_handover_trial_readiness.py
 ```
+
+## 34. `tools/check_controlled_public_config.py`
+
+`harness/config/controlled-public-origin.env`가 controlled public baseline, active network-change, Android network-change 단계별로 준비됐는지 검사한다. public report에는 실제 도메인, certificate path, private key path, network-change command 값을 출력하지 않고 key별 상태만 기록한다.
+
+실행:
+
+```bash
+python3 tools/check_controlled_public_config.py \
+  --output docs/results/controlled-public-config-check-20260624.md
+```
+
+baseline config만 강제:
+
+```bash
+python3 tools/check_controlled_public_config.py --require-baseline-ready
+```
+
+active network-change config까지 강제:
+
+```bash
+python3 tools/check_controlled_public_config.py --require-active-ready
+```
+
+검사 항목:
+
+| 단계 | 주요 key |
+| --- | --- |
+| baseline | `PUBLIC_ORIGIN_HOST`, `PUBLIC_ORIGIN_URL`, `TLS_CERT_FILE`, `TLS_KEY_FILE`, `ALT_SVC`, `CHROME_BIN` |
+| active network-change | `PUBLIC_ORIGIN_NETWORK_CHANGE_URL`, `CONTROLLED_PUBLIC_BASELINE_SUMMARY`, `NETWORK_CHANGE_CMD` |
+| Android | `ANDROID_NETWORK_CHANGE_CMD` |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_check_controlled_public_config.py
+```

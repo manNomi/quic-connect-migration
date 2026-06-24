@@ -69,6 +69,15 @@ controlled-public-android-chrome-downlink-network-change-001,2026-06-24,PASS_FEA
 
 ## 7. 등록 후 검증
 
+실험 환경을 만들기 전 controlled public config schema를 확인한다.
+
+```bash
+python3 tools/check_controlled_public_config.py \
+  --output docs/results/controlled-public-config-check-20260624.md
+```
+
+이 report는 실제 도메인, certificate path, private key path, network-change command 값을 출력하지 않는다.
+
 실험을 시작하기 전 현재 CSV 기준 다음 실행 항목을 확인한다.
 
 ```bash

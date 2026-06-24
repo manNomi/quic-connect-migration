@@ -37,8 +37,9 @@
 25. 검증된 final handover row만 dry-run/apply 방식으로 `data/experiment-results.csv`에 추가하는 append 도구를 추가했다.
 26. 현재 CSV 상태에서 다음에 실행해야 할 final handover trial과 등록 명령을 선택하는 next-trial selector를 추가했다.
 27. 선택된 다음 trial 하나에 필요한 readiness gate를 별도로 점검하는 per-trial readiness checker를 추가했다.
-28. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
-29. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+28. controlled public origin config가 baseline/active/Android 단계별로 준비됐는지 public-safe하게 검사하는 config checker를 추가했다.
+29. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
+30. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -78,6 +79,7 @@
 │   ├── check_public_origin_readiness.py
 │   ├── check_handover_readiness.py
 │   ├── check_controlled_public_experiment_readiness.py
+│   ├── check_controlled_public_config.py
 │   ├── check_final_browser_handover_readiness.py
 │   ├── check_next_final_handover_trial_readiness.py
 │   ├── plan_final_browser_handover_runs.py
@@ -104,6 +106,7 @@
 │   ├── test_append_final_handover_result_row.py
 │   ├── test_select_next_final_handover_trial.py
 │   ├── test_check_next_final_handover_trial_readiness.py
+│   ├── test_check_controlled_public_config.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
@@ -121,6 +124,7 @@
 - [재현 가이드](docs/reproducibility-guide-ko.md)
 - [스캐너와 도구 설명](docs/scanners-and-tools-ko.md)
 - [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
+- [Controlled public config check](docs/results/controlled-public-config-check-20260624.md)
 - [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
 - [Controlled public experiment readiness](docs/results/controlled-public-experiment-readiness-20260624.md)
 - [Controlled public origin operations runbook](docs/results/controlled-public-origin-operations-runbook-20260624.md)
