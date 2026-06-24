@@ -80,6 +80,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
+    cleanup_safety = "docs/results/artifact-cleanup-safety-audit-20260624.md"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
@@ -94,6 +95,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
+        cleanup_safety = str(generated_dir / "artifact-cleanup-safety-audit.md")
         research_audit = str(generated_dir / "research-bundle-audit.md")
 
     return [
@@ -104,6 +106,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "-m",
                 "py_compile",
                 "tools/audit_final_browser_handover_trials.py",
+                "tools/audit_artifact_cleanup_safety.py",
                 "tools/audit_research_bundle.py",
                 "tools/append_final_handover_result_row.py",
                 "tools/build_final_handover_operator_checklist.py",
@@ -120,6 +123,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/select_next_final_handover_trial.py",
                 "tools/validate_final_handover_trial_artifact.py",
                 "tools/test_append_final_handover_result_row.py",
+                "tools/test_audit_artifact_cleanup_safety.py",
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_check_controlled_public_config.py",
@@ -268,6 +272,18 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "artifact_cleanup_dry_run_plan",
             [python_bin, "tools/plan_artifact_cleanup.py", "--output", cleanup_dry_run],
+            {0},
+            60,
+        ),
+        (
+            "artifact_cleanup_safety_regression",
+            [python_bin, "tools/test_audit_artifact_cleanup_safety.py"],
+            {0},
+            30,
+        ),
+        (
+            "artifact_cleanup_safety_audit",
+            [python_bin, "tools/audit_artifact_cleanup_safety.py", "--output", cleanup_safety],
             {0},
             60,
         ),

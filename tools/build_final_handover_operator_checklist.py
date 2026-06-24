@@ -92,7 +92,10 @@ def build_actions(
                 "Current artifact cleanup candidates are insufficient for the target free-space threshold; "
                 f"remaining external cleanup gap is {cleanup['remaining_gap_human']}."
             ),
-            ["python3 tools/plan_artifact_cleanup.py --output docs/results/artifact-cleanup-dry-run-20260624.md"],
+            [
+                "python3 tools/plan_artifact_cleanup.py --output docs/results/artifact-cleanup-dry-run-20260624.md",
+                "python3 tools/audit_artifact_cleanup_safety.py --output docs/results/artifact-cleanup-safety-audit-20260624.md",
+            ],
         )
     else:
         add_action(
@@ -102,7 +105,10 @@ def build_actions(
             "storage",
             "Disk target can be met by reviewed artifact cleanup candidates.",
             f"Selected cleanup candidates reclaim {cleanup['selected_reclaimable_human']}.",
-            ["python3 tools/plan_artifact_cleanup.py --output docs/results/artifact-cleanup-dry-run-20260624.md"],
+            [
+                "python3 tools/plan_artifact_cleanup.py --output docs/results/artifact-cleanup-dry-run-20260624.md",
+                "python3 tools/audit_artifact_cleanup_safety.py --output docs/results/artifact-cleanup-safety-audit-20260624.md",
+            ],
         )
 
     if next_readiness["ready"]:

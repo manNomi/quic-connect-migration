@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Regression tests for artifact cleanup safety auditing."""
+
+from __future__ import annotations
+
+import csv
+import tempfile
+from pathlib import Path
+
+from audit_artifact_cleanup_safety import build_audit, classify_candidate
+from draft_final_handover_result_row import CSV_FIELDS
+
+
+def write_file(path: Path, content: str = "x") -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def write_experiments(path: Path, referenced_artifact: Path) -> None:
+    row = {
+        "trial_id": "referenced-trial-001",
+        "date": "2026-06-24",
+        "status": "PASS",
+        "implementation": "test",
+        "deployment_tier": "local",
+        "protocol": "HTTP/3 over QUIC",
+        "migration_trigger": "none",
+        "path_validation_observed": "false",
+        "tuple_change_observed": "false",
+        "application_task": "test",
+        "application_success": "true",
+        "manual_intervention_required": "false",
+        "failure_layer": "none",
+        "artifact_dir": referenced_artifact.as_posix(),
+        "notes": "test row",
+    }
+    with path.open("w", newline="", encoding="utf-8") as fp:
+        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS)
+        writer.writeheader()
+        writer.writerow(row)
+
+
+def test_classify_candidate_prefers_csv_reference() -> None:
+    referenced, trials, planned, controlled, recommendation, _ = classify_candidate(
+        "artifacts/controlled-public-chrome-h3-baseline-001",
+        [],
+        {"controlled-public-chrome-h3-baseline-001"},
+    )
+    assert referenced is False
+    assert trials == []
+    assert planned is True
+    assert controlled is True
+    assert recommendation == "keep-planned-final-trial"
+
+
+def test_build_audit_marks_referenced_and_unreferenced() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        artifacts = root / "artifacts"
+        referenced = artifacts / "referenced-artifact"
+        unreferenced = artifacts / "unreferenced-artifact"
+        write_file(referenced / "result.txt")
+        write_file(unreferenced / "result.txt")
+        experiments = root / "experiments.csv"
+        write_experiments(experiments, referenced)
+
+        audit = build_audit(
+            [artifacts.as_posix()],
+            experiments,
+            target_free_gib=0.01,
+            repetitions=3,
+            prefer_p1="safari",
+        )
+        by_name = {Path(item["path"]).name: item for item in audit["items"]}
+        assert by_name["referenced-artifact"]["recommendation"] == "keep-referenced"
+        assert by_name["referenced-artifact"]["referenced_trial_ids"] == ["referenced-trial-001"]
+        assert by_name["unreferenced-artifact"]["recommendation"] == "review-unreferenced"
+        assert audit["candidate_count"] == 2
+
+
+def main() -> int:
+    test_classify_candidate_prefers_csv_reference()
+    test_build_audit_marks_referenced_and_unreferenced()
+    print("audit_artifact_cleanup_safety=ok")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

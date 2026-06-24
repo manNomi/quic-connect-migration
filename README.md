@@ -46,7 +46,8 @@
 34. 다음 final handover trial의 readiness, 실행 명령, expected artifacts, 등록 명령을 한 장으로 묶는 trial packet 생성기를 추가했다.
 35. trial 실행 후 summary뿐 아니라 qlog/NetLog/path snapshot 등 expected raw artifact bundle이 모두 있는지 확인하는 gate를 추가했다.
 36. final handover append 도구가 `--require-artifact-bundle` 옵션으로 summary-only 결과의 CSV 등록을 차단하게 했다.
-37. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+37. 디스크 정리 전 raw artifact가 `data/experiment-results.csv`나 planned final trial에 연결되는지 확인하는 cleanup safety audit를 추가했다.
+38. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -105,6 +106,7 @@
 │   ├── build_final_handover_trial_packet.py
 │   ├── check_final_handover_trial_artifact_bundle.py
 │   ├── audit_research_bundle.py
+│   ├── audit_artifact_cleanup_safety.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
 │   ├── plan_artifact_cleanup.py
@@ -115,6 +117,7 @@
 │   ├── test_draft_final_handover_result_row.py
 │   ├── test_validate_final_handover_trial_artifact.py
 │   ├── test_append_final_handover_result_row.py
+│   ├── test_audit_artifact_cleanup_safety.py
 │   ├── test_select_next_final_handover_trial.py
 │   ├── test_check_next_final_handover_trial_readiness.py
 │   ├── test_build_final_handover_operator_checklist.py
@@ -169,6 +172,7 @@
 - [Research verification report](docs/results/research-verification-report-20260624.md)
 - [Local artifact storage audit](docs/results/artifact-storage-report-20260624.md)
 - [Local artifact cleanup plan](docs/results/artifact-cleanup-plan-20260624.md)
+- [Local artifact cleanup safety audit](docs/results/artifact-cleanup-safety-audit-20260624.md)
 - [Local artifact cleanup dry-run](docs/results/artifact-cleanup-dry-run-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)

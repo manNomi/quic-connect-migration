@@ -1254,3 +1254,36 @@ CSV 등록 단계에서 같은 gate를 강제하려면 `append_final_handover_re
 ```bash
 python3 tools/test_check_final_handover_trial_artifact_bundle.py
 ```
+
+## 38. `tools/audit_artifact_cleanup_safety.py`
+
+디스크 확보 전에 local artifact directory가 `data/experiment-results.csv`의 근거 row나 planned final handover trial id에 연결되는지 확인한다. 삭제를 수행하지 않는 감사 도구이며, raw artifact를 보존해야 하는지 먼저 분류한다.
+
+실행:
+
+```bash
+python3 tools/audit_artifact_cleanup_safety.py \
+  --output docs/results/artifact-cleanup-safety-audit-20260624.md
+```
+
+임시 경로로 확인:
+
+```bash
+python3 tools/audit_artifact_cleanup_safety.py \
+  --output /tmp/artifact-cleanup-safety-audit.md
+```
+
+분류 기준:
+
+| recommendation | 의미 |
+| --- | --- |
+| `keep-referenced` | `data/experiment-results.csv`에서 artifact path를 참조하므로 논문 근거 보존 대상 |
+| `keep-planned-final-trial` | planned final browser handover trial id와 일치하므로 보존 대상 |
+| `review-controlled-public` | controlled-public 준비 산출물일 수 있으므로 수동 검토 필요 |
+| `review-unreferenced` | 현재 CSV/planned final id에는 연결되지 않지만 삭제 전 수동 검토 필요 |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_audit_artifact_cleanup_safety.py
+```
