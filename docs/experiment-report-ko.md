@@ -603,6 +603,7 @@ workload:
 - readiness 점검에서 ADB는 설치돼 있었지만 연결된 Android device가 없었고, active 일반 네트워크 interface는 Wi-Fi `en0`만 확인됐음
 - controlled public WebPKI origin gate를 위해 DNS/TLS/Alt-Svc readiness checker, public H3 server wrapper, Chrome public browser baseline wrapper를 추가했음
 - controlled public browser baseline wrapper는 Google `generate_204` smoke test에서 `public_natural_h3_observed`로 통과했음
+- public origin readiness survey에서는 Google/YouTube `generate_204`만 H3 discovery와 2xx lightweight workload 후보로 남았음
 
 이 baseline은 network path change를 포함하지 않는다. 따라서 다음 단계에서는 public 또는 controlled public WebPKI origin에서 같은 browser workload를 유지한 채 network-change trigger만 추가해야 한다.
 
@@ -649,6 +650,7 @@ network-change 판정 기준:
 - [handover readiness JSON](../data/handover-readiness-20260624.json)
 - [문헌 조사 CSV](../data/literature-review-tracker.csv)
 - [public Alt-Svc endpoint survey CSV](../data/public-alt-svc-survey-20260624.csv)
+- [public origin readiness survey CSV](../data/public-origin-readiness-survey-20260624.csv)
 - [quiche path-event timeline](../data/quiche-path-event-timeline.csv)
 
 개별 결과 문서:
@@ -670,5 +672,6 @@ network-change 판정 기준:
 - [Chrome natural Alt-Svc HTTP/3 control 결과](results/chrome-h3-alt-svc-natural-results-20260624.md)
 - [Chrome public natural HTTP/3 baseline 결과](results/chrome-public-natural-h3-results-20260624.md)
 - [Public HTTP/3 Alt-Svc endpoint survey](results/public-alt-svc-endpoint-survey-20260624.md)
+- [Public origin readiness survey](results/public-origin-readiness-survey-20260624.md)
 - [Browser handover readiness and next experiment plan](results/browser-handover-readiness-plan-20260624.md)
 - [Controlled public WebPKI H3 origin plan](results/controlled-public-origin-h3-plan-20260624.md)
