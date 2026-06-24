@@ -184,6 +184,21 @@ REBIND_AFTER=2s \
 ./scripts/run-chrome-h3-rebinding-proxy.sh
 ```
 
+client-sending workload를 보려면 upload mode를 사용한다. Chrome page가 streaming `fetch()` upload를 실행하고 `/upload-sink`가 raw body byte count와 hash를 기록한다.
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-rebinding-upload-smoke-20260624 \
+PROXY_ADDR=127.0.0.1:4647 \
+SERVER_ADDR=127.0.0.1:4648 \
+WORKLOAD=upload \
+UPLOAD_BYTES=262144 \
+UPLOAD_DURATION_MS=6000 \
+UPLOAD_CHUNKS=6 \
+REBIND_AFTER=2s \
+./scripts/run-chrome-h3-rebinding-proxy.sh
+```
+
 rebinding proxy 실험에서 추가로 쓰는 classification:
 
 | classification | 의미 |
@@ -212,6 +227,18 @@ BASE_PORT=4700 \
 
 matrix wrapper는 no-heartbeat와 heartbeat 조건을 각각 `REPEAT_COUNT`회 실행하고, `tools/summarize_chrome_rebinding_proxy_matrix.py`로 artifact summary를 만든다.
 
+upload 반복 실행 matrix:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-upload-repetition-20260624 \
+REPEAT_COUNT=3 \
+BASE_PORT=4900 \
+./scripts/run-chrome-h3-rebinding-upload-matrix.sh
+```
+
+upload matrix wrapper는 streaming upload 조건만 `REPEAT_COUNT`회 실행하고, `tools/summarize_chrome_rebinding_upload_matrix.py`로 upload byte count, qlog path validation, Chrome QUIC session count를 요약한다.
+
 수동 요약:
 
 ```bash
@@ -220,6 +247,17 @@ python3 tools/summarize_chrome_rebinding_proxy_matrix.py \
   repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/heartbeat-r1 \
   --output docs/results/chrome-h3-rebinding-repetition-summary-20260624.md \
   --csv-output data/chrome-h3-rebinding-repetition-summary-20260624.csv
+```
+
+upload 수동 요약:
+
+```bash
+python3 tools/summarize_chrome_rebinding_upload_matrix.py \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624/upload-r1 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624/upload-r2 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624/upload-r3 \
+  --output docs/results/chrome-h3-rebinding-upload-summary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-upload-summary-20260624.csv
 ```
 
 ## 5.1 `tools/run_chrome_cdp_navigation.js`
@@ -674,7 +712,7 @@ bash harness/scripts/controlled-public-preflight.sh
 | `cmd/client/main.go` | QUIC transport stream migration client |
 | `cmd/server/main.go` | QUIC transport stream migration server |
 | `cmd/h3client/main.go` | HTTP/3 workload migration client |
-| `cmd/h3server/main.go` | HTTP/3 upload/download server, Chrome sequence/poll/slow baseline endpoint, optional TCP Alt-Svc bootstrap listener |
+| `cmd/h3server/main.go` | HTTP/3 upload/download server, Chrome sequence/poll/slow/downlink/upload browser endpoints, optional TCP Alt-Svc bootstrap listener |
 | `internal/common/aws_nlb_cid.go` | AWS NLB QUIC-LB plaintext CID generator |
 | `internal/common/payload.go` | deterministic payload/checksum |
 | `internal/common/logging.go` | JSONL/result JSON writer |
@@ -688,6 +726,9 @@ bash harness/scripts/controlled-public-preflight.sh
 | `scripts/run-local-h3-workload.sh` | HTTP/3 POST before, migrate, GET after |
 | `scripts/run-local-h3-midflight.sh` | HTTP/3 upload/download body in-flight migration |
 | `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll/slow baseline and optional network-change hook |
+| `scripts/run-chrome-h3-rebinding-proxy.sh` | Chrome forced-H3 local UDP rebinding proxy 단일 실행 |
+| `scripts/run-chrome-h3-rebinding-proxy-matrix.sh` | Chrome downlink no-heartbeat/heartbeat + local UDP rebinding proxy 반복 실행 |
+| `scripts/run-chrome-h3-rebinding-upload-matrix.sh` | Chrome streaming upload + local UDP rebinding proxy 반복 실행 |
 | `scripts/run-chrome-h3-alt-svc.sh` | Chrome natural Alt-Svc HTTP/3 control |
 | `scripts/run-chrome-public-h3.sh` | Chrome public WebPKI H3 discovery/application baseline |
 | `scripts/run-controlled-public-h3-server.sh` | WebPKI cert/key를 사용하는 controlled public H3 origin server wrapper |

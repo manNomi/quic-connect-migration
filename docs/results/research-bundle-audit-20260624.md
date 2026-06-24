@@ -8,8 +8,8 @@ Generated: `2026-06-24`
 | --- | --- |
 | publication bundle ok | `yes` |
 | required files ok | `yes` |
-| experiment trials | `45` |
-| experiment status counts | `{'PASS': 25, 'PASS_NEGATIVE_CONTROL': 18, 'PASS_FEASIBILITY': 2}` |
+| experiment trials | `46` |
+| experiment status counts | `{'PASS': 25, 'PASS_NEGATIVE_CONTROL': 18, 'PASS_FEASIBILITY': 3}` |
 | experiment ids unique | `yes` |
 | matrix items | `81` |
 | matrix ids unique | `yes` |
@@ -26,7 +26,7 @@ Generated: `2026-06-24`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `47.79` |
+| disk available GiB | `47.75` |
 | local artifact roots total | `1.1 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |

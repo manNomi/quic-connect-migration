@@ -323,6 +323,29 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseBytes = len("ok\n")
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte("ok\n")
+	case r.Method == http.MethodPost && r.URL.Path == "/upload-sink":
+		record.Workload = "upload-sink"
+		raw, err := io.ReadAll(r.Body)
+		if err != nil {
+			return record, http.StatusInternalServerError, []byte(err.Error())
+		}
+		if label == "" {
+			label = "upload-sink"
+		}
+		body, _ := json.Marshal(map[string]any{
+			"ok":         true,
+			"label":      label,
+			"bytes":      len(raw),
+			"sha256":     sha256Hex(raw),
+			"handled_at": record.HandledAt,
+		})
+		record.Label = label
+		record.RequestBytes = len(raw)
+		record.RequestSHA256 = sha256Hex(raw)
+		record.ResponseBytes = len(body)
+		record.ResponseContentType = "application/json"
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, body
 	case r.Method == http.MethodGet && r.URL.Path == "/download":
 		record.Workload = "download"
 		record.ResponseContentType = "application/octet-stream"
@@ -440,6 +463,28 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 			label = "browser-downlink"
 		}
 		html := buildBrowserDownlinkHTML(label, durationMillis, chunks, size, heartbeat, heartbeatDelayMillis)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-upload":
+		record.Workload = "browser-upload"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		durationMillis := queryInt(r, "duration_ms", 6000)
+		if durationMillis > 120000 {
+			durationMillis = 120000
+		}
+		chunks := queryInt(r, "chunks", 6)
+		if chunks > 200 {
+			chunks = 200
+		}
+		size := queryInt(r, "bytes", 65536)
+		if size > 16*1024*1024 {
+			size = 16 * 1024 * 1024
+		}
+		if label == "" {
+			label = "browser-upload"
+		}
+		html := buildBrowserUploadHTML(label, durationMillis, chunks, size)
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
@@ -631,6 +676,27 @@ func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, he
 	body += "async function runStream(){const res=await fetch(streamUrl,{cache:'no-store'});const reader=res.body.getReader();let total=0;for(;;){const item=await reader.read();if(item.done)break;total+=item.value.byteLength;note('chunk:'+total);}document.body.dataset.downlinkBytes=String(total);document.body.dataset.downlinkComplete='true';document.getElementById('status').textContent='complete';}"
 	body += "if(heartbeat){setTimeout(()=>{fetch(heartbeatUrl+Date.now(),{cache:'no-store'}).then((res)=>{document.body.dataset.heartbeatStatus=String(res.status);note('heartbeat:'+res.status);}).catch((error)=>{document.body.dataset.heartbeatError=String(error);note('heartbeat-error:'+error);});},heartbeatDelay);}"
 	body += "runStream().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.downlinkError=String(error);note('stream-error:'+error);});"
+	body += "</script>"
+	body += "</body></html>"
+	return body
+}
+
+func buildBrowserUploadHTML(label string, durationMillis, chunks, size int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	uploadURL := fmt.Sprintf("/upload-sink?label=%s-sink", queryLabel)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Browser H3 upload</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Browser H3 upload</h1><div id=\"status\" data-label=\"%s\">loading</div><pre id=\"events\"></pre>", escapedLabel)
+	body += "<script>"
+	body += fmt.Sprintf("const uploadUrl=%q,totalBytes=%d,chunks=%d,durationMs=%d;", uploadURL, size, chunks, durationMillis)
+	body += "const events=document.getElementById('events');"
+	body += "function note(line){events.textContent+=line+'\\n';}"
+	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
+	body += "function chunk(index,size){const data=new Uint8Array(size);for(let i=0;i<size;i++){data[i]=(index+i)%251;}return data;}"
+	body += "async function runUpload(){let sent=0,index=0;const chunkBytes=Math.max(1,Math.ceil(totalBytes/chunks));const delay=Math.max(1,Math.floor(durationMs/chunks));"
+	body += "const stream=new ReadableStream({async pull(controller){if(sent>=totalBytes){controller.close();return;}const next=Math.min(chunkBytes,totalBytes-sent);controller.enqueue(chunk(index,next));sent+=next;index+=1;document.body.dataset.uploadBytes=String(sent);note('sent:'+sent);if(sent<totalBytes){await sleep(delay);}}});"
+	body += "const res=await fetch(uploadUrl,{method:'POST',body:stream,duplex:'half',cache:'no-store',headers:{'content-type':'application/octet-stream'}});const json=await res.json();document.body.dataset.uploadStatus=String(res.status);document.body.dataset.uploadResponseBytes=String(json.bytes||0);document.body.dataset.uploadComplete='true';note('upload:'+res.status+':'+(json.bytes||0));document.getElementById('status').textContent='complete';}"
+	body += "runUpload().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.uploadError=String(error);note('upload-error:'+error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body

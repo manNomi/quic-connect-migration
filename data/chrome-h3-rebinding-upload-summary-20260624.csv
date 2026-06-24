@@ -1,0 +1,4 @@
+run_id,status,classification,server_remote_addr_count,netlog_target_quic_session_count,netlog_target_using_quic_job_count,upload_sink_request_count,upload_sink_request_bytes,qlog_path_challenge,qlog_path_response,proxy_switched,proxy_upstream_a_addr,proxy_upstream_b_addr,artifact_dir
+upload-r1,PASS,nat_rebinding_path_validation_without_observed_tuple_change,1,1,2,1,262144,1,1,true,127.0.0.1:59045,127.0.0.1:53635,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624/upload-r1
+upload-r2,PASS,nat_rebinding_path_validation_without_observed_tuple_change,1,1,2,1,262144,1,1,true,127.0.0.1:52792,127.0.0.1:53644,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624/upload-r2
+upload-r3,PASS,nat_rebinding_path_validation_without_observed_tuple_change,1,1,2,1,262144,1,1,true,127.0.0.1:50922,127.0.0.1:55059,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-repetition-20260624/upload-r3

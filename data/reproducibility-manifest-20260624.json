@@ -3,21 +3,21 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "83872f9",
+    "commit": "8ec2cdd",
     "branch": "main"
   },
   "experiment_corpus": {
-    "total_trials": 45,
+    "total_trials": 46,
     "status_counts": {
       "PASS": 25,
-      "PASS_FEASIBILITY": 2,
+      "PASS_FEASIBILITY": 3,
       "PASS_NEGATIVE_CONTROL": 18
     },
     "final_required_rows": 6
   },
   "verification": {
-    "checks": "61",
-    "passed": "61",
+    "checks": "62",
+    "passed": "62",
     "ok": "yes"
   },
   "research_audit": {
