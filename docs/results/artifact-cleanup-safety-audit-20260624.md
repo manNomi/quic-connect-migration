@@ -7,16 +7,16 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `54.9 GiB` |
+| disk free | `49.4 GiB` |
 | target free GiB | `5.0` |
-| artifact roots total | `910.2 MiB` |
-| cleanup candidates | `42` |
-| CSV-referenced candidates | `21` |
+| artifact roots total | `1.0 GiB` |
+| cleanup candidates | `47` |
+| CSV-referenced candidates | `26` |
 | planned final-trial candidates | `0` |
 | review-unreferenced candidates | `19` |
 | review-unreferenced size | `62.3 MiB` |
-| protected referenced/planned size | `842.2 MiB` |
-| projected free if review-unreferenced removed | `55.0 GiB` |
+| protected referenced/planned size | `957.6 MiB` |
+| projected free if review-unreferenced removed | `49.5 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
@@ -35,6 +35,11 @@ Generated: `2026-06-24`
 | --- | --- | ---: | --- | --- |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | chrome-h3-alt-svc-localhost-001 | artifact path is referenced by data/experiment-results.csv |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624` | `382.6 MiB` | chrome-h3-alt-svc-ip-literal-001 | artifact path is referenced by data/experiment-results.csv |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-bing-home-20260624` | `40.2 MiB` | chrome-public-h3-bing-home-20260624 | artifact path is referenced by data/experiment-results.csv |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-home-20260624` | `26.2 MiB` | chrome-public-h3-cloudflare-home-20260624 | artifact path is referenced by data/experiment-results.csv |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-instagram-home-20260624` | `20.4 MiB` | chrome-public-h3-instagram-home-20260624 | artifact path is referenced by data/experiment-results.csv |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-facebook-home-20260624` | `15.5 MiB` | chrome-public-h3-facebook-home-20260624 | artifact path is referenced by data/experiment-results.csv |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-blog-20260624` | `13.0 MiB` | chrome-public-h3-cloudflare-blog-20260624 | artifact path is referenced by data/experiment-results.csv |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-quic-20260624` | `7.4 MiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | chrome-public-h3-youtube-204-001 | artifact path is referenced by data/experiment-results.csv |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | `5.7 MiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |

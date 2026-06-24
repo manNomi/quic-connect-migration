@@ -6,11 +6,11 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 38 |
-| status counts | PASS=21; PASS_FEASIBILITY=1; PASS_NEGATIVE_CONTROL=16 |
-| application success counts | false=3; true=35 |
-| experiment groups | browser / public web=20; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
-| non-none failure layers | browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=3; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
+| total trials | 43 |
+| status counts | PASS=25; PASS_FEASIBILITY=1; PASS_NEGATIVE_CONTROL=17 |
+| application success counts | false=3; true=40 |
+| experiment groups | browser / public web=25; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
+| non-none failure layers | browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
 
@@ -54,6 +54,7 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | aws-nlb-quic-wrong-server-id-001 | AWS NLB QUIC passthrough | nlb-cid-server-id-mismatch | no | no | no | target health was 2/2 healthy; client sent Initial CRYPTO packets and received 0 packets; server accepted no connection; AWS reso... |
 | chrome-h3-slow-inactive-if-toggle-001 | local browser limited network-change control | trigger-no-active-path-change | no | no | yes | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 127.0.0.1:5320... |
 | chrome-h3-slow-wifi-ip-inactive-if-toggle-001 | local Wi-Fi IP limited network-change control | trigger-no-active-path-change | no | no | yes | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190... |
+| chrome-public-h3-cloudflare-home-20260624 | public WebPKI browser H3 observation | browser-public-application-h3-not-confirmed | no | no | yes | classification public_h3_discovery_without_application_h3; bootstrap application_using_quic=0 with dns_alpn_h3=112; second text f... |
 | chrome-public-h3-cloudflare-trace-001 | public WebPKI browser H3 discovery control | browser-public-application-h3-not-confirmed | no | no | yes | bootstrap NetLog JSON shows target QUIC_SESSION=1 and dns_alpn_h3 discovery job=1, but target application_using_quic=0 and main_n... |
 | chrome-public-h3-google-204-001 | public WebPKI browser H3 discovery control | browser-public-application-h3-not-confirmed | no | no | yes | bootstrap/second NetLog JSON shows target QUIC_SESSION and dns_alpn_h3 discovery jobs, but target application_using_quic=0 and ma... |
 | chrome-public-h3-youtube-204-001 | public WebPKI browser H3 discovery control | browser-public-application-h3-not-confirmed | no | no | yes | Alt-Svc and dns_alpn_h3 discovery jobs observed, but target QUIC_SESSION=0 and application/main HTTP_STREAM_JOB using_quic=false;... |
@@ -62,7 +63,6 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-alt-svc-html-mkcert-ip-001 | local browser natural Alt-Svc mkcert control | browser-alt-svc-quic-candidate-cert-rejected | no | no | yes | server handled all 4 requests as HTTP/1.1; qlog shows QUIC candidate connection but it closes with certificate unknown / CERTIFIC... |
 | chrome-h3-alt-svc-html-mkcert-localhost-001 | local browser natural Alt-Svc mkcert control | browser-alt-svc-marked-broken | no | no | yes | server handled all 4 requests as HTTP/1.1; qlog has no target packets; NetLog records localhost:4443 quic alternative_service and... |
 | chrome-h3-alt-svc-ip-literal-001 | local browser natural Alt-Svc control | browser-alt-svc-h3-not-observed | no | no | yes | Alt-Svc header observed and h3 candidate job appears in NetLog; both server requests proto HTTP/1.1; no target QUIC_SESSION and q... |
-| chrome-h3-alt-svc-localhost-001 | local browser natural Alt-Svc control | browser-alt-svc-h3-not-observed | no | no | yes | Alt-Svc advertised and target QUIC session hint appears only in incomplete text-fallback NetLog; both server requests proto HTTP/... |
 
 ## Table 5. Browser / Public Web Evidence
 
@@ -88,6 +88,11 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-downlink-noheartbeat-cdp-001 | PASS | local browser forced QUIC origin with CDP runner | No network change; CDP real-time hold; downlink-dominant streaming fetch without heartbeat | no | no | classification no_path_change_baseline; server remote addr count 1; target QUIC sessions=1; qlog path validation=false |
 | chrome-h3-downlink-heartbeat-cdp-001 | PASS_NEGATIVE_CONTROL | local browser forced QUIC origin with CDP runner | No network change; CDP real-time hold; downlink streaming plus heartbeat | no | yes | classification multiple_quic_sessions_without_network_change; server remote addr count 2; target QUIC sessions=2; qlog path valid... |
 | chrome-h3-downlink-heartbeat-cdp-inactive-toggle-001 | PASS_NEGATIVE_CONTROL | local browser forced QUIC origin with CDP runner | Inactive Thunderbolt Bridge toggle during downlink streaming; heartbeat after trigger; cl... | no | yes | classification multiple_quic_sessions_without_client_path_change; network_change_exit=0; client_path_change=no_client_path_change... |
+| chrome-public-h3-cloudflare-home-20260624 | PASS_NEGATIVE_CONTROL | public WebPKI browser H3 observation | Chrome headless visits https://www.cloudflare.com/ twice with natural Alt-Svc discovery | no | no | classification public_h3_discovery_without_application_h3; bootstrap application_using_quic=0 with dns_alpn_h3=112; second text f... |
+| chrome-public-h3-cloudflare-blog-20260624 | PASS | public WebPKI browser H3 observation | Chrome headless visits https://blog.cloudflare.com/ twice with natural Alt-Svc discovery | no | no | classification public_natural_h3_observed; bootstrap target application_using_quic=75 and QUIC_SESSION=1; main jobs still include... |
+| chrome-public-h3-bing-home-20260624 | PASS | public WebPKI browser H3 observation | Chrome headless visits https://www.bing.com/ twice with natural Alt-Svc discovery | no | no | classification public_natural_h3_observed; second target application_using_quic=27 and QUIC_SESSION=1; main jobs still included n... |
+| chrome-public-h3-facebook-home-20260624 | PASS | public WebPKI browser H3 observation | Chrome headless visits https://www.facebook.com/ twice with natural Alt-Svc discovery | no | no | classification public_natural_h3_observed; second target application_using_quic=9 and QUIC_SESSION=1; main jobs still included no... |
+| chrome-public-h3-instagram-home-20260624 | PASS | public WebPKI browser H3 observation | Chrome headless visits https://www.instagram.com/ twice with natural Alt-Svc discovery | no | no | classification public_natural_h3_observed; second target application_using_quic=12 and QUIC_SESSION=1; main jobs still included n... |
 
 ## Table 6. Remaining Evidence Gaps
 
