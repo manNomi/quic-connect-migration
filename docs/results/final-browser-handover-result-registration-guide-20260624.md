@@ -80,6 +80,15 @@ python3 tools/build_final_handover_operator_checklist.py \
 
 이 checklist는 controlled public config, 다음 trial readiness, artifact cleanup dry-run, final trial audit를 합쳐 우선순위별 실행 항목으로 정리한다.
 
+다음 trial 하나의 실행/등록 packet도 생성한다.
+
+```bash
+python3 tools/build_final_handover_trial_packet.py \
+  --output docs/results/final-handover-trial-packet-20260624.md
+```
+
+이 packet은 readiness gate, server/client 실행 명령, expected artifact, validation/append/audit 명령을 한 번에 보여준다.
+
 그 다음 controlled public config schema를 확인한다.
 
 ```bash

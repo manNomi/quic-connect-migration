@@ -8,9 +8,9 @@ Generated: `2026-06-24`
 | --- | --- |
 | target free GiB | `5.0` |
 | current free | `4.1 GiB` |
-| free space needed | `888.0 MiB` |
-| selected candidates | `30/40` |
-| reclaimable from selected | `889.3 MiB` |
+| free space needed | `884.5 MiB` |
+| selected candidates | `29/40` |
+| reclaimable from selected | `885.6 MiB` |
 | projected free after selected cleanup | `5.0 GiB` |
 | target met by selected cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |
@@ -48,7 +48,6 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-heartbeat-20260624` | `3.7 MiB` | 166 | 59 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-sequence-check` | `3.7 MiB` | 172 | 59 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-poll-realtime-nochange-check` | `3.7 MiB` | 166 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-sequence-classifier-regression-2` | `3.6 MiB` | 170 | 59 |
 
 ## Note
 

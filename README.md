@@ -43,7 +43,8 @@
 31. next-trial readiness는 local client check와 public-origin-host TLS file check를 구분해 remote TLS path를 잘못 blocker로 보지 않게 했다.
 32. controlled-public network-change classifier는 client active path change evidence가 없으면 server tuple/qlog 단서만으로 `possible_connection_migration`를 주지 않도록 보수화했다.
 33. Android Chrome wrapper가 ADB route/address/connectivity snapshot을 `client-path-change-summary.json`으로 요약해 P1 feasibility도 client active path gate를 통과할 수 있게 했다.
-34. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+34. 다음 final handover trial의 readiness, 실행 명령, expected artifacts, 등록 명령을 한 장으로 묶는 trial packet 생성기를 추가했다.
+35. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -99,6 +100,7 @@
 │   ├── append_final_handover_result_row.py
 │   ├── select_next_final_handover_trial.py
 │   ├── build_final_handover_operator_checklist.py
+│   ├── build_final_handover_trial_packet.py
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
@@ -113,6 +115,7 @@
 │   ├── test_select_next_final_handover_trial.py
 │   ├── test_check_next_final_handover_trial_readiness.py
 │   ├── test_build_final_handover_operator_checklist.py
+│   ├── test_build_final_handover_trial_packet.py
 │   ├── test_classify_controlled_public_h3_network_change.py
 │   ├── test_compare_android_path_snapshots.py
 │   ├── test_check_controlled_public_config.py
@@ -150,6 +153,7 @@
 - [Final handover next trial](docs/results/final-handover-next-trial-20260624.md)
 - [Final handover next trial readiness](docs/results/final-handover-next-trial-readiness-20260624.md)
 - [Final handover operator checklist](docs/results/final-handover-operator-checklist-20260624.md)
+- [Final handover trial packet](docs/results/final-handover-trial-packet-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)

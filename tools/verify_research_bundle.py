@@ -75,6 +75,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_next_trial = "docs/results/final-handover-next-trial-20260624.md"
     final_next_trial_readiness = "docs/results/final-handover-next-trial-readiness-20260624.md"
     final_operator_checklist = "docs/results/final-handover-operator-checklist-20260624.md"
+    final_trial_packet = "docs/results/final-handover-trial-packet-20260624.md"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
@@ -87,6 +88,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_next_trial = str(generated_dir / "final-handover-next-trial.md")
         final_next_trial_readiness = str(generated_dir / "final-handover-next-trial-readiness.md")
         final_operator_checklist = str(generated_dir / "final-handover-operator-checklist.md")
+        final_trial_packet = str(generated_dir / "final-handover-trial-packet.md")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
@@ -103,6 +105,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_research_bundle.py",
                 "tools/append_final_handover_result_row.py",
                 "tools/build_final_handover_operator_checklist.py",
+                "tools/build_final_handover_trial_packet.py",
                 "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_next_final_handover_trial_readiness.py",
@@ -115,6 +118,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/validate_final_handover_trial_artifact.py",
                 "tools/test_append_final_handover_result_row.py",
                 "tools/test_build_final_handover_operator_checklist.py",
+                "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
                 "tools/test_classify_controlled_public_h3_network_change.py",
@@ -192,6 +196,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "final_handover_trial_packet_regression",
+            [python_bin, "tools/test_build_final_handover_trial_packet.py"],
+            {0},
+            30,
+        ),
+        (
             "controlled_public_network_change_classifier_regression",
             [python_bin, "tools/test_classify_controlled_public_h3_network_change.py"],
             {0},
@@ -254,6 +264,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_handover_operator_checklist",
             [python_bin, "tools/build_final_handover_operator_checklist.py", "--output", final_operator_checklist],
+            {0},
+            60,
+        ),
+        (
+            "final_handover_trial_packet",
+            [python_bin, "tools/build_final_handover_trial_packet.py", "--output", final_trial_packet],
             {0},
             60,
         ),

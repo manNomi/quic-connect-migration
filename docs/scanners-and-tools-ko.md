@@ -1165,3 +1165,41 @@ python3 tools/build_final_handover_operator_checklist.py \
 ```bash
 python3 tools/test_build_final_handover_operator_checklist.py
 ```
+
+## 36. `tools/build_final_handover_trial_packet.py`
+
+현재 CSV 기준 다음 final handover trial 하나를 실행하기 위한 packet을 만든다. `select_next_final_handover_trial.py`의 trial command, `check_next_final_handover_trial_readiness.py`의 gate, expected artifact 목록, post-trial validation/append/audit 명령을 한 문서에 모은다.
+
+실행:
+
+```bash
+python3 tools/build_final_handover_trial_packet.py \
+  --output docs/results/final-handover-trial-packet-20260624.md
+```
+
+local private config 값을 반영하려면 추적 문서가 아니라 임시 경로에 쓴다.
+
+```bash
+python3 tools/build_final_handover_trial_packet.py \
+  --use-local-config \
+  --check-public-origin \
+  --output /tmp/final-handover-trial-packet.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| state | `ready_to_run`, `blocked_by_readiness`, `protocol_complete_or_no_next_trial` |
+| missing required gates | 현재 trial 실행을 막는 gate |
+| server/client terminal | 두 터미널에서 실행할 명령 |
+| expected artifacts | 등록 전 확인해야 할 raw/summary artifact |
+| post-trial registration | validation, dry-run append, apply, audit, verification 명령 |
+
+이 도구는 실험을 실행하지 않는다. readiness가 막혀 있어도 exit 0으로 packet을 생성해, 왜 실행하면 안 되는지와 준비 후 어떤 순서로 실행할지를 함께 남긴다.
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_final_handover_trial_packet.py
+```
