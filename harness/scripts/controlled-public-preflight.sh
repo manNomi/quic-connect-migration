@@ -82,19 +82,19 @@ else
   echo "server:"
   printf '  cd %q\n' "$REPRO_DIR"
   printf '  RUN_ID=%q ARTIFACT_DIR=%q PUBLIC_ORIGIN_HOST=%q TLS_CERT_FILE=%q TLS_KEY_FILE=%q PUBLIC_ORIGIN_PORT=%q EXPECTED_REQUESTS=%q ./scripts/run-controlled-public-h3-server.sh\n' \
-    "${CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-h3-application-baseline-001}" \
-    "${CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR:-artifacts/controlled-public-h3-application-baseline-001}" \
+    "${CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-chrome-h3-baseline-001}" \
+    "${CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" \
     "${PUBLIC_ORIGIN_HOST:-h3.example.com}" \
     "${TLS_CERT_FILE:-/etc/letsencrypt/live/h3.example.com/fullchain.pem}" \
     "${TLS_KEY_FILE:-/etc/letsencrypt/live/h3.example.com/privkey.pem}" \
     "${PUBLIC_ORIGIN_PORT:-443}" \
-    "${CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-2}"
+    "${CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-4}"
   echo "baseline:"
   printf '  cd %q\n' "$REPRO_DIR"
   printf '  RUN_ID=%q ARTIFACT_DIR=%q CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=%q REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 PUBLIC_ORIGIN_URL=%q CHROME_TIMEOUT_SECONDS=%q CHROME_VIRTUAL_TIME_BUDGET_MS=%q ./scripts/run-controlled-public-h3-browser-baseline.sh\n' \
-    "${CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-h3-application-baseline-001}" \
-    "${CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR:-artifacts/controlled-public-h3-application-baseline-001}" \
-    "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-artifacts/controlled-public-h3-application-baseline-001}" \
+    "${CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-chrome-h3-baseline-001}" \
+    "${CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" \
+    "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" \
     "${PUBLIC_ORIGIN_URL:-https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow}" \
     "${CHROME_TIMEOUT_SECONDS:-30}" \
     "${CHROME_VIRTUAL_TIME_BUDGET_MS:-0}"
@@ -104,8 +104,8 @@ else
     "${CONTROLLED_PUBLIC_NETWORK_CHANGE_RUN_ID:-controlled-public-h3-network-change-001}" \
     "${CONTROLLED_PUBLIC_NETWORK_CHANGE_ARTIFACT_DIR:-artifacts/controlled-public-h3-network-change-001}" \
     "$CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR" \
-    "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json}" \
-    "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow}" \
+    "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json}" \
+    "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat}" \
     "${NETWORK_CHANGE_AFTER_SECONDS:-3}" \
     "${NETWORK_CHANGE_CMD:-}"
 fi

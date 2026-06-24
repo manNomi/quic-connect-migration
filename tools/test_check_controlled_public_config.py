@@ -94,6 +94,16 @@ def test_tracked_example_matches_final_baseline_trial_id() -> None:
         == "artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json"
     )
     assert values["CONTROLLED_PUBLIC_EXPECTED_REQUESTS"] == "4"
+    assert values["PUBLIC_ORIGIN_NETWORK_CHANGE_URL"].startswith("https://h3.example.com/browser-downlink?")
+    assert "heartbeat=false" in values["PUBLIC_ORIGIN_NETWORK_CHANGE_URL"]
+
+
+def test_preflight_defaults_match_final_baseline_trial_id() -> None:
+    text = Path("harness/scripts/controlled-public-preflight.sh").read_text(encoding="utf-8")
+    assert "controlled-public-h3-application-baseline-001" not in text
+    assert "CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-chrome-h3-baseline-001" in text
+    assert "CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-4" in text
+    assert "browser-downlink?duration_ms=15000" in text
 
 
 def main() -> int:
@@ -102,6 +112,7 @@ def main() -> int:
     test_active_ready_when_all_keys_present()
     test_example_placeholders_are_not_ready()
     test_tracked_example_matches_final_baseline_trial_id()
+    test_preflight_defaults_match_final_baseline_trial_id()
     print("check_controlled_public_config=ok")
     return 0
 
