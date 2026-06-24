@@ -30,7 +30,9 @@ Chrome 149 headless forced-QUIC local origin에서는 단일 request, page+subre
 
 Chrome CDP downlink/heartbeat 대조군은 browser-level CM 판정에서 가장 중요한 해석상의 주의를 제공했다. no-change downlink without heartbeat에서는 server remote tuple과 Chrome target QUIC session이 각각 1개였다. 그러나 no-change downlink with heartbeat에서는 server remote tuple과 target QUIC session이 각각 2개가 됐다. inactive interface toggle 조건에서도 command exit은 0이었지만 client path snapshot은 `no_client_path_change_observed`였고 qlog path validation도 없었다.
 
-즉, server가 본 source tuple 변화는 browser CM success의 충분조건이 아니다. heartbeat나 browser connection management만으로도 multiple QUIC sessions가 생길 수 있다. 본 연구의 classifier는 이를 `multiple_quic_sessions_without_network_change` 또는 `multiple_quic_sessions_without_client_path_change`로 분리한다.
+추가로 local UDP rebinding proxy 실험에서는 Chrome forced-H3 traffic의 server-facing UDP socket을 A에서 B로 바꿨다. no-heartbeat 조건은 qlog PATH_CHALLENGE/PATH_RESPONSE를 만들었지만 request-level remote tuple은 하나로 남았다. heartbeat 조건은 server remote tuple 2개와 qlog path validation을 만들었지만 Chrome NetLog의 target QUIC session도 2개였다.
+
+즉, server가 본 source tuple 변화와 qlog path validation은 browser CM success의 충분조건이 아니다. heartbeat나 browser connection management만으로도 multiple QUIC sessions가 생길 수 있다. 본 연구의 classifier는 이를 `multiple_quic_sessions_without_network_change`, `multiple_quic_sessions_without_client_path_change`, 또는 NAT-rebinding negative/feasibility control로 분리한다.
 
 후속 본 실험을 위해 Chrome, Safari, Android Chrome controlled public network-change harness를 각각 준비했다. 다만 Safari와 Android Chrome은 현재 harness에서 browser-internal QUIC session log가 없으므로, 해당 결과는 server/qlog 중심의 `PASS_FEASIBILITY` 수준으로만 해석한다. 이 하네스 준비는 실제 handover 성공 결과가 아니다.
 
