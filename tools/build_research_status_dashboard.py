@@ -18,6 +18,7 @@ DEFAULT_EXPERIMENTS = "data/experiment-results.csv"
 DEFAULT_MATRIX = "data/final-protocol-readiness-matrix-20260624.csv"
 DEFAULT_SCORECARD = "data/final-trial-acceptance-scorecard-20260624.csv"
 DEFAULT_MANIFEST = "data/reproducibility-manifest-20260624.json"
+DEFAULT_FRICTION = "data/cm-operational-friction-matrix-20260624.csv"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -75,10 +76,12 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
     matrix = read_csv(Path(args.matrix))
     scorecard = read_csv(Path(args.scorecard))
     manifest = read_json(Path(args.manifest))
+    friction = read_csv(Path(args.friction))
 
     experiment_status_counts = dict(sorted(Counter(row.get("status", "") for row in experiments).items()))
     matrix_state_counts = dict(sorted(Counter(row.get("state", "") for row in matrix).items()))
     scorecard_paper_use_counts = dict(sorted(Counter(row.get("paper_use", "") for row in scorecard).items()))
+    friction_paper_use_counts = dict(sorted(Counter(row.get("paper_use", "") for row in friction).items()))
     missing_counts = missing_gate_counts(matrix)
     final_handover = (manifest.get("research_audit") or {}).get("final_browser_handover_trials", "-")
     verification = manifest.get("verification") or {}
@@ -103,6 +106,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
         "final_browser_handover": final_handover,
         "planned_execution_state_counts": matrix_state_counts,
         "scorecard_paper_use_counts": scorecard_paper_use_counts,
+        "operational_friction_paper_use_counts": friction_paper_use_counts,
         "missing_gate_counts": missing_counts,
         "next_operator_action": first_action_from_missing_gates(missing_counts),
         "safe_claim_boundary": (
@@ -112,6 +116,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
             "manifest": args.manifest,
             "readiness_matrix": args.matrix,
             "acceptance_scorecard": args.scorecard,
+            "operational_friction_matrix": args.friction,
             "experiment_results": args.experiments,
         },
     }
@@ -138,6 +143,7 @@ def emit_markdown(dashboard: dict[str, Any]) -> str:
         f"| final browser handover | `{dashboard['final_browser_handover']}` |",
         f"| planned execution states | `{dashboard['planned_execution_state_counts']}` |",
         f"| paper-use scorecard | `{dashboard['scorecard_paper_use_counts']}` |",
+        f"| operational friction | `{dashboard['operational_friction_paper_use_counts']}` |",
         "",
         "## Next Operator Action",
         "",
@@ -178,6 +184,7 @@ def main() -> int:
     parser.add_argument("--matrix", default=DEFAULT_MATRIX)
     parser.add_argument("--scorecard", default=DEFAULT_SCORECARD)
     parser.add_argument("--manifest", default=DEFAULT_MANIFEST)
+    parser.add_argument("--friction", default=DEFAULT_FRICTION)
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--json-output", default=DEFAULT_JSON_OUTPUT)
     parser.add_argument("--format", choices=["markdown", "json"], default="markdown")

@@ -8,15 +8,15 @@
     "PASS_NEGATIVE_CONTROL": 17
   },
   "verification": {
-    "checks": "54",
-    "passed": "54",
+    "checks": "56",
+    "passed": "56",
     "ok": "yes"
   },
   "ci": {
     "available": "yes",
     "status": "completed",
     "conclusion": "success",
-    "run_id": "28102825945"
+    "run_id": "28103244582"
   },
   "final_browser_handover": "0/6",
   "planned_execution_state_counts": {
@@ -25,6 +25,11 @@
   "scorecard_paper_use_counts": {
     "pending; do not claim browser CM success": 3,
     "pending; required before active CM claim": 3
+  },
+  "operational_friction_paper_use_counts": {
+    "cautious explanatory support": 2,
+    "related-work support only": 1,
+    "source-backed explanation with repo evidence": 10
   },
   "missing_gate_counts": {
     "baseline_summary_ready": 7,
@@ -41,6 +46,7 @@
     "manifest": "data/reproducibility-manifest-20260624.json",
     "readiness_matrix": "data/final-protocol-readiness-matrix-20260624.csv",
     "acceptance_scorecard": "data/final-trial-acceptance-scorecard-20260624.csv",
+    "operational_friction_matrix": "data/cm-operational-friction-matrix-20260624.csv",
     "experiment_results": "data/experiment-results.csv"
   }
 }

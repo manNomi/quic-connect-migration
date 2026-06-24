@@ -1537,7 +1537,7 @@ python3 tools/test_build_final_protocol_readiness_matrix.py
 
 ## 48. `tools/build_research_status_dashboard.py`
 
-현재 연구 bundle 상태를 한 장으로 요약한다. reproducibility manifest, final protocol readiness matrix, final trial acceptance scorecard, experiment-results를 읽어서 trial 수, verifier/CI 상태, final browser handover 진행률, missing gate count, 다음 operator action, 논문 claim boundary를 출력한다.
+현재 연구 bundle 상태를 한 장으로 요약한다. reproducibility manifest, final protocol readiness matrix, final trial acceptance scorecard, CM operational friction matrix, experiment-results를 읽어서 trial 수, verifier/CI 상태, final browser handover 진행률, missing gate count, 다음 operator action, 논문 claim boundary를 출력한다.
 
 이 도구는 private env 파일을 읽지 않는다. 이미 public-safe로 생성된 산출물만 요약한다.
 
@@ -1560,4 +1560,31 @@ python3 tools/build_research_status_dashboard.py \
 
 ```bash
 python3 tools/test_build_research_status_dashboard.py
+```
+
+## 49. `tools/build_cm_operational_friction_matrix.py`
+
+Connection Migration이 "좋은 기술인데 왜 널리 쓰이지 않는가"라는 질문을 계층별 friction matrix로 정리한다. `data/cm-operational-friction-rubric.csv`를 기준으로 `data/experiment-results.csv`와 `data/literature-review-tracker.csv`를 매칭하여 구현체, 브라우저, active path proof, LB/CDN/proxy, middlebox, 보안/운영, application workload, observability별 설명 근거를 만든다.
+
+이 도구는 private origin 설정, network-change command, qlog, pcap, NetLog, credential을 읽거나 출력하지 않는다. 논문에는 최종 positive claim이 아니라 "왜 deployment가 어렵고 어떤 증거가 더 필요한가"를 설명하는 보수적 근거로 사용한다.
+
+산출물:
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/results/cm-operational-friction-matrix-20260624.md` | 사람이 읽는 operational friction matrix |
+| `data/cm-operational-friction-matrix-20260624.csv` | 논문 표/부록용 machine-readable matrix |
+
+실행:
+
+```bash
+python3 tools/build_cm_operational_friction_matrix.py \
+  --output docs/results/cm-operational-friction-matrix-20260624.md \
+  --csv-output data/cm-operational-friction-matrix-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_cm_operational_friction_matrix.py
 ```

@@ -71,6 +71,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     paper_tables = "docs/results/paper-tables-20260624.md"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
+    cm_operational_friction_matrix = "docs/results/cm-operational-friction-matrix-20260624.md"
+    cm_operational_friction_matrix_csv = "data/cm-operational-friction-matrix-20260624.csv"
     final_trial_acceptance_scorecard = "docs/results/final-trial-acceptance-scorecard-20260624.md"
     final_trial_acceptance_scorecard_csv = "data/final-trial-acceptance-scorecard-20260624.csv"
     final_protocol_readiness_matrix = "docs/results/final-protocol-readiness-matrix-20260624.md"
@@ -99,6 +101,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         paper_tables = str(generated_dir / "paper-tables.md")
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
+        cm_operational_friction_matrix = str(generated_dir / "cm-operational-friction-matrix.md")
+        cm_operational_friction_matrix_csv = str(generated_dir / "cm-operational-friction-matrix.csv")
         final_trial_acceptance_scorecard = str(generated_dir / "final-trial-acceptance-scorecard.md")
         final_trial_acceptance_scorecard_csv = str(generated_dir / "final-trial-acceptance-scorecard.csv")
         final_protocol_readiness_matrix = str(generated_dir / "final-protocol-readiness-matrix.md")
@@ -140,6 +144,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_trial_acceptance_scorecard.py",
                 "tools/build_final_protocol_readiness_matrix.py",
                 "tools/build_research_status_dashboard.py",
+                "tools/build_cm_operational_friction_matrix.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
                 "tools/build_paper_evidence_gap_register.py",
@@ -164,6 +169,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_trial_acceptance_scorecard.py",
                 "tools/test_build_final_protocol_readiness_matrix.py",
                 "tools/test_build_research_status_dashboard.py",
+                "tools/test_build_cm_operational_friction_matrix.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
                 "tools/test_build_paper_evidence_gap_register.py",
@@ -208,6 +214,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 paper_gap_register,
                 "--csv-output",
                 paper_gap_register_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "cm_operational_friction_matrix_regression",
+            [python_bin, "tools/test_build_cm_operational_friction_matrix.py"],
+            {0},
+            30,
+        ),
+        (
+            "cm_operational_friction_matrix",
+            [
+                python_bin,
+                "tools/build_cm_operational_friction_matrix.py",
+                "--output",
+                cm_operational_friction_matrix,
+                "--csv-output",
+                cm_operational_friction_matrix_csv,
             ],
             {0},
             30,

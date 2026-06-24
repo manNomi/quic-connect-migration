@@ -65,6 +65,8 @@
 │   ├── experiment-results.csv
 │   ├── browser-cm-observability-20260624.json
 │   ├── controlled-public-experiment-readiness-20260624.json
+│   ├── cm-operational-friction-rubric.csv
+│   ├── cm-operational-friction-matrix-20260624.csv
 │   ├── evidence-chain-rubric.csv
 │   ├── final-browser-handover-required-trials.csv
 │   ├── implementation-survey.csv
@@ -104,6 +106,7 @@
 │   ├── build_controlled_public_origin_deploy_packet.py
 │   ├── build_final_protocol_readiness_matrix.py
 │   ├── build_final_trial_acceptance_scorecard.py
+│   ├── build_cm_operational_friction_matrix.py
 │   ├── build_paper_evidence_gap_register.py
 │   ├── build_research_status_dashboard.py
 │   ├── build_reproducibility_manifest.py
@@ -190,6 +193,7 @@
 - [Final protocol readiness matrix](docs/results/final-protocol-readiness-matrix-20260624.md)
 - [Final trial acceptance scorecard](docs/results/final-trial-acceptance-scorecard-20260624.md)
 - [Research status dashboard](docs/results/research-status-dashboard-20260624.md)
+- [CM operational friction matrix](docs/results/cm-operational-friction-matrix-20260624.md)
 - [Active path-change operator cookbook](docs/results/active-path-change-operator-cookbook-20260624.md)
 - [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [CI safe verification result](docs/results/ci-safe-verification-result-20260624.md)

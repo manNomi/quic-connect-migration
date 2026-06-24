@@ -10,11 +10,12 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | --- | --- |
 | experiment trials | `43` |
 | experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 1, 'PASS_NEGATIVE_CONTROL': 17}` |
-| verification | `54/54 passed; ok=yes` |
-| CI | `completed/success (28102825945)` |
+| verification | `56/56 passed; ok=yes` |
+| CI | `completed/success (28103244582)` |
 | final browser handover | `0/6` |
 | planned execution states | `{'blocked': 10}` |
 | paper-use scorecard | `{'pending; do not claim browser CM success': 3, 'pending; required before active CM claim': 3}` |
+| operational friction | `{'cautious explanatory support': 2, 'related-work support only': 1, 'source-backed explanation with repo evidence': 10}` |
 
 ## Next Operator Action
 
@@ -43,4 +44,5 @@ Do not claim Chrome/Safari/Android browser handover CM success until the final b
 | `manifest` | `data/reproducibility-manifest-20260624.json` |
 | `readiness_matrix` | `data/final-protocol-readiness-matrix-20260624.csv` |
 | `acceptance_scorecard` | `data/final-trial-acceptance-scorecard-20260624.csv` |
+| `operational_friction_matrix` | `data/cm-operational-friction-matrix-20260624.csv` |
 | `experiment_results` | `data/experiment-results.csv` |

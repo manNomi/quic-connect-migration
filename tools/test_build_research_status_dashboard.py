@@ -33,6 +33,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         experiments = root / "experiment-results.csv"
         matrix = root / "matrix.csv"
         scorecard = root / "scorecard.csv"
+        friction = root / "friction.csv"
         manifest = root / "manifest.json"
         write_fixture(
             experiments,
@@ -56,6 +57,13 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             chrome-controlled-public-application-h3-baseline,pending; required before active CM claim
             """,
         )
+        write_fixture(
+            friction,
+            """
+            friction_id,paper_use
+            active-path-proof,source-backed explanation with repo evidence
+            """,
+        )
         manifest.write_text(
             json.dumps(
                 {
@@ -71,11 +79,13 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             matrix=matrix.as_posix(),
             scorecard=scorecard.as_posix(),
             manifest=manifest.as_posix(),
+            friction=friction.as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)
         assert dashboard["experiment_trials"] == 2
         assert dashboard["planned_execution_state_counts"] == {"blocked": 1}
+        assert dashboard["operational_friction_paper_use_counts"] == {"source-backed explanation with repo evidence": 1}
         assert dashboard["final_browser_handover"] == "0/6"
         assert "PRIVATE_KEY" not in markdown
         assert "AKIA" not in markdown
