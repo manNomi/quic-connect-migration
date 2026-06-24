@@ -1532,7 +1532,49 @@ python3 tools/build_workload_transition_zone_table.py \
 - upload는 4600ms에서 3/3 PASS, 4750ms에서 1/3 PASS, 4900ms/5000ms에서 0/6 PASS다.
 - workload direction에 따라 transition zone이 달라지므로 단일 threshold로 보고하지 않는다.
 
-## 34. Artifact 정책
+## 34. Chrome transient downlink retry boundary 재현
+
+downlink page의 stream retry를 1회 허용해 6000ms/9000ms outage window에서 작업 완료가 회복되는지 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-downlink-retry-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624 \
+BASE_PORT=7600 \
+DROP_WINDOWS_MS="6000 9000" \
+WORKLOADS="downlink" \
+DOWNLINK_RETRY_ATTEMPTS=1 \
+DOWNLINK_RETRY_DELAY_MS=500 \
+TIMEOUT=52s \
+CHROME_TIMEOUT_SECONDS=42 \
+CHROME_HOLD_SECONDS=26 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624/rep01-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624/rep01-downlink-1m-drop-ab-9000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624/rep02-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624/rep02-downlink-1m-drop-ab-9000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624/rep03-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624/rep03-downlink-1m-drop-ab-9000ms \
+  --output docs/results/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 6000ms/9000ms downlink retry control은 `6/6 PASS`였다.
+- `retries_used=0` row가 3개, `retries_used=1` row가 3개였다.
+- retry 미사용 PASS는 단일 Chrome target QUIC session으로 완료됐고, retry 사용 PASS는 target session 2개로 완료됐다.
+- 따라서 이 결과는 retransmission-only completion과 application retry/multiple-session recovery를 분리해서 보고해야 한다.
+
+## 35. Artifact 정책
 
 commit 가능한 것:
 

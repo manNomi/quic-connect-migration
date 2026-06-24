@@ -17,6 +17,8 @@ REPETITIONS="${REPETITIONS:-3}"
 DROP_WINDOWS_MS="${DROP_WINDOWS_MS:-4000 4500 5000}"
 WORKLOADS="${WORKLOADS:-downlink upload}"
 EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
+DOWNLINK_RETRY_ATTEMPTS="${DOWNLINK_RETRY_ATTEMPTS:-0}"
+DOWNLINK_RETRY_DELAY_MS="${DOWNLINK_RETRY_DELAY_MS:-500}"
 UPLOAD_RETRY_ATTEMPTS="${UPLOAD_RETRY_ATTEMPTS:-0}"
 UPLOAD_RETRY_DELAY_MS="${UPLOAD_RETRY_DELAY_MS:-500}"
 
@@ -37,12 +39,12 @@ write_spec() {
   local drop_window="$7"
   local drop_window_ms="$8"
   local repetition="$9"
-  python3 - "$artifact_dir" "$profile" "$workload" "$bytes" "$chunks" "$duration_ms" "$REBIND_AFTER" "$drop_window" "$drop_window_ms" "$repetition" "$UPLOAD_RETRY_ATTEMPTS" "$UPLOAD_RETRY_DELAY_MS" <<'PY'
+  python3 - "$artifact_dir" "$profile" "$workload" "$bytes" "$chunks" "$duration_ms" "$REBIND_AFTER" "$drop_window" "$drop_window_ms" "$repetition" "$DOWNLINK_RETRY_ATTEMPTS" "$DOWNLINK_RETRY_DELAY_MS" "$UPLOAD_RETRY_ATTEMPTS" "$UPLOAD_RETRY_DELAY_MS" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-artifact_dir, profile, workload, bytes_value, chunks, duration_ms, rebind_after, drop_window, drop_window_ms, repetition, upload_retry_attempts, upload_retry_delay_ms = sys.argv[1:]
+artifact_dir, profile, workload, bytes_value, chunks, duration_ms, rebind_after, drop_window, drop_window_ms, repetition, downlink_retry_attempts, downlink_retry_delay_ms, upload_retry_attempts, upload_retry_delay_ms = sys.argv[1:]
 path = Path(artifact_dir) / "results" / "transient-return-path-spec.json"
 path.parent.mkdir(parents=True, exist_ok=True)
 path.write_text(
@@ -59,6 +61,8 @@ path.write_text(
             "drop_window": drop_window,
             "drop_window_ms": int(drop_window_ms),
             "repetition": int(repetition),
+            "downlink_retry_attempts": int(downlink_retry_attempts),
+            "downlink_retry_delay_ms": int(downlink_retry_delay_ms),
             "upload_retry_attempts": int(upload_retry_attempts),
             "upload_retry_delay_ms": int(upload_retry_delay_ms),
             "expected_status": "MEASURE",
@@ -108,6 +112,8 @@ run_case() {
     DOWNLINK_BYTES="$bytes" \
     DOWNLINK_CHUNKS="$chunks" \
     DOWNLINK_DURATION_MS="$duration_ms" \
+    DOWNLINK_RETRY_ATTEMPTS="$DOWNLINK_RETRY_ATTEMPTS" \
+    DOWNLINK_RETRY_DELAY_MS="$DOWNLINK_RETRY_DELAY_MS" \
     UPLOAD_BYTES="$bytes" \
     UPLOAD_CHUNKS="$chunks" \
     UPLOAD_DURATION_MS="$duration_ms" \

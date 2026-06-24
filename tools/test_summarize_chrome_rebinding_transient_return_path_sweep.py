@@ -26,6 +26,8 @@ def write_sweep_artifact(artifact_dir: Path, *, workload: str, status: str, drop
                 "drop_b_server_after_switch": True,
                 "drop_window": f"{drop_window_ms}ms",
                 "drop_window_ms": drop_window_ms,
+                "downlink_retry_attempts": 0,
+                "downlink_retry_delay_ms": 0,
                 "upload_retry_attempts": 0,
                 "upload_retry_delay_ms": 0,
                 "expected_status": "MEASURE",
@@ -98,7 +100,9 @@ def test_rows_and_markdown() -> None:
         assert rows[0]["status"] == "PASS"
         assert rows[0]["drop_window"] == "250ms"
         assert rows[0]["dump_task_elapsed_ms"] == "8123"
+        assert rows[0]["downlink_retry_attempts"] == "0"
         assert rows[0]["upload_retry_attempts"] == "0"
+        assert rows[0]["retries_used"] == ""
         assert rows[1]["status"] == "FAIL"
         assert rows[1]["max_drop_since_switch_ms"] == "2999"
         markdown = emit_markdown(rows)
@@ -117,7 +121,9 @@ def test_csv_writer_uses_stable_header() -> None:
         text = csv_path.read_text(encoding="utf-8")
         assert text.startswith("profile,workload,run_id,configured_bytes")
         assert "drop_window_ms" in text.splitlines()[0]
+        assert "downlink_retry_attempts" in text.splitlines()[0]
         assert "upload_retry_attempts" in text.splitlines()[0]
+        assert "retries_used" in text.splitlines()[0]
         assert "dump_task_elapsed_ms" in text.splitlines()[0]
 
 

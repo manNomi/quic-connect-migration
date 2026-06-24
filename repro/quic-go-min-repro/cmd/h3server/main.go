@@ -459,10 +459,18 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		if heartbeatDelayMillis > durationMillis {
 			heartbeatDelayMillis = durationMillis
 		}
+		retryAttempts := queryInt(r, "retry_attempts", 0)
+		if retryAttempts > 5 {
+			retryAttempts = 5
+		}
+		retryDelayMillis := queryInt(r, "retry_delay_ms", 500)
+		if retryDelayMillis > 60000 {
+			retryDelayMillis = 60000
+		}
 		if label == "" {
 			label = "browser-downlink"
 		}
-		html := buildBrowserDownlinkHTML(label, durationMillis, chunks, size, heartbeat, heartbeatDelayMillis)
+		html := buildBrowserDownlinkHTML(label, durationMillis, chunks, size, heartbeat, heartbeatDelayMillis, retryAttempts, retryDelayMillis)
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
@@ -670,7 +678,7 @@ func buildBrowserSlowHTML(label string, durationMillis, chunks int) string {
 	return body
 }
 
-func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, heartbeat bool, heartbeatDelayMillis int) string {
+func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, heartbeat bool, heartbeatDelayMillis, retryAttempts, retryDelayMillis int) string {
 	escapedLabel := html.EscapeString(label)
 	queryLabel := url.QueryEscape(label)
 	streamURL := fmt.Sprintf("/downlink-stream?duration_ms=%d&chunks=%d&bytes=%d&label=%s-stream", durationMillis, chunks, size, queryLabel)
@@ -678,11 +686,13 @@ func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, he
 	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Browser H3 downlink</title><link rel=\"icon\" href=\"data:,\"></head><body>"
 	body += fmt.Sprintf("<h1>Browser H3 downlink</h1><div id=\"status\" data-label=\"%s\">loading</div><pre id=\"events\"></pre>", escapedLabel)
 	body += "<script>"
-	body += fmt.Sprintf("const streamUrl=%q, heartbeatUrl=%q, heartbeat=%t, heartbeatDelay=%d;", streamURL, heartbeatURL, heartbeat, heartbeatDelayMillis)
+	body += fmt.Sprintf("const streamUrl=%q, heartbeatUrl=%q, heartbeat=%t, heartbeatDelay=%d,retryAttempts=%d,retryDelayMs=%d;", streamURL, heartbeatURL, heartbeat, heartbeatDelayMillis, retryAttempts, retryDelayMillis)
 	body += "const events=document.getElementById('events');"
 	body += "const startedAt=performance.now();"
 	body += "function note(line){events.textContent+=line+'\\n';}"
-	body += "async function runStream(){const res=await fetch(streamUrl,{cache:'no-store'});const reader=res.body.getReader();let total=0;for(;;){const item=await reader.read();if(item.done)break;total+=item.value.byteLength;note('chunk:'+total);}document.body.dataset.downlinkBytes=String(total);document.body.dataset.downlinkElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.downlinkComplete='true';document.getElementById('status').textContent='complete';}"
+	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
+	body += "async function attemptStream(attempt){const targetUrl=streamUrl+'&attempt='+attempt+'&ts='+Date.now();const res=await fetch(targetUrl,{cache:'no-store'});const reader=res.body.getReader();let total=0;document.body.dataset.downlinkAttempt=String(attempt);for(;;){const item=await reader.read();if(item.done)break;total+=item.value.byteLength;document.body.dataset.downlinkBytes=String(total);note('attempt:'+attempt+':chunk:'+total);}return total;}"
+	body += "async function runStream(){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{const total=await attemptStream(attempt);document.body.dataset.downlinkBytes=String(total);document.body.dataset.downlinkElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.downlinkRetriesUsed=String(attempt-1);document.body.dataset.downlinkComplete='true';note('downlink:'+total+':attempt:'+attempt);document.getElementById('status').textContent='complete';return;}catch(error){lastError=String(error);document.body.dataset.downlinkLastError=lastError;document.body.dataset.downlinkLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));note('stream-error:'+lastError+':attempt:'+attempt);if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'downlink failed');}"
 	body += "if(heartbeat){setTimeout(()=>{fetch(heartbeatUrl+Date.now(),{cache:'no-store'}).then((res)=>{document.body.dataset.heartbeatStatus=String(res.status);note('heartbeat:'+res.status);}).catch((error)=>{document.body.dataset.heartbeatError=String(error);note('heartbeat-error:'+error);});},heartbeatDelay);}"
 	body += "runStream().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.downlinkErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.downlinkError=String(error);note('stream-error:'+error);});"
 	body += "</script>"

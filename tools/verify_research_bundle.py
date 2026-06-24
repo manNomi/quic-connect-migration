@@ -692,6 +692,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh",
                 "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh",
                 "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy-matrix.sh",
+                "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh",
+                "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-transient-return-path-sweep.sh",
                 "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-upload-matrix.sh",
                 "repro/quic-go-min-repro/scripts/run-local-h3-midflight-matrix.sh",
                 "repro/quic-go-min-repro/scripts/run-safari-controlled-public-baseline.sh",

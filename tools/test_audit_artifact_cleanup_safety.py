@@ -129,6 +129,10 @@ def test_default_reference_csvs_include_transient_return_path_sweep_summary() ->
     assert "data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv" in DEFAULT_ARTIFACT_REFERENCE_CSVS
 
 
+def test_default_reference_csvs_include_downlink_retry_boundary_summary() -> None:
+    assert "data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv" in DEFAULT_ARTIFACT_REFERENCE_CSVS
+
+
 def main() -> int:
     test_classify_candidate_prefers_csv_reference()
     test_build_audit_marks_referenced_and_unreferenced()
@@ -138,6 +142,7 @@ def main() -> int:
     test_default_reference_csvs_include_old_path_drop_stress_summary()
     test_default_reference_csvs_include_return_path_drop_controls_summary()
     test_default_reference_csvs_include_transient_return_path_sweep_summary()
+    test_default_reference_csvs_include_downlink_retry_boundary_summary()
     print("audit_artifact_cleanup_safety=ok")
     return 0
 

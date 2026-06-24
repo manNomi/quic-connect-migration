@@ -65,7 +65,8 @@
 53. 18000ms/21000ms retry2 stress boundary에서는 18000ms가 3/3 PASS, 21000ms가 3/3 FAIL이었다. 2회 retry도 local recovery boundary가 18초와 21초 사이에서 다시 깨지며, 실패 row에도 qlog path evidence와 Chrome session evidence가 남았다.
 54. Application recovery tradeoff synthesis는 no-retry 안정 구간 4600ms, 1회 retry 안정 구간 12000ms, 2회 retry 안정 구간 18000ms로 boundary가 오른쪽으로 이동하지만 completion latency와 Chrome QUIC session churn도 함께 증가함을 보여준다.
 55. Workload transition-zone synthesis는 downlink가 5.0-5.5초 혼재 후 6초 반복 실패, upload가 4.75초 혼재 후 4.9초 반복 실패로 갈려 workload direction 자체가 continuity boundary를 바꾼다는 점을 요약한다.
-56. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+56. Downlink 1회 retry recovery control에서는 6000ms/9000ms outage가 6/6 PASS였지만, 3개 row는 retry 없이 단일 session retransmission으로, 3개 row는 retry 후 multiple session으로 완료되어 recovery mechanism을 분리해 보고해야 함을 확인했다.
+57. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -230,6 +231,7 @@
 - [Chrome H3 local transient downlink fine boundary](docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)
 - [Chrome H3 local transient upload fine boundary](docs/results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md)
 - [Workload transition-zone synthesis](docs/results/workload-transition-zone-synthesis-20260624.md)
+- [Chrome H3 local transient downlink retry boundary](docs/results/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.md)
 - [Chrome H3 local transient upload retry boundary](docs/results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md)
 - [Chrome H3 local transient upload retry long outage](docs/results/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.md)
 - [Chrome H3 local transient upload retry stress boundary](docs/results/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.md)

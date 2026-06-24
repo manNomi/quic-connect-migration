@@ -20,8 +20,11 @@ CSV_FIELDS = [
     "configured_bytes",
     "configured_chunks",
     "duration_ms",
+    "downlink_retry_attempts",
+    "downlink_retry_delay_ms",
     "upload_retry_attempts",
     "upload_retry_delay_ms",
+    "retries_used",
     "rebind_after",
     "drop_window",
     "drop_window_ms",
@@ -63,6 +66,12 @@ def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
 
 
+def read_text(path: Path) -> str:
+    if not path.exists():
+        return ""
+    return path.read_text(encoding="utf-8", errors="ignore")
+
+
 def parse_run_spec(raw: str) -> tuple[str, Path]:
     workload, artifact = raw.split(":", 1)
     if workload not in {"downlink", "upload"}:
@@ -100,14 +109,28 @@ def upload_sink_stats(artifact_dir: Path, summary: dict[str, Any]) -> tuple[int,
     return len(uploads), sum(int(item.get("request_bytes") or 0) for item in uploads)
 
 
+def dump_data_attr(dump: str, name: str) -> str:
+    needle = f'data-{name}="'
+    start = dump.find(needle)
+    if start < 0:
+        return ""
+    value_start = start + len(needle)
+    value_end = dump.find('"', value_start)
+    if value_end < 0:
+        return ""
+    return dump[value_start:value_end]
+
+
 def row_from_spec(raw: str) -> dict[str, str]:
     workload, artifact_dir = parse_run_spec(raw)
     spec = read_json(artifact_dir / "results" / "transient-return-path-spec.json")
     summary = read_json(artifact_dir / "results" / "chrome-summary.json")
+    dump = read_text(artifact_dir / "chrome" / "dump-dom.txt")
     proxy = summary.get("rebinding_proxy") if isinstance(summary.get("rebinding_proxy"), dict) else {}
     qlog_counts = summary.get("qlog_counts") if isinstance(summary.get("qlog_counts"), dict) else {}
     client_a, client_b, max_drop_since = proxy_log_stats(artifact_dir)
     upload_count, upload_bytes = upload_sink_stats(artifact_dir, summary)
+    retries_used = dump_data_attr(dump, f"{workload}-retries-used")
     return {
         "profile": str(spec.get("profile") or artifact_dir.name),
         "workload": workload,
@@ -115,8 +138,11 @@ def row_from_spec(raw: str) -> dict[str, str]:
         "configured_bytes": str(spec.get("bytes") or ""),
         "configured_chunks": str(spec.get("chunks") or ""),
         "duration_ms": str(spec.get("duration_ms") or ""),
+        "downlink_retry_attempts": str(spec.get("downlink_retry_attempts") or 0),
+        "downlink_retry_delay_ms": str(spec.get("downlink_retry_delay_ms") or 0),
         "upload_retry_attempts": str(spec.get("upload_retry_attempts") or 0),
         "upload_retry_delay_ms": str(spec.get("upload_retry_delay_ms") or 0),
+        "retries_used": retries_used,
         "rebind_after": str(spec.get("rebind_after") or ""),
         "drop_window": str(spec.get("drop_window") or ""),
         "drop_window_ms": str(spec.get("drop_window_ms") or ""),
@@ -207,19 +233,21 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
         "",
         "## Runs",
         "",
-        "| profile | workload | retry | drop window | status | classification | app complete | complete ms | error ms | server requests | Chrome QUIC sessions | qlog PATH C/R | dropped A/B packets | max drop ms | client packets A/B | server packets A/B | upload bytes |",
-        "| --- | --- | ---: | ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- | --- | ---: |",
+        "| profile | workload | retry | used | drop window | status | classification | app complete | complete ms | error ms | server requests | Chrome QUIC sessions | qlog PATH C/R | dropped A/B packets | max drop ms | client packets A/B | server packets A/B | upload bytes |",
+        "| --- | --- | ---: | ---: | ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- | --- | ---: |",
     ]
     for row in rows:
         upload_bytes = row["upload_sink_request_bytes"] or "-"
+        retry_attempts = row["downlink_retry_attempts"] if row["workload"] == "downlink" else row["upload_retry_attempts"]
+        retry_delay = row["downlink_retry_delay_ms"] if row["workload"] == "downlink" else row["upload_retry_delay_ms"]
         lines.append(
-            "| {profile} | {workload} | {retry} | {drop_window} | {status} | `{classification}` | "
+            "| {profile} | {workload} | {retry} | {retries_used} | {drop_window} | {status} | `{classification}` | "
             "{dump_application_complete} | {complete_ms} | {error_ms} | {server_request_count} | {netlog_target_quic_session_count} | "
             "{qlog_path_challenge}/{qlog_path_response} | {dropped_server_packets_a}/{dropped_server_packets_b} | "
             "{max_drop_since_switch_ms} | {proxy_client_packets_a}/{proxy_client_packets_b} | "
             "{proxy_server_packets_a}/{proxy_server_packets_b} | {upload_bytes} |".format(
                 **row,
-                retry=f"{row['upload_retry_attempts']}x/{row['upload_retry_delay_ms']}ms",
+                retry=f"{retry_attempts}x/{retry_delay}ms",
                 complete_ms=row["dump_task_elapsed_ms"] or "-",
                 error_ms=row["dump_task_error_elapsed_ms"] or "-",
                 upload_bytes=upload_bytes,
