@@ -49,7 +49,8 @@
 37. 디스크 정리 전 raw artifact가 `data/experiment-results.csv`나 planned final trial에 연결되는지 확인하는 cleanup safety audit를 추가했다.
 38. controlled-public private config를 공개 값 없이 채울 수 있도록 stage/owner/privacy/next action worksheet를 추가했다.
 39. controlled-public wrapper들이 직접 실행되더라도 기본 5GiB disk guard를 통과해야 heavy NetLog/qlog artifact 생성을 시작하게 했다.
-40. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+40. 최종 handover 본 실험을 재개하기 전 사용자가 제공해야 할 외부 입력을 public-safe handoff packet으로 생성하게 했다.
+41. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -105,6 +106,7 @@
 │   ├── append_final_handover_result_row.py
 │   ├── select_next_final_handover_trial.py
 │   ├── build_final_handover_operator_checklist.py
+│   ├── build_final_handover_external_inputs.py
 │   ├── build_final_handover_trial_packet.py
 │   ├── check_final_handover_trial_artifact_bundle.py
 │   ├── audit_research_bundle.py
@@ -125,6 +127,7 @@
 │   ├── test_select_next_final_handover_trial.py
 │   ├── test_check_next_final_handover_trial_readiness.py
 │   ├── test_build_final_handover_operator_checklist.py
+│   ├── test_build_final_handover_external_inputs.py
 │   ├── test_build_final_handover_trial_packet.py
 │   ├── test_check_final_handover_trial_artifact_bundle.py
 │   ├── test_build_controlled_public_config_worksheet.py
@@ -166,6 +169,7 @@
 - [Final handover next trial](docs/results/final-handover-next-trial-20260624.md)
 - [Final handover next trial readiness](docs/results/final-handover-next-trial-readiness-20260624.md)
 - [Final handover operator checklist](docs/results/final-handover-operator-checklist-20260624.md)
+- [Final handover external inputs handoff](docs/results/final-handover-external-inputs-20260624.md)
 - [Final handover trial packet](docs/results/final-handover-trial-packet-20260624.md)
 - [Final handover trial artifact bundle check](docs/results/final-handover-trial-artifact-bundle-check-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)

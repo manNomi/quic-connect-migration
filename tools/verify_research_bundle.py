@@ -75,6 +75,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_next_trial = "docs/results/final-handover-next-trial-20260624.md"
     final_next_trial_readiness = "docs/results/final-handover-next-trial-readiness-20260624.md"
     final_operator_checklist = "docs/results/final-handover-operator-checklist-20260624.md"
+    final_external_inputs = "docs/results/final-handover-external-inputs-20260624.md"
     final_trial_packet = "docs/results/final-handover-trial-packet-20260624.md"
     final_trial_artifact_bundle = "docs/results/final-handover-trial-artifact-bundle-check-20260624.md"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
@@ -91,6 +92,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_next_trial = str(generated_dir / "final-handover-next-trial.md")
         final_next_trial_readiness = str(generated_dir / "final-handover-next-trial-readiness.md")
         final_operator_checklist = str(generated_dir / "final-handover-operator-checklist.md")
+        final_external_inputs = str(generated_dir / "final-handover-external-inputs.md")
         final_trial_packet = str(generated_dir / "final-handover-trial-packet.md")
         final_trial_artifact_bundle = str(generated_dir / "final-handover-trial-artifact-bundle-check.md")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
@@ -114,6 +116,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_operator_checklist.py",
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_controlled_public_config_worksheet.py",
+                "tools/build_final_handover_external_inputs.py",
                 "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_final_handover_trial_artifact_bundle.py",
@@ -131,6 +134,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
+                "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
@@ -205,6 +209,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_handover_operator_checklist_regression",
             [python_bin, "tools/test_build_final_handover_operator_checklist.py"],
+            {0},
+            30,
+        ),
+        (
+            "final_handover_external_inputs_regression",
+            [python_bin, "tools/test_build_final_handover_external_inputs.py"],
             {0},
             30,
         ),
@@ -313,6 +323,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_handover_operator_checklist",
             [python_bin, "tools/build_final_handover_operator_checklist.py", "--output", final_operator_checklist],
+            {0},
+            60,
+        ),
+        (
+            "final_handover_external_inputs",
+            [python_bin, "tools/build_final_handover_external_inputs.py", "--output", final_external_inputs],
             {0},
             60,
         ),

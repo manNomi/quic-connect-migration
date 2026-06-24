@@ -1356,3 +1356,32 @@ wrapper에서 사용하는 환경 변수:
 ```bash
 python3 tools/test_artifact_disk_guard.py
 ```
+
+## 41. `tools/build_final_handover_external_inputs.py`
+
+최종 browser/mobile handover 본 실험을 재개하기 전에 사용자가 준비해야 할 외부 입력을 public-safe handoff packet으로 만든다. 실제 도메인, TLS 경로, private key, AWS account ID, Android device id, network-change command 본문은 출력하지 않는다.
+
+실행:
+
+```bash
+python3 tools/build_final_handover_external_inputs.py \
+  --output docs/results/final-handover-external-inputs-20260624.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| `disk-free-space` | heavy NetLog/qlog capture 전 필요한 free space |
+| `controlled-public-baseline-config` | ignored local env에 채워야 하는 baseline config |
+| `public-origin-host` | TCP HTTPS Alt-Svc bootstrap과 UDP H3를 제공하는 WebPKI origin |
+| `active-network-change-path` | baseline 이후 active Chrome/Safari trial에 필요한 실제 path-change 조건 |
+| `android-p1-feasibility` | Android Chrome을 P1 feasibility로 사용할 때 필요한 ADB/device 조건 |
+| `aws-identity` | AWS 자동 provisioning이나 CloudFront follow-up에만 필요한 선택 입력 |
+| `final-protocol-completion` | required final trial row가 모두 카운트될 때까지 반복해야 하는 loop |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_final_handover_external_inputs.py
+```
