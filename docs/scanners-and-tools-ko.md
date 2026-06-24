@@ -662,6 +662,7 @@ python3 -m py_compile tools/run_safari_webdriver_navigation.py
 # readiness가 false이면 exit code 1을 반환한다. 출력의 blockers를 확인한다.
 python3 tools/check_controlled_public_experiment_readiness.py --format markdown || true
 bash harness/scripts/controlled-public-preflight.sh || true
+python3 tools/check_final_browser_handover_readiness.py --output docs/results/final-browser-handover-readiness-20260624.md || true
 python3 tools/capture_network_path_snapshot.py --url https://www.google.com/generate_204 --output /tmp/quic-cm-path-before.json
 python3 tools/compare_network_path_snapshots.py /tmp/quic-cm-path-before.json /tmp/quic-cm-path-before.json
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py tools/run_android_chrome_navigation.py
@@ -818,3 +819,24 @@ python3 tools/verify_research_bundle.py \
 | expected-incomplete gate | `--require-complete`가 현재 exit 1을 내는 것을 정상으로 기록 |
 | generated report | `docs/results/research-verification-report-20260624.md`에 모든 check exit code 기록 |
 | final claim 보호 | 현재 미완료인 browser/mobile handover 본 실험을 완료로 오인하지 않음 |
+
+## 26. `tools/check_final_browser_handover_readiness.py`
+
+최종 browser/mobile handover 본 실험을 실행할 준비가 되었는지 config, baseline summary, local path readiness, Android ADB, Safari WebDriver, disk, final trial audit을 통합해 점검한다.
+
+실행:
+
+```bash
+python3 tools/check_final_browser_handover_readiness.py \
+  --output docs/results/final-browser-handover-readiness-20260624.md
+```
+
+기본 실행은 public origin에 네트워크 요청을 보내지 않는다. 실제 controlled public URL까지 검증하려면 명시적으로 `--check-public-origin`을 붙인다.
+
+```bash
+python3 tools/check_final_browser_handover_readiness.py \
+  --check-public-origin \
+  --output /tmp/final-browser-handover-readiness.md
+```
+
+현재 환경처럼 준비가 덜 된 상태에서는 exit 1을 반환한다. 이 실패는 본 실험 blocker를 드러내는 정상적인 readiness 결과다.

@@ -11,7 +11,7 @@ Generated: `2026-06-24`
 | experiment trials | `35` |
 | experiment status counts | `{'PASS': 18, 'PASS_NEGATIVE_CONTROL': 16, 'PASS_FEASIBILITY': 1}` |
 | experiment ids unique | `yes` |
-| matrix items | `60` |
+| matrix items | `61` |
 | matrix ids unique | `yes` |
 | paper tables current | `yes` |
 | final browser handover trials | `0/6` |

@@ -71,6 +71,7 @@
 │   ├── check_public_origin_readiness.py
 │   ├── check_handover_readiness.py
 │   ├── check_controlled_public_experiment_readiness.py
+│   ├── check_final_browser_handover_readiness.py
 │   ├── check_browser_cm_observability.py
 │   ├── classify_controlled_public_h3_baseline.py
 │   ├── classify_controlled_public_h3_network_change.py
@@ -109,6 +110,7 @@
 - [Safari controlled public H3 network-change harness](docs/results/safari-controlled-public-network-change-harness-20260624.md)
 - [Android Chrome controlled public H3 network-change harness](docs/results/android-chrome-controlled-public-network-change-harness-20260624.md)
 - [Final browser handover experiment protocol](docs/results/final-browser-handover-experiment-protocol-20260624.md)
+- [Final browser handover readiness](docs/results/final-browser-handover-readiness-20260624.md)
 - [Final browser handover result registration guide](docs/results/final-browser-handover-result-registration-guide-20260624.md)
 - [Final browser handover trial audit](docs/results/final-browser-handover-trial-audit-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
