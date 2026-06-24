@@ -32,6 +32,8 @@ The Chrome CDP downlink/heartbeat controls provide the strongest caution for bro
 
 Thus, a source tuple change at the server is not sufficient evidence of browser connection migration. Heartbeats or browser connection management can create multiple QUIC sessions without migration. The classifier therefore separates these cases as `multiple_quic_sessions_without_network_change` or `multiple_quic_sessions_without_client_path_change`.
 
+For the follow-up main experiments, we prepared controlled-public network-change harnesses for Chrome, Safari, and Android Chrome. However, Safari and Android Chrome currently lack browser-internal QUIC session logs in this harness, so their outcomes must be interpreted as server/qlog-centered `PASS_FEASIBILITY` evidence. Harness readiness is not itself a successful handover result.
+
 ## Overall Findings
 
 The current results support the following claims.
@@ -46,7 +48,8 @@ The current results do not yet support the following claims.
 
 1. Chrome preserves HTTP/3 connection migration across a real Wi-Fi/LTE handover.
 2. Safari preserves HTTP/3 connection migration across a real handover.
-3. Managed CDN edge deployments preserve end-to-end QUIC connection migration.
-4. Service Worker recovery or application heartbeat improves real handover continuity.
+3. Android Chrome preserves HTTP/3 connection migration across a real Wi-Fi/LTE handover.
+4. Managed CDN edge deployments preserve end-to-end QUIC connection migration.
+5. Service Worker recovery or application heartbeat improves real handover continuity.
 
 These claims require follow-up experiments with a controlled public origin, an active secondary network path, Android/Safari observability, and packet capture.

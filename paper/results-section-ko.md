@@ -32,6 +32,8 @@ Chrome CDP downlink/heartbeat 대조군은 browser-level CM 판정에서 가장 
 
 즉, server가 본 source tuple 변화는 browser CM success의 충분조건이 아니다. heartbeat나 browser connection management만으로도 multiple QUIC sessions가 생길 수 있다. 본 연구의 classifier는 이를 `multiple_quic_sessions_without_network_change` 또는 `multiple_quic_sessions_without_client_path_change`로 분리한다.
 
+후속 본 실험을 위해 Chrome, Safari, Android Chrome controlled public network-change harness를 각각 준비했다. 다만 Safari와 Android Chrome은 현재 harness에서 browser-internal QUIC session log가 없으므로, 해당 결과는 server/qlog 중심의 `PASS_FEASIBILITY` 수준으로만 해석한다. 이 하네스 준비는 실제 handover 성공 결과가 아니다.
+
 ## 종합 결과
 
 현재까지의 결과는 다음 결론을 지지한다.
@@ -46,7 +48,8 @@ Chrome CDP downlink/heartbeat 대조군은 browser-level CM 판정에서 가장 
 
 1. Chrome 실제 Wi-Fi/LTE handover에서 HTTP/3 CM이 성공했다.
 2. Safari에서 HTTP/3 CM이 성공했다.
-3. CDN managed edge 환경에서 end-to-end QUIC CM이 유지된다.
-4. Service Worker나 application heartbeat가 실제 handover recovery를 개선한다.
+3. Android Chrome 실제 Wi-Fi/LTE handover에서 HTTP/3 CM이 성공했다.
+4. CDN managed edge 환경에서 end-to-end QUIC CM이 유지된다.
+5. Service Worker나 application heartbeat가 실제 handover recovery를 개선한다.
 
-이 네 가지는 controlled public origin, active secondary path, Android/Safari 관찰성, packet capture가 준비된 뒤 후속 실험으로 검증해야 한다.
+이 다섯 가지는 controlled public origin, active secondary path, Android/Safari 관찰성, packet capture가 준비된 뒤 후속 실험으로 검증해야 한다.
