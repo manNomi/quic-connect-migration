@@ -1407,3 +1407,30 @@ python3 tools/check_aws_identity_public_safe.py \
 ```
 
 현재 이 도구는 회귀 테스트 없이 lightweight preflight로 사용한다.
+
+## 43. `tools/build_controlled_public_origin_deploy_packet.py`
+
+controlled public WebPKI origin을 실제 host에 배포하기 위한 public-safe command packet을 생성한다. package 생성, SSH upload, remote bootstrap, server 실행, client readiness, final baseline 등록 명령을 한 문서로 묶는다.
+
+이 도구는 실제 hostname, certificate path, private key path, SSH target, AWS account 값을 출력하지 않고 placeholder만 사용한다.
+
+실행:
+
+```bash
+python3 tools/build_controlled_public_origin_deploy_packet.py \
+  --output docs/results/controlled-public-origin-deploy-packet-20260624.md
+```
+
+필요하면 package도 동시에 만들 수 있다. 생성된 tarball은 ignored artifact이므로 commit하지 않는다.
+
+```bash
+python3 tools/build_controlled_public_origin_deploy_packet.py \
+  --build-package \
+  --output docs/results/controlled-public-origin-deploy-packet-20260624.md
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_controlled_public_origin_deploy_packet.py
+```

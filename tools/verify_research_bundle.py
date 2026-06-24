@@ -78,6 +78,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_external_inputs = "docs/results/final-handover-external-inputs-20260624.md"
     final_trial_packet = "docs/results/final-handover-trial-packet-20260624.md"
     final_trial_artifact_bundle = "docs/results/final-handover-trial-artifact-bundle-check-20260624.md"
+    controlled_public_origin_deploy_packet = "docs/results/controlled-public-origin-deploy-packet-20260624.md"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
@@ -95,6 +96,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_external_inputs = str(generated_dir / "final-handover-external-inputs.md")
         final_trial_packet = str(generated_dir / "final-handover-trial-packet.md")
         final_trial_artifact_bundle = str(generated_dir / "final-handover-trial-artifact-bundle-check.md")
+        controlled_public_origin_deploy_packet = str(generated_dir / "controlled-public-origin-deploy-packet.md")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
@@ -116,6 +118,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_operator_checklist.py",
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_controlled_public_config_worksheet.py",
+                "tools/build_controlled_public_origin_deploy_packet.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
@@ -134,6 +137,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
+                "tools/test_build_controlled_public_origin_deploy_packet.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
@@ -269,6 +273,23 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "controlled_public_config_worksheet",
             [python_bin, "tools/build_controlled_public_config_worksheet.py", "--output", controlled_public_config_worksheet],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_origin_deploy_packet_regression",
+            [python_bin, "tools/test_build_controlled_public_origin_deploy_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_origin_deploy_packet",
+            [
+                python_bin,
+                "tools/build_controlled_public_origin_deploy_packet.py",
+                "--output",
+                controlled_public_origin_deploy_packet,
+            ],
             {0},
             30,
         ),
