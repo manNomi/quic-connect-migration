@@ -755,7 +755,85 @@ artifacts/controlled-public-h3-network-change-001/results/client-path-change-sum
 - `no_path_change_after_trigger`: network-change command는 실행됐지만 active path 변화가 관찰되지 않음
 - `client-path-change-summary.json`의 `client_active_path_changed`: client route/interface 관점에서 command가 실제 path 변화를 만들었는지 확인
 
-## 13. Safari controlled public H3 baseline
+## 13. 최종 browser handover trial loop
+
+논문 본 실험으로 카운트되는 browser/mobile handover 결과는 단일 wrapper 실행 결과를 바로 CSV에 붙이지 않는다. 다음 loop를 통과해야 한다.
+
+현재 상태와 private config 작성 항목을 먼저 확인한다.
+
+```bash
+python3 tools/build_controlled_public_config_worksheet.py \
+  --output docs/results/controlled-public-config-worksheet-20260624.md
+
+python3 tools/build_final_handover_operator_checklist.py \
+  --output docs/results/final-handover-operator-checklist-20260624.md
+```
+
+다음 실행할 trial 하나를 선택하고 packet을 만든다.
+
+```bash
+python3 tools/select_next_final_handover_trial.py \
+  --output docs/results/final-handover-next-trial-20260624.md
+
+python3 tools/check_next_final_handover_trial_readiness.py \
+  --output docs/results/final-handover-next-trial-readiness-20260624.md
+
+python3 tools/build_final_handover_trial_packet.py \
+  --output docs/results/final-handover-trial-packet-20260624.md
+```
+
+`final-handover-trial-packet`의 server/client 명령만 실행한다. controlled-public wrapper는 기본적으로 `MIN_ARTIFACT_FREE_GIB=5`를 요구하며, 디스크가 부족하면 artifact를 만들기 전에 중단한다. 작은 smoke test가 아닌 본 실험에서 `MIN_ARTIFACT_FREE_GIB=0`으로 우회하지 않는다.
+
+trial 실행 후 raw artifact bundle부터 확인한다.
+
+```bash
+python3 tools/check_final_handover_trial_artifact_bundle.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --require-complete
+```
+
+그 다음 단일 artifact validation과 CSV dry-run append를 실행한다.
+
+```bash
+python3 tools/validate_final_handover_trial_artifact.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable
+
+python3 tools/append_final_handover_result_row.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --require-artifact-bundle \
+  --output /tmp/final-handover-append-dry-run.md
+```
+
+dry-run에서 `duplicate trial_id=no`, `counts toward final protocol=yes`, `artifact bundle complete=yes`를 확인한 뒤에만 `--apply`를 붙인다.
+
+```bash
+python3 tools/append_final_handover_result_row.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --require-artifact-bundle \
+  --apply
+```
+
+등록 후에는 final protocol audit와 전체 bundle verify를 다시 실행한다.
+
+```bash
+python3 tools/audit_final_browser_handover_trials.py \
+  --output docs/results/final-browser-handover-trial-audit-20260624.md
+
+python3 tools/verify_research_bundle.py \
+  --output docs/results/research-verification-report-20260624.md
+```
+
+`python3 tools/audit_final_browser_handover_trials.py --require-complete`가 exit 0이 되기 전에는 final browser/mobile handover 본 실험 완료를 주장하지 않는다.
+
+## 14. Safari controlled public H3 baseline
 
 Safari는 Chrome NetLog와 같은 browser-internal QUIC artifact가 없으므로 별도 baseline wrapper를 사용한다.
 
@@ -778,7 +856,7 @@ SAFARI_WAIT_SECONDS=8 \
 
 이 실험은 Safari handover가 아니다. Safari real interface-change 실험은 이 baseline과 packet-capture 계획이 준비된 뒤 실행한다.
 
-## 14. AWS NLB 실험 설정
+## 15. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
 
@@ -814,7 +892,7 @@ preflight:
 - region opt-in 상태 확인
 - default VPC/subnet 조회 가능
 
-## 15. AWS NLB transport 재현
+## 16. AWS NLB transport 재현
 
 ```bash
 WORKLOAD=transport \
@@ -833,7 +911,7 @@ PAYLOAD_BYTES=65536 \
 - summary status `PASS`
 - cleanup status `deleted-listener-lb-tg-instances-sg-keypair`
 
-## 16. AWS NLB HTTP/3 post-migration 재현
+## 17. AWS NLB HTTP/3 post-migration 재현
 
 ```bash
 WORKLOAD=h3 \
@@ -851,7 +929,7 @@ PAYLOAD_BYTES=65536 \
 - 같은 target이 두 request를 모두 수신
 - summary status `PASS`
 
-## 17. AWS NLB HTTP/3 mid-flight 재현
+## 18. AWS NLB HTTP/3 mid-flight 재현
 
 Upload:
 
@@ -882,7 +960,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 - qlog에 path validation evidence가 있음
 - summary status `PASS`
 
-## 18. Negative control 재현
+## 19. Negative control 재현
 
 잘못된 Server ID를 의도적으로 넣는다.
 
@@ -906,7 +984,7 @@ EXPECTED_OUTCOME=client-failure \
 
 이 negative control은 “HTTP/3가 켜져 있다”와 “migration continuity가 된다”가 같은 말이 아님을 보여주는 배포 계층 근거다.
 
-## 19. AWS cleanup 확인
+## 20. AWS cleanup 확인
 
 하네스는 정상 종료와 실패 종료 모두에서 cleanup trap을 실행한다. 실행 후 다음을 확인한다.
 
@@ -933,7 +1011,7 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 20. Artifact 정책
+## 21. Artifact 정책
 
 commit 가능한 것:
 
