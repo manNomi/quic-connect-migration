@@ -27,7 +27,7 @@ Generated: `2026-06-24`
 | Android ready | `no` |
 | Safari WebDriver ready | `yes` |
 | disk ready | `yes` |
-| disk free GiB | `42.08` |
+| disk free GiB | `40.41` |
 
 ## Blockers
 

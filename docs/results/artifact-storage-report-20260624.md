@@ -6,22 +6,22 @@ Generated: `2026-06-24`
 
 | metric | value |
 | --- | --- |
-| disk free | `42.1 GiB` |
-| disk free GiB | `42.07` |
+| disk free | `40.3 GiB` |
+| disk free GiB | `40.28` |
 | local artifact roots total | `4.4 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `4.4 GiB` | 20203 | 6974 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `4.4 GiB` | 20204 | 6974 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
 
 | path | size | files | directories |
 | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624` | `1.8 GiB` | 2266 | 971 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624` | `1.8 GiB` | 2267 | 971 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624` | `812.7 MiB` | 1160 | 486 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | 897 | 377 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | 249 | 95 |

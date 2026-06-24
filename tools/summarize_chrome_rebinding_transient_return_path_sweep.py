@@ -26,6 +26,8 @@ CSV_FIELDS = [
     "status",
     "classification",
     "dump_application_complete",
+    "dump_task_elapsed_ms",
+    "dump_task_error_elapsed_ms",
     "dump_has_chrome_error",
     "server_request_count",
     "server_remote_addr_count",
@@ -117,6 +119,8 @@ def row_from_spec(raw: str) -> dict[str, str]:
         "status": str(summary.get("status") or "missing"),
         "classification": str(summary.get("classification") or "missing"),
         "dump_application_complete": str(summary.get("dump_application_complete") is True).lower(),
+        "dump_task_elapsed_ms": str(summary.get("dump_task_elapsed_ms") or ""),
+        "dump_task_error_elapsed_ms": str(summary.get("dump_task_error_elapsed_ms") or ""),
         "dump_has_chrome_error": str(summary.get("dump_has_chrome_error") is True).lower(),
         "server_request_count": str(summary.get("server_request_count") or 0),
         "server_remote_addr_count": str(summary.get("server_remote_addr_count") or 0),
@@ -186,18 +190,21 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
         "",
         "## Runs",
         "",
-        "| profile | workload | drop window | status | classification | app complete | server requests | Chrome QUIC sessions | qlog PATH C/R | dropped A/B packets | max drop ms | client packets A/B | server packets A/B | upload bytes |",
-        "| --- | --- | ---: | --- | --- | --- | ---: | ---: | --- | --- | ---: | --- | --- | ---: |",
+        "| profile | workload | drop window | status | classification | app complete | complete ms | error ms | server requests | Chrome QUIC sessions | qlog PATH C/R | dropped A/B packets | max drop ms | client packets A/B | server packets A/B | upload bytes |",
+        "| --- | --- | ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- | --- | ---: |",
     ]
     for row in rows:
         upload_bytes = row["upload_sink_request_bytes"] or "-"
         lines.append(
             "| {profile} | {workload} | {drop_window} | {status} | `{classification}` | "
-            "{dump_application_complete} | {server_request_count} | {netlog_target_quic_session_count} | "
+            "{dump_application_complete} | {complete_ms} | {error_ms} | {server_request_count} | {netlog_target_quic_session_count} | "
             "{qlog_path_challenge}/{qlog_path_response} | {dropped_server_packets_a}/{dropped_server_packets_b} | "
             "{max_drop_since_switch_ms} | {proxy_client_packets_a}/{proxy_client_packets_b} | "
             "{proxy_server_packets_a}/{proxy_server_packets_b} | {upload_bytes} |".format(
-                **row, upload_bytes=upload_bytes
+                **row,
+                complete_ms=row["dump_task_elapsed_ms"] or "-",
+                error_ms=row["dump_task_error_elapsed_ms"] or "-",
+                upload_bytes=upload_bytes,
             )
         )
     lines.extend(

@@ -198,6 +198,7 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 
 - 이 sweep은 “CM이 된다/안 된다”가 아니라 outage duration과 application completion의 관계를 보여준다.
 - 3초와 6초 사이에 local browser workload continuity boundary가 관찰됐다.
+- PASS row의 DOM complete timing은 7551-10470ms였고, FAIL row의 DOM error timing은 6921-11124ms였다.
 - public Wi-Fi/LTE handover claim으로 쓰려면 active client path change와 controlled public origin evidence가 추가로 필요하다.
 
 ## 5. 논문용 evidence chain

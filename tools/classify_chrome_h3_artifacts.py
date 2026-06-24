@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -201,6 +202,40 @@ def dump_application_complete(dump: str, workload: str) -> bool:
     return True
 
 
+def dump_data_attr(dump: str, name: str) -> str | None:
+    match = re.search(rf'\bdata-{re.escape(name)}="([^"]*)"', dump)
+    if not match:
+        return None
+    return match.group(1)
+
+
+def dump_data_attr_int(dump: str, name: str) -> int | None:
+    value = dump_data_attr(dump, name)
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except ValueError:
+        return None
+
+
+def dump_task_timing(dump: str, workload: str) -> dict[str, int | None]:
+    if "upload" in workload:
+        prefix = "upload"
+    elif "downlink" in workload:
+        prefix = "downlink"
+    elif "poll" in workload:
+        prefix = "poll"
+    elif "slow" in workload:
+        prefix = "slow"
+    else:
+        return {"elapsed_ms": None, "error_elapsed_ms": None}
+    return {
+        "elapsed_ms": dump_data_attr_int(dump, f"{prefix}-elapsed-ms"),
+        "error_elapsed_ms": dump_data_attr_int(dump, f"{prefix}-error-elapsed-ms"),
+    }
+
+
 def classify(summary: dict[str, object]) -> str:
     request_reached_server = bool(summary["request_reached_server"])
     qlog_has_path_validation = bool(summary["qlog_has_path_validation"])
@@ -290,6 +325,7 @@ def main() -> int:
             "network_event_counts": {},
         }
     request_reached_server = server.get("ok") is True and len(requests) >= args.expected_requests
+    dump_timing = dump_task_timing(dump, args.workload)
 
     summary: dict[str, object] = {
         "status": "PASS",
@@ -334,6 +370,8 @@ def main() -> int:
         "dump_dom_bytes": len(dump),
         "dump_has_chrome_error": "ERR_" in dump,
         "dump_application_complete": dump_application_complete(dump, args.workload),
+        "dump_task_elapsed_ms": dump_timing["elapsed_ms"],
+        "dump_task_error_elapsed_ms": dump_timing["error_elapsed_ms"],
     }
     summary["classification"] = classify(summary)
 

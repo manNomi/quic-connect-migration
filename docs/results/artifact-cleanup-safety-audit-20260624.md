@@ -7,7 +7,7 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `42.0 GiB` |
+| disk free | `40.2 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `4.4 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
@@ -17,7 +17,7 @@ Generated: `2026-06-24`
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
 | protected referenced/planned size | `4.3 GiB` |
-| projected free if review-unreferenced removed | `42.1 GiB` |
+| projected free if review-unreferenced removed | `40.3 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 

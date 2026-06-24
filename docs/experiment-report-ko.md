@@ -49,7 +49,7 @@
 
 return-path drop control도 추가했다. B-side server packet만 drop한 downlink/upload 2회는 2/2 PASS였고, A+B server packet을 모두 drop한 downlink/upload 2회는 2/2 FAIL이었다. 특히 실패 row도 server request와 qlog/Chrome NetLog transport evidence는 남겼지만 DOM application completion이 false였다. 따라서 논문에서는 qlog path evidence와 task completion을 별도 축으로 분리해야 한다.
 
-마지막으로 transient return-path outage sweep을 추가했다. A+B server-to-client packet drop을 250ms, 1500ms, 3000ms, 6000ms, 9000ms window로 제한했고, 1MiB downlink/upload 기준 250ms/1500ms/3000ms는 6/6 PASS, 6000ms/9000ms는 4/4 FAIL이었다. 이 결과는 local NAT rebinding harness에서의 outage-tolerance boundary이며, 실제 Wi-Fi/LTE handover 성공으로 일반화하지 않는다.
+마지막으로 transient return-path outage sweep을 추가했다. A+B server-to-client packet drop을 250ms, 1500ms, 3000ms, 6000ms, 9000ms window로 제한했고, 1MiB downlink/upload 기준 250ms/1500ms/3000ms는 6/6 PASS, 6000ms/9000ms는 4/4 FAIL이었다. PASS row는 DOM complete timing을 7551-10470ms 범위로 남겼고, FAIL row는 DOM error timing을 6921-11124ms 범위로 남겼다. 이 결과는 local NAT rebinding harness에서의 outage-tolerance boundary이며, 실제 Wi-Fi/LTE handover 성공으로 일반화하지 않는다.
 
 ## 3. 실험 환경
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from classify_chrome_h3_artifacts import classify
+from classify_chrome_h3_artifacts import classify, dump_task_timing
 
 
 def base_summary(
@@ -123,6 +123,18 @@ def test_browser_application_failure_overrides_transport_evidence() -> None:
     )
 
 
+def test_dump_task_timing_reads_elapsed_attributes() -> None:
+    dump = '<body data-downlink-elapsed-ms="8421" data-upload-error-elapsed-ms="6012"></body>'
+    assert dump_task_timing(dump, "rebinding-proxy-downlink") == {
+        "elapsed_ms": 8421,
+        "error_elapsed_ms": None,
+    }
+    assert dump_task_timing(dump, "rebinding-proxy-upload") == {
+        "elapsed_ms": None,
+        "error_elapsed_ms": 6012,
+    }
+
+
 def main() -> int:
     test_rebinding_path_validation_without_tuple_change_gets_nat_label()
     test_rebinding_probe_without_response_is_not_validation()
@@ -130,6 +142,7 @@ def main() -> int:
     test_non_rebinding_multiple_sessions_keep_network_change_labels()
     test_rebinding_single_session_tuple_change_is_only_possible_continuity()
     test_browser_application_failure_overrides_transport_evidence()
+    test_dump_task_timing_reads_elapsed_attributes()
     print("classify_chrome_h3_artifacts=ok")
     return 0
 

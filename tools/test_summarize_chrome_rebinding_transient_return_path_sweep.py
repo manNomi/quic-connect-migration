@@ -43,6 +43,8 @@ def write_sweep_artifact(artifact_dir: Path, *, workload: str, status: str, drop
                 "status": status,
                 "classification": "browser_application_task_failed" if status == "FAIL" else "nat_rebinding_path_validation_without_observed_tuple_change",
                 "dump_application_complete": status == "PASS",
+                "dump_task_elapsed_ms": 8123 if status == "PASS" else None,
+                "dump_task_error_elapsed_ms": None,
                 "dump_has_chrome_error": False,
                 "server_request_count": len(server_requests),
                 "server_remote_addr_count": 1,
@@ -93,6 +95,7 @@ def test_rows_and_markdown() -> None:
         rows = [row_from_spec(f"downlink:{pass_artifact}"), row_from_spec(f"upload:{fail_artifact}")]
         assert rows[0]["status"] == "PASS"
         assert rows[0]["drop_window"] == "250ms"
+        assert rows[0]["dump_task_elapsed_ms"] == "8123"
         assert rows[1]["status"] == "FAIL"
         assert rows[1]["max_drop_since_switch_ms"] == "2999"
         markdown = emit_markdown(rows)
@@ -109,6 +112,7 @@ def test_csv_writer_uses_stable_header() -> None:
         text = csv_path.read_text(encoding="utf-8")
         assert text.startswith("profile,workload,run_id,configured_bytes")
         assert "drop_window_ms" in text.splitlines()[0]
+        assert "dump_task_elapsed_ms" in text.splitlines()[0]
 
 
 def main() -> int:

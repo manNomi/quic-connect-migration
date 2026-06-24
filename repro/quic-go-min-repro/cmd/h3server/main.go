@@ -672,10 +672,11 @@ func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, he
 	body += "<script>"
 	body += fmt.Sprintf("const streamUrl=%q, heartbeatUrl=%q, heartbeat=%t, heartbeatDelay=%d;", streamURL, heartbeatURL, heartbeat, heartbeatDelayMillis)
 	body += "const events=document.getElementById('events');"
+	body += "const startedAt=performance.now();"
 	body += "function note(line){events.textContent+=line+'\\n';}"
-	body += "async function runStream(){const res=await fetch(streamUrl,{cache:'no-store'});const reader=res.body.getReader();let total=0;for(;;){const item=await reader.read();if(item.done)break;total+=item.value.byteLength;note('chunk:'+total);}document.body.dataset.downlinkBytes=String(total);document.body.dataset.downlinkComplete='true';document.getElementById('status').textContent='complete';}"
+	body += "async function runStream(){const res=await fetch(streamUrl,{cache:'no-store'});const reader=res.body.getReader();let total=0;for(;;){const item=await reader.read();if(item.done)break;total+=item.value.byteLength;note('chunk:'+total);}document.body.dataset.downlinkBytes=String(total);document.body.dataset.downlinkElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.downlinkComplete='true';document.getElementById('status').textContent='complete';}"
 	body += "if(heartbeat){setTimeout(()=>{fetch(heartbeatUrl+Date.now(),{cache:'no-store'}).then((res)=>{document.body.dataset.heartbeatStatus=String(res.status);note('heartbeat:'+res.status);}).catch((error)=>{document.body.dataset.heartbeatError=String(error);note('heartbeat-error:'+error);});},heartbeatDelay);}"
-	body += "runStream().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.downlinkError=String(error);note('stream-error:'+error);});"
+	body += "runStream().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.downlinkErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.downlinkError=String(error);note('stream-error:'+error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body
@@ -690,13 +691,14 @@ func buildBrowserUploadHTML(label string, durationMillis, chunks, size int) stri
 	body += "<script>"
 	body += fmt.Sprintf("const uploadUrl=%q,totalBytes=%d,chunks=%d,durationMs=%d;", uploadURL, size, chunks, durationMillis)
 	body += "const events=document.getElementById('events');"
+	body += "const startedAt=performance.now();"
 	body += "function note(line){events.textContent+=line+'\\n';}"
 	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
 	body += "function chunk(index,size){const data=new Uint8Array(size);for(let i=0;i<size;i++){data[i]=(index+i)%251;}return data;}"
 	body += "async function runUpload(){let sent=0,index=0;const chunkBytes=Math.max(1,Math.ceil(totalBytes/chunks));const delay=Math.max(1,Math.floor(durationMs/chunks));"
 	body += "const stream=new ReadableStream({async pull(controller){if(sent>=totalBytes){controller.close();return;}const next=Math.min(chunkBytes,totalBytes-sent);controller.enqueue(chunk(index,next));sent+=next;index+=1;document.body.dataset.uploadBytes=String(sent);note('sent:'+sent);if(sent<totalBytes){await sleep(delay);}}});"
-	body += "const res=await fetch(uploadUrl,{method:'POST',body:stream,duplex:'half',cache:'no-store',headers:{'content-type':'application/octet-stream'}});const json=await res.json();document.body.dataset.uploadStatus=String(res.status);document.body.dataset.uploadResponseBytes=String(json.bytes||0);document.body.dataset.uploadComplete='true';note('upload:'+res.status+':'+(json.bytes||0));document.getElementById('status').textContent='complete';}"
-	body += "runUpload().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.uploadError=String(error);note('upload-error:'+error);});"
+	body += "const res=await fetch(uploadUrl,{method:'POST',body:stream,duplex:'half',cache:'no-store',headers:{'content-type':'application/octet-stream'}});const json=await res.json();document.body.dataset.uploadStatus=String(res.status);document.body.dataset.uploadResponseBytes=String(json.bytes||0);document.body.dataset.uploadElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.uploadComplete='true';note('upload:'+res.status+':'+(json.bytes||0));document.getElementById('status').textContent='complete';}"
+	body += "runUpload().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.uploadErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.uploadError=String(error);note('upload-error:'+error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body
