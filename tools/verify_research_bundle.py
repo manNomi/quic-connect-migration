@@ -73,6 +73,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
     final_trial_acceptance_scorecard = "docs/results/final-trial-acceptance-scorecard-20260624.md"
     final_trial_acceptance_scorecard_csv = "data/final-trial-acceptance-scorecard-20260624.csv"
+    final_protocol_readiness_matrix = "docs/results/final-protocol-readiness-matrix-20260624.md"
+    final_protocol_readiness_matrix_csv = "data/final-protocol-readiness-matrix-20260624.csv"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
     final_readiness = "docs/results/final-browser-handover-readiness-20260624.md"
     final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
@@ -97,6 +99,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
         final_trial_acceptance_scorecard = str(generated_dir / "final-trial-acceptance-scorecard.md")
         final_trial_acceptance_scorecard_csv = str(generated_dir / "final-trial-acceptance-scorecard.csv")
+        final_protocol_readiness_matrix = str(generated_dir / "final-protocol-readiness-matrix.md")
+        final_protocol_readiness_matrix_csv = str(generated_dir / "final-protocol-readiness-matrix.csv")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
         final_readiness = str(generated_dir / "final-browser-handover-readiness.md")
         final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
@@ -130,6 +134,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_operator_checklist.py",
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_final_trial_acceptance_scorecard.py",
+                "tools/build_final_protocol_readiness_matrix.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
                 "tools/build_paper_evidence_gap_register.py",
@@ -152,6 +157,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_build_final_trial_acceptance_scorecard.py",
+                "tools/test_build_final_protocol_readiness_matrix.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
                 "tools/test_build_paper_evidence_gap_register.py",
@@ -218,6 +224,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             ],
             {0},
             30,
+        ),
+        (
+            "final_protocol_readiness_matrix_regression",
+            [python_bin, "tools/test_build_final_protocol_readiness_matrix.py"],
+            {0},
+            30,
+        ),
+        (
+            "final_protocol_readiness_matrix",
+            [
+                python_bin,
+                "tools/build_final_protocol_readiness_matrix.py",
+                "--output",
+                final_protocol_readiness_matrix,
+                "--csv-output",
+                final_protocol_readiness_matrix_csv,
+            ],
+            {0},
+            60,
         ),
         (
             "final_browser_handover_trial_audit",

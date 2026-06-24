@@ -1509,3 +1509,28 @@ python3 tools/build_final_trial_acceptance_scorecard.py \
 ```bash
 python3 tools/test_build_final_trial_acceptance_scorecard.py
 ```
+
+## 47. `tools/build_final_protocol_readiness_matrix.py`
+
+final browser handover protocol의 모든 planned execution을 현재 local readiness gate에 대입해 한 장의 matrix로 만든다. `next trial` 하나만 보는 것이 아니라 baseline, no-change baseline, active Chrome, P1 Safari/Android 후보 전체가 어떤 gate 때문에 막히는지 보여준다.
+
+산출물:
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/results/final-protocol-readiness-matrix-20260624.md` | 사람이 읽는 planned trial별 readiness matrix |
+| `data/final-protocol-readiness-matrix-20260624.csv` | planned trial별 gate 상태를 담은 machine-readable matrix |
+
+실행:
+
+```bash
+python3 tools/build_final_protocol_readiness_matrix.py \
+  --output docs/results/final-protocol-readiness-matrix-20260624.md \
+  --csv-output data/final-protocol-readiness-matrix-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_final_protocol_readiness_matrix.py
+```

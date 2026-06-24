@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "392d9eb",
+    "commit": "a4ae6b8",
     "branch": "main"
   },
   "experiment_corpus": {
@@ -16,8 +16,8 @@
     "final_required_rows": 6
   },
   "verification": {
-    "checks": "50",
-    "passed": "50",
+    "checks": "52",
+    "passed": "52",
     "ok": "yes"
   },
   "research_audit": {
@@ -40,12 +40,13 @@
     "workflow": "research-verify",
     "branch": "main",
     "event": "push",
-    "run_id": "28102189828",
-    "duration": "32s"
+    "run_id": "28102530178",
+    "duration": "35s"
   },
   "key_paths": {
     "audit": "docs/results/research-bundle-audit-20260624.md",
     "verification": "docs/results/research-verification-report-20260624.md",
+    "final_protocol_readiness_matrix": "docs/results/final-protocol-readiness-matrix-20260624.md",
     "final_trial_acceptance_scorecard": "docs/results/final-trial-acceptance-scorecard-20260624.md",
     "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
     "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
