@@ -97,6 +97,7 @@
 - [Browser CM observability readiness](docs/results/browser-cm-observability-readiness-20260624.md)
 - [Safari controlled public H3 baseline harness](docs/results/safari-controlled-public-baseline-harness-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
+- [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
