@@ -4,7 +4,7 @@
 
 ## 1. 목적
 
-지금까지 Chrome public natural H3 positive control은 Google/Cloudflare 같은 third-party endpoint로 수행했다. 그러나 connection migration 연구의 핵심 workload인 upload, streaming download, dashboard polling은 third-party endpoint에서 제어할 수 없다.
+지금까지 Chrome public H3 discovery control은 Google/Cloudflare/YouTube 같은 third-party endpoint로 수행했다. 그러나 재분류 결과 third-party endpoint NetLog만으로 application HTTP/3를 확정할 수 없었고, connection migration 연구의 핵심 workload인 upload, streaming download, dashboard polling도 제어할 수 없다.
 
 따라서 다음 연구에는 연구자가 제어하는 public WebPKI origin이 필요하다.
 
@@ -86,7 +86,7 @@ CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
 
 1. readiness checker가 DNS/TLS/HTTP response를 통과한다.
 2. readiness checker 또는 response header에서 `Alt-Svc: h3`가 관찰된다.
-3. Chrome classifier가 `public_natural_h3_observed`를 반환한다.
+3. Chrome classifier가 `public_natural_h3_observed`를 반환하거나, server request log와 qlog가 application HTTP/3 처리를 직접 증명한다.
 4. server request log에서 target workload request가 관찰된다.
 5. server qlog에 HTTP/3 frame evidence가 남는다.
 
@@ -105,7 +105,7 @@ CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
 
 ## 5. Wrapper smoke test
 
-controlled public origin은 아직 없지만, browser baseline wrapper 자체는 기존 public positive control인 Google `generate_204`로 검증했다.
+controlled public origin은 아직 없지만, browser baseline wrapper 자체는 Google `generate_204`로 smoke test했다. 이 smoke test는 wrapper의 readiness -> Chrome -> classifier 흐름을 검증하기 위한 것이며, controlled origin의 application HTTP/3 성공을 대체하지 않는다.
 
 실행:
 
@@ -123,20 +123,22 @@ CHROME_NET_LOG_CAPTURE_MODE=Default \
 
 | 항목 | 값 |
 | --- | --- |
-| status | `PASS` |
-| classification | `public_natural_h3_observed` |
+| status | `PASS_NEGATIVE_CONTROL` |
+| classification | `public_h3_discovery_without_application_h3` |
 | bootstrap target QUIC_SESSION | `1` |
-| bootstrap target using_quic jobs | `3` |
+| bootstrap target dns_alpn_h3 jobs | `3` |
+| bootstrap target application using_quic jobs | `0` |
 | second target QUIC_SESSION | `1` |
-| second target using_quic jobs | `3` |
+| second target dns_alpn_h3 jobs | `3` |
+| second target application using_quic jobs | `0` |
 | target broken alternative service | `false` |
 
-Chrome headless는 timeout exit `124`를 남겼지만 bootstrap/second NetLog 모두 JSON으로 파싱됐고 target HTTP/3 evidence가 확인됐다. 따라서 wrapper의 readiness -> Chrome NetLog classification 흐름은 동작한다.
+Chrome headless는 timeout exit `124`를 남겼지만 bootstrap/second NetLog 모두 JSON으로 파싱됐고 target H3 discovery evidence가 확인됐다. 다만 application/main job은 non-QUIC이므로 이 결과는 application HTTP/3 성공이 아니다. 따라서 wrapper의 readiness -> Chrome NetLog classification 흐름은 동작하지만, controlled public origin에서는 server log/qlog까지 함께 봐야 한다.
 
 ## 6. 논문상 의미
 
 이 단계는 결론을 만들기 위한 실험이 아니라, browser CM 실험의 해석 가능성을 확보하는 통제 조건이다.
 
-> Chrome/Cronet handover 실험은 public WebPKI natural H3 baseline이 먼저 성공한 origin에서만 수행해야 한다.
+> Chrome/Cronet handover 실험은 public WebPKI application H3 baseline이 먼저 성공한 controlled origin에서만 수행해야 한다.
 
 그렇지 않으면 실패 원인이 connection migration이 아니라 HTTP/3 discovery, certificate, origin policy, server reachability 중 어디인지 분리할 수 없다.

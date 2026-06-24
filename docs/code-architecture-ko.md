@@ -440,7 +440,7 @@ classifier:
 
 현재 local control에서는 binary-response 실험이 `alt_svc_advertised_but_h3_not_observed`, self-signed HTML diagnostic이 `alt_svc_quic_candidate_cert_rejected`, mkcert localhost diagnostic이 `alt_svc_marked_broken_without_h3_request`로 분류됐다.
 
-## 10. Chrome public WebPKI natural H3 baseline
+## 10. Chrome public WebPKI H3 discovery baseline
 
 script:
 
@@ -448,7 +448,7 @@ script:
 
 목적:
 
-local self-signed/mkcert origin이 아니라 public trusted certificate를 가진 origin에서 Chrome이 forced QUIC 없이 natural HTTP/3를 사용하는지 확인한다. 이 실험은 migration 실험이 아니라 browser discovery positive control이다.
+local self-signed/mkcert origin이 아니라 public trusted certificate를 가진 origin에서 Chrome이 forced QUIC 없이 H3 discovery 후보를 만드는지 확인한다. 이 실험은 migration 실험이 아니며, application request가 HTTP/3로 처리됐는지는 discovery job과 별도 기준으로 판정한다.
 
 흐름:
 
@@ -457,7 +457,7 @@ public HTTPS target URL 선택
   -> Chrome headless bootstrap navigation
   -> 같은 profile로 second navigation
   -> bootstrap/second NetLog 저장
-  -> target host 기준 QUIC_SESSION, using_quic job, Alt-Svc broken state 분류
+  -> target host 기준 QUIC_SESSION, dns_alpn_h3 discovery job, application using_quic job, Alt-Svc broken state 분류
 ```
 
 classifier:
@@ -468,14 +468,18 @@ classifier:
 
 | classification | 의미 |
 | --- | --- |
-| `public_natural_h3_observed` | public origin에서 forced QUIC 없이 target HTTP/3 사용이 관찰됨 |
+| `public_natural_h3_observed` | public origin에서 forced QUIC 없이 target application HTTP/3 사용이 관찰됨 |
+| `public_h3_discovery_without_application_h3` | H3 discovery 또는 QUIC session 단서는 있으나 application/main request의 HTTP/3 사용은 확인되지 않음 |
 | `public_alt_svc_marked_broken` | target alternative service가 broken으로 기록됨 |
 | `public_alt_svc_or_request_observed_but_h3_not_confirmed` | request/Alt-Svc evidence는 있으나 target H3 사용을 확정하지 못함 |
 
-현재 positive control:
+현재 재분류 결과:
 
 - `https://cloudflare-quic.com/cdn-cgi/trace`
 - `https://www.google.com/generate_204`
+- `https://www.youtube.com/generate_204`
+
+세 endpoint 모두 H3 discovery control로는 유용했지만, artifact 재분류 기준으로 application HTTP/3 evidence는 확보하지 못했다.
 
 ## 11. Controlled public WebPKI origin gate
 
@@ -487,7 +491,7 @@ classifier:
 
 목적:
 
-연구자가 제어하는 public DNS/WebPKI origin에서 Chrome natural HTTP/3 no-change baseline을 먼저 통과시키기 위한 gate다. 이 gate가 통과한 뒤에만 active network change를 넣는다.
+연구자가 제어하는 public DNS/WebPKI origin에서 Chrome application HTTP/3 no-change baseline을 먼저 통과시키기 위한 gate다. 이 gate가 통과한 뒤에만 active network change를 넣는다.
 
 흐름:
 
@@ -542,7 +546,7 @@ RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
 RUN_ID=chrome-h3-alt-svc-localhost-20260624 ADDR=localhost:4443 LISTEN_ADDR=127.0.0.1:4443 TCP_ADDR=127.0.0.1:4443 ./scripts/run-chrome-h3-alt-svc.sh
 ```
 
-### 12.6 Chrome public natural H3 baseline
+### 12.6 Chrome public H3 discovery baseline
 
 ```bash
 cd repro/quic-go-min-repro

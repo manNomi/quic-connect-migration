@@ -48,7 +48,7 @@ python3 tools/scan_public_origin_readiness.py \
 
 이번 관찰의 의미:
 
-1. Google `generate_204`와 YouTube `generate_204`는 public browser H3 positive control과 lightweight workload candidate로 적합하다.
+1. Google `generate_204`와 YouTube `generate_204`는 public browser H3 discovery control과 lightweight workload candidate로 적합하다.
 2. Cloudflare trace endpoint는 H3 discovery candidate지만 final status가 404라 workload candidate는 아니다.
 3. Amazon은 H3 Alt-Svc는 있으나 503이라 안정적인 workload target으로 부적합하다.
 4. GitHub/Naver/Kakao는 HTTPS는 정상이나 이번 관찰에서 H3 discovery candidate가 아니다.
@@ -57,4 +57,4 @@ python3 tools/scan_public_origin_readiness.py \
 
 third-party endpoint로는 browser discovery와 small no-change baseline까지만 검증한다. upload, streaming download, dashboard polling, handover continuity는 controlled public WebPKI origin에서 수행해야 한다.
 
-다음 public third-party 추가 실험 후보는 YouTube `generate_204`다. Google과 같은 계열이지만 별도 hostname이므로 Chrome natural H3 baseline 반복 검증에 쓸 수 있다.
+YouTube `generate_204`는 후속 Chrome 실행에서 H3 Alt-Svc와 `dns_alpn_h3` discovery job은 보였지만 application/main request는 non-QUIC으로 재분류됐다. 따라서 이 readiness survey는 target 후보 선별 결과이지, application HTTP/3 성공 증거가 아니다.

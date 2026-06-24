@@ -182,7 +182,7 @@ python3 tools/classify_chrome_alt_svc_artifacts.py \
 
 ## 7. `tools/classify_chrome_public_h3_artifacts.py`
 
-Chrome public WebPKI natural HTTP/3 baseline artifact를 NetLog 기준으로 분류한다.
+Chrome public WebPKI H3 discovery/application artifact를 NetLog 기준으로 분류한다.
 
 실행:
 
@@ -196,22 +196,26 @@ python3 tools/classify_chrome_public_h3_artifacts.py \
 
 | 항목 | 의미 |
 | --- | --- |
-| `classification` | public origin에서 natural HTTP/3가 관찰됐는지 |
-| `bootstrap_h3_observed` | bootstrap NetLog에서 target HTTP/3 evidence가 있는지 |
-| `second_h3_observed` | second NetLog에서 target HTTP/3 evidence가 있는지 |
+| `classification` | public origin에서 H3 discovery 또는 application HTTP/3가 관찰됐는지 |
+| `bootstrap_h3_observed` | bootstrap NetLog에서 target application HTTP/3 evidence가 있는지 |
+| `second_h3_observed` | second NetLog에서 target application HTTP/3 evidence가 있는지 |
 | `target_quic_session_count` | target host/port의 QUIC session 수 |
-| `target_using_quic_job_count` | target host/port의 `HTTP_STREAM_JOB using_quic=true` 수 |
+| `target_using_quic_job_count` | target host/port의 전체 `HTTP_STREAM_JOB using_quic=true` 수 |
+| `target_dns_alpn_h3_job_count` | `dns_alpn_h3` discovery job 수 |
+| `target_application_using_quic_job_count` | discovery가 아닌 application job 중 `using_quic=true` 수 |
+| `target_main_non_quic_job_count` | main request job 중 non-QUIC 수 |
 | `target_broken_alternative_service` | Alt-Svc가 broken으로 기록됐는지 |
 
 classification:
 
 | classification | 의미 |
 | --- | --- |
-| `public_natural_h3_observed` | public origin에서 target HTTP/3 사용이 관찰됨 |
+| `public_natural_h3_observed` | public origin에서 target application HTTP/3 사용이 관찰됨 |
+| `public_h3_discovery_without_application_h3` | H3 discovery 또는 QUIC session 단서는 있으나 application HTTP/3는 확인되지 않음 |
 | `public_alt_svc_marked_broken` | target alternative service가 broken으로 기록됨 |
 | `public_alt_svc_or_request_observed_but_h3_not_confirmed` | target request 또는 Alt-Svc evidence는 있으나 HTTP/3 사용은 확정 불가 |
 
-이 도구는 local Alt-Svc negative control과 public WebPKI positive control을 분리하기 위한 것이다. migration evidence는 판정하지 않는다.
+이 도구는 local Alt-Svc negative control과 public WebPKI discovery control을 분리하기 위한 것이다. migration evidence는 판정하지 않는다.
 
 ## 8. `tools/scan_public_alt_svc.py`
 
@@ -271,7 +275,7 @@ python3 tools/check_public_origin_readiness.py \
 | `has_h3_alt_svc` | response chain에서 `h3` Alt-Svc가 관찰됐는지 |
 | `errors` | DNS/TLS/curl 오류 |
 
-이 도구가 통과해도 migration이 증명되는 것은 아니다. Chrome NetLog와 server qlog를 포함한 no-change natural H3 baseline을 추가로 통과해야 한다.
+이 도구가 통과해도 migration이 증명되는 것은 아니다. Chrome NetLog와 server qlog를 포함한 no-change application H3 baseline을 추가로 통과해야 한다.
 
 ## 10. `tools/scan_public_origin_readiness.py`
 
@@ -342,9 +346,9 @@ python3 tools/check_handover_readiness.py --format json --output data/handover-r
 | `scripts/run-local-h3-midflight.sh` | HTTP/3 upload/download body in-flight migration |
 | `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll/slow baseline and optional network-change hook |
 | `scripts/run-chrome-h3-alt-svc.sh` | Chrome natural Alt-Svc HTTP/3 control |
-| `scripts/run-chrome-public-h3.sh` | Chrome public WebPKI natural HTTP/3 baseline |
+| `scripts/run-chrome-public-h3.sh` | Chrome public WebPKI H3 discovery/application baseline |
 | `scripts/run-controlled-public-h3-server.sh` | WebPKI cert/key를 사용하는 controlled public H3 origin server wrapper |
-| `scripts/run-controlled-public-h3-browser-baseline.sh` | controlled public origin readiness + Chrome natural H3 baseline wrapper |
+| `scripts/run-controlled-public-h3-browser-baseline.sh` | controlled public origin readiness + Chrome application H3 baseline wrapper |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |

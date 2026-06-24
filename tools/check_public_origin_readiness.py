@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check readiness of a controlled public HTTPS origin for Chrome natural H3 tests."""
+"""Check readiness of a controlled public HTTPS origin for Chrome H3 tests."""
 
 from __future__ import annotations
 

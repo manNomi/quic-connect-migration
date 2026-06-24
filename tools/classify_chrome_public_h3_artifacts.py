@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Classify Chrome public-origin natural HTTP/3 artifacts."""
+"""Classify Chrome public-origin H3 discovery/application artifacts."""
 
 from __future__ import annotations
 
@@ -52,6 +52,10 @@ def summarize_netlog(path: Path, raw_url: str) -> dict[str, object]:
             "parser_mode": "text_fallback" if text else "missing",
             "target_quic_session_count": compact.count(f'"host":"{host}"'),
             "target_using_quic_job_count": compact.count('"using_quic":true'),
+            "target_dns_alpn_h3_job_count": compact.count('"type":"dns_alpn_h3"'),
+            "target_application_using_quic_job_count": 0,
+            "target_main_using_quic_job_count": 0,
+            "target_main_non_quic_job_count": 0,
             "target_http_stream_job_count": sum(compact.count(f'"destination":"{origin}"') for origin in origins),
             "target_url_request_count": compact.count(f'"url":"https://{host}/'),
             "target_advertised_alternative_service": "alternative_service" in text and host in text,
@@ -63,6 +67,10 @@ def summarize_netlog(path: Path, raw_url: str) -> dict[str, object]:
     reverse_types = chrome_h3.reverse_netlog_event_types(netlog)
     quic_sessions = 0
     using_quic_jobs = 0
+    dns_alpn_h3_jobs = 0
+    application_using_quic_jobs = 0
+    main_using_quic_jobs = 0
+    main_non_quic_jobs = 0
     http_stream_jobs = 0
     non_quic_jobs = 0
     url_requests = 0
@@ -84,11 +92,20 @@ def summarize_netlog(path: Path, raw_url: str) -> dict[str, object]:
             destination = params.get("destination")
             logical_destination = params.get("logical_destination")
             if destination in origins or logical_destination in origins:
+                job_type = params.get("type")
                 http_stream_jobs += 1
                 if params.get("using_quic") is True:
                     using_quic_jobs += 1
+                    if job_type == "dns_alpn_h3":
+                        dns_alpn_h3_jobs += 1
+                    else:
+                        application_using_quic_jobs += 1
+                    if job_type == "main":
+                        main_using_quic_jobs += 1
                 else:
                     non_quic_jobs += 1
+                    if job_type == "main":
+                        main_non_quic_jobs += 1
 
         if name == "URL_REQUEST_START_JOB" and str(params.get("url", "")).startswith(f"https://{host}/"):
             url_requests += 1
@@ -111,6 +128,10 @@ def summarize_netlog(path: Path, raw_url: str) -> dict[str, object]:
         "target_origins": sorted(origins),
         "target_quic_session_count": quic_sessions,
         "target_using_quic_job_count": using_quic_jobs,
+        "target_dns_alpn_h3_job_count": dns_alpn_h3_jobs,
+        "target_application_using_quic_job_count": application_using_quic_jobs,
+        "target_main_using_quic_job_count": main_using_quic_jobs,
+        "target_main_non_quic_job_count": main_non_quic_jobs,
         "target_http_stream_job_count": http_stream_jobs,
         "target_non_quic_job_count": non_quic_jobs,
         "target_url_request_count": url_requests,
@@ -136,22 +157,31 @@ def main() -> int:
 
     bootstrap_h3_observed = (
         int(bootstrap.get("target_quic_session_count") or 0) > 0
-        and int(bootstrap.get("target_using_quic_job_count") or 0) > 0
+        and int(bootstrap.get("target_application_using_quic_job_count") or 0) > 0
     )
     second_h3_observed = (
         int(second.get("target_quic_session_count") or 0) > 0
-        and int(second.get("target_using_quic_job_count") or 0) > 0
+        and int(second.get("target_application_using_quic_job_count") or 0) > 0
     )
     any_h3_observed = bootstrap_h3_observed or second_h3_observed
     any_alt_advertised = bool(bootstrap.get("target_advertised_alternative_service") or second.get("target_advertised_alternative_service"))
     any_broken = bool(bootstrap.get("target_broken_alternative_service") or second.get("target_broken_alternative_service"))
     any_target_request = int(bootstrap.get("target_url_request_count") or 0) + int(second.get("target_url_request_count") or 0) > 0
+    any_h3_discovery = (
+        int(bootstrap.get("target_dns_alpn_h3_job_count") or 0)
+        + int(second.get("target_dns_alpn_h3_job_count") or 0)
+        + int(bootstrap.get("target_quic_session_count") or 0)
+        + int(second.get("target_quic_session_count") or 0)
+    ) > 0
 
     if any_h3_observed:
         classification = "public_natural_h3_observed"
         status = "PASS"
     elif any_broken:
         classification = "public_alt_svc_marked_broken"
+        status = "PASS_NEGATIVE_CONTROL"
+    elif any_h3_discovery:
+        classification = "public_h3_discovery_without_application_h3"
         status = "PASS_NEGATIVE_CONTROL"
     elif any_alt_advertised or any_target_request:
         classification = "public_alt_svc_or_request_observed_but_h3_not_confirmed"
@@ -172,6 +202,7 @@ def main() -> int:
         "bootstrap_h3_observed": bootstrap_h3_observed,
         "second_h3_observed": second_h3_observed,
         "any_h3_observed": any_h3_observed,
+        "any_h3_discovery": any_h3_discovery,
         "any_target_request": any_target_request,
     }
 

@@ -454,11 +454,11 @@ mkcert 진단 결과:
 - `localhost`: `classification=alt_svc_marked_broken_without_h3_request`
 - `127.0.0.1`: `classification=alt_svc_quic_candidate_cert_rejected`
 - 두 경우 모두 application request는 `HTTP/1.1`
-- public WebPKI origin으로 natural HTTP/3 baseline을 다시 확인해야 한다.
+- public WebPKI origin으로 H3 discovery baseline을 다시 확인하되, application HTTP/3 여부는 별도 기준으로 판정해야 한다.
 
-## 10. Chrome public WebPKI natural HTTP/3 baseline 재현
+## 10. Chrome public WebPKI H3 discovery baseline 재현
 
-local Alt-Svc control이 실패했을 때, Chrome 자체가 natural HTTP/3를 못 쓰는지 또는 local origin/trust 조건이 문제인지 분리한다.
+local Alt-Svc control이 실패했을 때, Chrome 자체가 H3 discovery를 못 하는지 또는 local origin/trust 조건이 문제인지 분리한다. 단, public third-party endpoint의 NetLog만으로 application request가 HTTP/3로 처리됐다고 단정하지 않는다.
 
 Cloudflare QUIC trace endpoint:
 
@@ -484,17 +484,35 @@ CHROME_NET_LOG_CAPTURE_MODE=Default \
 ./scripts/run-chrome-public-h3.sh
 ```
 
-성공 기준:
+YouTube generate_204 endpoint:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-public-h3-youtube-generate204-20260624 \
+TARGET_URL=https://www.youtube.com/generate_204 \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=1000 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+./scripts/run-chrome-public-h3.sh
+```
+
+Discovery control 기준:
+
+- `classification=public_h3_discovery_without_application_h3` 또는 `public_natural_h3_observed`
+- target host에 대한 `dns_alpn_h3` job 또는 `QUIC_SESSION` evidence가 있음
+- `broken_alternative_service=false`
+
+Application HTTP/3 확정 기준:
 
 - `classification=public_natural_h3_observed`
 - target host에 대한 `QUIC_SESSION`이 1개 이상
-- target host의 `HTTP_STREAM_JOB` 중 `using_quic=true`가 1개 이상
-- `broken_alternative_service=false`
+- target host의 application `HTTP_STREAM_JOB` 중 `using_quic=true`가 1개 이상
+- `dns_alpn_h3` discovery job만으로는 application HTTP/3 성공이라고 보지 않음
 
 주의:
 
 - 이 실험은 connection migration 실험이 아니다.
-- 목적은 browser가 target origin을 forced QUIC 없이 실제 HTTP/3로 선택했는지 확인하는 것이다.
+- 목적은 browser가 target origin에 대해 forced QUIC 없이 H3 discovery 후보를 만드는지, 그리고 가능하면 application HTTP/3까지 도달하는지 분리해 확인하는 것이다.
 - public endpoint 결과는 시간, region, server policy에 따라 바뀔 수 있으므로 실행일과 target URL을 CSV에 함께 기록한다.
 
 public endpoint 후보를 먼저 줄이려면 다음을 실행한다.
@@ -505,11 +523,11 @@ python3 tools/scan_public_alt_svc.py \
   --format markdown
 ```
 
-이 스캐너는 `Alt-Svc: h3` 광고 여부만 본다. Chrome이 실제 HTTP/3를 선택했는지는 `run-chrome-public-h3.sh` 결과와 NetLog classifier로 별도 확인해야 한다.
+이 스캐너는 `Alt-Svc: h3` 광고 여부만 본다. Chrome이 H3 discovery 또는 application HTTP/3까지 도달했는지는 `run-chrome-public-h3.sh` 결과와 NetLog classifier로 별도 확인해야 한다.
 
 ## 11. Controlled public WebPKI origin gate
 
-third-party public endpoint는 browser discovery positive control에는 유용하지만, upload/download/dashboard workload를 제어할 수 없다. 실제 browser CM 실험 전에는 연구자가 제어하는 public origin을 준비한다.
+third-party public endpoint는 browser discovery control에는 유용하지만, upload/download/dashboard workload를 제어할 수 없다. 실제 browser CM 실험 전에는 연구자가 제어하는 public origin을 준비한다.
 
 Server side:
 
@@ -547,7 +565,7 @@ python3 tools/check_public_origin_readiness.py \
 - DNS가 public host를 해석한다.
 - WebPKI TLS handshake와 hostname verification이 성공한다.
 - response에 `Alt-Svc: h3`가 있다.
-- Chrome classifier가 `public_natural_h3_observed`를 반환한다.
+- Chrome classifier가 `public_natural_h3_observed`를 반환하거나, server request log와 qlog가 workload request의 HTTP/3 처리를 직접 증명한다.
 - server request log와 qlog가 workload request를 기록한다.
 
 ## 12. AWS NLB 실험 설정
