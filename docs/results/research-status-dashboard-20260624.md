@@ -10,7 +10,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | --- | --- |
 | experiment trials | `63` |
 | experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 32}` |
-| verification | `76/76 passed; ok=yes` |
+| verification | `78/78 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `0/6` |
 | planned execution states | `{'blocked': 10}` |
@@ -49,4 +49,5 @@ Do not claim Chrome/Safari/Android browser handover CM success until the final b
 | `operational_friction_matrix` | `data/cm-operational-friction-matrix-20260624.csv` |
 | `paper_claim_support_matrix` | `data/paper-claim-support-matrix-20260624.csv` |
 | `replication_sufficiency_audit` | `data/replication-sufficiency-audit-20260624.csv` |
+| `replication_run_plan` | `data/replication-run-plan-20260624.csv` |
 | `experiment_results` | `data/experiment-results.csv` |

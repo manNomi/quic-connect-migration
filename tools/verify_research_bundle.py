@@ -82,6 +82,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     replication_sufficiency_audit = "docs/results/replication-sufficiency-audit-20260624.md"
     replication_sufficiency_audit_csv = "data/replication-sufficiency-audit-20260624.csv"
     replication_sufficiency_audit_input = "data/replication-sufficiency-audit-20260624.csv"
+    replication_run_plan = "docs/results/replication-run-plan-20260624.md"
+    replication_run_plan_csv = "data/replication-run-plan-20260624.csv"
+    replication_run_plan_input = "data/replication-run-plan-20260624.csv"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
     paper_claim_support_matrix = "docs/results/paper-claim-support-matrix-20260624.md"
@@ -125,6 +128,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         replication_sufficiency_audit = str(generated_dir / "replication-sufficiency-audit.md")
         replication_sufficiency_audit_csv = str(generated_dir / "replication-sufficiency-audit.csv")
         replication_sufficiency_audit_input = replication_sufficiency_audit_csv
+        replication_run_plan = str(generated_dir / "replication-run-plan.md")
+        replication_run_plan_csv = str(generated_dir / "replication-run-plan.csv")
+        replication_run_plan_input = replication_run_plan_csv
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
         paper_claim_support_matrix = str(generated_dir / "paper-claim-support-matrix.md")
@@ -178,6 +184,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
+                "tools/build_replication_run_plan.py",
                 "tools/build_cm_operational_friction_matrix.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
@@ -215,6 +222,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_protocol_readiness_matrix.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
+                "tools/test_build_replication_run_plan.py",
                 "tools/test_build_cm_operational_friction_matrix.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
@@ -315,6 +323,27 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 replication_sufficiency_audit,
                 "--csv-output",
                 replication_sufficiency_audit_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "replication_run_plan_regression",
+            [python_bin, "tools/test_build_replication_run_plan.py"],
+            {0},
+            30,
+        ),
+        (
+            "replication_run_plan",
+            [
+                python_bin,
+                "tools/build_replication_run_plan.py",
+                "--input",
+                replication_sufficiency_audit_input,
+                "--output",
+                replication_run_plan,
+                "--csv-output",
+                replication_run_plan_csv,
             ],
             {0},
             30,
@@ -433,6 +462,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 paper_claim_support_matrix_input,
                 "--replication-audit",
                 replication_sufficiency_audit_input,
+                "--replication-run-plan",
+                replication_run_plan_input,
             ],
             {0},
             30,

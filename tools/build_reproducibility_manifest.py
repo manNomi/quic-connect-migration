@@ -138,6 +138,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
             "paper_claim_support_matrix": "docs/results/paper-claim-support-matrix-20260624.md",
             "replication_sufficiency_audit": "docs/results/replication-sufficiency-audit-20260624.md",
+            "replication_run_plan": "docs/results/replication-run-plan-20260624.md",
             "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
             "trial_packet": "docs/results/final-handover-trial-packet-20260624.md",
             "deploy_packet": "docs/results/controlled-public-origin-deploy-packet-20260624.md",

@@ -8,11 +8,11 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `9faa21e` |
+| source commit at generation | `ba47d5d` |
 | branch | `main` |
 | total trials | `63` |
 | status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 32}` |
-| verification | `76/76 passed; ok=yes` |
+| verification | `78/78 passed; ok=yes` |
 | final browser handover | `0/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
@@ -33,6 +33,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `paper_gap_register` | `docs/results/paper-evidence-gap-register-20260624.md` |
 | `paper_claim_support_matrix` | `docs/results/paper-claim-support-matrix-20260624.md` |
 | `replication_sufficiency_audit` | `docs/results/replication-sufficiency-audit-20260624.md` |
+| `replication_run_plan` | `docs/results/replication-run-plan-20260624.md` |
 | `external_inputs` | `docs/results/final-handover-external-inputs-20260624.md` |
 | `trial_packet` | `docs/results/final-handover-trial-packet-20260624.md` |
 | `deploy_packet` | `docs/results/controlled-public-origin-deploy-packet-20260624.md` |

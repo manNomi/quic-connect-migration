@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Regression tests for the replication run plan builder."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from textwrap import dedent
+
+from build_replication_run_plan import build_plan, emit_markdown, write_csv
+
+
+def write_fixture(path: Path, text: str) -> None:
+    path.write_text(dedent(text).lstrip(), encoding="utf-8")
+
+
+def test_plan_keeps_public_handover_first_and_selects_transition_rows() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        audit = root / "audit.csv"
+        write_fixture(
+            audit,
+            """
+            source,condition_id,condition_label,pass_count,runs,pass_rate,wilson_low_95,wilson_high_95,evidence_role,paper_use,additional_same_outcome_runs_for_rule_of_thumb,next_action
+            workload_transition,upload-4750ms,upload mixed,1,3,0.333,0.061,0.792,transition_zone,transition-zone evidence,-,refine
+            upload_recovery,upload-retry1-12000ms,retry stable,3,3,1.000,0.438,1.000,stable_candidate,directional,13,repeat
+            polling_transition,poll-250ms,poll stable,3,3,1.000,0.438,1.000,stable_candidate,directional,13,repeat
+            """,
+        )
+        plan = build_plan(audit)
+        rows = plan["rows"]
+        assert rows[0]["stage"] == "P0-public-browser-handover"
+        assert rows[0]["priority"] == 0
+        assert any(row["condition_id"] == "upload-4750ms" for row in rows)
+        assert any(row["condition_id"] == "upload-retry1-12000ms" for row in rows)
+        assert not any(row["condition_id"] == "poll-250ms" for row in rows)
+
+
+def test_plan_is_public_safe_and_writable() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        audit = root / "audit.csv"
+        output = root / "plan.csv"
+        write_fixture(
+            audit,
+            """
+            source,condition_id,condition_label,pass_count,runs,pass_rate,wilson_low_95,wilson_high_95,evidence_role,paper_use,additional_same_outcome_runs_for_rule_of_thumb,next_action
+            polling_transition,poll-4000ms,poll mixed,1,3,0.333,0.061,0.792,transition_zone,transition-zone evidence,-,refine
+            downlink_recovery,downlink-wait_only_no_retry-6000ms,wait fail,0,3,0.000,0.000,0.562,failure_candidate,directional,13,repeat
+            """,
+        )
+        plan = build_plan(audit)
+        markdown = emit_markdown(plan)
+        write_csv(plan, output)
+        assert "controlled-public final protocol" in markdown
+        assert "PRIVATE_KEY" not in markdown
+        assert "AKIA" not in markdown
+        assert output.exists()
+
+
+def main() -> int:
+    test_plan_keeps_public_handover_first_and_selects_transition_rows()
+    test_plan_is_public_safe_and_writable()
+    print("build_replication_run_plan=ok")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

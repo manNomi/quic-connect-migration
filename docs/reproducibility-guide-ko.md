@@ -1775,7 +1775,30 @@ python3 tools/build_replication_sufficiency_audit.py \
 - mixed row는 threshold가 아니라 transition zone 근거로 써야 한다.
 - 본 audit는 새 실험 결과를 만들지 않고, 기존 local control 결과의 논문 표현 강도를 제한한다.
 
-## 39. Artifact 정책
+## 39. Replication run plan 재생성
+
+replication sufficiency audit를 기반으로 추가 local 반복 실험 우선순위를 생성한다.
+
+```bash
+python3 tools/build_replication_run_plan.py \
+  --input data/replication-sufficiency-audit-20260624.csv \
+  --output docs/results/replication-run-plan-20260624.md \
+  --csv-output data/replication-run-plan-20260624.csv
+```
+
+성공 기준:
+
+- P0는 final controlled-public/browser handover protocol로 유지된다.
+- L1은 mixed transition-zone row를 우선 반복 대상으로 둔다.
+- L2는 논문에서 더 강한 local reliability wording이 필요할 때만 boundary anchor row를 반복 대상으로 둔다.
+
+현재 관찰된 기준:
+
+- public/browser handover가 열리면 local 반복보다 그 실험이 우선이다.
+- public/browser handover가 계속 blocked라면 L1 transition-zone row가 가장 높은 가치의 local 반복 대상이다.
+- L2 anchor row는 선택 사항이며, 현재 논문 표현을 guarantee나 probability로 높일 때만 필요하다.
+
+## 40. Artifact 정책
 
 commit 가능한 것:
 
