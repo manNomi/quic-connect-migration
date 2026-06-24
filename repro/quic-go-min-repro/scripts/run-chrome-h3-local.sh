@@ -27,6 +27,12 @@ case "$WORKLOAD" in
     REQUEST_PATH="${REQUEST_PATH:-/browser-poll?count=${POLL_COUNT}&interval_ms=${POLL_INTERVAL_MS}&label=chrome-poll}"
     EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-$((POLL_COUNT + 1))}"
     ;;
+  slow)
+    SLOW_DURATION_MS="${SLOW_DURATION_MS:-6000}"
+    SLOW_CHUNKS="${SLOW_CHUNKS:-6}"
+    REQUEST_PATH="${REQUEST_PATH:-/browser-slow?duration_ms=${SLOW_DURATION_MS}&chunks=${SLOW_CHUNKS}&label=chrome-slow}"
+    EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
+    ;;
   *)
     echo "unsupported WORKLOAD=$WORKLOAD" >&2
     exit 2
@@ -35,6 +41,7 @@ esac
 TIMEOUT="${TIMEOUT:-60s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-20}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
+CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-5000}"
 
 mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/certs" "$ARTIFACT_DIR/logs" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/qlog" "$ARTIFACT_DIR/keylog"
 
@@ -92,12 +99,12 @@ if [[ -n "${NETWORK_CHANGE_CMD:-}" ]]; then
 fi
 
 CHROME_EXIT=0
-python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" <<'PY' || CHROME_EXIT=$?
+python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
 import pathlib
 import subprocess
 import sys
 
-chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode = sys.argv[1:]
+chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode, virtual_time_budget_ms = sys.argv[1:]
 artifact = pathlib.Path(artifact_dir)
 url = f"https://{addr}{request_path}"
 cmd = [
@@ -115,10 +122,11 @@ cmd = [
     f"--user-data-dir={artifact / 'chrome' / 'profile'}",
     f"--log-net-log={artifact / 'chrome' / 'netlog.json'}",
     f"--net-log-capture-mode={net_log_capture_mode}",
-    "--virtual-time-budget=5000",
     "--dump-dom",
     url,
 ]
+if int(virtual_time_budget_ms) > 0:
+    cmd.insert(-2, f"--virtual-time-budget={virtual_time_budget_ms}")
 with (artifact / "chrome" / "dump-dom.txt").open("wb") as out, (artifact / "chrome" / "chrome.stderr.log").open("wb") as err:
     try:
         subprocess.run(cmd, stdout=out, stderr=err, timeout=int(timeout_s), check=True)

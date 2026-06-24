@@ -293,6 +293,33 @@ RUN_ID=chrome-h3-poll-network-change-manual \
 - network-change 실험 결과는 `classification`을 기준으로 해석한다.
 - `QUIC_CONNECTION_MIGRATION_MODE` NetLog event만으로 migration 발생을 주장하면 안 된다.
 
+slow subresource limited control:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=slow \
+SLOW_DURATION_MS=8000 \
+SLOW_CHUNKS=8 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
+CHROME_TIMEOUT_SECONDS=18 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=2 \
+NETWORK_CHANGE_CMD='networksetup -setnetworkserviceenabled "Thunderbolt Bridge" off; sleep 1; networksetup -setnetworkserviceenabled "Thunderbolt Bridge" on' \
+RUN_ID=chrome-h3-slow-inactive-if-toggle \
+./scripts/run-chrome-h3-local.sh
+```
+
+성공 기준:
+
+- summary status `PASS`
+- `network_change_exit=0`
+- `classification=no_path_change_baseline`
+- server request count 2
+- server remote addr count 1
+- qlog에 `path_challenge`, `path_response` 없음
+
+이 실험은 inactive service toggle이므로 실제 active path migration을 만들지 못하는 것이 정상이다. Wi-Fi/LTE handover 근거로 사용하지 않는다.
+
 ## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.

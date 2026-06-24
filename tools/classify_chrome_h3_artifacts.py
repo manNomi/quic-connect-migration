@@ -184,6 +184,7 @@ def main() -> int:
 
     base = Path(args.artifact_dir)
     server, server_error = read_json(base / "results" / "server.json")
+    network_change, network_change_error = read_json(base / "results" / "network-change.json")
     netlog_path = base / "chrome" / "netlog.json"
     netlog_text = read_text(netlog_path)
     netlog, netlog_error = read_json(netlog_path)
@@ -229,6 +230,8 @@ def main() -> int:
         "server_request_labels": labels,
         "server_request_paths": paths,
         "request_reached_server": request_reached_server,
+        "network_change_exit": network_change.get("exit"),
+        "network_change_error": network_change_error,
         "netlog_parse_error": netlog_error,
         "netlog_parser_mode": netlog_summary["parser_mode"],
         "netlog_has_forced_origin": "origin-to-force-quic" in netlog_text or args.addr in netlog_text,

@@ -153,7 +153,7 @@ python3 tools/classify_chrome_h3_artifacts.py \
 | `cmd/client/main.go` | QUIC transport stream migration client |
 | `cmd/server/main.go` | QUIC transport stream migration server |
 | `cmd/h3client/main.go` | HTTP/3 workload migration client |
-| `cmd/h3server/main.go` | HTTP/3 upload/download server, Chrome sequence/poll baseline endpoint |
+| `cmd/h3server/main.go` | HTTP/3 upload/download server, Chrome sequence/poll/slow baseline endpoint |
 | `internal/common/aws_nlb_cid.go` | AWS NLB QUIC-LB plaintext CID generator |
 | `internal/common/payload.go` | deterministic payload/checksum |
 | `internal/common/logging.go` | JSONL/result JSON writer |
@@ -166,7 +166,7 @@ python3 tools/classify_chrome_h3_artifacts.py \
 | `scripts/run-local-happy-path.sh` | transport-level local migration |
 | `scripts/run-local-h3-workload.sh` | HTTP/3 POST before, migrate, GET after |
 | `scripts/run-local-h3-midflight.sh` | HTTP/3 upload/download body in-flight migration |
-| `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll baseline and optional network-change hook |
+| `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll/slow baseline and optional network-change hook |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -199,6 +199,7 @@ RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=poll POLL_COUNT=5 POLL_INTERVAL_MS=300 RUN_ID=chrome-h3-poll-nochange-classifier-pass ./scripts/run-chrome-h3-local.sh
+WORKLOAD=slow SLOW_DURATION_MS=8000 SLOW_CHUNKS=8 RUN_ID=chrome-h3-slow-inactive-if-toggle ./scripts/run-chrome-h3-local.sh
 ```
 
 AWS 결과를 갱신할 때는 [재현 가이드](reproducibility-guide-ko.md)의 cleanup 확인까지 포함한다.

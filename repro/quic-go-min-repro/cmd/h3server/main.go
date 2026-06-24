@@ -358,6 +358,54 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseBytes = len(body)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, body
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-slow":
+		record.Workload = "browser-slow"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		durationMillis := queryInt(r, "duration_ms", 6000)
+		if durationMillis > 60000 {
+			durationMillis = 60000
+		}
+		chunks := queryInt(r, "chunks", 6)
+		if chunks > 100 {
+			chunks = 100
+		}
+		if label == "" {
+			label = "chrome-slow"
+		}
+		html := buildBrowserSlowHTML(label, durationMillis, chunks)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/slow-js":
+		record.Workload = "slow-js"
+		record.ResponseContentType = "application/javascript"
+		durationMillis := queryInt(r, "duration_ms", 6000)
+		if durationMillis > 60000 {
+			durationMillis = 60000
+		}
+		chunks := queryInt(r, "chunks", 6)
+		if chunks > 100 {
+			chunks = 100
+		}
+		if label == "" {
+			label = "slow-js"
+		}
+		delayMillis := durationMillis / chunks
+		if delayMillis <= 0 {
+			delayMillis = 1
+		}
+		body := buildSlowJS(label, chunks)
+		record.Label = label
+		record.ResponseBytes = len(body)
+		record.ResponseSHA256 = sha256Hex([]byte(body))
+		record.StreamResponse = true
+		record.ChunkBytes = len(body) / chunks
+		if record.ChunkBytes <= 0 {
+			record.ChunkBytes = 1
+		}
+		record.ChunkDelayMillis = int64(delayMillis)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(body)
 	case r.Method == http.MethodGet && r.URL.Path == "/pixel":
 		record.Workload = "pixel"
 		record.ResponseContentType = "image/svg+xml"
@@ -365,10 +413,9 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 			label = "pixel"
 		}
 		svg := buildPixelSVG(label)
-		sum := sha256.Sum256([]byte(svg))
 		record.Label = label
 		record.ResponseBytes = len(svg)
-		record.ResponseSHA256 = hex.EncodeToString(sum[:])
+		record.ResponseSHA256 = sha256Hex([]byte(svg))
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(svg)
 	default:
@@ -441,8 +488,34 @@ func buildBrowserPollHTML(label string, count, intervalMillis int) string {
 	return body
 }
 
+func buildBrowserSlowHTML(label string, durationMillis, chunks int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 slow</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Chrome H3 slow</h1><div id=\"status\" data-label=\"%s\">loading</div>", escapedLabel)
+	body += fmt.Sprintf("<script src=\"/slow-js?duration_ms=%d&chunks=%d&label=%s\"></script>", durationMillis, chunks, queryLabel)
+	body += "</body></html>"
+	return body
+}
+
+func buildSlowJS(label string, chunks int) string {
+	body := ""
+	for i := 1; i <= chunks; i++ {
+		body += fmt.Sprintf("// %s chunk %03d\n", label, i)
+	}
+	body += fmt.Sprintf("document.body.dataset.slowLabel = %q;\n", label)
+	body += "document.body.dataset.slowComplete = 'true';\n"
+	body += "document.getElementById('status').textContent = 'complete';\n"
+	return body
+}
+
 func buildPixelSVG(label string) string {
 	return fmt.Sprintf("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1\" height=\"1\"><title>%s</title><rect width=\"1\" height=\"1\" fill=\"#0a84ff\"/></svg>", html.EscapeString(label))
+}
+
+func sha256Hex(data []byte) string {
+	sum := sha256.Sum256(data)
+	return hex.EncodeToString(sum[:])
 }
 
 func queryInt(r *http.Request, key string, fallback int) int {
