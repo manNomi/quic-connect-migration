@@ -1798,7 +1798,30 @@ python3 tools/build_replication_run_plan.py \
 - public/browser handover가 계속 blocked라면 L1 transition-zone row가 가장 높은 가치의 local 반복 대상이다.
 - L2 anchor row는 선택 사항이며, 현재 논문 표현을 guarantee나 probability로 높일 때만 필요하다.
 
-## 40. Artifact 정책
+## 40. P0 unblock status 재생성
+
+final protocol readiness matrix에서 P0 controlled-public/browser handover를 막는 gate를 압축한다.
+
+```bash
+python3 tools/build_p0_unblock_status.py \
+  --matrix data/final-protocol-readiness-matrix-20260624.csv \
+  --scorecard data/final-trial-acceptance-scorecard-20260624.csv \
+  --output docs/results/p0-unblock-status-20260624.md \
+  --csv-output data/p0-unblock-status-20260624.csv
+```
+
+성공 기준:
+
+- next trial이 `controlled-public-chrome-h3-baseline-001`로 표시된다.
+- next trial을 직접 막는 gate는 `needed-now`로 표시된다.
+- active network-change 전용 gate는 baseline 이후 단계로 남는다.
+
+현재 관찰된 기준:
+
+- `controlled_public_config_present`, `public_origin_host_configured`, `public_origin_url_configured`, `tls_config_present`가 P0 baseline을 막는 now gate다.
+- `baseline_summary_ready`, `network_change_command_present`, `desktop_secondary_path_ready`는 baseline 등록 이후 active trial gate다.
+
+## 41. Artifact 정책
 
 commit 가능한 것:
 

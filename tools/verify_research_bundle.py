@@ -96,6 +96,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_trial_acceptance_scorecard_csv = "data/final-trial-acceptance-scorecard-20260624.csv"
     final_protocol_readiness_matrix = "docs/results/final-protocol-readiness-matrix-20260624.md"
     final_protocol_readiness_matrix_csv = "data/final-protocol-readiness-matrix-20260624.csv"
+    p0_unblock_status = "docs/results/p0-unblock-status-20260624.md"
+    p0_unblock_status_csv = "data/p0-unblock-status-20260624.csv"
+    p0_unblock_status_input = "data/p0-unblock-status-20260624.csv"
     research_status_dashboard = "docs/results/research-status-dashboard-20260624.md"
     research_status_dashboard_json = "data/research-status-dashboard-20260624.json"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
@@ -142,6 +145,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_trial_acceptance_scorecard_csv = str(generated_dir / "final-trial-acceptance-scorecard.csv")
         final_protocol_readiness_matrix = str(generated_dir / "final-protocol-readiness-matrix.md")
         final_protocol_readiness_matrix_csv = str(generated_dir / "final-protocol-readiness-matrix.csv")
+        p0_unblock_status = str(generated_dir / "p0-unblock-status.md")
+        p0_unblock_status_csv = str(generated_dir / "p0-unblock-status.csv")
+        p0_unblock_status_input = p0_unblock_status_csv
         research_status_dashboard = str(generated_dir / "research-status-dashboard.md")
         research_status_dashboard_json = str(generated_dir / "research-status-dashboard.json")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
@@ -181,6 +187,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_final_trial_acceptance_scorecard.py",
                 "tools/build_final_protocol_readiness_matrix.py",
+                "tools/build_p0_unblock_status.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
@@ -220,6 +227,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_build_final_trial_acceptance_scorecard.py",
                 "tools/test_build_final_protocol_readiness_matrix.py",
+                "tools/test_build_p0_unblock_status.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
@@ -444,6 +452,27 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             60,
         ),
         (
+            "p0_unblock_status_regression",
+            [python_bin, "tools/test_build_p0_unblock_status.py"],
+            {0},
+            30,
+        ),
+        (
+            "p0_unblock_status",
+            [
+                python_bin,
+                "tools/build_p0_unblock_status.py",
+                "--matrix",
+                final_protocol_readiness_matrix_csv,
+                "--output",
+                p0_unblock_status,
+                "--csv-output",
+                p0_unblock_status_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
             "research_status_dashboard_regression",
             [python_bin, "tools/test_build_research_status_dashboard.py"],
             {0},
@@ -464,6 +493,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 replication_sufficiency_audit_input,
                 "--replication-run-plan",
                 replication_run_plan_input,
+                "--p0-unblock",
+                p0_unblock_status_input,
             ],
             {0},
             30,

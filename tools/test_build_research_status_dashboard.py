@@ -103,6 +103,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             claim_support=claim_support.as_posix(),
             replication_audit=replication_audit.as_posix(),
             replication_run_plan=(root / "replication-run-plan.csv").as_posix(),
+            p0_unblock=(root / "p0-unblock-status.csv").as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)

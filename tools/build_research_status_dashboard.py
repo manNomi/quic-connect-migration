@@ -23,6 +23,7 @@ DEFAULT_FRICTION = "data/cm-operational-friction-matrix-20260624.csv"
 DEFAULT_CLAIM_SUPPORT = "data/paper-claim-support-matrix-20260624.csv"
 DEFAULT_REPLICATION_AUDIT = "data/replication-sufficiency-audit-20260624.csv"
 DEFAULT_REPLICATION_RUN_PLAN = "data/replication-run-plan-20260624.csv"
+DEFAULT_P0_UNBLOCK = "data/p0-unblock-status-20260624.csv"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -125,6 +126,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
         "key_paths": {
             "manifest": args.manifest,
             "readiness_matrix": args.matrix,
+            "p0_unblock_status": args.p0_unblock,
             "acceptance_scorecard": args.scorecard,
             "operational_friction_matrix": args.friction,
             "paper_claim_support_matrix": args.claim_support,
@@ -203,6 +205,7 @@ def main() -> int:
     parser.add_argument("--claim-support", default=DEFAULT_CLAIM_SUPPORT)
     parser.add_argument("--replication-audit", default=DEFAULT_REPLICATION_AUDIT)
     parser.add_argument("--replication-run-plan", default=DEFAULT_REPLICATION_RUN_PLAN)
+    parser.add_argument("--p0-unblock", default=DEFAULT_P0_UNBLOCK)
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--json-output", default=DEFAULT_JSON_OUTPUT)
     parser.add_argument("--format", choices=["markdown", "json"], default="markdown")

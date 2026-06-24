@@ -73,6 +73,7 @@
 61. Paper claim support matrix는 현재 결과로 쓸 수 있는 논문 문장과 쓰면 안 되는 과장 문장을 claim별로 분리한다. 결론적으로 controlled implementation/deployment claim은 가능하지만, browser/mobile active handover 성공 claim은 아직 pending이다.
 62. Replication sufficiency audit는 local 반복 실험의 Wilson 95% 구간을 계산해, n=3/6/9 결과를 reliability probability나 guarantee처럼 쓰면 안 되고 transition-zone 또는 directional local evidence로 써야 함을 정리한다.
 63. Replication run plan은 추가 local 반복 실험을 전부 무작정 늘리는 대신 final public/browser handover를 P0로 두고, local transition-zone row와 boundary anchor row를 L1/L2로 나눠 실행 우선순위를 정한다.
+64. P0 unblock status는 final protocol readiness matrix에서 현재 P0를 막는 gate를 압축해, next trial을 열기 위한 `needed-now` gate와 baseline 이후 gate를 분리한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -100,6 +101,7 @@
 │   ├── public-origin-readiness-expanded-survey-20260624.csv
 │   ├── final-protocol-readiness-matrix-20260624.csv
 │   ├── final-trial-acceptance-scorecard-20260624.csv
+│   ├── p0-unblock-status-20260624.csv
 │   ├── paper-evidence-gap-register-20260624.csv
 │   ├── paper-claim-support-matrix-20260624.csv
 │   ├── replication-sufficiency-audit-20260624.csv
@@ -131,6 +133,7 @@
 │   ├── build_controlled_public_origin_deploy_packet.py
 │   ├── build_final_protocol_readiness_matrix.py
 │   ├── build_final_trial_acceptance_scorecard.py
+│   ├── build_p0_unblock_status.py
 │   ├── build_cm_operational_friction_matrix.py
 │   ├── build_paper_evidence_gap_register.py
 │   ├── build_paper_claim_support_matrix.py
@@ -221,6 +224,7 @@
 - [Final handover trial artifact bundle check](docs/results/final-handover-trial-artifact-bundle-check-20260624.md)
 - [Final protocol readiness matrix](docs/results/final-protocol-readiness-matrix-20260624.md)
 - [Final trial acceptance scorecard](docs/results/final-trial-acceptance-scorecard-20260624.md)
+- [P0 unblock status](docs/results/p0-unblock-status-20260624.md)
 - [Research status dashboard](docs/results/research-status-dashboard-20260624.md)
 - [CM operational friction matrix](docs/results/cm-operational-friction-matrix-20260624.md)
 - [Browser CM observability matrix](docs/results/browser-cm-observability-matrix-20260624.md)

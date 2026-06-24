@@ -134,6 +134,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "status_dashboard": "docs/results/research-status-dashboard-20260624.md",
             "cm_operational_friction_matrix": "docs/results/cm-operational-friction-matrix-20260624.md",
             "final_protocol_readiness_matrix": "docs/results/final-protocol-readiness-matrix-20260624.md",
+            "p0_unblock_status": "docs/results/p0-unblock-status-20260624.md",
             "final_trial_acceptance_scorecard": "docs/results/final-trial-acceptance-scorecard-20260624.md",
             "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
             "paper_claim_support_matrix": "docs/results/paper-claim-support-matrix-20260624.md",
