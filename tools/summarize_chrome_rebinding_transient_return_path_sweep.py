@@ -167,6 +167,19 @@ def sum_int(rows: list[dict[str, str]], key: str) -> int:
     return sum(int(row.get(key) or 0) for row in rows)
 
 
+def local_boundary_summary(rows: list[dict[str, str]]) -> str:
+    pass_windows = sorted({int(row["drop_window_ms"]) for row in rows if row["status"] == "PASS" and row.get("drop_window_ms")})
+    fail_windows = sorted({int(row["drop_window_ms"]) for row in rows if row["status"] == "FAIL" and row.get("drop_window_ms")})
+    if not pass_windows or not fail_windows:
+        return "Observed local boundary: inconclusive because the sweep does not contain both PASS and FAIL windows."
+    max_pass = max(pass_windows)
+    later_failures = [window for window in fail_windows if window > max_pass]
+    if later_failures:
+        min_fail = min(later_failures)
+        return f"Observed local boundary: max PASS window `{max_pass}ms`; min later FAIL window `{min_fail}ms`."
+    return f"Observed local boundary: PASS and FAIL windows overlap or are non-monotonic; inspect per-row evidence before drawing a threshold."
+
+
 def emit_markdown(rows: list[dict[str, str]]) -> str:
     lines = [
         "# Chrome H3 Local Rebinding Transient Return-Path Sweep",
@@ -213,6 +226,8 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
             "## Interpretation Boundary",
             "",
             "Use this sweep to estimate the local browser workload's tolerance to a temporary server-to-client return-path outage. A PASS row means the browser task survived the bounded outage in this local NAT-rebinding harness; it does not prove real Wi-Fi/LTE handover success. A FAIL row means transport artifacts can exist while DOM-level task completion still fails.",
+            "",
+            local_boundary_summary(rows),
         ]
     )
     return "\n".join(lines).rstrip() + "\n"

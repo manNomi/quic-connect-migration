@@ -191,14 +191,16 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 | 250ms | 2 | 2/2 PASS | 짧은 return-path outage는 1MiB downlink/upload 작업을 깨지 않았다. |
 | 1500ms | 2 | 2/2 PASS | qlog path validation과 단일 Chrome target session이 유지된 채 완료됐다. |
 | 3000ms | 2 | 2/2 PASS | 현재 local workload에서는 3초 outage까지 task completion이 유지됐다. |
+| 4000ms | 2 | 2/2 PASS | 1MiB downlink/upload 모두 완료되어 local boundary의 하한을 4초까지 밀어 올렸다. |
+| 5000ms | 2 | 2/2 FAIL | qlog H3/path evidence는 남았지만 DOM error timing이 기록되어 application completion은 실패했다. |
 | 6000ms | 2 | 2/2 FAIL | qlog H3/path evidence가 남아도 DOM application completion은 false였다. |
 | 9000ms | 2 | 2/2 FAIL | long outage는 permanent A+B loss와 같은 failure boundary를 보였다. |
 
 해석:
 
 - 이 sweep은 “CM이 된다/안 된다”가 아니라 outage duration과 application completion의 관계를 보여준다.
-- 3초와 6초 사이에 local browser workload continuity boundary가 관찰됐다.
-- PASS row의 DOM complete timing은 7551-10470ms였고, FAIL row의 DOM error timing은 6921-11124ms였다.
+- 4초와 5초 사이에 local browser workload continuity boundary가 관찰됐다.
+- PASS row의 DOM complete timing은 7545-11309ms였고, FAIL row의 DOM error timing은 6918-11122ms였다.
 - public Wi-Fi/LTE handover claim으로 쓰려면 active client path change와 controlled public origin evidence가 추가로 필요하다.
 
 ## 5. 논문용 evidence chain

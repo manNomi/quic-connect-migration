@@ -109,6 +109,10 @@ run_case "downlink-1m-drop-ab-1500ms" "downlink" 1048576 16 8000 1500ms 1500
 run_case "upload-1m-drop-ab-1500ms" "upload" 1048576 16 8000 1500ms 1500
 run_case "downlink-1m-drop-ab-3000ms" "downlink" 1048576 16 8000 3000ms 3000
 run_case "upload-1m-drop-ab-3000ms" "upload" 1048576 16 8000 3000ms 3000
+run_case "downlink-1m-drop-ab-4000ms" "downlink" 1048576 16 8000 4000ms 4000
+run_case "upload-1m-drop-ab-4000ms" "upload" 1048576 16 8000 4000ms 4000
+run_case "downlink-1m-drop-ab-5000ms" "downlink" 1048576 16 8000 5000ms 5000
+run_case "upload-1m-drop-ab-5000ms" "upload" 1048576 16 8000 5000ms 5000
 run_case "downlink-1m-drop-ab-6000ms" "downlink" 1048576 16 8000 6000ms 6000
 run_case "upload-1m-drop-ab-6000ms" "upload" 1048576 16 8000 6000ms 6000
 run_case "downlink-1m-drop-ab-9000ms" "downlink" 1048576 16 8000 9000ms 9000

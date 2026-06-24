@@ -1116,8 +1116,8 @@ CHROME_HOLD_SECONDS=18 \
 
 성공/실패 기준:
 
-- 250ms, 1500ms, 3000ms window의 downlink/upload row는 `PASS`
-- 6000ms, 9000ms window의 downlink/upload row는 `FAIL`
+- 250ms, 1500ms, 3000ms, 4000ms window의 downlink/upload row는 `PASS`
+- 5000ms, 6000ms, 9000ms window의 downlink/upload row는 `FAIL`
 - 실패 row의 classification은 `browser_application_task_failed`
 - 이 결과는 local outage-tolerance control이며 실제 public handover evidence가 아니다.
 
@@ -1132,6 +1132,10 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
   upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-1500ms \
   downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-3000ms \
   upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-3000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-4000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-4000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-5000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-5000ms \
   downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-6000ms \
   upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-6000ms \
   downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-9000ms \

@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from summarize_chrome_rebinding_transient_return_path_sweep import emit_markdown, row_from_spec, write_csv
+from summarize_chrome_rebinding_transient_return_path_sweep import emit_markdown, local_boundary_summary, row_from_spec, write_csv
 
 
 def write_sweep_artifact(artifact_dir: Path, *, workload: str, status: str, drop_window_ms: int) -> None:
@@ -101,6 +101,8 @@ def test_rows_and_markdown() -> None:
         markdown = emit_markdown(rows)
         assert "transient outage tolerance" in markdown
         assert "status by drop window" in markdown
+        assert "max PASS window `250ms`; min later FAIL window `3000ms`" in markdown
+        assert local_boundary_summary(rows) == "Observed local boundary: max PASS window `250ms`; min later FAIL window `3000ms`."
 
 
 def test_csv_writer_uses_stable_header() -> None:

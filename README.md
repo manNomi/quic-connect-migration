@@ -54,7 +54,7 @@
 42. Chrome local UDP rebinding proxy에서 streaming browser upload를 3회 반복했고, upload는 성공했지만 request-level remote tuple은 그대로여서 qlog/NetLog 없이 request log만으로 path change를 판단하면 안 된다는 근거를 추가했다.
 43. Chrome forced-H3 local old-path-drop stress matrix에서 1MiB/4MiB downlink/upload 5회가 모두 완료됐고, A-side server packet 105개가 drop된 상태에서도 qlog/Chrome NetLog path validation이 관찰됐다.
 44. return-path drop control에서 B-only server packet drop은 2/2 PASS였지만 A+B return path loss는 2/2 FAIL이어서, transport evidence와 application completion을 분리해야 함을 확인했다.
-45. transient return-path outage sweep에서는 A+B return path를 250ms/1500ms/3000ms 막은 1MiB downlink/upload가 6/6 PASS였지만, 6000ms/9000ms는 4/4 FAIL이었다.
+45. transient return-path outage sweep에서는 A+B return path를 250ms/1500ms/3000ms/4000ms 막은 1MiB downlink/upload가 8/8 PASS였지만, 5000ms/6000ms/9000ms는 6/6 FAIL이었다. 이 local workload의 outage-tolerance boundary는 4초와 5초 사이로 좁혀졌다.
 46. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.

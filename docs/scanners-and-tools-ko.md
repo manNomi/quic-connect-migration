@@ -1843,6 +1843,10 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
   upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-1500ms \
   downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-3000ms \
   upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-3000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-4000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-4000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-5000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-5000ms \
   downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-6000ms \
   upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-6000ms \
   downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-9000ms \
