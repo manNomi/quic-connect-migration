@@ -194,6 +194,7 @@
 - [Final trial acceptance scorecard](docs/results/final-trial-acceptance-scorecard-20260624.md)
 - [Research status dashboard](docs/results/research-status-dashboard-20260624.md)
 - [CM operational friction matrix](docs/results/cm-operational-friction-matrix-20260624.md)
+- [Browser CM observability matrix](docs/results/browser-cm-observability-matrix-20260624.md)
 - [Active path-change operator cookbook](docs/results/active-path-change-operator-cookbook-20260624.md)
 - [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [CI safe verification result](docs/results/ci-safe-verification-result-20260624.md)

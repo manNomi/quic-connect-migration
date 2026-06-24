@@ -34,7 +34,7 @@ We also added a local UDP rebinding proxy experiment that changes the server-fac
 
 Thus, a source tuple change at the server, even with qlog path validation, is not sufficient evidence of browser connection migration. Heartbeats or browser connection management can create multiple QUIC sessions without migration. The classifier therefore separates these cases as `multiple_quic_sessions_without_network_change`, `multiple_quic_sessions_without_client_path_change`, `nat_rebinding_path_validation_without_observed_tuple_change`, and `nat_rebinding_multiple_quic_sessions`.
 
-For the follow-up main experiments, we prepared controlled-public network-change harnesses for Chrome, Safari, and Android Chrome. However, Safari and Android Chrome currently lack browser-internal QUIC session logs in this harness, so their outcomes must be interpreted as server/qlog-centered `PASS_FEASIBILITY` evidence. Harness readiness is not itself a successful handover result.
+For the follow-up main experiments, we prepared controlled-public network-change harnesses for Chrome, Safari, and Android Chrome. However, the browser observability matrix shows that only Chrome desktop currently provides NetLog-based session attribution in this harness. Safari and Android Chrome currently lack browser-internal QUIC session logs here, so their outcomes must be interpreted as server/qlog-centered `PASS_FEASIBILITY` evidence. Harness readiness is not itself a successful handover result.
 
 ## Overall Findings
 

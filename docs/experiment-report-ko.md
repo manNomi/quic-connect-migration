@@ -704,6 +704,7 @@ network-change 판정 기준:
 - [Chrome local UDP rebinding proxy 결과](results/chrome-h3-rebinding-proxy-results-20260624.md)
 - [Chrome local UDP rebinding 반복 결과](results/chrome-h3-rebinding-repetition-summary-20260624.md)
 - [quic-go local HTTP/3 mid-flight 반복 결과](results/quic-go-h3-midflight-repetition-summary-20260624.md)
+- [Browser CM observability matrix](results/browser-cm-observability-matrix-20260624.md)
 - [Public origin readiness survey](results/public-origin-readiness-survey-20260624.md)
 - [Browser handover readiness and next experiment plan](results/browser-handover-readiness-plan-20260624.md)
 - [Controlled public WebPKI H3 origin plan](results/controlled-public-origin-h3-plan-20260624.md)
