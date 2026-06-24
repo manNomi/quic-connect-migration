@@ -6,11 +6,11 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 56 |
-| status counts | PASS=25; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=25 |
-| application success counts | false=8; true=48 |
-| experiment groups | browser / public web=38; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
-| non-none failure layers | application-level-retry-boundary=1; application-level-retry-recovery=2; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=1; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-return-path-outage-threshold=3; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
+| total trials | 57 |
+| status counts | PASS=25; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=26 |
+| application success counts | false=8; true=49 |
+| experiment groups | browser / public web=39; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
+| non-none failure layers | application-level-retry-boundary=1; application-level-retry-recovery=3; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=1; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-return-path-outage-threshold=3; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
 
@@ -60,9 +60,9 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-transient-upload-retry-boundary-local-001 | local browser NAT rebinding proxy upload retry recovery control | application-level-retry-recovery | yes | yes | yes | 6-row retry boundary: 4900ms PASS 3/3 and 5000ms PASS 3/3 where no-retry fine boundary previously failed 6/6 at 4900ms/5000ms; ev... |
 | chrome-h3-rebinding-transient-upload-retry-long-outage-local-001 | local browser NAT rebinding proxy long upload retry recovery control | application-level-retry-recovery | yes | yes | yes | 6-row long-outage retry boundary: 6000ms PASS 3/3 and 9000ms PASS 3/3 where no-retry transient sweep failed at 6000ms/9000ms; eve... |
 | chrome-h3-rebinding-transient-upload-retry-stress-boundary-local-001 | local browser NAT rebinding proxy retry stress boundary | application-level-retry-boundary | yes | yes | no | 6-row retry stress boundary: 12000ms PASS 3/3 with DOM complete timing 19978-19984ms, but 15000ms FAIL 3/3 with DOM error timing... |
+| chrome-h3-rebinding-transient-upload-retry2-15000ms-local-001 | local browser NAT rebinding proxy retry2 recovery control | application-level-retry-recovery | yes | yes | yes | 3-row retry2 recovery control: 15000ms upload PASS 3/3 where one-retry stress boundary failed 3/3 at the same outage window; DOM... |
 | chrome-h3-slow-inactive-if-toggle-001 | local browser limited network-change control | trigger-no-active-path-change | no | no | yes | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 127.0.0.1:5320... |
 | chrome-h3-slow-wifi-ip-inactive-if-toggle-001 | local Wi-Fi IP limited network-change control | trigger-no-active-path-change | no | no | yes | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190... |
-| chrome-public-h3-cloudflare-home-20260624 | public WebPKI browser H3 observation | browser-public-application-h3-not-confirmed | no | no | yes | classification public_h3_discovery_without_application_h3; bootstrap application_using_quic=0 with dns_alpn_h3=112; second text f... |
 
 ## Table 5. Browser / Public Web Evidence
 
@@ -106,6 +106,7 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-transient-upload-retry-boundary-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy upload retry recovery control | local UDP proxy switches upstream socket A -> B at 500ms and repeats 4900ms/5000ms A+B se... | yes | yes | 6-row retry boundary: 4900ms PASS 3/3 and 5000ms PASS 3/3 where no-retry fine boundary previously failed 6/6 at 4900ms/5000ms; ev... |
 | chrome-h3-rebinding-transient-upload-retry-long-outage-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy long upload retry recovery control | local UDP proxy switches upstream socket A -> B at 500ms and repeats 6000ms/9000ms A+B se... | yes | yes | 6-row long-outage retry boundary: 6000ms PASS 3/3 and 9000ms PASS 3/3 where no-retry transient sweep failed at 6000ms/9000ms; eve... |
 | chrome-h3-rebinding-transient-upload-retry-stress-boundary-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy retry stress boundary | local UDP proxy switches upstream socket A -> B at 500ms and repeats 12000ms/15000ms A+B... | yes | yes | 6-row retry stress boundary: 12000ms PASS 3/3 with DOM complete timing 19978-19984ms, but 15000ms FAIL 3/3 with DOM error timing... |
+| chrome-h3-rebinding-transient-upload-retry2-15000ms-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy retry2 recovery control | local UDP proxy switches upstream socket A -> B at 500ms and repeats 15000ms A+B server-t... | yes | yes | 3-row retry2 recovery control: 15000ms upload PASS 3/3 where one-retry stress boundary failed 3/3 at the same outage window; DOM... |
 
 ## Table 6. Remaining Evidence Gaps
 

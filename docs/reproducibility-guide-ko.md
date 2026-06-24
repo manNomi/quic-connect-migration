@@ -1368,7 +1368,49 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 15000ms 실패 row는 DOM error timing이 15936-15943ms였고 두 번째 `/upload-sink`가 서버에 도달하지 못했다.
 - 이 local 1MiB upload workload에서 1회 retry recovery boundary는 12초와 15초 사이로 관찰됐다.
 
-## 29. Artifact 정책
+## 29. Chrome local upload retry2 15000ms recovery 재현
+
+1회 retry가 실패한 15000ms outage에서 retry budget을 2회로 늘려 application-level recovery가 어디까지 확장되는지 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624 \
+BASE_PORT=8500 \
+WORKLOADS=upload \
+DROP_WINDOWS_MS="15000" \
+REPETITIONS=3 \
+UPLOAD_RETRY_ATTEMPTS=2 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=3 \
+TIMEOUT=120s \
+CHROME_TIMEOUT_SECONDS=105 \
+CHROME_HOLD_SECONDS=65 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624/rep01-upload-1m-drop-ab-15000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624/rep02-upload-1m-drop-ab-15000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624/rep03-upload-1m-drop-ab-15000ms \
+  --output docs/results/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 15000ms retry2 upload는 `3/3 PASS`
+- DOM complete timing은 24484-24503ms였다.
+- Chrome target QUIC session count는 4개였으므로, 이 결과는 retry/reconnect 기반 task recovery이며 single-session browser CM success가 아니다.
+- 1회 retry 실패 region을 2회 retry가 회복했지만, recovery latency와 session churn cost가 함께 증가했다.
+
+## 30. Artifact 정책
 
 commit 가능한 것:
 
