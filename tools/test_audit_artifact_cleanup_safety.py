@@ -141,6 +141,10 @@ def test_default_reference_csvs_include_poll_boundary_summary() -> None:
     assert "data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv" in DEFAULT_ARTIFACT_REFERENCE_CSVS
 
 
+def test_default_reference_csvs_include_poll_long_boundary_summary() -> None:
+    assert "data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv" in DEFAULT_ARTIFACT_REFERENCE_CSVS
+
+
 def main() -> int:
     test_classify_candidate_prefers_csv_reference()
     test_build_audit_marks_referenced_and_unreferenced()
@@ -153,6 +157,7 @@ def main() -> int:
     test_default_reference_csvs_include_downlink_retry_boundary_summary()
     test_default_reference_csvs_include_downlink_wait_boundary_summary()
     test_default_reference_csvs_include_poll_boundary_summary()
+    test_default_reference_csvs_include_poll_long_boundary_summary()
     print("audit_artifact_cleanup_safety=ok")
     return 0
 

@@ -1672,6 +1672,49 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 모든 row가 server remote addr count 2와 Chrome target QUIC session count 2로 분류됐다.
 - qlog PATH_CHALLENGE/PATH_RESPONSE count는 0/0이었으므로, 이 결과는 single-session browser CM success가 아니라 repeated fetch replacement/multiple-session continuity evidence다.
 
+long-boundary 실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-poll-long-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624 \
+BASE_PORT=9200 \
+DROP_WINDOWS_MS="4000 6000 9000" \
+WORKLOADS="poll" \
+POLL_COUNT=6 \
+POLL_INTERVAL_MS=1000 \
+POLL_COMPLETION_GRACE_MS=22000 \
+EXPECTED_REQUESTS=2 \
+TIMEOUT=60s \
+CHROME_TIMEOUT_SECONDS=42 \
+CHROME_HOLD_SECONDS=28 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+long-boundary summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep01-poll-1m-drop-ab-4000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep01-poll-1m-drop-ab-6000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep01-poll-1m-drop-ab-9000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep02-poll-1m-drop-ab-4000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep02-poll-1m-drop-ab-6000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep02-poll-1m-drop-ab-9000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep03-poll-1m-drop-ab-4000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep03-poll-1m-drop-ab-6000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624/rep03-poll-1m-drop-ab-9000ms \
+  --output docs/results/chrome-h3-rebinding-transient-poll-long-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 4000ms polling은 `1/3 PASS`로 혼재했다.
+- 6000ms/9000ms polling은 모두 `0/3 PASS`였다.
+- 실패 row는 `/browser-poll`과 첫 `/poll`까지만 서버에 도달했고 DOM `pollComplete`가 false였다.
+- 유일한 4000ms PASS row도 Chrome target QUIC session count가 2였으므로 single-session browser CM success가 아니다.
+
 ## 37. Artifact 정책
 
 commit 가능한 것:

@@ -341,6 +341,9 @@ Downlink wait/retry comparison의 핵심:
 | 250ms | 3 | 3/3 PASS | 7 per row | 2 per row | 0/0 | 짧은 outage에서 repeated fetch 작업은 완료됐다. |
 | 1500ms | 3 | 3/3 PASS | 7 per row | 2 per row | 0/0 | 완료는 유지됐지만 single-session continuity evidence는 아니다. |
 | 3000ms | 3 | 3/3 PASS | 7 per row | 2 per row | 0/0 | multiple-session fetch completion으로 해석해야 한다. |
+| 4000ms | 3 | 1/3 PASS | 2 fail rows, 7 pass row | 2 per row | fail 0/0, pass 7/4 | 4초부터 transition zone으로 들어간다. |
+| 6000ms | 3 | 0/3 PASS | 2 per row | 2 per row | 0/0 | 반복 실패 구간으로 관찰됐다. |
+| 9000ms | 3 | 0/3 PASS | 2 per row | 2 per row | 0/0 | long outage는 polling task를 회복하지 못했다. |
 
 Polling/dashboard control의 핵심:
 
@@ -349,6 +352,7 @@ Polling/dashboard control의 핵심:
 - qlog PATH_CHALLENGE/PATH_RESPONSE count는 0/0이었다.
 - 따라서 dashboard refresh류 workload는 사용자 관점 작업 완료를 유지할 수 있지만, 그것만으로 browser CM success를 주장할 수 없다.
 - 대시보드 복구 시간이나 polling success rate를 논문 지표로 사용할 때는 browser session attribution을 함께 보고해야 한다.
+- long-boundary follow-up에서는 4000ms가 1/3 PASS, 6000ms/9000ms가 0/6 PASS였으므로, 이 local polling workload는 3초까지 all-pass, 4초 transition, 6초부터 repeated-fail로 요약된다.
 
 ## 5. 논문용 evidence chain
 
