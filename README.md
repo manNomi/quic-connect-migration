@@ -91,6 +91,7 @@
 - [Controlled public origin operations runbook](docs/results/controlled-public-origin-operations-runbook-20260624.md)
 - [Browser CM observability readiness](docs/results/browser-cm-observability-readiness-20260624.md)
 - [Safari controlled public H3 baseline harness](docs/results/safari-controlled-public-baseline-harness-20260624.md)
+- [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)
