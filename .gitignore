@@ -31,3 +31,6 @@ dist/
 tmp/
 *.test
 
+# Public summarized result documents are intentionally tracked.
+!docs/results/
+!docs/results/*.md
