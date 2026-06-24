@@ -102,6 +102,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     p0_baseline_execution_packet = "docs/results/p0-baseline-execution-packet-20260624.md"
     p0_baseline_execution_packet_csv = "data/p0-baseline-execution-packet-20260624.csv"
     p0_baseline_execution_packet_input = "data/p0-baseline-execution-packet-20260624.csv"
+    p0_baseline_preflight = "docs/results/p0-baseline-preflight-check-20260624.md"
+    p0_baseline_preflight_csv = "data/p0-baseline-preflight-check-20260624.csv"
+    p0_baseline_preflight_input = "data/p0-baseline-preflight-check-20260624.csv"
     research_status_dashboard = "docs/results/research-status-dashboard-20260624.md"
     research_status_dashboard_json = "data/research-status-dashboard-20260624.json"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
@@ -154,6 +157,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         p0_baseline_execution_packet = str(generated_dir / "p0-baseline-execution-packet.md")
         p0_baseline_execution_packet_csv = str(generated_dir / "p0-baseline-execution-packet.csv")
         p0_baseline_execution_packet_input = p0_baseline_execution_packet_csv
+        p0_baseline_preflight = str(generated_dir / "p0-baseline-preflight-check.md")
+        p0_baseline_preflight_csv = str(generated_dir / "p0-baseline-preflight-check.csv")
+        p0_baseline_preflight_input = p0_baseline_preflight_csv
         research_status_dashboard = str(generated_dir / "research-status-dashboard.md")
         research_status_dashboard_json = str(generated_dir / "research-status-dashboard.json")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
@@ -195,6 +201,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_protocol_readiness_matrix.py",
                 "tools/build_p0_unblock_status.py",
                 "tools/build_p0_baseline_execution_packet.py",
+                "tools/check_p0_baseline_preflight.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
@@ -236,6 +243,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_protocol_readiness_matrix.py",
                 "tools/test_build_p0_unblock_status.py",
                 "tools/test_build_p0_baseline_execution_packet.py",
+                "tools/test_check_p0_baseline_preflight.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
@@ -504,6 +512,47 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "p0_baseline_preflight_regression",
+            [python_bin, "tools/test_check_p0_baseline_preflight.py"],
+            {0},
+            30,
+        ),
+        (
+            "p0_baseline_preflight",
+            [
+                python_bin,
+                "tools/check_p0_baseline_preflight.py",
+                "--matrix",
+                final_protocol_readiness_matrix_csv,
+                "--scorecard",
+                final_trial_acceptance_scorecard_csv,
+                "--output",
+                p0_baseline_preflight,
+                "--csv-output",
+                p0_baseline_preflight_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "p0_baseline_preflight_require_go_expected_incomplete",
+            [
+                python_bin,
+                "tools/check_p0_baseline_preflight.py",
+                "--matrix",
+                final_protocol_readiness_matrix_csv,
+                "--scorecard",
+                final_trial_acceptance_scorecard_csv,
+                "--output",
+                p0_baseline_preflight,
+                "--csv-output",
+                p0_baseline_preflight_csv,
+                "--require-go",
+            ],
+            {1},
+            30,
+        ),
+        (
             "research_status_dashboard_regression",
             [python_bin, "tools/test_build_research_status_dashboard.py"],
             {0},
@@ -528,6 +577,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 p0_unblock_status_input,
                 "--p0-baseline-execution-packet",
                 p0_baseline_execution_packet_input,
+                "--p0-baseline-preflight",
+                p0_baseline_preflight_input,
             ],
             {0},
             30,

@@ -1844,7 +1844,39 @@ python3 tools/build_p0_baseline_execution_packet.py \
 - P0 baseline은 아직 `blocked_by_readiness`다.
 - server/client capture는 private config와 public origin baseline preflight가 통과한 뒤에만 실행해야 한다.
 
-## 42. Artifact 정책
+## 42. P0 baseline preflight guard 재생성
+
+server/client artifact capture를 시작해도 되는지 마지막으로 판정한다.
+
+```bash
+python3 tools/check_p0_baseline_preflight.py \
+  --matrix data/final-protocol-readiness-matrix-20260624.csv \
+  --scorecard data/final-trial-acceptance-scorecard-20260624.csv \
+  --output docs/results/p0-baseline-preflight-check-20260624.md \
+  --csv-output data/p0-baseline-preflight-check-20260624.csv
+```
+
+실제로 capture 시작 가능 여부까지 요구하려면 다음을 사용한다.
+
+```bash
+python3 tools/check_p0_baseline_preflight.py \
+  --matrix data/final-protocol-readiness-matrix-20260624.csv \
+  --scorecard data/final-trial-acceptance-scorecard-20260624.csv \
+  --require-go
+```
+
+성공 기준:
+
+- 현재처럼 config gate가 남아 있으면 `go for capture`가 `no`이고 `--require-go`는 실패해야 정상이다.
+- P0 baseline config와 next-trial readiness가 모두 통과해야 `go for capture`가 `yes`가 된다.
+- 이 guard는 baseline capture 허용 여부만 판단하며 browser CM 성공 claim을 만들지 않는다.
+
+현재 관찰된 기준:
+
+- `allowed next action`은 `fill-private-controlled-public-config`다.
+- origin server와 Chrome client capture는 아직 시작하면 안 된다.
+
+## 43. Artifact 정책
 
 commit 가능한 것:
 

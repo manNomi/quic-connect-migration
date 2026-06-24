@@ -8,8 +8,8 @@
     "PASS_NEGATIVE_CONTROL": 32
   },
   "verification": {
-    "checks": "82",
-    "passed": "82",
+    "checks": "85",
+    "passed": "85",
     "ok": "yes"
   },
   "ci": {
@@ -58,6 +58,7 @@
     "readiness_matrix": "data/final-protocol-readiness-matrix-20260624.csv",
     "p0_unblock_status": "data/p0-unblock-status-20260624.csv",
     "p0_baseline_execution_packet": "data/p0-baseline-execution-packet-20260624.csv",
+    "p0_baseline_preflight": "data/p0-baseline-preflight-check-20260624.csv",
     "acceptance_scorecard": "data/final-trial-acceptance-scorecard-20260624.csv",
     "operational_friction_matrix": "data/cm-operational-friction-matrix-20260624.csv",
     "paper_claim_support_matrix": "data/paper-claim-support-matrix-20260624.csv",
