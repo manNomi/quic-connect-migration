@@ -41,6 +41,8 @@
 
 특히 Chrome CDP downlink/heartbeat 대조군과 local UDP rebinding proxy 반복 실험은 server remote tuple 변화만으로 CM을 주장하면 안 됨을 보였다. heartbeat request는 network-change가 없어도 별도 QUIC session/source tuple을 만들 수 있었고, rebinding proxy heartbeat 반복 3회에서는 모두 proxy packet rebinding, qlog/Chrome target NetLog path validation, tuple change가 있었지만 Chrome target QUIC session도 2개였다. 반대로 streaming upload rebinding 반복 3회에서는 proxy packet log가 A/B upstream forwarding을 보였고 upload가 모두 완료됐으며 qlog 및 Chrome target NetLog path validation과 단일 Chrome target QUIC session이 관찰됐지만 request-level remote tuple은 하나로 남았다. inactive interface toggle에서는 client path snapshot이 `no_client_path_change_observed`였다.
 
+추가로 rebinding timing sensitivity 실험을 수행했다. rebinding 시점을 early `500ms`와 late `5s`로 바꿔 downlink 8회, upload 4회를 실행했고 12/12가 PASS였다. 모든 run에서 proxy packet rebinding, qlog path validation, Chrome target NetLog path-validation frame이 관찰됐다. 다만 early 조건은 B upstream packet share가 높고 late 조건은 낮았으며, heartbeat downlink의 session/tuple 해석도 timing에 따라 달라졌다. 따라서 heartbeat 기반 application recovery를 논문 novelty로 가져가려면 timing-controlled 실험 설계가 필요하다.
+
 ## 3. 실험 환경
 
 ### 3.1 Local 개발 환경

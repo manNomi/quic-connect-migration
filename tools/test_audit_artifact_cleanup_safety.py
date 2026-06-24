@@ -7,7 +7,7 @@ import csv
 import tempfile
 from pathlib import Path
 
-from audit_artifact_cleanup_safety import build_audit, classify_candidate
+from audit_artifact_cleanup_safety import DEFAULT_ARTIFACT_REFERENCE_CSVS, build_audit, classify_candidate
 from draft_final_handover_result_row import CSV_FIELDS
 
 
@@ -109,10 +109,15 @@ def test_build_audit_keeps_extra_reference_csv_artifacts() -> None:
         assert by_name["repetition-artifact"]["referenced_trial_ids"] == ["repetition-r1"]
 
 
+def test_default_reference_csvs_include_timing_sensitivity_summary() -> None:
+    assert "data/chrome-h3-rebinding-timing-sensitivity-20260624.csv" in DEFAULT_ARTIFACT_REFERENCE_CSVS
+
+
 def main() -> int:
     test_classify_candidate_prefers_csv_reference()
     test_build_audit_marks_referenced_and_unreferenced()
     test_build_audit_keeps_extra_reference_csv_artifacts()
+    test_default_reference_csvs_include_timing_sensitivity_summary()
     print("audit_artifact_cleanup_safety=ok")
     return 0
 

@@ -111,6 +111,24 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - 그러나 RFC 9000의 path validation은 changed path reachability를 확인하는 transport 절차이지, 실제 Wi-Fi/LTE handover 또는 browser task continuity 보장을 의미하지 않는다.
 - 따라서 논문에서는 “Chrome local forced-H3 NAT rebinding에서 target QUIC session의 path validation evidence를 확보했다”까지만 현재 결과로 쓰고, “Chrome Wi-Fi/LTE handover 성공”은 final browser handover protocol 완료 전까지 보류한다.
 
+### 4.5 Rebinding timing은 packet 분포와 heartbeat 해석을 바꾼다
+
+[Chrome H3 Local Rebinding Timing Sensitivity Summary](./chrome-h3-rebinding-timing-sensitivity-20260624.md)는 rebinding 시점을 early `500ms`와 late `5s`로 나누어 downlink/upload를 다시 실행했다.
+
+| workload | timing | runs | PASS | proxy packet rebinding | qlog path validation | Chrome target NetLog path validation | avg B packet share |
+| --- | --- | ---: | ---: | --- | --- | --- | ---: |
+| downlink | early 500ms | 4 | 4/4 | 4/4 | 4/4 | 4/4 | 0.618 |
+| downlink | late 5s | 4 | 4/4 | 4/4 | 4/4 | 4/4 | 0.172 |
+| upload | early 500ms | 2 | 2/2 | 2/2 | 2/2 | 2/2 | 0.800 |
+| upload | late 5s | 2 | 2/2 | 2/2 | 2/2 | 2/2 | 0.181 |
+
+해석:
+
+- early/late 모두 local NAT rebinding transport evidence는 재현됐다.
+- packet share는 rebinding 시점에 따라 크게 달라지므로 packet-count 기반 해석은 timing parameter와 함께 보고해야 한다.
+- heartbeat downlink는 early 조건에서 `nat_rebinding_multiple_quic_sessions`, late 조건에서 `nat_rebinding_path_validation_without_observed_tuple_change`로 갈라졌다. 즉 heartbeat 자체의 유무뿐 아니라 heartbeat가 rebinding 전후 어느 시점에 발생하는지도 browser session interpretation을 바꾼다.
+- 이 결과는 application heartbeat/recovery 전략을 후속 연구로 다룰 때 timing-controlled protocol이 필요하다는 근거가 된다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

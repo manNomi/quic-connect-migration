@@ -8,11 +8,11 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `14e2c5b` |
+| source commit at generation | `e6601ff` |
 | branch | `main` |
-| total trials | `46` |
-| status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 3, 'PASS_NEGATIVE_CONTROL': 18}` |
-| verification | `64/64 passed; ok=yes` |
+| total trials | `47` |
+| status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 4, 'PASS_NEGATIVE_CONTROL': 18}` |
+| verification | `65/65 passed; ok=yes` |
 | final browser handover | `0/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
