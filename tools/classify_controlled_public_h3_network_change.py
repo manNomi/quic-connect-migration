@@ -54,10 +54,17 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
     server_requests = summary["server_requests"]
     network_change = summary["network_change"]
     netlog = summary["netlog"]
+    client_path_change = summary["client_path_change"]
     qlog_has_path_validation = summary["server_qlog_has_path_validation"]
     browser_kind = summary["browser_kind"]
     remote_addr_count = int(server_requests["remote_addr_count"])
     quic_sessions = int(netlog.get("target_quic_session_count") or 0)
+    client_path_error = client_path_change.get("error")
+    client_path_classification = str(client_path_change.get("classification") or "")
+    client_active_path_changed = (
+        bool(client_path_change.get("active_path_changed"))
+        or client_path_classification == "client_active_path_changed"
+    )
 
     if summary["server_error"] == "missing":
         return "FAIL", "controlled_public_network_change_server_artifact_missing"
@@ -69,6 +76,10 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
         return "PASS_NEGATIVE_CONTROL", "controlled_public_network_change_not_executed"
     if network_change["exit"] not in (0, None):
         return "FAIL", "controlled_public_network_change_command_failed"
+    if client_path_error == "missing":
+        return "PASS_NEGATIVE_CONTROL", "path_snapshot_missing"
+    if not client_active_path_changed:
+        return "PASS_NEGATIVE_CONTROL", "no_client_active_path_change_observed"
 
     if browser_kind != "chrome" and remote_addr_count > 1 and qlog_has_path_validation:
         return "PASS_FEASIBILITY", "possible_connection_migration_server_qlog_only"

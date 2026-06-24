@@ -106,6 +106,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_next_final_handover_trial_readiness.py",
+                "tools/classify_controlled_public_h3_network_change.py",
                 "tools/draft_final_handover_result_row.py",
                 "tools/plan_artifact_cleanup.py",
                 "tools/plan_final_browser_handover_runs.py",
@@ -115,6 +116,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
+                "tools/test_classify_controlled_public_h3_network_change.py",
                 "tools/test_draft_final_handover_result_row.py",
                 "tools/test_final_browser_handover_trial_audit.py",
                 "tools/test_validate_final_handover_trial_artifact.py",
@@ -184,6 +186,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_handover_operator_checklist_regression",
             [python_bin, "tools/test_build_final_handover_operator_checklist.py"],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_network_change_classifier_regression",
+            [python_bin, "tools/test_classify_controlled_public_h3_network_change.py"],
             {0},
             30,
         ),

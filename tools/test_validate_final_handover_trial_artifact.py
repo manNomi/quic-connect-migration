@@ -68,6 +68,17 @@ def test_reconnect_negative_control_does_not_count() -> None:
     assert any("reconnect_or_multiple_sessions" in warning for warning in result["warnings"])
 
 
+def test_no_client_active_path_change_does_not_count() -> None:
+    result = validate_tmp(
+        "controlled-public-chrome-downlink-noheartbeat-network-change-003",
+        base_summary("no_client_active_path_change_observed"),
+    )
+    assert result["appendable_to_experiment_results"] is True
+    assert result["counts_toward_final_protocol"] is False
+    assert result["claim_strength"] == "negative_control_record_only"
+    assert any("client path snapshot" in warning for warning in result["warnings"])
+
+
 def test_safari_feasibility_counts_as_p1_only() -> None:
     summary = base_summary("possible_connection_migration_server_qlog_only")
     summary["status"] = "PASS_FEASIBILITY"
@@ -84,6 +95,7 @@ def test_safari_feasibility_counts_as_p1_only() -> None:
 def main() -> int:
     test_positive_chrome_counts()
     test_reconnect_negative_control_does_not_count()
+    test_no_client_active_path_change_does_not_count()
     test_safari_feasibility_counts_as_p1_only()
     print("validate_final_handover_trial_artifact=ok")
     return 0

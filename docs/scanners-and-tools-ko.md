@@ -536,11 +536,13 @@ classification:
 
 | classification | 의미 |
 | --- | --- |
-| `possible_connection_migration` | tuple change와 qlog path validation이 함께 관찰됨 |
-| `possible_connection_migration_server_qlog_only` | Safari처럼 browser-internal QUIC log가 없는 상태에서 server tuple change와 qlog path validation만 관찰됨 |
+| `possible_connection_migration` | client active path change, tuple change, qlog path validation, 단일 Chrome QUIC session evidence가 함께 관찰됨 |
+| `possible_connection_migration_server_qlog_only` | Safari/Android처럼 browser-internal QUIC log가 없는 상태에서 client active path change, server tuple change, qlog path validation이 관찰됨 |
 | `reconnect_or_multiple_sessions` | tuple change가 있으나 여러 QUIC session evidence |
 | `tuple_changed_without_path_validation` | tuple change가 있으나 path validation evidence 없음 |
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
+| `no_client_active_path_change_observed` | client path snapshot에서 active path 변화가 관찰되지 않음 |
+| `path_snapshot_missing` | client path snapshot이 없어 active handover evidence 부족 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
 ## 17. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`

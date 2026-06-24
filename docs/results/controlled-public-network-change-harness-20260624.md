@@ -109,11 +109,14 @@ results/client-path-change-summary.json
 
 | classification | 의미 |
 | --- | --- |
-| `possible_connection_migration` | server remote tuple change + server qlog path validation + 단일/불명확하지 않은 QUIC session evidence |
+| `possible_connection_migration` | client active path change + server remote tuple change + server qlog path validation + 단일/불명확하지 않은 QUIC session evidence |
+| `possible_connection_migration_server_qlog_only` | Safari/Android처럼 browser-internal QUIC log가 제한된 조건에서 client active path change + server tuple change + qlog path validation이 관찰됨 |
 | `reconnect_or_multiple_sessions` | tuple change와 path validation은 있으나 browser NetLog상 여러 QUIC session이 관찰됨 |
 | `tuple_changed_without_path_validation` | server tuple은 바뀌었지만 QUIC path validation evidence가 없음 |
 | `path_validation_without_observed_tuple_change` | path validation은 있으나 server request remote tuple 변화가 없음 |
 | `no_path_change_after_trigger` | network-change command는 실행됐지만 server remote tuple 변화가 없음 |
+| `no_client_active_path_change_observed` | network-change command는 실행됐지만 client active path 변화가 관찰되지 않음 |
+| `path_snapshot_missing` | client path snapshot이 없어 active handover evidence가 부족함 |
 | `controlled_public_network_change_workload_failed` | workload가 expected request count에 도달하지 못함 |
 | `controlled_public_network_change_application_h3_precondition_failed` | server/qlog application H3 evidence가 없음 |
 

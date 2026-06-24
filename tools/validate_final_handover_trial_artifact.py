@@ -46,6 +46,10 @@ def warnings_for(row: dict[str, str], matched_requirements: list[str]) -> list[s
         warnings.append("tuple change without qlog path validation excludes CM success")
     if "no_path_change_after_trigger" in row["notes"]:
         warnings.append("network-change trigger did not produce active path-change evidence")
+    if "path_snapshot_missing" in row["notes"]:
+        warnings.append("missing client path snapshot excludes active handover success")
+    if "no_client_active_path_change_observed" in row["notes"]:
+        warnings.append("client path snapshot did not show active path change")
     return warnings
 
 
