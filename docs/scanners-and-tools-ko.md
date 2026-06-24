@@ -802,6 +802,14 @@ python3 tools/verify_research_bundle.py \
   --output docs/results/research-verification-report-20260624.md
 ```
 
+작업 트리를 더럽히지 않고 현재 상태만 확인하려면 output을 임시 경로로 둔다.
+
+```bash
+python3 tools/verify_research_bundle.py \
+  --scratch-dir /tmp/quic-cm-verify \
+  --output /tmp/quic-cm-research-verification.md
+```
+
 주요 특징:
 
 | 항목 | 의미 |

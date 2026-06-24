@@ -67,7 +67,17 @@ def run_check(name: str, command: list[str], expected_exit_codes: set[int], time
     )
 
 
-def default_checks(python_bin: str) -> list[tuple[str, list[str], set[int], int]]:
+def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[tuple[str, list[str], set[int], int]]:
+    paper_tables = "docs/results/paper-tables-20260624.md"
+    final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
+    storage_report = "docs/results/artifact-storage-report-20260624.md"
+    research_audit = "docs/results/research-bundle-audit-20260624.md"
+    if generated_dir is not None:
+        paper_tables = str(generated_dir / "paper-tables.md")
+        final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
+        storage_report = str(generated_dir / "artifact-storage-report.md")
+        research_audit = str(generated_dir / "research-bundle-audit.md")
+
     return [
         (
             "python_compile_core_tools",
@@ -89,7 +99,7 @@ def default_checks(python_bin: str) -> list[tuple[str, list[str], set[int], int]
         ("experiment_summary", [python_bin, "tools/summarize_experiment_results.py", "--format", "markdown"], {0}, 30),
         (
             "paper_tables_regeneration_check",
-            [python_bin, "tools/build_paper_tables.py", "--output", "docs/results/paper-tables-20260624.md"],
+            [python_bin, "tools/build_paper_tables.py", "--output", paper_tables],
             {0},
             30,
         ),
@@ -99,7 +109,7 @@ def default_checks(python_bin: str) -> list[tuple[str, list[str], set[int], int]
                 python_bin,
                 "tools/audit_final_browser_handover_trials.py",
                 "--output",
-                "docs/results/final-browser-handover-trial-audit-20260624.md",
+                final_trials,
             ],
             {0},
             30,
@@ -112,13 +122,13 @@ def default_checks(python_bin: str) -> list[tuple[str, list[str], set[int], int]
         ),
         (
             "artifact_storage_report",
-            [python_bin, "tools/report_artifact_storage.py", "--output", "docs/results/artifact-storage-report-20260624.md"],
+            [python_bin, "tools/report_artifact_storage.py", "--output", storage_report],
             {0},
             60,
         ),
         (
             "research_bundle_audit",
-            [python_bin, "tools/audit_research_bundle.py", "--output", "docs/results/research-bundle-audit-20260624.md"],
+            [python_bin, "tools/audit_research_bundle.py", "--output", research_audit],
             {0},
             60,
         ),
@@ -217,11 +227,19 @@ def main() -> int:
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default="docs/results/research-verification-report-20260624.md")
+    parser.add_argument(
+        "--scratch-dir",
+        help="write generated intermediate reports under this directory instead of tracked docs/results paths",
+    )
     parser.add_argument("--continue-on-failure", action="store_true")
     args = parser.parse_args()
 
+    scratch_dir = Path(args.scratch_dir) if args.scratch_dir else None
+    if scratch_dir is not None:
+        scratch_dir.mkdir(parents=True, exist_ok=True)
+
     results: list[CheckResult] = []
-    for name, command, expected, timeout in default_checks(args.python):
+    for name, command, expected, timeout in default_checks(args.python, scratch_dir):
         result = run_check(name, command, expected, timeout)
         results.append(result)
         if not result.ok and not args.continue_on_failure:
