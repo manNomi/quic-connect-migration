@@ -130,6 +130,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "key_paths": {
             "audit": "docs/results/research-bundle-audit-20260624.md",
             "verification": "docs/results/research-verification-report-20260624.md",
+            "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
             "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
             "trial_packet": "docs/results/final-handover-trial-packet-20260624.md",
             "deploy_packet": "docs/results/controlled-public-origin-deploy-packet-20260624.md",

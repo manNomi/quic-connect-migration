@@ -1457,3 +1457,28 @@ CI나 scratch 검증에서는 `--include-ci` 없이 실행해도 된다.
 ```bash
 python3 tools/test_build_reproducibility_manifest.py
 ```
+
+## 45. `tools/build_paper_evidence_gap_register.py`
+
+논문 claim 단위로 현재 증거가 충분한지, 제한적으로만 쓸 수 있는지, 아직 주장하면 안 되는지를 정리한다. `data/evidence-chain-rubric.csv`와 final browser handover requirement audit을 연결해서 부족한 claim마다 필요한 trial requirement를 붙인다.
+
+산출물:
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/results/paper-evidence-gap-register-20260624.md` | 사람이 읽는 주장별 evidence gap register |
+| `data/paper-evidence-gap-register-20260624.csv` | 논문 표/부록용 machine-readable register |
+
+실행:
+
+```bash
+python3 tools/build_paper_evidence_gap_register.py \
+  --output docs/results/paper-evidence-gap-register-20260624.md \
+  --csv-output data/paper-evidence-gap-register-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_paper_evidence_gap_register.py
+```

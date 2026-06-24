@@ -69,6 +69,8 @@ def run_check(name: str, command: list[str], expected_exit_codes: set[int], time
 
 def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[tuple[str, list[str], set[int], int]]:
     paper_tables = "docs/results/paper-tables-20260624.md"
+    paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
+    paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
     final_readiness = "docs/results/final-browser-handover-readiness-20260624.md"
     final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
@@ -89,6 +91,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
+        paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
+        paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
         final_readiness = str(generated_dir / "final-browser-handover-readiness.md")
         final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
@@ -123,6 +127,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
+                "tools/build_paper_evidence_gap_register.py",
                 "tools/build_reproducibility_manifest.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_controlled_public_config.py",
@@ -143,6 +148,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
+                "tools/test_build_paper_evidence_gap_register.py",
                 "tools/test_build_reproducibility_manifest.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_controlled_public_config.py",
@@ -166,6 +172,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "paper_tables_regeneration_check",
             [python_bin, "tools/build_paper_tables.py", "--output", paper_tables],
+            {0},
+            30,
+        ),
+        (
+            "paper_evidence_gap_register_regression",
+            [python_bin, "tools/test_build_paper_evidence_gap_register.py"],
+            {0},
+            30,
+        ),
+        (
+            "paper_evidence_gap_register",
+            [
+                python_bin,
+                "tools/build_paper_evidence_gap_register.py",
+                "--output",
+                paper_gap_register,
+                "--csv-output",
+                paper_gap_register_csv,
+            ],
             {0},
             30,
         ),
