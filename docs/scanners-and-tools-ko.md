@@ -1772,3 +1772,45 @@ python3 tools/test_summarize_chrome_rebinding_stress_matrix.py
 
 - `BASE_PORT=6000`은 Chrome restricted port라 request가 서버까지 도달하지 않는다.
 - 이 결과는 local NAT rebinding old-path-unavailable control이며, 실제 Chrome/Safari/Android Wi-Fi/LTE handover success claim으로 쓰면 안 된다.
+
+## 51. `tools/summarize_chrome_rebinding_return_path_drop_controls.py`
+
+Chrome forced-H3 local UDP rebinding에서 server-to-client return path를 선택적으로 drop한 control artifact를 요약한다. B-only drop은 old return path가 살아 있을 때 작업이 계속 완료되는지 확인하고, A+B drop은 old/new return path가 모두 사라질 때 application completion이 실패하는지 확인한다.
+
+실행 스크립트:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-return-path-drop-controls-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624 \
+BASE_PORT=6700 \
+REBIND_AFTER=500ms \
+TIMEOUT=35s \
+CHROME_TIMEOUT_SECONDS=28 \
+CHROME_HOLD_SECONDS=14 \
+./scripts/run-chrome-h3-rebinding-return-path-drop-controls.sh
+```
+
+논문용 summary 재생성:
+
+```bash
+python3 tools/summarize_chrome_rebinding_return_path_drop_controls.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/downlink-1m-drop-b-only \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/upload-1m-drop-b-only \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/downlink-1m-drop-a-and-b \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/upload-1m-drop-a-and-b \
+  --output docs/results/chrome-h3-rebinding-return-path-drop-controls-20260624.md \
+  --csv-output data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_summarize_chrome_rebinding_return_path_drop_controls.py
+```
+
+해석 경계:
+
+- B-only drop PASS는 “새 경로 packet 일부 손실이 곧 작업 실패”가 아님을 보여준다.
+- A+B drop FAIL은 server request/qlog/NetLog evidence가 있어도 application completion이 실패할 수 있음을 보여준다.
+- 이 실험도 local control이며 실제 public active handover 결과는 아니다.

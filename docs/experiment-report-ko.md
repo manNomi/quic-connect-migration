@@ -47,6 +47,8 @@
 
 같은 old-path-drop 조건을 1MiB/4MiB stress workload로 키운 실험도 수행했다. downlink 3회, upload 2회가 모두 PASS였고, upload는 총 5MiB가 `/upload-sink`에 도달했다. 전체 stress row에서 A-side server packet 105개, 74279 bytes를 drop했지만 qlog와 Chrome target NetLog path validation은 5/5로 관찰됐다. 다만 1MiB heartbeat downlink는 여전히 Chrome target QUIC session이 2개로 갈라졌다. 따라서 큰 작업에서도 local NAT rebinding feasibility는 강화됐지만, public active browser handover 성공이라고 일반화하면 안 된다.
 
+return-path drop control도 추가했다. B-side server packet만 drop한 downlink/upload 2회는 2/2 PASS였고, A+B server packet을 모두 drop한 downlink/upload 2회는 2/2 FAIL이었다. 특히 실패 row도 server request와 qlog/Chrome NetLog transport evidence는 남겼지만 DOM application completion이 false였다. 따라서 논문에서는 qlog path evidence와 task completion을 별도 축으로 분리해야 한다.
+
 ## 3. 실험 환경
 
 ### 3.1 Local 개발 환경

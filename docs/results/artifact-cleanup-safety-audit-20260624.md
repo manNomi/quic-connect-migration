@@ -7,17 +7,17 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `45.8 GiB` |
+| disk free | `45.3 GiB` |
 | target free GiB | `5.0` |
-| artifact roots total | `2.1 GiB` |
-| extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
-| cleanup candidates | `62` |
-| CSV-referenced candidates | `40` |
+| artifact roots total | `2.6 GiB` |
+| extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
+| cleanup candidates | `63` |
+| CSV-referenced candidates | `41` |
 | planned final-trial candidates | `0` |
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
-| protected referenced/planned size | `2.0 GiB` |
-| projected free if review-unreferenced removed | `45.9 GiB` |
+| protected referenced/planned size | `2.5 GiB` |
+| projected free if review-unreferenced removed | `45.4 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
@@ -35,6 +35,7 @@ Generated: `2026-06-24`
 | recommendation | path | size | referenced trials | reason |
 | --- | --- | ---: | --- | --- |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624` | `812.7 MiB` | chrome-h3-rebinding-old-path-drop-stress-local-001, downlink-1m-noheartbeat, downlink-1m-heartbeat, downlink-4m-noheartbeat, upload-1m, upload-4m | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | chrome-h3-rebinding-return-path-drop-controls-local-001, downlink-1m-drop-b-only, upload-1m-drop-b-only, downlink-1m-drop-a-and-b, upload-1m-drop-a-and-b | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | chrome-h3-alt-svc-localhost-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624` | `382.6 MiB` | chrome-h3-alt-svc-ip-literal-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-repetition-20260624` | `49.1 MiB` | chrome-h3-rebinding-old-path-drop-local-001, noheartbeat-r1, noheartbeat-r2, noheartbeat-r3, heartbeat-r1, heartbeat-r2, heartbeat-r3 | artifact path is referenced by a tracked artifact reference CSV |

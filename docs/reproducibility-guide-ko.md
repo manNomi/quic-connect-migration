@@ -1058,7 +1058,45 @@ python3 tools/summarize_chrome_rebinding_stress_matrix.py \
   --csv-output data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv
 ```
 
-## 22. Artifact 정책
+## 22. Chrome local return-path drop control 재현
+
+old-path-drop stress가 “성공”만 보여주지 않도록, return path를 단계적으로 차단하는 대조군을 실행한다. B-only drop은 새 경로 응답만 막고 old return path는 남긴다. A+B drop은 switch 이후 old/new return path를 모두 막아 expected failure boundary를 만든다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-return-path-drop-controls-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624 \
+BASE_PORT=6700 \
+REBIND_AFTER=500ms \
+TIMEOUT=35s \
+CHROME_TIMEOUT_SECONDS=28 \
+CHROME_HOLD_SECONDS=14 \
+./scripts/run-chrome-h3-rebinding-return-path-drop-controls.sh
+```
+
+성공 기준:
+
+- B-only drop downlink/upload 2개 row는 `PASS`
+- A+B drop downlink/upload 2개 row는 `FAIL`
+- A+B failure row의 classification은 `browser_application_task_failed`
+- failure row에서도 server request와 qlog/Chrome NetLog evidence가 남을 수 있음을 확인
+
+논문용 summary 재생성:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_return_path_drop_controls.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/downlink-1m-drop-b-only \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/upload-1m-drop-b-only \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/downlink-1m-drop-a-and-b \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624/upload-1m-drop-a-and-b \
+  --output docs/results/chrome-h3-rebinding-return-path-drop-controls-20260624.md \
+  --csv-output data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv
+```
+
+## 23. Artifact 정책
 
 commit 가능한 것:
 

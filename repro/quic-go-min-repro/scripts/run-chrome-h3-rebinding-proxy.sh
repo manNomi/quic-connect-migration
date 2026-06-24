@@ -13,6 +13,8 @@ PROXY_ADDR="${PROXY_ADDR:-127.0.0.1:4443}"
 SERVER_ADDR="${SERVER_ADDR:-127.0.0.1:4444}"
 REBIND_AFTER="${REBIND_AFTER:-3s}"
 DROP_A_SERVER_AFTER_SWITCH="${DROP_A_SERVER_AFTER_SWITCH:-0}"
+DROP_B_SERVER_AFTER_SWITCH="${DROP_B_SERVER_AFTER_SWITCH:-0}"
+ALLOW_CLASSIFIER_FAIL="${ALLOW_CLASSIFIER_FAIL:-0}"
 WORKLOAD="${WORKLOAD:-downlink}"
 TIMEOUT="${TIMEOUT:-45s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-35}"
@@ -101,6 +103,9 @@ PROXY_ARGS=(
 if [[ "$DROP_A_SERVER_AFTER_SWITCH" == "1" || "$DROP_A_SERVER_AFTER_SWITCH" == "true" ]]; then
   PROXY_ARGS+=(--drop-a-server-after-switch)
 fi
+if [[ "$DROP_B_SERVER_AFTER_SWITCH" == "1" || "$DROP_B_SERVER_AFTER_SWITCH" == "true" ]]; then
+  PROXY_ARGS+=(--drop-b-server-after-switch)
+fi
 
 "$ARTIFACT_DIR/bin/udprebindproxy" "${PROXY_ARGS[@]}" \
   >"$ARTIFACT_DIR/logs/rebinding-proxy.stdout.log" 2>&1 &
@@ -143,18 +148,19 @@ fi
 wait "$PROXY_PID" || PROXY_EXIT=$?
 trap - EXIT
 
+CLASSIFIER_EXIT=0
 python3 "$PROJECT_ROOT/tools/classify_chrome_h3_artifacts.py" "$ARTIFACT_DIR" \
   --addr "$PROXY_ADDR" \
   --expected-requests "$EXPECTED_REQUESTS" \
   --workload "rebinding-proxy-${WORKLOAD}" \
   --chrome-exit "$CHROME_EXIT" \
   --server-exit "$SERVER_EXIT" \
-  --output "$ARTIFACT_DIR/results/chrome-summary.json"
+  --output "$ARTIFACT_DIR/results/chrome-summary.json" || CLASSIFIER_EXIT=$?
 
-python3 - "$ARTIFACT_DIR/results/chrome-summary.json" "$ARTIFACT_DIR/results/rebinding-proxy.json" "$PROXY_EXIT" <<'PY'
+python3 - "$ARTIFACT_DIR/results/chrome-summary.json" "$ARTIFACT_DIR/results/rebinding-proxy.json" "$PROXY_EXIT" "$CLASSIFIER_EXIT" <<'PY'
 import json
 import sys
-summary_path, proxy_path, proxy_exit = sys.argv[1:]
+summary_path, proxy_path, proxy_exit, classifier_exit = sys.argv[1:]
 summary = json.load(open(summary_path, encoding="utf-8"))
 proxy = json.load(open(proxy_path, encoding="utf-8")) if __import__("pathlib").Path(proxy_path).exists() else {}
 summary["rebinding_proxy"] = {
@@ -166,11 +172,19 @@ summary["rebinding_proxy"] = {
     "server_packets_a": proxy.get("server_packets_a"),
     "server_packets_b": proxy.get("server_packets_b"),
     "drop_a_server_after_switch": proxy.get("drop_a_server_after_switch"),
+    "drop_b_server_after_switch": proxy.get("drop_b_server_after_switch"),
     "dropped_server_packets_a": proxy.get("dropped_server_packets_a"),
+    "dropped_server_packets_b": proxy.get("dropped_server_packets_b"),
     "dropped_server_bytes_a": proxy.get("dropped_server_bytes_a"),
+    "dropped_server_bytes_b": proxy.get("dropped_server_bytes_b"),
 }
+summary["classifier_exit"] = int(classifier_exit)
 with open(summary_path, "w", encoding="utf-8") as fp:
     json.dump(summary, fp, indent=2)
     fp.write("\n")
 print(json.dumps(summary, indent=2))
 PY
+
+if [[ "$CLASSIFIER_EXIT" != "0" && "$ALLOW_CLASSIFIER_FAIL" != "1" && "$ALLOW_CLASSIFIER_FAIL" != "true" ]]; then
+  exit "$CLASSIFIER_EXIT"
+fi

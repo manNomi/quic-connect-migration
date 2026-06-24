@@ -165,6 +165,23 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - no-heartbeat downlink와 upload는 Chrome target QUIC session 1개로 유지됐지만, heartbeat downlink는 stress 조건에서도 target session 2개로 갈라졌다.
 - 따라서 이 결과는 “local NAT rebinding under old-path-unavailable control”의 강한 feasibility evidence로는 쓸 수 있지만, real Wi-Fi/LTE browser handover evidence로는 쓸 수 없다.
 
+### 4.8 Return-path drop control은 transport evidence와 task completion의 분리를 검증한다
+
+[Chrome H3 Local Rebinding Return-Path Drop Controls](./chrome-h3-rebinding-return-path-drop-controls-20260624.md)는 server-to-client packet drop 위치를 B-only와 A+B로 나누었다.
+
+| condition | workload | expected | actual | app complete | dropped A/B server packets | transport evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| B-only drop | downlink 1MiB | PASS | PASS | true | 0/9 | qlog H3/path evidence, Chrome QUIC session |
+| B-only drop | upload 1MiB | PASS | PASS | true | 0/9 | qlog H3/path evidence, Chrome QUIC session |
+| A+B drop | downlink 1MiB | FAIL | FAIL | false | 103/7 | server request + qlog/NetLog still present |
+| A+B drop | upload 1MiB | FAIL | FAIL | false | 54/24 | server request + qlog/NetLog still present |
+
+해석:
+
+- B-only server packet drop은 실패의 충분조건이 아니었다. old return path가 살아 있으면 application data가 계속 도달할 수 있다.
+- A+B return path를 모두 차단하면 server request와 transport evidence가 있어도 browser application completion은 실패했다.
+- 따라서 final protocol에서 qlog path validation, browser session evidence, application completion을 별도 기준으로 두는 것이 타당하다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

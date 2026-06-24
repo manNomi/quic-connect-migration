@@ -189,9 +189,22 @@ def rebinding_proxy_switched(summary: dict[str, object]) -> bool:
     return isinstance(proxy, dict) and proxy.get("switched") is True
 
 
+def dump_application_complete(dump: str, workload: str) -> bool:
+    if "upload" in workload:
+        return 'data-upload-complete="true"' in dump and 'data-upload-status="200"' in dump
+    if "downlink" in workload:
+        return 'data-downlink-complete="true"' in dump
+    if "poll" in workload:
+        return 'data-poll-complete="true"' in dump
+    if "slow" in workload:
+        return 'data-slow-complete="true"' in dump or "slowComplete = 'true'" in dump
+    return True
+
+
 def classify(summary: dict[str, object]) -> str:
     request_reached_server = bool(summary["request_reached_server"])
     qlog_has_path_validation = bool(summary["qlog_has_path_validation"])
+    qlog_has_path_probe = bool(summary.get("qlog_has_path_probe"))
     remote_addr_count = int(summary["server_remote_addr_count"])
     target_quic_sessions = int(summary["netlog_target_quic_session_count"])
     target_using_quic_jobs = int(summary["netlog_target_using_quic_job_count"])
@@ -205,6 +218,8 @@ def classify(summary: dict[str, object]) -> str:
 
     if not request_reached_server or target_using_quic_jobs <= 0:
         return "browser_h3_request_failed"
+    if summary.get("dump_application_complete") is False or summary.get("dump_has_chrome_error") is True:
+        return "browser_application_task_failed"
     if proxy_switched and remote_addr_count > 1 and qlog_has_path_validation and target_quic_sessions == 1:
         return "nat_rebinding_possible_session_continuity"
     if proxy_switched and remote_addr_count > 1 and target_quic_sessions > 1:
@@ -213,6 +228,8 @@ def classify(summary: dict[str, object]) -> str:
         return "nat_rebinding_tuple_changed_without_path_validation"
     if proxy_switched and remote_addr_count == 1 and qlog_has_path_validation:
         return "nat_rebinding_path_validation_without_observed_tuple_change"
+    if proxy_switched and remote_addr_count == 1 and qlog_has_path_probe and not qlog_has_path_validation:
+        return "nat_rebinding_path_probe_without_validation"
     if remote_addr_count > 1 and qlog_has_path_validation and target_quic_sessions == 1:
         return "possible_connection_migration"
     if remote_addr_count > 1 and target_quic_sessions > 1:
@@ -312,13 +329,20 @@ def main() -> int:
         "netlog_network_event_counts": netlog_summary["network_event_counts"],
         "qlog_counts": {key: qcounts[key] for key in QLOG_PATTERNS},
         "qlog_has_h3": qcounts["http3_frame"] > 0,
-        "qlog_has_path_validation": qcounts["path_challenge"] > 0 or qcounts["path_response"] > 0,
+        "qlog_has_path_probe": qcounts["path_challenge"] > 0 or qcounts["path_response"] > 0,
+        "qlog_has_path_validation": qcounts["path_challenge"] > 0 and qcounts["path_response"] > 0,
         "dump_dom_bytes": len(dump),
         "dump_has_chrome_error": "ERR_" in dump,
+        "dump_application_complete": dump_application_complete(dump, args.workload),
     }
     summary["classification"] = classify(summary)
 
-    if not request_reached_server or not summary["netlog_has_quic_session"] or not summary["qlog_has_h3"]:
+    if (
+        not request_reached_server
+        or not summary["netlog_has_quic_session"]
+        or not summary["qlog_has_h3"]
+        or summary["classification"] == "browser_application_task_failed"
+    ):
         summary["status"] = "FAIL"
 
     text = json.dumps(summary, indent=2, ensure_ascii=False) + "\n"
