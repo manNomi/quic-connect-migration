@@ -61,7 +61,7 @@ result:
 | --- | --- |
 | status | PASS |
 | experiment CSV status | PASS_FEASIBILITY |
-| classifier | `path_validation_without_observed_tuple_change` |
+| classifier | `nat_rebinding_path_validation_without_observed_tuple_change` |
 | expected requests | 2 |
 | server request count | 2 |
 | server request remote addr count | 1 |
@@ -107,7 +107,7 @@ result:
 | --- | --- |
 | status | PASS |
 | experiment CSV status | PASS_NEGATIVE_CONTROL |
-| classifier | `multiple_quic_sessions_without_network_change` |
+| classifier | `nat_rebinding_multiple_quic_sessions` |
 | expected requests | 3 |
 | server request count | 3 |
 | server request remote addr count | 2 |

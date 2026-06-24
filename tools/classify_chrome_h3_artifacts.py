@@ -170,6 +170,25 @@ def parse_netlog_text_fallback(netlog_text: str, addr: str) -> dict[str, object]
     }
 
 
+def summarize_rebinding_proxy(proxy: dict, error: str | None) -> dict[str, object] | None:
+    if error == "missing" and not proxy:
+        return None
+    return {
+        "error": error,
+        "switched": proxy.get("switched"),
+        "upstream_a_addr": proxy.get("upstream_a_addr"),
+        "upstream_b_addr": proxy.get("upstream_b_addr"),
+        "client_packets": proxy.get("client_packets"),
+        "server_packets_a": proxy.get("server_packets_a"),
+        "server_packets_b": proxy.get("server_packets_b"),
+    }
+
+
+def rebinding_proxy_switched(summary: dict[str, object]) -> bool:
+    proxy = summary.get("rebinding_proxy")
+    return isinstance(proxy, dict) and proxy.get("switched") is True
+
+
 def classify(summary: dict[str, object]) -> str:
     request_reached_server = bool(summary["request_reached_server"])
     qlog_has_path_validation = bool(summary["qlog_has_path_validation"])
@@ -177,6 +196,7 @@ def classify(summary: dict[str, object]) -> str:
     target_quic_sessions = int(summary["netlog_target_quic_session_count"])
     target_using_quic_jobs = int(summary["netlog_target_using_quic_job_count"])
     network_change_requested = summary.get("network_change_exit") is not None
+    proxy_switched = rebinding_proxy_switched(summary)
     client_path_change = summary.get("client_path_change")
     client_path_classification = ""
     if isinstance(client_path_change, dict):
@@ -185,6 +205,14 @@ def classify(summary: dict[str, object]) -> str:
 
     if not request_reached_server or target_using_quic_jobs <= 0:
         return "browser_h3_request_failed"
+    if proxy_switched and remote_addr_count > 1 and qlog_has_path_validation and target_quic_sessions == 1:
+        return "nat_rebinding_possible_session_continuity"
+    if proxy_switched and remote_addr_count > 1 and target_quic_sessions > 1:
+        return "nat_rebinding_multiple_quic_sessions"
+    if proxy_switched and remote_addr_count > 1 and not qlog_has_path_validation:
+        return "nat_rebinding_tuple_changed_without_path_validation"
+    if proxy_switched and remote_addr_count == 1 and qlog_has_path_validation:
+        return "nat_rebinding_path_validation_without_observed_tuple_change"
     if remote_addr_count > 1 and qlog_has_path_validation and target_quic_sessions == 1:
         return "possible_connection_migration"
     if remote_addr_count > 1 and target_quic_sessions > 1:
@@ -217,6 +245,7 @@ def main() -> int:
     server, server_error = read_json(base / "results" / "server.json")
     network_change, network_change_error = read_json(base / "results" / "network-change.json")
     client_path_change, client_path_change_error = read_json(base / "results" / "client-path-change-summary.json")
+    rebinding_proxy, rebinding_proxy_error = read_json(base / "results" / "rebinding-proxy.json")
     netlog_path = base / "chrome" / "netlog.json"
     netlog_text = read_text(netlog_path)
     netlog, netlog_error = read_json(netlog_path)
@@ -267,6 +296,7 @@ def main() -> int:
         "network_change_error": network_change_error,
         "client_path_change": client_path_change or None,
         "client_path_change_error": client_path_change_error,
+        "rebinding_proxy": summarize_rebinding_proxy(rebinding_proxy, rebinding_proxy_error),
         "netlog_parse_error": netlog_error,
         "netlog_parser_mode": netlog_summary["parser_mode"],
         "netlog_has_forced_origin": "origin-to-force-quic" in netlog_text or args.addr in netlog_text,

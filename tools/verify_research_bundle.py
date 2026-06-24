@@ -154,6 +154,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_final_handover_trial_artifact_bundle.py",
                 "tools/check_next_final_handover_trial_readiness.py",
+                "tools/classify_chrome_h3_artifacts.py",
                 "tools/classify_controlled_public_h3_network_change.py",
                 "tools/compare_android_path_snapshots.py",
                 "tools/draft_final_handover_result_row.py",
@@ -178,6 +179,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
+                "tools/test_classify_chrome_h3_artifacts.py",
                 "tools/test_classify_controlled_public_h3_network_change.py",
                 "tools/test_compare_android_path_snapshots.py",
                 "tools/test_draft_final_handover_result_row.py",
@@ -368,6 +370,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "artifact_disk_guard_regression",
             [python_bin, "tools/test_artifact_disk_guard.py"],
+            {0},
+            30,
+        ),
+        (
+            "chrome_h3_artifact_classifier_regression",
+            [python_bin, "tools/test_classify_chrome_h3_artifacts.py"],
             {0},
             30,
         ),

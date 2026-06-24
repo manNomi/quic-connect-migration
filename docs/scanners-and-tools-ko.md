@@ -184,7 +184,21 @@ REBIND_AFTER=2s \
 ./scripts/run-chrome-h3-rebinding-proxy.sh
 ```
 
+rebinding proxy 실험에서 추가로 쓰는 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `nat_rebinding_path_validation_without_observed_tuple_change` | proxy는 upstream socket을 바꿨고 qlog path validation도 있었지만, request-level server remote tuple 변화는 관찰되지 않음 |
+| `nat_rebinding_multiple_quic_sessions` | proxy socket 전환과 server tuple 변화가 있었지만 Chrome target QUIC session이 2개 이상이라 session continuity로 볼 수 없음 |
+| `nat_rebinding_possible_session_continuity` | local proxy 조건에서 server tuple 변화, qlog path validation, 단일 Chrome target QUIC session이 동시에 관찰된 후보 라벨 |
+
 이 실험은 실제 Wi-Fi/LTE handover가 아니라 NAT rebinding에 가까운 local control이다. qlog `PATH_CHALLENGE`/`PATH_RESPONSE`와 server tuple 변화가 있어도 Chrome NetLog에서 target QUIC session이 2개이면 session continuity claim으로 쓰면 안 된다.
+
+classifier regression:
+
+```bash
+python3 tools/test_classify_chrome_h3_artifacts.py
+```
 
 ## 5.1 `tools/run_chrome_cdp_navigation.js`
 
