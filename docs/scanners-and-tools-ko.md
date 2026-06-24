@@ -1534,3 +1534,30 @@ python3 tools/build_final_protocol_readiness_matrix.py \
 ```bash
 python3 tools/test_build_final_protocol_readiness_matrix.py
 ```
+
+## 48. `tools/build_research_status_dashboard.py`
+
+현재 연구 bundle 상태를 한 장으로 요약한다. reproducibility manifest, final protocol readiness matrix, final trial acceptance scorecard, experiment-results를 읽어서 trial 수, verifier/CI 상태, final browser handover 진행률, missing gate count, 다음 operator action, 논문 claim boundary를 출력한다.
+
+이 도구는 private env 파일을 읽지 않는다. 이미 public-safe로 생성된 산출물만 요약한다.
+
+산출물:
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/results/research-status-dashboard-20260624.md` | 사람이 읽는 현재 연구 진행 dashboard |
+| `data/research-status-dashboard-20260624.json` | dashboard의 machine-readable 상태 |
+
+실행:
+
+```bash
+python3 tools/build_research_status_dashboard.py \
+  --output docs/results/research-status-dashboard-20260624.md \
+  --json-output data/research-status-dashboard-20260624.json
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_research_status_dashboard.py
+```

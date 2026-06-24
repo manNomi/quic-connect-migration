@@ -77,6 +77,7 @@
 │   ├── final-protocol-readiness-matrix-20260624.csv
 │   ├── final-trial-acceptance-scorecard-20260624.csv
 │   ├── paper-evidence-gap-register-20260624.csv
+│   ├── research-status-dashboard-20260624.json
 │   ├── reproducibility-manifest-20260624.json
 │   └── quiche-path-event-timeline.csv
 ├── docs/
@@ -104,6 +105,7 @@
 │   ├── build_final_protocol_readiness_matrix.py
 │   ├── build_final_trial_acceptance_scorecard.py
 │   ├── build_paper_evidence_gap_register.py
+│   ├── build_research_status_dashboard.py
 │   ├── build_reproducibility_manifest.py
 │   ├── plan_final_browser_handover_runs.py
 │   ├── check_browser_cm_observability.py
@@ -187,6 +189,7 @@
 - [Final handover trial artifact bundle check](docs/results/final-handover-trial-artifact-bundle-check-20260624.md)
 - [Final protocol readiness matrix](docs/results/final-protocol-readiness-matrix-20260624.md)
 - [Final trial acceptance scorecard](docs/results/final-trial-acceptance-scorecard-20260624.md)
+- [Research status dashboard](docs/results/research-status-dashboard-20260624.md)
 - [Active path-change operator cookbook](docs/results/active-path-change-operator-cookbook-20260624.md)
 - [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [CI safe verification result](docs/results/ci-safe-verification-result-20260624.md)
