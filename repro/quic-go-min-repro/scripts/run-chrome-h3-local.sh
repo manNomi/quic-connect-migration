@@ -41,6 +41,8 @@ case "$WORKLOAD" in
     DOWNLINK_BYTES="${DOWNLINK_BYTES:-65536}"
     DOWNLINK_HEARTBEAT="${DOWNLINK_HEARTBEAT:-false}"
     DOWNLINK_HEARTBEAT_DELAY_MS="${DOWNLINK_HEARTBEAT_DELAY_MS:-$((DOWNLINK_DURATION_MS / 2))}"
+    DOWNLINK_COMPLETION_GRACE_MS="${DOWNLINK_COMPLETION_GRACE_MS:-$((DOWNLINK_DURATION_MS + 1000))}"
+    COMPLETION_GRACE="${COMPLETION_GRACE:-${DOWNLINK_COMPLETION_GRACE_MS}ms}"
     REQUEST_PATH="${REQUEST_PATH:-/browser-downlink?duration_ms=${DOWNLINK_DURATION_MS}&chunks=${DOWNLINK_CHUNKS}&bytes=${DOWNLINK_BYTES}&heartbeat=${DOWNLINK_HEARTBEAT}&heartbeat_delay_ms=${DOWNLINK_HEARTBEAT_DELAY_MS}&label=chrome-downlink}"
     if [[ "$DOWNLINK_HEARTBEAT" == "true" || "$DOWNLINK_HEARTBEAT" == "1" ]]; then
       EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-3}"
@@ -57,8 +59,12 @@ TIMEOUT="${TIMEOUT:-60s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-20}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
 CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-5000}"
+CHROME_RUNNER="${CHROME_RUNNER:-dump-dom}"
+CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-5}"
+NODE_BIN="${NODE_BIN:-node}"
 
 mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/certs" "$ARTIFACT_DIR/logs" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/qlog" "$ARTIFACT_DIR/keylog"
+TARGET_URL="https://${ORIGIN_ADDR}${REQUEST_PATH}"
 
 CERT_FILE="$ARTIFACT_DIR/certs/server.pem"
 KEY_FILE="$ARTIFACT_DIR/certs/server-key.pem"
@@ -91,6 +97,7 @@ EXPECTED_REQUESTS="$EXPECTED_REQUESTS" \
 ARTIFACT_DIR="$ARTIFACT_DIR" \
 LISTEN_ADDR="$LISTEN_ADDR" \
 TIMEOUT="$TIMEOUT" \
+COMPLETION_GRACE="${COMPLETION_GRACE:-500ms}" \
 ./scripts/run-h3-server.sh >"$ARTIFACT_DIR/logs/server-wrapper.log" 2>&1 &
 SERVER_PID=$!
 
@@ -106,15 +113,63 @@ sleep 2
 
 NETWORK_CHANGE_PID=""
 if [[ -n "${NETWORK_CHANGE_CMD:-}" ]]; then
+  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+    --url "$TARGET_URL" \
+    --output "$ARTIFACT_DIR/results/client-path-before.json" || true
   (
     sleep "${NETWORK_CHANGE_AFTER_SECONDS:-2}"
-    bash -lc "$NETWORK_CHANGE_CMD"
+    STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+      --url "$TARGET_URL" \
+      --output "$ARTIFACT_DIR/results/client-path-command-before.json" || true
+    EXIT_CODE=0
+    bash -lc "$NETWORK_CHANGE_CMD" || EXIT_CODE=$?
+    COMPLETED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+      --url "$TARGET_URL" \
+      --output "$ARTIFACT_DIR/results/client-path-command-after.json" || true
+    python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \
+      "$ARTIFACT_DIR/results/client-path-command-before.json" \
+      "$ARTIFACT_DIR/results/client-path-command-after.json" \
+      --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
+    python3 - "$ARTIFACT_DIR/results/network-change.json" "$EXIT_CODE" "$STARTED_AT" "$COMPLETED_AT" <<'PY'
+import json
+import sys
+
+output, exit_code, started_at, completed_at = sys.argv[1:]
+with open(output, "w", encoding="utf-8") as fp:
+    json.dump(
+        {
+            "command_present": True,
+            "exit": int(exit_code),
+            "started_at": started_at,
+            "completed_at": completed_at,
+        },
+        fp,
+        indent=2,
+    )
+    fp.write("\n")
+PY
+    exit "$EXIT_CODE"
   ) >"$ARTIFACT_DIR/logs/network-change.log" 2>&1 &
   NETWORK_CHANGE_PID=$!
 fi
 
 CHROME_EXIT=0
-python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ORIGIN_ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
+if [[ "$CHROME_RUNNER" == "cdp" ]]; then
+  "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
+    --chrome-bin "$CHROME_BIN" \
+    --artifact-dir "$ARTIFACT_DIR" \
+    --url "https://${ORIGIN_ADDR}${REQUEST_PATH}" \
+    --origin-to-force-quic-on "$ORIGIN_ADDR" \
+    --spki-hash "$SPKI_HASH" \
+    --netlog-name "netlog.json" \
+    --dump-name "dump-dom.txt" \
+    --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
+    --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
+    --hold-seconds "$CHROME_HOLD_SECONDS" || CHROME_EXIT=$?
+elif [[ "$CHROME_RUNNER" == "dump-dom" ]]; then
+  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ORIGIN_ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
 import pathlib
 import subprocess
 import sys
@@ -148,11 +203,20 @@ with (artifact / "chrome" / "dump-dom.txt").open("wb") as out, (artifact / "chro
     except subprocess.TimeoutExpired:
         raise SystemExit(124)
 PY
+else
+  echo "unsupported CHROME_RUNNER=$CHROME_RUNNER" >&2
+  CHROME_EXIT=2
+fi
 
 NETWORK_CHANGE_EXIT=0
 if [[ -n "$NETWORK_CHANGE_PID" ]]; then
   wait "$NETWORK_CHANGE_PID" || NETWORK_CHANGE_EXIT=$?
-  printf '{"exit":%s}\n' "$NETWORK_CHANGE_EXIT" >"$ARTIFACT_DIR/results/network-change.json"
+  if [[ ! -f "$ARTIFACT_DIR/results/network-change.json" ]]; then
+    printf '{"command_present":true,"exit":%s}\n' "$NETWORK_CHANGE_EXIT" >"$ARTIFACT_DIR/results/network-change.json"
+  fi
+  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+    --url "$TARGET_URL" \
+    --output "$ARTIFACT_DIR/results/client-path-final.json" || true
 fi
 
 SERVER_EXIT=0

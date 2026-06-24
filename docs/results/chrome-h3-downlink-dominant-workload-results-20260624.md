@@ -150,3 +150,141 @@ result:
 - Safari가 동일 workload를 HTTP/3로 처리하고 같은 recovery 특성을 보이는지
 
 따라서 다음 단계는 controlled public origin에서 `WORKLOAD=downlink`와 active path-change trigger를 결합하고, `client-path-change-summary.json`, server remote tuple, qlog path validation, Chrome NetLog를 함께 판정하는 것이다.
+
+## 7. CDP real-time runner 추가 검수
+
+`--dump-dom` 기반 Chrome runner는 virtual time과 page 종료 시점의 영향을 받는다. 특히 `DOWNLINK_HEARTBEAT=true`에서 heartbeat timer가 실제 시간 기준으로 언제 실행되는지 안정적으로 통제하기 어렵다.
+
+이를 보완하기 위해 `tools/run_chrome_cdp_navigation.js`를 추가했다. 이 runner는 Chrome DevTools Protocol로 page를 열고, 지정한 real-time hold 구간 동안 page를 유지한 뒤 DOM과 body dataset을 수집한다.
+
+wrapper:
+
+```bash
+CHROME_RUNNER=cdp CHROME_HOLD_SECONDS=4 ./scripts/run-chrome-h3-local.sh
+```
+
+또한 downlink workload는 expected request count가 stream 완료 전에 먼저 채워질 수 있으므로, `run-chrome-h3-local.sh`가 `COMPLETION_GRACE`를 기본적으로 `DOWNLINK_DURATION_MS + 1000ms`로 설정하도록 보강했다.
+
+### 7.1 CDP no-heartbeat no-change
+
+command:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=1200 \
+DOWNLINK_CHUNKS=3 \
+DOWNLINK_BYTES=4096 \
+DOWNLINK_HEARTBEAT=false \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=4 \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+ADDR=127.0.0.1:4466 \
+LISTEN_ADDR=127.0.0.1:4466 \
+ORIGIN_ADDR=127.0.0.1:4466 \
+RUN_ID=chrome-h3-downlink-noheartbeat-cdp-nochange-20260624 \
+./scripts/run-chrome-h3-local.sh
+```
+
+result:
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| classification | `no_path_change_baseline` |
+| server request count | 2 |
+| server remote addr count | 1 |
+| Chrome target QUIC session count | 1 |
+| Chrome target `using_quic=true` job count | 2 |
+| qlog path validation | false |
+
+### 7.2 CDP heartbeat no-change
+
+command:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=1200 \
+DOWNLINK_CHUNKS=3 \
+DOWNLINK_BYTES=4096 \
+DOWNLINK_HEARTBEAT=true \
+DOWNLINK_HEARTBEAT_DELAY_MS=400 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=4 \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+ADDR=127.0.0.1:4465 \
+LISTEN_ADDR=127.0.0.1:4465 \
+ORIGIN_ADDR=127.0.0.1:4465 \
+RUN_ID=chrome-h3-downlink-heartbeat-cdp-nochange-grace-20260624 \
+./scripts/run-chrome-h3-local.sh
+```
+
+result:
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| classification | `multiple_quic_sessions_without_network_change` |
+| server request count | 3 |
+| server remote addr count | 2 |
+| Chrome target QUIC session count | 2 |
+| Chrome target `using_quic=true` job count | 3 |
+| qlog path validation | false |
+| page dataset | `heartbeatStatus=200`, `downlinkComplete=true` |
+
+해석:
+
+- network-change trigger가 없어도 heartbeat fetch가 별도 QUIC session/source port로 갈 수 있다.
+- 따라서 server remote tuple 변화만으로 Connection Migration을 주장하면 안 된다.
+- 최소한 qlog path validation과 browser NetLog의 session count를 함께 봐야 한다.
+
+### 7.3 CDP heartbeat + inactive interface toggle
+
+command:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=8000 \
+DOWNLINK_CHUNKS=8 \
+DOWNLINK_BYTES=8192 \
+DOWNLINK_HEARTBEAT=true \
+DOWNLINK_HEARTBEAT_DELAY_MS=3000 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=11 \
+CHROME_TIMEOUT_SECONDS=25 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=2 \
+NETWORK_CHANGE_CMD='networksetup -setnetworkserviceenabled "Thunderbolt Bridge" off; sleep 1; networksetup -setnetworkserviceenabled "Thunderbolt Bridge" on' \
+ADDR=127.0.0.1:4467 \
+LISTEN_ADDR=127.0.0.1:4467 \
+ORIGIN_ADDR=127.0.0.1:4467 \
+RUN_ID=chrome-h3-downlink-heartbeat-cdp-inactive-if-toggle-20260624 \
+./scripts/run-chrome-h3-local.sh
+```
+
+result:
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| classification | `multiple_quic_sessions_without_client_path_change` |
+| network change exit | 0 |
+| client path classification | `no_client_path_change_observed` |
+| active interface before/after | `en0` -> `en0` |
+| target route before/after | `lo0` -> `lo0` |
+| server request count | 3 |
+| server remote addr count | 2 |
+| Chrome target QUIC session count | 2 |
+| qlog path validation | false |
+| page dataset | `heartbeatStatus=200`, `downlinkComplete=true` |
+
+해석:
+
+- inactive interface toggle은 command 자체는 성공하지만 active client path를 바꾸지 않는다.
+- heartbeat request 때문에 server remote addr와 QUIC session은 2개가 될 수 있다.
+- client path snapshot이 없었다면 이 결과를 reconnect나 migration처럼 오해할 수 있다.
+- 이 대조군은 논문에서 “CM evidence chain은 tuple change 단독이 아니라 client path change, qlog path validation, browser session evidence를 함께 요구해야 한다”는 근거로 사용할 수 있다.

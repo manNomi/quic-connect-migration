@@ -81,6 +81,6 @@ classification
 
 1. controlled public origin이 준비되면 Chrome baseline을 먼저 `PASS`로 만든다.
 2. Chrome network-change 실험에는 `client-path-change-summary.json`을 반드시 포함한다.
-3. downlink-dominant silent-client workload와 post-change heartbeat variant는 local forced-QUIC baseline에서 `PASS`로 확인했다. 다음에는 같은 workload를 controlled public active path-change 실험에 연결한다.
+3. downlink-dominant silent-client workload와 post-change heartbeat variant는 local forced-QUIC baseline에서 `PASS`로 확인했다. CDP runner 결과 heartbeat는 no-change에서도 별도 QUIC session/source tuple을 만들 수 있으므로, 다음 controlled public active path-change 실험에서는 tuple change 단독이 아니라 client path snapshot, qlog path validation, browser session count를 함께 요구한다.
 4. Safari는 baseline PASS 이후 packet capture plan을 붙여 별도 실험으로 실행한다.
 5. 논문 본문에서는 “CM이 안 쓰인다”가 아니라 “CM support and observability are uneven across implementation, client policy, and deployment path”로 framing한다.

@@ -27,7 +27,9 @@
 15. public origin readiness survey에서는 Google/YouTube `generate_204`만 H3 discovery와 2xx lightweight workload 후보로 남았다.
 16. controlled public application H3 baseline gate와 network-change harness를 추가해, 실제 active path change 실험의 판정 기준을 server/qlog/NetLog 조합으로 고정했다.
 17. Chrome forced-QUIC local H3에서 downlink-dominant streaming workload와 optional heartbeat variant가 HTTP/3로 정상 관찰되는 것을 확인했다.
-18. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+18. Chrome CDP real-time runner 기준, heartbeat fetch는 network-change가 없어도 별도 QUIC session/source tuple을 만들 수 있었다. 따라서 tuple 변화 단독으로는 Connection Migration evidence가 아니다.
+19. inactive interface toggle 대조군에서는 command exit은 0이었지만 client path snapshot은 `no_client_path_change_observed`였고 qlog path validation도 없었다.
+20. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -70,6 +72,7 @@
 │   ├── classify_controlled_public_h3_network_change.py
 │   ├── capture_network_path_snapshot.py
 │   ├── compare_network_path_snapshots.py
+│   ├── run_chrome_cdp_navigation.js
 │   ├── run_safari_webdriver_navigation.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py

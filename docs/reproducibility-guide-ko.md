@@ -399,6 +399,60 @@ RUN_ID=chrome-h3-downlink-heartbeat-20260624-rerun \
 - 두 경우 모두 qlog에 `chosen_alpn`과 `http3:frame` evidence가 있어야 한다.
 - 이 baseline은 migration 성공 근거가 아니다. 실제 network-change 실험 전에 downlink streaming workload와 optional application heartbeat가 Chrome/quic-go H3에서 정상 관측되는지 확인하는 gate다.
 
+CDP real-time runner:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=1200 \
+DOWNLINK_CHUNKS=3 \
+DOWNLINK_BYTES=4096 \
+DOWNLINK_HEARTBEAT=true \
+DOWNLINK_HEARTBEAT_DELAY_MS=400 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=4 \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+ADDR=127.0.0.1:4465 \
+LISTEN_ADDR=127.0.0.1:4465 \
+ORIGIN_ADDR=127.0.0.1:4465 \
+RUN_ID=chrome-h3-downlink-heartbeat-cdp-nochange-grace-20260624 \
+./scripts/run-chrome-h3-local.sh
+```
+
+이 실행의 정상 판정은 `multiple_quic_sessions_without_network_change`다. heartbeat fetch가 no-change 환경에서도 별도 QUIC session/source port를 만들 수 있으므로, tuple 변화만으로 migration을 주장하면 안 된다.
+
+inactive interface toggle + client path snapshot:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=8000 \
+DOWNLINK_CHUNKS=8 \
+DOWNLINK_BYTES=8192 \
+DOWNLINK_HEARTBEAT=true \
+DOWNLINK_HEARTBEAT_DELAY_MS=3000 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=11 \
+CHROME_TIMEOUT_SECONDS=25 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=2 \
+NETWORK_CHANGE_CMD='networksetup -setnetworkserviceenabled "Thunderbolt Bridge" off; sleep 1; networksetup -setnetworkserviceenabled "Thunderbolt Bridge" on' \
+ADDR=127.0.0.1:4467 \
+LISTEN_ADDR=127.0.0.1:4467 \
+ORIGIN_ADDR=127.0.0.1:4467 \
+RUN_ID=chrome-h3-downlink-heartbeat-cdp-inactive-if-toggle-20260624 \
+./scripts/run-chrome-h3-local.sh
+```
+
+정상 판정:
+
+- `classification=multiple_quic_sessions_without_client_path_change`
+- `client_path_change.classification=no_client_path_change_observed`
+- qlog `path_challenge`, `path_response` 없음
+
+이 실험은 실제 handover가 아니다. path-change trigger가 no-op일 때 생기는 browser multiple-session artifact를 분리하는 대조군이다.
+
 Alt-Svc natural HTTP/3 control:
 
 ```bash

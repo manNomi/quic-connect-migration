@@ -384,8 +384,12 @@ openssl로 local test cert/key 생성
 | `ADDR` | 기본 listen/origin 주소 |
 | `LISTEN_ADDR` | h3server가 bind할 주소. 기본값은 `ADDR` |
 | `ORIGIN_ADDR` | Chrome이 접속하고 forced QUIC를 적용할 origin 주소. 기본값은 `ADDR` |
+| `CHROME_RUNNER` | `dump-dom` 또는 `cdp`. `cdp`는 real-time hold 후 DOM/dataset 수집 |
+| `CHROME_HOLD_SECONDS` | `CHROME_RUNNER=cdp`에서 page를 유지하는 시간 |
 
 `LISTEN_ADDR=0.0.0.0:4443`, `ORIGIN_ADDR=<Wi-Fi IP>:4443` 조합으로 non-loopback local origin 실험을 수행할 수 있다.
+
+`NETWORK_CHANGE_CMD`가 설정되면 wrapper는 command 전후 client route/interface snapshot을 남기고 `client-path-change-summary.json`을 생성한다.
 
 성공 기준:
 

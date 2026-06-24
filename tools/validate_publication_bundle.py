@@ -34,6 +34,7 @@ TEXT_SUFFIXES = {
     ".env",
     ".example",
     ".go",
+    ".js",
     ".json",
     ".md",
     ".py",

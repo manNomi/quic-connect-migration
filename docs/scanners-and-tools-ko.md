@@ -159,7 +159,37 @@ WORKLOAD=downlink DOWNLINK_HEARTBEAT=true ADDR=127.0.0.1:4453 LISTEN_ADDR=127.0.
 | `DOWNLINK_HEARTBEAT=false` | 2 | `GET /browser-downlink`와 streaming `GET /downlink-stream`만 관찰 |
 | `DOWNLINK_HEARTBEAT=true` | 3 | 위 두 request에 더해 `GET /heartbeat`가 같은 H3 connection evidence chain에 포함 |
 
-이 workload는 client-silent downlink와 application heartbeat variant를 비교하기 위한 것이다. path 변화가 없으면 정상 classification은 `no_path_change_baseline`이다.
+이 workload는 client-silent downlink와 application heartbeat variant를 비교하기 위한 것이다. path 변화가 없고 heartbeat가 없으면 정상 classification은 `no_path_change_baseline`이다.
+
+downlink/heartbeat 실험에서 추가로 쓰는 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `multiple_quic_sessions_without_network_change` | network-change trigger 없이 heartbeat 등으로 target QUIC session/source tuple이 2개 이상 관찰됨 |
+| `multiple_quic_sessions_without_client_path_change` | network-change command는 있었지만 client path snapshot이 active path 변화를 보이지 않았고, target QUIC session/source tuple이 2개 이상 관찰됨 |
+
+이 두 classification은 migration 성공이 아니다. tuple 변화 단독 주장의 반례로 사용한다.
+
+## 5.1 `tools/run_chrome_cdp_navigation.js`
+
+Chrome을 DevTools Protocol로 열고 지정한 real-time hold 구간 동안 page를 유지한 뒤 DOM과 body dataset을 저장한다. `--dump-dom` runner에서 JavaScript timer나 virtual time 때문에 heartbeat timing이 왜곡될 때 사용한다.
+
+wrapper 실행:
+
+```bash
+cd repro/quic-go-min-repro
+CHROME_RUNNER=cdp CHROME_HOLD_SECONDS=4 WORKLOAD=downlink DOWNLINK_HEARTBEAT=true ./scripts/run-chrome-h3-local.sh
+```
+
+생성 artifact:
+
+| 파일 | 의미 |
+| --- | --- |
+| `chrome/netlog.json` | Chrome NetLog |
+| `chrome/dump-dom.txt` | CDP 평가 시점의 DOM |
+| `chrome/cdp-summary.json` | URL, hold time, body dataset, text/html size |
+
+CDP runner는 Chrome 내부 관찰성을 보강하지만 migration을 판정하지 않는다. 최종 판정은 classifier의 server request log, qlog, NetLog, client path snapshot 조합을 따른다.
 
 ## 6. `tools/classify_chrome_alt_svc_artifacts.py`
 

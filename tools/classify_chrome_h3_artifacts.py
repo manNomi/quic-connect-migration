@@ -155,12 +155,22 @@ def classify(summary: dict[str, object]) -> str:
     remote_addr_count = int(summary["server_remote_addr_count"])
     target_quic_sessions = int(summary["netlog_target_quic_session_count"])
     target_using_quic_jobs = int(summary["netlog_target_using_quic_job_count"])
+    network_change_requested = summary.get("network_change_exit") is not None
+    client_path_change = summary.get("client_path_change")
+    client_path_classification = ""
+    if isinstance(client_path_change, dict):
+        client_path_classification = str(client_path_change.get("classification") or "")
+    client_active_path_changed = client_path_classification == "client_active_path_changed"
 
     if not request_reached_server or target_using_quic_jobs <= 0:
         return "browser_h3_request_failed"
     if remote_addr_count > 1 and qlog_has_path_validation and target_quic_sessions == 1:
         return "possible_connection_migration"
     if remote_addr_count > 1 and target_quic_sessions > 1:
+        if not network_change_requested:
+            return "multiple_quic_sessions_without_network_change"
+        if client_path_classification and not client_active_path_changed:
+            return "multiple_quic_sessions_without_client_path_change"
         return "reconnect_or_multiple_sessions"
     if remote_addr_count > 1 and not qlog_has_path_validation:
         return "tuple_changed_without_path_validation"
@@ -185,6 +195,7 @@ def main() -> int:
     base = Path(args.artifact_dir)
     server, server_error = read_json(base / "results" / "server.json")
     network_change, network_change_error = read_json(base / "results" / "network-change.json")
+    client_path_change, client_path_change_error = read_json(base / "results" / "client-path-change-summary.json")
     netlog_path = base / "chrome" / "netlog.json"
     netlog_text = read_text(netlog_path)
     netlog, netlog_error = read_json(netlog_path)
@@ -232,6 +243,8 @@ def main() -> int:
         "request_reached_server": request_reached_server,
         "network_change_exit": network_change.get("exit"),
         "network_change_error": network_change_error,
+        "client_path_change": client_path_change or None,
+        "client_path_change_error": client_path_change_error,
         "netlog_parse_error": netlog_error,
         "netlog_parser_mode": netlog_summary["parser_mode"],
         "netlog_has_forced_origin": "origin-to-force-quic" in netlog_text or args.addr in netlog_text,
