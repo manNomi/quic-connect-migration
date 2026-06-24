@@ -390,6 +390,27 @@ TCP_ADDR=127.0.0.1:4443 \
 - qlog `http3_frame=0`
 - 이 결과는 forced-QUIC Chrome baseline과 natural browser deployment baseline을 분리해야 함을 보여준다.
 
+HTML/subresource diagnostic:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-html-local-20260624 \
+EXPECTED_REQUESTS=4 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+BOOTSTRAP_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-bootstrap-html' \
+H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html' \
+./scripts/run-chrome-h3-alt-svc.sh
+```
+
+진단 결과:
+
+- `classification=alt_svc_quic_candidate_cert_rejected`
+- server request 4개 모두 `HTTP/1.1`
+- qlog에는 QUIC connection과 HTTP/3 SETTINGS frame이 있었지만 request stream은 없었음
+- qlog close reason은 `certificate unknown / CERTIFICATE_VERIFY_FAILED`
+
 ## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.

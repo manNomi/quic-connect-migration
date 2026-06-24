@@ -166,8 +166,18 @@ python3 tools/classify_chrome_alt_svc_artifacts.py \
 | `h3_netlog_has_quic_candidate` | target origin에 대해 h3 candidate job이 있었는지 |
 | `h3_netlog_has_confirmed_quic_session` | JSON NetLog에서 target QUIC session이 확정됐는지 |
 | `qlog_has_h3` | server qlog에서 HTTP/3 frame evidence가 있는지 |
+| `qlog_summary` | qlog connection close reason과 certificate/crypto error 여부 |
 
 `h3_netlog_has_quic_candidate=true`만으로 HTTP/3 사용을 주장하지 않는다. server protocol record와 qlog evidence가 함께 필요하다.
+
+주요 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `alt_svc_h3_upgrade_observed` | Alt-Svc 이후 실제 HTTP/3 application request가 관찰됨 |
+| `alt_svc_quic_candidate_cert_rejected` | QUIC/H3 후보 연결은 열렸지만 certificate verification failure로 application request가 HTTP/3로 가지 않음 |
+| `alt_svc_quic_candidate_without_h3_request` | QUIC/H3 후보 evidence는 있으나 application request는 HTTP/3가 아님 |
+| `alt_svc_advertised_but_h3_not_observed` | Alt-Svc 광고 후에도 HTTP/3 후보/요청 evidence가 부족함 |
 
 ## 7. 실험 실행 코드
 

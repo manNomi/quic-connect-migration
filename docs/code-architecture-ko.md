@@ -427,7 +427,7 @@ classifier:
 
 - `tools/classify_chrome_alt_svc_artifacts.py`
 
-현재 local self-signed control에서는 `127.0.0.1`과 `localhost` 모두 `alt_svc_advertised_but_h3_not_observed`로 분류됐다.
+현재 local self-signed control에서는 binary-response 실험이 `alt_svc_advertised_but_h3_not_observed`, HTML/subresource diagnostic이 `alt_svc_quic_candidate_cert_rejected`로 분류됐다.
 
 ## 10. 실행 예시
 

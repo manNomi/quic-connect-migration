@@ -16,6 +16,7 @@ EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
 TIMEOUT="${TIMEOUT:-60s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-20}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
+CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-5000}"
 BOOTSTRAP_PATH="${BOOTSTRAP_PATH:-/download?bytes=128&label=alt-svc-bootstrap}"
 H3_PATH="${H3_PATH:-/download?bytes=128&label=alt-svc-h3}"
 ALT_SVC="${ALT_SVC:-h3=\":${ADDR##*:}\"; ma=60}"
@@ -72,12 +73,14 @@ run_chrome() {
   local path="$1"
   local netlog="$2"
   local dump="$3"
-  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$path" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$netlog" "$dump" <<'PY'
+  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$path" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" "$netlog" "$dump" <<'PY'
+import os
 import pathlib
+import shlex
 import subprocess
 import sys
 
-chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode, netlog_name, dump_name = sys.argv[1:]
+chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode, virtual_time_budget_ms, netlog_name, dump_name = sys.argv[1:]
 artifact = pathlib.Path(artifact_dir)
 url = f"https://{addr}{request_path}"
 cmd = [
@@ -89,6 +92,14 @@ cmd = [
     "--disable-component-update",
     "--disable-default-apps",
     "--disable-sync",
+    "--disable-extensions",
+    "--disable-domain-reliability",
+    "--disable-breakpad",
+    "--disable-client-side-phishing-detection",
+    "--metrics-recording-only",
+    "--password-store=basic",
+    "--safebrowsing-disable-auto-update",
+    "--disable-features=AutofillServerCommunication,CertificateTransparencyComponentUpdater,InterestFeedContentSuggestions,MediaRouter,OptimizationGuideModelDownloading,OptimizationHints,OptimizationTargetPrediction,SafeBrowsingEnhancedProtection",
     "--enable-quic",
     f"--ignore-certificate-errors-spki-list={spki_hash}",
     f"--user-data-dir={artifact / 'chrome' / 'profile'}",
@@ -97,6 +108,11 @@ cmd = [
     "--dump-dom",
     url,
 ]
+if int(virtual_time_budget_ms) > 0:
+    cmd.insert(-2, f"--virtual-time-budget={virtual_time_budget_ms}")
+extra_args = os.environ.get("CHROME_EXTRA_ARGS", "")
+if extra_args:
+    cmd[1:1] = shlex.split(extra_args)
 with (artifact / "chrome" / dump_name).open("wb") as out, (artifact / "chrome" / f"{dump_name}.stderr.log").open("wb") as err:
     try:
         subprocess.run(cmd, stdout=out, stderr=err, timeout=int(timeout_s), check=True)

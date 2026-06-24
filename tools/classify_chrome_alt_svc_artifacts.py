@@ -51,6 +51,41 @@ def summarize_netlog(path: Path, addr: str) -> dict[str, object]:
     return summary
 
 
+def summarize_qlog(qlog_dir: Path) -> dict[str, object]:
+    text_parts: list[str] = []
+    connection_close_reasons: list[str] = []
+    if qlog_dir.exists():
+        for path in qlog_dir.rglob("*"):
+            if path.is_file() and path.suffix in {".sqlog", ".qlog", ".json", ".jsonl", ".txt"}:
+                file_text = read_text(path)
+                text_parts.append(file_text)
+                for record in file_text.split("\x1e"):
+                    record = record.strip()
+                    if not record:
+                        continue
+                    try:
+                        event = json.loads(record)
+                    except json.JSONDecodeError:
+                        continue
+                    data = event.get("data") or {}
+                    if event.get("name") == "transport:connection_closed" and data.get("reason"):
+                        connection_close_reasons.append(str(data["reason"]))
+                    for frame in data.get("frames") or []:
+                        if frame.get("frame_type") == "connection_close" and frame.get("reason"):
+                            connection_close_reasons.append(str(frame["reason"]))
+    text = "\n".join(text_parts)
+    lower = text.lower()
+    has_certificate_error = "certificate_unknown" in lower or "certificate unknown" in lower
+    has_certificate_verify_failed = "certificate_verify_failed" in lower
+    has_crypto_error = "crypto_error" in lower or "crypto error" in lower
+    return {
+        "has_certificate_error": has_certificate_error,
+        "has_certificate_verify_failed": has_certificate_verify_failed,
+        "has_crypto_error": has_crypto_error,
+        "connection_close_reasons": connection_close_reasons[:10],
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("artifact_dir")
@@ -73,6 +108,7 @@ def main() -> int:
     qcounts = chrome_h3.qlog_counts(base / "qlog")
     bootstrap_netlog = summarize_netlog(base / "chrome" / "bootstrap-netlog.json", args.addr)
     h3_netlog = summarize_netlog(base / "chrome" / "h3-netlog.json", args.addr)
+    qlog_summary = summarize_qlog(base / "qlog")
 
     has_tcp_bootstrap = any(str(proto).startswith("HTTP/1.") or str(proto).startswith("HTTP/2") for proto in protos)
     has_h3_request = any(str(proto).startswith("HTTP/3") for proto in protos)
@@ -85,9 +121,17 @@ def main() -> int:
     qlog_has_h3 = qcounts["http3_frame"] > 0
     request_reached_server = server.get("ok") is True and len(requests) >= args.expected_requests
 
+    qlog_has_certificate_error = bool(qlog_summary["has_certificate_error"])
+
     if request_reached_server and has_tcp_bootstrap and has_h3_request and h3_confirmed_by_netlog and qlog_has_h3:
         classification = "alt_svc_h3_upgrade_observed"
         status = "PASS"
+    elif request_reached_server and has_tcp_bootstrap and not has_h3_request and qlog_has_certificate_error:
+        classification = "alt_svc_quic_candidate_cert_rejected"
+        status = "PASS_NEGATIVE_CONTROL"
+    elif request_reached_server and has_tcp_bootstrap and not has_h3_request and qlog_has_h3:
+        classification = "alt_svc_quic_candidate_without_h3_request"
+        status = "PASS_NEGATIVE_CONTROL"
     elif request_reached_server and has_tcp_bootstrap and not has_h3_request:
         classification = "alt_svc_advertised_but_h3_not_observed"
         status = "PASS_NEGATIVE_CONTROL"
@@ -124,6 +168,7 @@ def main() -> int:
         "h3_netlog": h3_netlog,
         "qlog_counts": {key: qcounts[key] for key in chrome_h3.QLOG_PATTERNS},
         "qlog_has_h3": qlog_has_h3,
+        "qlog_summary": qlog_summary,
     }
 
     text = json.dumps(summary, indent=2, ensure_ascii=False) + "\n"
