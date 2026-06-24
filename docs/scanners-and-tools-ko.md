@@ -649,6 +649,7 @@ AWS wrapper:
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
 ```bash
+python3 tools/verify_research_bundle.py --output docs/results/research-verification-report-20260624.md
 python3 tools/validate_publication_bundle.py
 python3 tools/summarize_experiment_results.py --format markdown
 python3 tools/scan_implementation_evidence.py repro/quic-go-min-repro --format markdown
@@ -789,3 +790,23 @@ python3 tools/test_final_browser_handover_trial_audit.py
 ```
 
 이 테스트는 synthetic complete fixture가 모든 requirement를 만족하는지, 그리고 `reconnect_or_multiple_sessions` negative control이 active CM requirement에 잘못 집계되지 않는지 확인한다.
+
+## 25. `tools/verify_research_bundle.py`
+
+논문 제출/공유 전에 안전하게 돌릴 수 있는 non-destructive 통합 검증 runner다. raw browser/network 실험을 새로 생성하지 않고, 공개 bundle, CSV, paper table, final trial audit, expected-incomplete gate, readiness scanner, wrapper 문법을 한 번에 확인한다.
+
+실행:
+
+```bash
+python3 tools/verify_research_bundle.py \
+  --output docs/results/research-verification-report-20260624.md
+```
+
+주요 특징:
+
+| 항목 | 의미 |
+| --- | --- |
+| destructive action 없음 | network interface나 Android/Wi-Fi 상태를 바꾸지 않음 |
+| expected-incomplete gate | `--require-complete`가 현재 exit 1을 내는 것을 정상으로 기록 |
+| generated report | `docs/results/research-verification-report-20260624.md`에 모든 check exit code 기록 |
+| final claim 보호 | 현재 미완료인 browser/mobile handover 본 실험을 완료로 오인하지 않음 |

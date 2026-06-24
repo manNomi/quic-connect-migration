@@ -84,6 +84,7 @@
 │   ├── run_android_chrome_navigation.py
 │   ├── run_safari_webdriver_navigation.py
 │   ├── test_final_browser_handover_trial_audit.py
+│   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
 │   ├── scan_qlog_events.py
@@ -117,6 +118,7 @@
 - [Paper-ready generated tables](docs/results/paper-tables-20260624.md)
 - [Research completion audit](docs/results/research-completion-audit-20260624.md)
 - [Generated research bundle audit](docs/results/research-bundle-audit-20260624.md)
+- [Research verification report](docs/results/research-verification-report-20260624.md)
 - [Local artifact storage audit](docs/results/artifact-storage-report-20260624.md)
 - [Local artifact cleanup plan](docs/results/artifact-cleanup-plan-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
@@ -144,6 +146,7 @@
 
 ```bash
 python3 tools/validate_publication_bundle.py
+python3 tools/verify_research_bundle.py --output docs/results/research-verification-report-20260624.md
 python3 tools/summarize_experiment_results.py
 cd repro/quic-go-min-repro
 go test ./...
