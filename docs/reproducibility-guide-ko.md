@@ -784,7 +784,24 @@ python3 tools/build_final_handover_trial_packet.py \
 
 `final-handover-trial-packet`의 server/client 명령만 실행한다. controlled-public wrapper는 기본적으로 `MIN_ARTIFACT_FREE_GIB=5`를 요구하며, 디스크가 부족하면 artifact를 만들기 전에 중단한다. 작은 smoke test가 아닌 본 실험에서 `MIN_ARTIFACT_FREE_GIB=0`으로 우회하지 않는다.
 
-trial 실행 후 raw artifact bundle부터 확인한다.
+trial 실행 후에는 registration wrapper를 먼저 dry-run으로 실행한다. 이 wrapper는 raw artifact bundle check, 단일 artifact validation, CSV append dry-run을 순서대로 실행하고, 기본값으로는 CSV를 수정하지 않는다.
+
+```bash
+TRIAL_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+bash harness/scripts/final-handover-register-trial.sh
+```
+
+dry-run에서 `final_handover_registration=dry_run_ready`가 출력된 뒤에만 `APPLY=1`을 붙인다.
+
+```bash
+TRIAL_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+APPLY=1 \
+bash harness/scripts/final-handover-register-trial.sh
+```
+
+wrapper 내부 동작을 수동으로 확인하려면 raw artifact bundle부터 확인한다.
 
 ```bash
 python3 tools/check_final_handover_trial_artifact_bundle.py \

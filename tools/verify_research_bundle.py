@@ -261,6 +261,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_p0_preflight_control_report.py",
                 "tools/test_build_final_capture_storage_budget.py",
                 "tools/test_final_p0_baseline_preflight_wrapper.py",
+                "tools/test_final_handover_register_trial_wrapper.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
@@ -610,6 +611,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_p0_baseline_preflight_wrapper_regression",
             [python_bin, "tools/test_final_p0_baseline_preflight_wrapper.py"],
+            {0},
+            60,
+        ),
+        (
+            "final_handover_register_trial_wrapper_regression",
+            [python_bin, "tools/test_final_handover_register_trial_wrapper.py"],
             {0},
             60,
         ),
@@ -974,6 +981,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "-n",
                 "harness/scripts/controlled-public-preflight.sh",
                 "harness/scripts/final-p0-baseline-preflight.sh",
+                "harness/scripts/final-handover-register-trial.sh",
                 "repro/quic-go-min-repro/scripts/ensure-min-disk-free.sh",
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh",
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh",

@@ -96,6 +96,8 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object]) ->
 
     next_trial = packet["next_trial"]  # type: ignore[assignment]
     if next_trial:
+        trial = next_trial  # type: ignore[assignment]
+        artifact_dir = f"repro/quic-go-min-repro/{trial['artifact_dir']}"
         rows.append(
             StageRow(
                 stage="2-origin-server",
@@ -118,15 +120,17 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object]) ->
                 stop_condition="stop if server/origin terminal is not running",
             )
         )
-    for index, command in enumerate(packet["post_trial_registration_commands"], start=5):  # type: ignore[arg-type]
         rows.append(
             StageRow(
                 stage="4-post-trial-registration",
-                order=index,
+                order=5,
                 status="blocked" if not next_ready else "pending-after-run",
                 owner="operator",
-                action="Validate artifacts, append the final handover row, and regenerate paper/audit outputs.",
-                command=str(command),
+                action="Validate artifacts, append the final handover row, and regenerate final-trial audit outputs.",
+                command=(
+                    f"TRIAL_ID={trial['trial_id']} ARTIFACT_DIR={artifact_dir} APPLY=1 "
+                    "bash harness/scripts/final-handover-register-trial.sh"
+                ),
                 stop_condition="stop if raw artifact bundle or final-countable validation fails",
             )
         )

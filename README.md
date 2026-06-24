@@ -79,6 +79,7 @@
 67. P0 baseline preflight control report는 synthetic fixture 3개로 guard가 missing config/stale needed-now에서는 닫히고, modeled-ready baseline에서만 열리는지 검증한다.
 68. P0 baseline execution packet의 stage 1 preflight 명령은 `harness/scripts/final-p0-baseline-preflight.sh` wrapper를 사용해 ignored artifact dir에 readiness output을 쓰고, 내부 `--require-go` guard 통과 전 stage 2 capture를 열지 않는다.
 69. Final capture storage budget은 현재 여유공간으로 next planned execution은 가능하지만, 2GiB reserve 기준 remaining final queue 전체에는 추가 cleanup/provisioning이 필요함을 분리한다.
+70. Final handover registration wrapper는 artifact bundle check, validation, append dry-run/apply, audit를 묶고, missing artifact 상태에서는 CSV append 없이 fail-closed한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
