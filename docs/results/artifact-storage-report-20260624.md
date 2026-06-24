@@ -7,14 +7,14 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | disk free | `47.8 GiB` |
-| disk free GiB | `47.81` |
+| disk free GiB | `47.8` |
 | local artifact roots total | `1.1 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `1.1 GiB` | 10454 | 3216 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `1.1 GiB` | 10522 | 3251 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -35,12 +35,12 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | 213 | 62 |
 | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | `5.7 MiB` | 212 | 63 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-google-generate204-20260624` | `5.6 MiB` | 211 | 62 |
+| `repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624` | `5.3 MiB` | 68 | 34 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-inactive-if-toggle` | `4.7 MiB` | 202 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-inactive-if-toggle` | `4.7 MiB` | 202 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-nochange` | `4.7 MiB` | 200 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-nochange-check` | `4.6 MiB` | 200 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-heartbeat-smoke-20260624` | `4.5 MiB` | 204 | 70 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-ip-20260624` | `4.3 MiB` | 197 | 59 |
 
 ## Cleanup Note
 

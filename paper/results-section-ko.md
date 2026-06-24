@@ -14,7 +14,7 @@ AWS NLB 실험은 deployment path가 CM 성숙도에 직접 영향을 준다는 
 
 ## RQ3. HTTP/3 application task는 migration 후에도 완료되는가?
 
-quic-go controlled client 환경에서는 HTTP/3 post-migration request continuity와 mid-flight upload/download continuity가 관찰됐다. local direct-origin과 AWS NLB `TCP_QUIC :443` 조건에서 1MiB upload/download workload가 manual retry 없이 완료됐고, qlog에는 H3 frame 및 path validation evidence가 남았다.
+quic-go controlled client 환경에서는 HTTP/3 post-migration request continuity와 mid-flight upload/download continuity가 관찰됐다. local direct-origin과 AWS NLB `TCP_QUIC :443` 조건에서 1MiB upload/download workload가 manual retry 없이 완료됐고, qlog에는 H3 frame 및 path validation evidence가 남았다. 추가 local repetition에서는 mid-flight upload 3회와 download 3회가 모두 PASS였고, 각 case에서 client migration trigger, probe/switch success, socket B 전환, payload decode success가 확인됐다.
 
 다만 이 결과는 custom controlled client 기준이다. browser policy, HTTP/3 discovery, certificate trust, application timer, page lifecycle이 개입하는 실제 웹 브라우저 환경으로 곧바로 일반화할 수 없다.
 

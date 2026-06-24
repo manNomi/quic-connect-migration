@@ -14,7 +14,7 @@ This means HTTP/3 support at a CDN or load balancer is insufficient evidence for
 
 ## RQ3. Can HTTP/3 application tasks complete after migration?
 
-In the controlled quic-go client setting, HTTP/3 post-migration request continuity and mid-flight upload/download continuity were observed. In local direct-origin and AWS NLB `TCP_QUIC :443` conditions, 1 MiB upload and download workloads completed without manual retry, while qlog retained HTTP/3 frame and path validation evidence.
+In the controlled quic-go client setting, HTTP/3 post-migration request continuity and mid-flight upload/download continuity were observed. In local direct-origin and AWS NLB `TCP_QUIC :443` conditions, 1 MiB upload and download workloads completed without manual retry, while qlog retained HTTP/3 frame and path validation evidence. In an additional local repetition set, three mid-flight upload cases and three mid-flight download cases all passed, with client migration trigger, probe/switch success, socket-B transition, and payload decode success confirmed in each case.
 
 However, this result applies to a custom controlled client. It cannot be directly generalized to browser workloads, where HTTP/3 discovery, certificate trust, client policy, JavaScript timers, and page lifecycle behavior can alter the outcome.
 

@@ -17,7 +17,10 @@ from report_artifact_storage import DEFAULT_ROOTS, directory_size, human_size, i
 
 
 DEFAULT_EXPERIMENTS = "data/experiment-results.csv"
-DEFAULT_ARTIFACT_REFERENCE_CSVS = ["data/chrome-h3-rebinding-repetition-summary-20260624.csv"]
+DEFAULT_ARTIFACT_REFERENCE_CSVS = [
+    "data/chrome-h3-rebinding-repetition-summary-20260624.csv",
+    "data/quic-go-h3-midflight-repetition-summary-20260624.csv",
+]
 DEFAULT_OUTPUT = "docs/results/artifact-cleanup-safety-audit-20260624.md"
 
 
@@ -80,7 +83,7 @@ def classify_candidate(
     references: list[ArtifactReference],
     planned_ids: set[str],
 ) -> tuple[bool, list[str], bool, bool, str, str]:
-    matched_refs = [ref.trial_id for ref in references if path_overlaps(candidate_path, ref.artifact_dir)]
+    matched_refs = list(dict.fromkeys(ref.trial_id for ref in references if path_overlaps(candidate_path, ref.artifact_dir)))
     name = Path(candidate_path).name
     planned_final = name in planned_ids
     controlled_public_like = name.startswith("controlled-public-")

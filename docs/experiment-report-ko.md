@@ -472,6 +472,8 @@ server는 `GET /download?stream=true` 요청에서 response body를 chunk 단위
 | mid-flight upload | PASS | `[::]:53663` | `[::]:63569` | `[::]:63569` | 532480 bytes | server decoded 1MiB upload |
 | mid-flight download | PASS | `[::]:49959` | `[::]:52767` | `[::]:52767` | 524288 bytes | client decoded 1MiB response |
 
+추가 반복 실험에서는 upload 3회와 download 3회가 모두 PASS였다. 각 case에서 migration threshold 524288 bytes, client `path_probe_success`/`path_switch_success`, socket B 전환, payload decode success가 확인됐다.
+
 ### 15.4 AWS NLB 결과
 
 | workload | status | target | socket A | socket B | evidence |
@@ -701,6 +703,7 @@ network-change 판정 기준:
 - [Public HTTP/3 Alt-Svc endpoint survey](results/public-alt-svc-endpoint-survey-20260624.md)
 - [Chrome local UDP rebinding proxy 결과](results/chrome-h3-rebinding-proxy-results-20260624.md)
 - [Chrome local UDP rebinding 반복 결과](results/chrome-h3-rebinding-repetition-summary-20260624.md)
+- [quic-go local HTTP/3 mid-flight 반복 결과](results/quic-go-h3-midflight-repetition-summary-20260624.md)
 - [Public origin readiness survey](results/public-origin-readiness-survey-20260624.md)
 - [Browser handover readiness and next experiment plan](results/browser-handover-readiness-plan-20260624.md)
 - [Controlled public WebPKI H3 origin plan](results/controlled-public-origin-h3-plan-20260624.md)

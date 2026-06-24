@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "fdbe32a",
+    "commit": "1987c69",
     "branch": "main"
   },
   "experiment_corpus": {
@@ -16,8 +16,8 @@
     "final_required_rows": 6
   },
   "verification": {
-    "checks": "58",
-    "passed": "58",
+    "checks": "59",
+    "passed": "59",
     "ok": "yes"
   },
   "research_audit": {
@@ -40,8 +40,8 @@
     "workflow": "research-verify",
     "branch": "main",
     "event": "push",
-    "run_id": "28105491925",
-    "duration": "33s"
+    "run_id": "28106067953",
+    "duration": "29s"
   },
   "key_paths": {
     "audit": "docs/results/research-bundle-audit-20260624.md",

@@ -10,13 +10,13 @@ Generated: `2026-06-24`
 | disk free | `47.8 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `1.1 GiB` |
-| extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv']` |
-| cleanup candidates | `51` |
-| CSV-referenced candidates | `29` |
+| extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
+| cleanup candidates | `52` |
+| CSV-referenced candidates | `30` |
 | planned final-trial candidates | `0` |
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
-| protected referenced/planned size | `1022.9 MiB` |
+| protected referenced/planned size | `1.0 GiB` |
 | projected free if review-unreferenced removed | `47.9 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
@@ -48,6 +48,7 @@ Generated: `2026-06-24`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | chrome-public-h3-youtube-204-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | `5.7 MiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-google-generate204-20260624` | `5.6 MiB` | chrome-public-h3-google-204-001 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624` | `5.3 MiB` | r1, r2, r3 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-inactive-if-toggle` | `4.7 MiB` | chrome-h3-slow-wifi-ip-inactive-if-toggle-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-inactive-if-toggle` | `4.7 MiB` | chrome-h3-slow-inactive-if-toggle-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-nochange` | `4.7 MiB` | chrome-h3-slow-wifi-ip-nochange-001 | artifact path is referenced by a tracked artifact reference CSV |

@@ -743,6 +743,7 @@ cd repro/quic-go-min-repro
 go test ./...
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
+MATRIX_ID=quic-go-h3-midflight-repetition-20260624 REPEAT_COUNT=3 ./scripts/run-local-h3-midflight-matrix.sh
 RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-local.sh
 cd ../..

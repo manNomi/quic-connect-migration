@@ -208,6 +208,7 @@
 - [Chrome H3 local UDP rebinding proxy results](docs/results/chrome-h3-rebinding-proxy-results-20260624.md)
 - [Chrome H3 local UDP rebinding repetition summary](docs/results/chrome-h3-rebinding-repetition-summary-20260624.md)
 - [quic-go local HTTP/3 migration replication results](docs/results/quic-go-local-h3-replication-results-20260624.md)
+- [quic-go local HTTP/3 mid-flight repetition summary](docs/results/quic-go-h3-midflight-repetition-summary-20260624.md)
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)
 - [Paper-ready generated tables](docs/results/paper-tables-20260624.md)
 - [Research completion audit](docs/results/research-completion-audit-20260624.md)
@@ -249,6 +250,7 @@ cd repro/quic-go-min-repro
 go test ./...
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
+MATRIX_ID=quic-go-h3-midflight-repetition-20260624 REPEAT_COUNT=3 ./scripts/run-local-h3-midflight-matrix.sh
 ```
 
 AWS까지 포함한 재현 절차는 [재현 가이드](docs/reproducibility-guide-ko.md)에 정리했다.

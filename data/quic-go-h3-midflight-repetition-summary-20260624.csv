@@ -1,0 +1,7 @@
+run_id,mode,status,client_ok,server_ok,local_addr_changed_to_socket_b,migration_triggered,migration_at_bytes,request_bytes,response_bytes,server_decode_successful,client_migration_event_lines,artifact_dir
+r1,midflight-upload,PASS,true,true,true,true,524288,1048576,3,true,5,repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624/r1/midflight-upload
+r1,midflight-download,PASS,true,true,true,true,524288,,1048576,true,5,repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624/r1/midflight-download
+r2,midflight-upload,PASS,true,true,true,true,524288,1048576,3,true,5,repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624/r2/midflight-upload
+r2,midflight-download,PASS,true,true,true,true,524288,,1048576,true,5,repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624/r2/midflight-download
+r3,midflight-upload,PASS,true,true,true,true,524288,1048576,3,true,5,repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624/r3/midflight-upload
+r3,midflight-download,PASS,true,true,true,true,524288,,1048576,true,5,repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624/r3/midflight-download
