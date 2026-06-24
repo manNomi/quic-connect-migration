@@ -253,6 +253,15 @@ Long-outage retry control의 핵심:
 - 6000ms row는 약 15.5초, 9000ms row는 약 19.7초에 완료되어 recovery latency가 outage window와 함께 커졌다.
 - Chrome target QUIC session count는 2-3개였으므로, long-outage retry도 browser CM success가 아니라 application-level recovery evidence다.
 
+[Chrome H3 Local Rebinding Transient Upload Retry Stress Boundary](./chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.md)는 one-retry strategy의 failure side를 확인했다.
+
+Retry stress boundary의 핵심:
+
+- 12000ms retry upload는 3/3 PASS였고 약 20.0초에 완료됐다.
+- 15000ms retry upload는 3/3 FAIL이었고 DOM error timing은 15936-15943ms였다.
+- 실패 row는 두 번째 `/upload-sink`가 서버에 도달하지 못했고 upload bytes가 0이었다.
+- qlog H3/path evidence와 Chrome session evidence가 있어도 application retry recovery는 12-15초 사이에서 깨질 수 있다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

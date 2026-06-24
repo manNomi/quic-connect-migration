@@ -1992,3 +1992,34 @@ EXPECTED_REQUESTS=3 \
 - 9000ms retry upload `3/3 PASS`
 - DOM complete timing은 6000ms row 약 15.5초, 9000ms row 약 19.7초였다.
 - Chrome target QUIC session count는 2-3개였으므로, longer outage retry도 single-session browser CM evidence가 아니다.
+
+## 57. Chrome transient upload retry stress boundary
+
+12000ms/15000ms outage window로 1회 retry recovery의 failure side를 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624 \
+BASE_PORT=8300 \
+REBIND_AFTER=500ms \
+TIMEOUT=95s \
+CHROME_TIMEOUT_SECONDS=85 \
+CHROME_HOLD_SECONDS=45 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="12000 15000" \
+WORKLOADS="upload" \
+UPLOAD_RETRY_ATTEMPTS=1 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+현재 결과:
+
+- 12000ms retry upload `3/3 PASS`
+- 15000ms retry upload `3/3 FAIL`
+- 15000ms 실패 row는 second `/upload-sink` request가 서버에 도달하지 못했고 upload bytes가 0이었다.
+- qlog H3/path evidence가 있어도 application retry recovery는 12-15초 사이에서 깨질 수 있다.
