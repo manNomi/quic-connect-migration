@@ -271,6 +271,15 @@ Retry2 15000ms recovery control의 핵심:
 - Chrome target QUIC session count는 모두 4개였으므로, 이 결과는 browser single-session CM success가 아니라 higher-budget application recovery evidence다.
 - 논문에서는 retry budget이 failure boundary를 오른쪽으로 밀 수 있지만, latency와 session churn cost를 동반한다고 표현한다.
 
+[Chrome H3 Local Rebinding Upload Retry2 Stress Boundary](./chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.md)는 2회 retry strategy의 failure side를 18000ms/21000ms에서 확인했다.
+
+Retry2 stress boundary의 핵심:
+
+- 18000ms retry2 upload는 3/3 PASS였고 DOM complete timing은 28196-28199ms였다.
+- 21000ms retry2 upload는 3/3 FAIL이었고 DOM error timing은 20950-20955ms였다.
+- FAIL row에도 qlog H3/path evidence와 Chrome target QUIC session count 4가 남았지만, upload bytes는 0이었다.
+- 2회 retry는 1회 retry보다 boundary를 오른쪽으로 밀지만, 이 local workload에서도 18-21초 사이에서 application continuity가 다시 깨진다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

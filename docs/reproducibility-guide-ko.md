@@ -1410,7 +1410,52 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - Chrome target QUIC session count는 4개였으므로, 이 결과는 retry/reconnect 기반 task recovery이며 single-session browser CM success가 아니다.
 - 1회 retry 실패 region을 2회 retry가 회복했지만, recovery latency와 session churn cost가 함께 증가했다.
 
-## 30. Artifact 정책
+## 30. Chrome local upload retry2 stress boundary 재현
+
+2회 retry recovery도 무제한 보장이 아니므로, 18000ms/21000ms에서 failure-side boundary를 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624 \
+BASE_PORT=8600 \
+WORKLOADS=upload \
+DROP_WINDOWS_MS="18000 21000" \
+REPETITIONS=3 \
+UPLOAD_RETRY_ATTEMPTS=2 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=2 \
+TIMEOUT=160s \
+CHROME_TIMEOUT_SECONDS=140 \
+CHROME_HOLD_SECONDS=90 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624/rep01-upload-1m-drop-ab-18000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624/rep01-upload-1m-drop-ab-21000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624/rep02-upload-1m-drop-ab-18000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624/rep02-upload-1m-drop-ab-21000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624/rep03-upload-1m-drop-ab-18000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624/rep03-upload-1m-drop-ab-21000ms \
+  --output docs/results/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 18000ms retry2 upload는 `3/3 PASS`
+- 21000ms retry2 upload는 `3/3 FAIL`
+- PASS row의 DOM complete timing은 28196-28199ms였고, FAIL row의 DOM error timing은 20950-20955ms였다.
+- 모든 row의 Chrome target QUIC session count는 4개였으므로, 이 결과도 browser CM success가 아니라 application recovery boundary evidence다.
+
+## 31. Artifact 정책
 
 commit 가능한 것:
 

@@ -2053,3 +2053,34 @@ CHROME_HOLD_SECONDS=65 \
 - DOM complete timing은 24484-24503ms였다.
 - Chrome target QUIC session count는 4개였다.
 - recovery budget 증가는 작업 완료를 회복했지만 latency와 replacement/multiple-session behavior를 키웠으므로 browser CM success로 해석하지 않는다.
+
+## 59. Chrome transient upload retry2 stress boundary
+
+2회 retry strategy의 failure side를 18000ms/21000ms outage window에서 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624 \
+BASE_PORT=8600 \
+WORKLOADS=upload \
+DROP_WINDOWS_MS="18000 21000" \
+REPETITIONS=3 \
+UPLOAD_RETRY_ATTEMPTS=2 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=2 \
+TIMEOUT=160s \
+CHROME_TIMEOUT_SECONDS=140 \
+CHROME_HOLD_SECONDS=90 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+현재 결과:
+
+- 18000ms retry2 upload `3/3 PASS`
+- 21000ms retry2 upload `3/3 FAIL`
+- 18000ms PASS row의 DOM complete timing은 28196-28199ms였다.
+- 21000ms FAIL row의 DOM error timing은 20950-20955ms였고 upload bytes는 0이었다.
+- 모든 row가 qlog H3/path evidence와 Chrome target QUIC session count 4를 남겼으므로, browser/session evidence와 application task completion을 분리해서 해석해야 한다.
