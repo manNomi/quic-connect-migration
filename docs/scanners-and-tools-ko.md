@@ -676,3 +676,28 @@ python3 tools/build_paper_tables.py --output docs/results/paper-tables-20260624.
 | Table 6 | remaining evidence gaps |
 
 이 파일은 raw qlog/NetLog artifact를 포함하지 않고 공개 CSV의 요약만 사용한다.
+
+## 22. `tools/audit_research_bundle.py`
+
+현재 research bundle이 논문 목표를 어느 정도 만족하는지 기계적으로 점검한다.
+
+실행:
+
+```bash
+python3 tools/audit_research_bundle.py --output docs/results/research-bundle-audit-20260624.md
+python3 tools/audit_research_bundle.py --require-complete
+```
+
+검사 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| publication bundle | `validate_publication_bundle.py` 통과 여부 |
+| required files | 논문/재현/하네스 핵심 파일 존재 여부 |
+| experiment CSV | trial count, status count, trial id uniqueness |
+| matrix CSV | item count, id uniqueness |
+| paper tables | `build_paper_tables.py` 결과와 checked-in table 일치 여부 |
+| handover readiness | secondary path, Android, AWS, disk 상태 |
+| observability readiness | Chrome NetLog, Safari WebDriver, packet capture tooling |
+
+기본 실행은 blocker가 있어도 exit 0이다. CI나 최종 제출 전처럼 목표 완료가 반드시 필요할 때만 `--require-complete`를 사용한다.

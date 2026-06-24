@@ -73,6 +73,7 @@
 │   ├── classify_controlled_public_h3_network_change.py
 │   ├── capture_network_path_snapshot.py
 │   ├── compare_network_path_snapshots.py
+│   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── run_chrome_cdp_navigation.js
 │   ├── run_safari_webdriver_navigation.py
@@ -103,6 +104,7 @@
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)
 - [Paper-ready generated tables](docs/results/paper-tables-20260624.md)
 - [Research completion audit](docs/results/research-completion-audit-20260624.md)
+- [Generated research bundle audit](docs/results/research-bundle-audit-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [논문 Results 섹션 한국어](paper/results-section-ko.md)

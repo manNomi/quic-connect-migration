@@ -1,0 +1,254 @@
+#!/usr/bin/env python3
+"""Audit the current research bundle against the paper experiment goal."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import subprocess
+import sys
+from collections import Counter
+from dataclasses import asdict
+from datetime import date
+from pathlib import Path
+from typing import Any
+
+from build_paper_tables import build_markdown, load_rows
+from check_browser_cm_observability import build_readiness as build_observability_readiness
+from check_handover_readiness import build_readiness as build_handover_readiness
+
+
+REQUIRED_FILES = [
+    "README.md",
+    "data/experiment-results.csv",
+    "data/evidence-chain-rubric.csv",
+    "data/implementation-survey.csv",
+    "docs/reproducibility-guide-ko.md",
+    "docs/scanners-and-tools-ko.md",
+    "docs/results/evidence-chain-and-gap-synthesis-20260624.md",
+    "docs/results/paper-tables-20260624.md",
+    "docs/results/research-completion-audit-20260624.md",
+    "paper/results-section-ko.md",
+    "paper/results-section-en.md",
+    "tools/build_paper_tables.py",
+    "tools/validate_publication_bundle.py",
+    "repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh",
+    "repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh",
+]
+
+
+def run_command(args: list[str], timeout: int = 30) -> dict[str, Any]:
+    try:
+        proc = subprocess.run(
+            args,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+        )
+        return {
+            "command": args,
+            "exit_code": proc.returncode,
+            "stdout": proc.stdout.strip(),
+            "stderr": proc.stderr.strip(),
+        }
+    except subprocess.TimeoutExpired as exc:
+        stdout = exc.stdout.decode("utf-8", errors="ignore") if isinstance(exc.stdout, bytes) else (exc.stdout or "")
+        stderr = exc.stderr.decode("utf-8", errors="ignore") if isinstance(exc.stderr, bytes) else (exc.stderr or "")
+        return {
+            "command": args,
+            "exit_code": 124,
+            "stdout": stdout.strip(),
+            "stderr": stderr.strip() or "timeout",
+        }
+
+
+def duplicate_values(rows: list[dict[str, str]], key: str) -> list[str]:
+    counts = Counter(row[key] for row in rows)
+    return sorted(value for value, count in counts.items() if count > 1)
+
+
+def file_checks(root: Path) -> list[dict[str, Any]]:
+    checks = []
+    for rel in REQUIRED_FILES:
+        path = root / rel
+        checks.append({"path": rel, "exists": path.exists(), "bytes": path.stat().st_size if path.exists() else 0})
+    return checks
+
+
+def paper_tables_current(root: Path, experiments: list[dict[str, str]], rubric: list[dict[str, str]]) -> bool:
+    generated = build_markdown(experiments, rubric)
+    table_path = root / "docs" / "results" / "paper-tables-20260624.md"
+    if not table_path.exists():
+        return False
+    return table_path.read_text(encoding="utf-8", errors="ignore") == generated
+
+
+def build_audit(root: Path) -> dict[str, Any]:
+    publication = run_command([sys.executable, "tools/validate_publication_bundle.py"], timeout=30)
+    experiments = load_rows(root / "data" / "experiment-results.csv")
+    rubric = load_rows(root / "data" / "evidence-chain-rubric.csv")
+    matrix = load_rows(root / "harness" / "manifests" / "experiment-matrix.csv")
+    handover = build_handover_readiness("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+    observability = build_observability_readiness(
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "/Applications/Safari.app/Contents/MacOS/Safari",
+        "/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview",
+    )
+    files = file_checks(root)
+    required_files_ok = all(item["exists"] for item in files)
+    experiment_ids_unique = not duplicate_values(experiments, "trial_id")
+    matrix_ids_unique = not duplicate_values(matrix, "id")
+    paper_tables_ok = paper_tables_current(root, experiments, rubric)
+    public_browser_network_change_done = any(
+        row["status"] in {"PASS", "PASS_NEGATIVE_CONTROL"}
+        and "network-change" in row["trial_id"]
+        and ("chrome" in row["trial_id"] or "safari" in row["trial_id"] or "browser" in row["deployment_tier"].lower())
+        for row in experiments
+    )
+    controlled_public_result_done = any(
+        row["status"] in {"PASS", "PASS_NEGATIVE_CONTROL"}
+        and "controlled-public" in row["trial_id"]
+        and "network-change" in row["trial_id"]
+        for row in experiments
+    )
+    blockers: list[str] = []
+    if publication["exit_code"] != 0:
+        blockers.append("publication bundle validation failed")
+    if not required_files_ok:
+        blockers.append("required paper/reproducibility files are missing")
+    if not experiment_ids_unique:
+        blockers.append("experiment trial_id values are not unique")
+    if not matrix_ids_unique:
+        blockers.append("experiment matrix id values are not unique")
+    if not paper_tables_ok:
+        blockers.append("paper tables are not current with CSV inputs")
+    if not handover.secondary_path_ready:
+        blockers.append("desktop active secondary path is not ready")
+    if not handover.android_ready:
+        blockers.append("Android device is not connected over ADB")
+    if not handover.aws_identity_ok:
+        blockers.append("AWS identity is not available")
+    if not public_browser_network_change_done:
+        blockers.append("browser active network-change result is not done")
+    if not controlled_public_result_done:
+        blockers.append("controlled-public network-change result is not done")
+
+    goal_complete = not blockers
+    return {
+        "check_date": date.today().isoformat(),
+        "publication_bundle_ok": publication["exit_code"] == 0,
+        "required_files_ok": required_files_ok,
+        "experiment_trial_count": len(experiments),
+        "experiment_status_counts": dict(Counter(row["status"] for row in experiments)),
+        "experiment_ids_unique": experiment_ids_unique,
+        "matrix_item_count": len(matrix),
+        "matrix_ids_unique": matrix_ids_unique,
+        "paper_tables_current": paper_tables_ok,
+        "handover": {
+            "desktop_handover_ready": handover.desktop_handover_ready,
+            "android_ready": handover.android_ready,
+            "secondary_path_ready": handover.secondary_path_ready,
+            "active_ipv4_interfaces": [asdict(item) for item in handover.active_ipv4_interfaces],
+            "aws_identity_ok": handover.aws_identity_ok,
+            "disk_available_gib": handover.disk_available_gib,
+        },
+        "observability": {
+            "chrome_netlog_ready": observability.chrome_netlog_ready,
+            "safari_webdriver_ready": observability.safari_webdriver_ready,
+            "packet_capture_tooling_ready": observability.packet_capture_tooling_ready,
+            "ios_remote_capture_candidate": observability.ios_remote_capture_candidate,
+            "blockers": observability.blockers,
+        },
+        "goal_complete": goal_complete,
+        "blockers": blockers,
+        "required_files": files,
+        "publication_validator": {
+            "exit_code": publication["exit_code"],
+            "stdout": publication["stdout"],
+            "stderr": publication["stderr"],
+        },
+    }
+
+
+def markdown_bool(value: bool) -> str:
+    return "yes" if value else "no"
+
+
+def emit_markdown(audit: dict[str, Any]) -> str:
+    handover = audit["handover"]
+    observability = audit["observability"]
+    active = ", ".join(
+        f"{item['name']}({','.join(item['ipv4'])})"
+        for item in handover["active_ipv4_interfaces"]
+    ) or "-"
+    blockers = audit["blockers"] or ["-"]
+    lines = [
+        "# Research Bundle Audit",
+        "",
+        f"Generated: `{audit['check_date']}`",
+        "",
+        "## Summary",
+        "",
+        "| check | value |",
+        "| --- | --- |",
+        f"| publication bundle ok | `{markdown_bool(audit['publication_bundle_ok'])}` |",
+        f"| required files ok | `{markdown_bool(audit['required_files_ok'])}` |",
+        f"| experiment trials | `{audit['experiment_trial_count']}` |",
+        f"| experiment status counts | `{audit['experiment_status_counts']}` |",
+        f"| experiment ids unique | `{markdown_bool(audit['experiment_ids_unique'])}` |",
+        f"| matrix items | `{audit['matrix_item_count']}` |",
+        f"| matrix ids unique | `{markdown_bool(audit['matrix_ids_unique'])}` |",
+        f"| paper tables current | `{markdown_bool(audit['paper_tables_current'])}` |",
+        f"| goal complete | `{markdown_bool(audit['goal_complete'])}` |",
+        "",
+        "## Readiness",
+        "",
+        "| check | value |",
+        "| --- | --- |",
+        f"| active IPv4 interfaces | `{active}` |",
+        f"| secondary path ready | `{markdown_bool(handover['secondary_path_ready'])}` |",
+        f"| desktop handover ready | `{markdown_bool(handover['desktop_handover_ready'])}` |",
+        f"| Android ready | `{markdown_bool(handover['android_ready'])}` |",
+        f"| AWS identity OK | `{markdown_bool(handover['aws_identity_ok'])}` |",
+        f"| disk available GiB | `{handover['disk_available_gib']}` |",
+        f"| Chrome NetLog ready | `{markdown_bool(observability['chrome_netlog_ready'])}` |",
+        f"| Safari WebDriver ready | `{markdown_bool(observability['safari_webdriver_ready'])}` |",
+        f"| packet capture tooling ready | `{markdown_bool(observability['packet_capture_tooling_ready'])}` |",
+        "",
+        "## Blockers",
+        "",
+    ]
+    lines.extend(f"- {blocker}" for blocker in blockers)
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", default=".")
+    parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
+    parser.add_argument("--output")
+    parser.add_argument("--require-complete", action="store_true")
+    args = parser.parse_args()
+
+    root = Path(args.root).resolve()
+    audit = build_audit(root)
+    if args.format == "json":
+        text = json.dumps(audit, indent=2, ensure_ascii=False) + "\n"
+    else:
+        text = emit_markdown(audit)
+    if args.output:
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+    else:
+        print(text, end="")
+    if args.require_complete and not audit["goal_complete"]:
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
