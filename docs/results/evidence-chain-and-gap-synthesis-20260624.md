@@ -16,6 +16,8 @@
 - [RFC 9114 HTTP/3](https://datatracker.ietf.org/doc/html/rfc9114): HTTP semantics over QUIC와 HTTP/3 application request 판정의 기준점
 - [Chromium NetLog event definitions](https://chromium.googlesource.com/chromium/src/+/HEAD/net/log/net_log_event_type_list.h): Chrome 내부 QUIC migration/session event 관찰 기준
 - [HTTP/3 explained](https://http.dev/3): browser HTTP/3 discovery, fallback, deployment 해석 보조 기준
+- [An Analysis of QUIC Connection Migration in the Wild](https://arxiv.org/html/2410.06066v1): public Internet에서 CM support가 불균등하며 failure reason 분석이 아직 열린 문제라는 anchor paper
+- [Literature Refresh: Wild CM Support and NetLog Evidence Boundary](./literature-refresh-wild-cm-and-netlog-boundary-20260624.md): local Chrome NAT rebinding/NetLog evidence와 browser handover claim의 경계 정리
 
 ## 2. 현재까지 지지되는 claim
 
@@ -94,6 +96,21 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - 따라서 browser-level CM 또는 NAT rebinding claim에는 request log, qlog path validation, Chrome NetLog session attribution, proxy/client path evidence를 함께 사용해야 한다.
 - 이 결과는 local NAT rebinding control이며, 실제 Wi-Fi/LTE active handover 성공을 의미하지 않는다.
 
+### 4.4 Chrome target NetLog path frames는 transport evidence이지 최종 handover evidence는 아니다
+
+최신 rebinding summary는 Chrome target source에서 PATH_CHALLENGE 수신과 PATH_RESPONSE 송신을 반복 관찰했다.
+
+| condition | repetitions | proxy packet rebinding | qlog path validation | Chrome target NetLog path validation |
+| --- | ---: | --- | --- | --- |
+| downlink forced-H3 local rebinding | 6 | 6/6 | 6/6 | 6/6 |
+| streaming upload forced-H3 local rebinding | 3 | 3/3 | 3/3 | 3/3 |
+
+해석:
+
+- 이는 tuple-only evidence보다 강하다. proxy packet log, server qlog, Chrome NetLog가 서로 다른 관찰 지점에서 같은 local rebinding 현상을 지지한다.
+- 그러나 RFC 9000의 path validation은 changed path reachability를 확인하는 transport 절차이지, 실제 Wi-Fi/LTE handover 또는 browser task continuity 보장을 의미하지 않는다.
+- 따라서 논문에서는 “Chrome local forced-H3 NAT rebinding에서 target QUIC session의 path validation evidence를 확보했다”까지만 현재 결과로 쓰고, “Chrome Wi-Fi/LTE handover 성공”은 final browser handover protocol 완료 전까지 보류한다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.
@@ -113,6 +130,8 @@ machine-readable rubric은 [data/evidence-chain-rubric.csv](../../data/evidence-
 현재 연구는 “CM이 부족하니 개선하자”로 바로 가기보다, 다음 framing이 더 방어 가능하다.
 
 > QUIC Connection Migration primitive는 구현체와 controlled deployment에서 작동하지만, browser/web application에서 CM success를 주장하려면 application H3 baseline, 실제 client path change, qlog path validation, browser session continuity, deployment routing continuity를 모두 확인해야 한다.
+
+문헌상으로도 이 framing이 더 안전하다. ACM CCR 2025 wild-scan은 public support가 균등하지 않다는 사실을 보여주지만, 왜 어떤 endpoint가 실패하는지까지 완전히 분해하지는 않는다. 따라서 본 연구의 기여는 “CM 지원률 재측정”보다 “implementation, browser policy, deployment routing, application workload를 분리한 evidence-boundary methodology”에 두는 편이 좋다.
 
 이 framing의 장점:
 
