@@ -188,6 +188,7 @@ def build_checklist(args: argparse.Namespace) -> dict[str, Any]:
         safari_bin=args.safari_bin,
         safari_tp_bin=args.safari_tp_bin,
         min_disk_gib=args.target_free_gib,
+        check_local_files=args.check_local_files,
         check_public_origin=False,
         timeout=args.timeout,
     )
@@ -281,6 +282,7 @@ def main() -> int:
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
     parser.add_argument("--target-free-gib", type=float, default=5.0)
+    parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)

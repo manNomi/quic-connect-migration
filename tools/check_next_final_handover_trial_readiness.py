@@ -26,7 +26,7 @@ DEFAULT_SAFARI = "/Applications/Safari.app/Contents/MacOS/Safari"
 DEFAULT_SAFARI_TP = "/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview"
 
 
-def required_gate_names(next_trial: dict[str, Any] | None) -> list[str]:
+def required_gate_names(next_trial: dict[str, Any] | None, check_local_files: bool = False) -> list[str]:
     if not next_trial:
         return []
     phase = next_trial["phase"]
@@ -39,6 +39,8 @@ def required_gate_names(next_trial: dict[str, Any] | None) -> list[str]:
         "tls_config_present",
         "disk_ready",
     ]
+    if check_local_files:
+        gates.extend(["tls_cert_file_exists", "tls_key_file_exists"])
     if browser == "Chrome":
         gates.append("chrome_ready")
     if browser == "Safari":
@@ -80,6 +82,8 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
 
     network_change_cmd = values.get("NETWORK_CHANGE_CMD", "")
     android_network_change_cmd = values.get("ANDROID_NETWORK_CHANGE_CMD", "")
+    tls_cert = values.get("TLS_CERT_FILE", "")
+    tls_key = values.get("TLS_KEY_FILE", "")
     public_origin: dict[str, Any] | None = None
     if args.check_public_origin:
         public_url = values.get("PUBLIC_ORIGIN_URL", "")
@@ -98,7 +102,9 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         "controlled_public_config_present": Path(args.config).exists(),
         "public_origin_host_configured": bool(values.get("PUBLIC_ORIGIN_HOST")),
         "public_origin_url_configured": bool(values.get("PUBLIC_ORIGIN_URL")),
-        "tls_config_present": bool(values.get("TLS_CERT_FILE")) and bool(values.get("TLS_KEY_FILE")),
+        "tls_config_present": bool(tls_cert) and bool(tls_key),
+        "tls_cert_file_exists": bool(tls_cert) and Path(tls_cert).exists(),
+        "tls_key_file_exists": bool(tls_key) and Path(tls_key).exists(),
         "disk_ready": disk_ready,
         "chrome_ready": handover.chrome_found,
         "safari_webdriver_ready": observability.safari_webdriver_ready,
@@ -112,7 +118,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     if args.check_public_origin:
         gates["public_origin_live_ready"] = bool(public_origin and public_origin.get("ok"))
 
-    required = required_gate_names(next_trial)
+    required = required_gate_names(next_trial, args.check_local_files)
     if args.check_public_origin:
         required.append("public_origin_live_ready")
     ready, missing = evaluate_required_gates(required, gates)
@@ -121,6 +127,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         "generated": date.today().isoformat(),
         "config_path": args.config,
         "config_exists": Path(args.config).exists(),
+        "check_local_files": args.check_local_files,
         "public_origin_url_preview": command_preview(values.get("PUBLIC_ORIGIN_URL", "")),
         "network_change_command_preview": command_preview(network_change_cmd),
         "android_network_change_command_preview": command_preview(android_network_change_cmd),
@@ -175,6 +182,7 @@ def emit_markdown(readiness: dict[str, Any]) -> str:
         f"| ready | `{'yes' if readiness['ready'] else 'no'}` |",
         f"| config path | `{readiness['config_path']}` |",
         f"| config exists | `{'yes' if readiness['config_exists'] else 'no'}` |",
+        f"| check local files | `{'yes' if readiness['check_local_files'] else 'no'}` |",
         f"| next trial | `{next_trial['trial_id'] if next_trial else '-'}` |",
         f"| next phase | `{next_trial['phase'] if next_trial else '-'}` |",
         f"| next browser | `{next_trial['browser'] if next_trial else '-'}` |",
@@ -227,6 +235,11 @@ def main() -> int:
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
     parser.add_argument("--min-disk-gib", type=float, default=5.0)
+    parser.add_argument(
+        "--check-local-files",
+        action="store_true",
+        help="require TLS files to exist on the machine running this checker; use on the public origin host",
+    )
     parser.add_argument("--check-public-origin", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")

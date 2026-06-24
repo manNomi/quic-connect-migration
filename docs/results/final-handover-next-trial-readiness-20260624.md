@@ -9,11 +9,12 @@ Generated: `2026-06-24`
 | ready | `no` |
 | config path | `harness/config/controlled-public-origin.env` |
 | config exists | `no` |
+| check local files | `no` |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
 | next phase | `baseline` |
 | next browser | `Chrome` |
 | final completion | `0/6` |
-| disk free GiB | `2.41` |
+| disk free GiB | `2.5` |
 | active IPv4 interfaces | `en0(192.168.0.212)` |
 | public origin URL | `-` |
 
@@ -26,6 +27,8 @@ Generated: `2026-06-24`
 | `public_origin_host_configured` | `no` | `yes` |
 | `public_origin_url_configured` | `no` | `yes` |
 | `tls_config_present` | `no` | `yes` |
+| `tls_cert_file_exists` | `no` | `no` |
+| `tls_key_file_exists` | `no` | `no` |
 | `disk_ready` | `no` | `yes` |
 | `chrome_ready` | `yes` | `yes` |
 | `safari_webdriver_ready` | `yes` | `no` |

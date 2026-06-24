@@ -103,6 +103,14 @@ python3 tools/check_next_final_handover_trial_readiness.py \
   --output docs/results/final-handover-next-trial-readiness-20260624.md
 ```
 
+이 명령은 기본적으로 local client machine에서 실행해도 false blocker가 생기지 않도록 TLS 파일 존재를 required로 보지 않는다. public origin host에서 직접 실행할 때는 다음처럼 TLS 파일 존재도 gate에 포함한다.
+
+```bash
+python3 tools/check_next_final_handover_trial_readiness.py \
+  --check-local-files \
+  --output /tmp/final-handover-next-trial-readiness-origin-host.md
+```
+
 실제 artifact가 있는 경우 CSV row 초안은 다음 도구로 먼저 생성한다.
 
 ```bash

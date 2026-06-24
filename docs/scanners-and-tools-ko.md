@@ -1056,6 +1056,14 @@ python3 tools/check_next_final_handover_trial_readiness.py \
   --output /tmp/final-handover-next-trial-readiness.md
 ```
 
+public origin host에서 TLS certificate/key 파일 존재까지 확인하려면 다음 옵션을 함께 쓴다. 이 옵션은 local Mac에서 remote origin path를 검사하면 false blocker가 될 수 있으므로 기본으로 켜지지 않는다.
+
+```bash
+python3 tools/check_next_final_handover_trial_readiness.py \
+  --check-local-files \
+  --output /tmp/final-handover-next-trial-readiness-origin-host.md
+```
+
 현재 다음 trial이 baseline이면 required gate는 대략 다음과 같다.
 
 | gate | baseline에서 required |

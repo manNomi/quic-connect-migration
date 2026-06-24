@@ -15,7 +15,16 @@ def test_baseline_does_not_require_network_change() -> None:
     assert "network_change_command_present" not in gates
     assert "baseline_summary_ready" not in gates
     assert "desktop_secondary_path_ready" not in gates
+    assert "tls_cert_file_exists" not in gates
+    assert "tls_key_file_exists" not in gates
     assert "chrome_ready" in gates
+
+
+def test_local_file_check_requires_tls_paths_on_origin_host() -> None:
+    gates = required_gate_names(trial("baseline", "Chrome"), check_local_files=True)
+    assert "tls_config_present" in gates
+    assert "tls_cert_file_exists" in gates
+    assert "tls_key_file_exists" in gates
 
 
 def test_chrome_active_requires_baseline_network_command_and_secondary_path() -> None:
@@ -52,6 +61,7 @@ def test_evaluate_required_gates_reports_missing() -> None:
 
 def main() -> int:
     test_baseline_does_not_require_network_change()
+    test_local_file_check_requires_tls_paths_on_origin_host()
     test_chrome_active_requires_baseline_network_command_and_secondary_path()
     test_safari_p1_requires_safari_and_secondary_path()
     test_android_p1_requires_android_command_and_adb()
