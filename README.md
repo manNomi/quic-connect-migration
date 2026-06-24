@@ -39,7 +39,8 @@
 27. 선택된 다음 trial 하나에 필요한 readiness gate를 별도로 점검하는 per-trial readiness checker를 추가했다.
 28. controlled public origin config가 baseline/active/Android 단계별로 준비됐는지 public-safe하게 검사하는 config checker를 추가했다.
 29. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
-30. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+30. 최종 handover trial을 시작하기 전 필요한 config, storage, next-trial, active path, Android action을 우선순위별 checklist로 생성한다.
+31. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -93,6 +94,7 @@
 │   ├── validate_final_handover_trial_artifact.py
 │   ├── append_final_handover_result_row.py
 │   ├── select_next_final_handover_trial.py
+│   ├── build_final_handover_operator_checklist.py
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
@@ -106,6 +108,7 @@
 │   ├── test_append_final_handover_result_row.py
 │   ├── test_select_next_final_handover_trial.py
 │   ├── test_check_next_final_handover_trial_readiness.py
+│   ├── test_build_final_handover_operator_checklist.py
 │   ├── test_check_controlled_public_config.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
@@ -140,6 +143,7 @@
 - [Final handover trial artifact validator](docs/results/final-handover-trial-artifact-validator-20260624.md)
 - [Final handover next trial](docs/results/final-handover-next-trial-20260624.md)
 - [Final handover next trial readiness](docs/results/final-handover-next-trial-readiness-20260624.md)
+- [Final handover operator checklist](docs/results/final-handover-operator-checklist-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)

@@ -71,6 +71,17 @@ controlled-public-android-chrome-downlink-network-change-001,2026-06-24,PASS_FEA
 
 실험 환경을 만들기 전 controlled public config schema를 확인한다.
 
+먼저 현재 상태에서 바로 해야 할 operator action을 생성한다.
+
+```bash
+python3 tools/build_final_handover_operator_checklist.py \
+  --output docs/results/final-handover-operator-checklist-20260624.md
+```
+
+이 checklist는 controlled public config, 다음 trial readiness, artifact cleanup dry-run, final trial audit를 합쳐 우선순위별 실행 항목으로 정리한다.
+
+그 다음 controlled public config schema를 확인한다.
+
 ```bash
 python3 tools/check_controlled_public_config.py \
   --output docs/results/controlled-public-config-check-20260624.md

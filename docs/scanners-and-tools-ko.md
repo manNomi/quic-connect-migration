@@ -1111,3 +1111,32 @@ python3 tools/check_controlled_public_config.py --require-active-ready
 ```bash
 python3 tools/test_check_controlled_public_config.py
 ```
+
+## 35. `tools/build_final_handover_operator_checklist.py`
+
+최종 browser/mobile handover 본 실험으로 들어가기 직전, 현재 repo와 로컬 환경이 무엇 때문에 막혀 있는지 operator action list로 합친다. 내부적으로 controlled public config checker, next-trial readiness checker, artifact cleanup dry-run planner, final trial audit를 호출한다.
+
+실행:
+
+```bash
+python3 tools/build_final_handover_operator_checklist.py \
+  --output docs/results/final-handover-operator-checklist-20260624.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| next trial | 현재 CSV 기준 다음 실행 대상 |
+| next trial ready | 그 trial을 지금 실행할 수 있는지 |
+| config readiness | baseline, active network-change, Android 단계별 config 준비 여부 |
+| storage readiness | 목표 여유 공간과 cleanup dry-run 후 남는 gap |
+| actions | config, storage, next trial, active path, Android, final protocol 순서의 실행 항목 |
+
+이 도구는 실험을 실행하지 않으며 exit 0을 반환한다. 목적은 실패해야 정상인 readiness gate를 사람이 실행 가능한 순서로 정렬하는 것이다.
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_final_handover_operator_checklist.py
+```
