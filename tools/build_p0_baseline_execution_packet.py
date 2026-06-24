@@ -62,28 +62,11 @@ def packet_args(args: argparse.Namespace) -> argparse.Namespace:
     )
 
 
-def preflight_guard_command(args: argparse.Namespace) -> str:
-    return " ".join(
-        [
-            "python3 tools/check_p0_baseline_preflight.py",
-            "--matrix",
-            args.matrix,
-            "--scorecard",
-            args.scorecard,
-            "--output docs/results/p0-baseline-preflight-check-20260624.md",
-            "--csv-output data/p0-baseline-preflight-check-20260624.csv",
-            "--require-go",
-        ]
-    )
-
-
-def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object], args: argparse.Namespace) -> list[StageRow]:
+def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object]) -> list[StageRow]:
     rows: list[StageRow] = []
     p0_rows = list(p0_status["rows"])  # type: ignore[arg-type]
     needed_now = [row for row in p0_rows if row["status"] == "needed-now"]
     next_ready = bool(packet["next_trial_ready"])
-    preflight_commands = list(packet["preflight_commands"])  # type: ignore[arg-type]
-    preflight_commands.append(preflight_guard_command(args))
 
     rows.append(
         StageRow(
@@ -105,8 +88,8 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object], ar
             order=2,
             status="blocked" if not next_ready else "ready",
             owner="operator",
-            action="Run baseline readiness checks before starting server/client artifacts.",
-            command=" && ".join(preflight_commands),
+            action="Run the final P0 baseline preflight wrapper before starting server/client artifacts.",
+            command="bash harness/scripts/final-p0-baseline-preflight.sh",
             stop_condition="stop if any required gate remains missing",
         )
     )
@@ -153,7 +136,7 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object], ar
 def build_execution_packet(args: argparse.Namespace) -> dict[str, object]:
     packet = build_packet(packet_args(args))
     p0_status = build_p0_status(Path(args.matrix), Path(args.scorecard))
-    rows = build_stage_rows(packet, p0_status, args)
+    rows = build_stage_rows(packet, p0_status)
     needed_now = [row for row in p0_status["rows"] if row["status"] == "needed-now"]  # type: ignore[index]
     return {
         "generated": utc_date_iso(),

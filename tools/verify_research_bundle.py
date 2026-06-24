@@ -966,6 +966,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "bash",
                 "-n",
                 "harness/scripts/controlled-public-preflight.sh",
+                "harness/scripts/final-p0-baseline-preflight.sh",
                 "repro/quic-go-min-repro/scripts/ensure-min-disk-free.sh",
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh",
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh",

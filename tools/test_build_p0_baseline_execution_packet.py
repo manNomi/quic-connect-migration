@@ -74,8 +74,7 @@ def test_execution_packet_orders_private_config_before_capture() -> None:
         assert rows[0]["stage"] == "0-private-config"
         assert rows[0]["status"] == "blocked"
         assert rows[1]["stage"] == "1-preflight"
-        assert "check_p0_baseline_preflight.py" in rows[1]["command"]
-        assert "--require-go" in rows[1]["command"]
+        assert rows[1]["command"] == "bash harness/scripts/final-p0-baseline-preflight.sh"
         assert "controlled_public_config_present" in execution["needed_now_gates"]
 
 

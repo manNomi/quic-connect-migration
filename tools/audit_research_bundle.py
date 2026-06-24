@@ -184,6 +184,7 @@ REQUIRED_FILES = [
     "tools/plan_artifact_cleanup.py",
     "tools/report_artifact_storage.py",
     "tools/validate_publication_bundle.py",
+    "harness/scripts/final-p0-baseline-preflight.sh",
     "repro/quic-go-min-repro/cmd/h3server/main.go",
     "repro/quic-go-min-repro/cmd/udprebindproxy/main.go",
     "repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh",
