@@ -39,6 +39,7 @@ REQUIRED_FILES = [
     "repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh",
     "repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh",
     "repro/quic-go-min-repro/scripts/run-safari-controlled-public-network-change.sh",
+    "repro/quic-go-min-repro/scripts/run-android-chrome-controlled-public-network-change.sh",
 ]
 
 

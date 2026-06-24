@@ -91,7 +91,7 @@ def main() -> int:
     parser.add_argument("--server-artifact-dir", help="server artifact directory; defaults to artifact_dir")
     parser.add_argument("--url", required=True)
     parser.add_argument("--expected-requests", type=int)
-    parser.add_argument("--browser-kind", choices=["chrome", "safari"], default="chrome")
+    parser.add_argument("--browser-kind", choices=["chrome", "safari", "android-chrome"], default="chrome")
     parser.add_argument("--browser-exit", type=int)
     parser.add_argument("--chrome-exit", type=int)
     parser.add_argument("--allow-missing-browser-netlog", action="store_true")

@@ -11,7 +11,7 @@ Generated: `2026-06-24`
 | experiment trials | `35` |
 | experiment status counts | `{'PASS': 18, 'PASS_NEGATIVE_CONTROL': 16, 'PASS_FEASIBILITY': 1}` |
 | experiment ids unique | `yes` |
-| matrix items | `53` |
+| matrix items | `54` |
 | matrix ids unique | `yes` |
 | paper tables current | `yes` |
 | goal complete | `no` |
