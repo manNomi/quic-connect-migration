@@ -903,3 +903,26 @@ python3 tools/test_draft_final_handover_result_row.py
 ```
 
 테스트는 synthetic summary에서 생성한 row가 `audit_final_browser_handover_trials.py`의 matcher에 맞게 세어지는지 확인한다.
+
+## 29. `tools/plan_artifact_cleanup.py`
+
+heavy Chrome NetLog/qlog/pcap 실험 전 목표 디스크 여유 공간을 만족하려면 ignored artifact를 얼마나 정리해야 하는지 dry-run으로 계산한다. 이 도구는 삭제를 실행하지 않는다.
+
+실행:
+
+```bash
+python3 tools/plan_artifact_cleanup.py \
+  --target-free-gib 5 \
+  --output docs/results/artifact-cleanup-dry-run-20260624.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| current free | 현재 볼륨 여유 공간 |
+| selected candidates | 목표까지 필요한 artifact cleanup 후보 수 |
+| projected free | 후보를 삭제한다고 가정했을 때 예상 여유 공간 |
+| remaining external cleanup gap | repo artifact 정리만으로 목표를 못 채울 때 추가로 필요한 외부 정리 용량 |
+
+2026-06-24 현재는 artifact root 전체를 정리해도 5 GiB 목표에 약 1.7 GiB가 부족하므로, 최종 browser handover capture 전에는 저장소 외부 파일도 정리해야 한다.

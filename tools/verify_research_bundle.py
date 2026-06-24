@@ -73,6 +73,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_readiness = "docs/results/final-browser-handover-readiness-20260624.md"
     final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
+    cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
@@ -80,6 +81,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_readiness = str(generated_dir / "final-browser-handover-readiness.md")
         final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
+        cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
         research_audit = str(generated_dir / "research-bundle-audit.md")
 
     return [
@@ -93,6 +95,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_research_bundle.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/draft_final_handover_result_row.py",
+                "tools/plan_artifact_cleanup.py",
                 "tools/plan_final_browser_handover_runs.py",
                 "tools/test_draft_final_handover_result_row.py",
                 "tools/test_final_browser_handover_trial_audit.py",
@@ -149,6 +152,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "artifact_storage_report",
             [python_bin, "tools/report_artifact_storage.py", "--output", storage_report],
+            {0},
+            60,
+        ),
+        (
+            "artifact_cleanup_dry_run_plan",
+            [python_bin, "tools/plan_artifact_cleanup.py", "--output", cleanup_dry_run],
             {0},
             60,
         ),

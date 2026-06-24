@@ -8,6 +8,8 @@
 
 이 문서는 삭제를 실행하지 않는다. 어떤 artifact가 cleanup 후보인지와 삭제 전 확인할 조건만 정리한다.
 
+자동 dry-run 계산 결과는 `docs/results/artifact-cleanup-dry-run-20260624.md`에 있다.
+
 ## 2. 현재 상위 cleanup 후보
 
 `tools/report_artifact_storage.py` 기준 상위 artifact directory:

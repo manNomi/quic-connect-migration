@@ -33,7 +33,8 @@
 21. Android Chrome controlled public network-change harness를 추가하고, ADB 기반 navigation과 Android raw network snapshot 수집 경로를 준비했다.
 22. 최종 browser handover protocol을 만족하기 위한 10개 실행 계획과 명령 template를 생성했다.
 23. 최종 handover classifier summary를 `data/experiment-results.csv` row 초안으로 변환하는 도구와 regression test를 추가했다.
-24. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+24. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
+25. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -85,6 +86,7 @@
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
+│   ├── plan_artifact_cleanup.py
 │   ├── run_chrome_cdp_navigation.js
 │   ├── run_android_chrome_navigation.py
 │   ├── run_safari_webdriver_navigation.py
@@ -129,6 +131,7 @@
 - [Research verification report](docs/results/research-verification-report-20260624.md)
 - [Local artifact storage audit](docs/results/artifact-storage-report-20260624.md)
 - [Local artifact cleanup plan](docs/results/artifact-cleanup-plan-20260624.md)
+- [Local artifact cleanup dry-run](docs/results/artifact-cleanup-dry-run-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [논문 Results 섹션 한국어](paper/results-section-ko.md)
