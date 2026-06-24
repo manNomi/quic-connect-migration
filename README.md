@@ -47,6 +47,7 @@
 │   ├── browser-cm-observability-20260624.json
 │   ├── controlled-public-experiment-readiness-20260624.json
 │   ├── evidence-chain-rubric.csv
+│   ├── final-browser-handover-required-trials.csv
 │   ├── implementation-survey.csv
 │   ├── handover-readiness-20260624.json
 │   ├── literature-review-tracker.csv
@@ -75,10 +76,12 @@
 │   ├── classify_controlled_public_h3_network_change.py
 │   ├── capture_network_path_snapshot.py
 │   ├── compare_network_path_snapshots.py
+│   ├── audit_final_browser_handover_trials.py
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
 │   ├── run_chrome_cdp_navigation.js
+│   ├── run_android_chrome_navigation.py
 │   ├── run_safari_webdriver_navigation.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
@@ -104,6 +107,7 @@
 - [Safari controlled public H3 network-change harness](docs/results/safari-controlled-public-network-change-harness-20260624.md)
 - [Android Chrome controlled public H3 network-change harness](docs/results/android-chrome-controlled-public-network-change-harness-20260624.md)
 - [Final browser handover experiment protocol](docs/results/final-browser-handover-experiment-protocol-20260624.md)
+- [Final browser handover trial audit](docs/results/final-browser-handover-trial-audit-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)
@@ -118,6 +122,7 @@
 - [논문 Results 섹션 한국어](paper/results-section-ko.md)
 - [논문 Results 섹션 영어](paper/results-section-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)
+- [최종 browser handover 필수 trial CSV](data/final-browser-handover-required-trials.csv)
 - [구현체 조사 CSV](data/implementation-survey.csv)
 
 ## 재현 코드

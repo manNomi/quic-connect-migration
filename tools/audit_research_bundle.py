@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from build_paper_tables import build_markdown, load_rows
+from audit_final_browser_handover_trials import build_audit as build_final_trial_audit
 from check_browser_cm_observability import build_readiness as build_observability_readiness
 from check_handover_readiness import build_readiness as build_handover_readiness
 from report_artifact_storage import build_report as build_storage_report
@@ -25,17 +26,20 @@ REQUIRED_FILES = [
     "README.md",
     "data/experiment-results.csv",
     "data/evidence-chain-rubric.csv",
+    "data/final-browser-handover-required-trials.csv",
     "data/implementation-survey.csv",
     "docs/reproducibility-guide-ko.md",
     "docs/scanners-and-tools-ko.md",
     "docs/results/artifact-cleanup-plan-20260624.md",
     "docs/results/evidence-chain-and-gap-synthesis-20260624.md",
     "docs/results/final-browser-handover-experiment-protocol-20260624.md",
+    "docs/results/final-browser-handover-trial-audit-20260624.md",
     "docs/results/paper-tables-20260624.md",
     "docs/results/research-completion-audit-20260624.md",
     "paper/results-section-ko.md",
     "paper/results-section-en.md",
     "tools/build_paper_tables.py",
+    "tools/audit_final_browser_handover_trials.py",
     "tools/report_artifact_storage.py",
     "tools/validate_publication_bundle.py",
     "repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh",
@@ -108,6 +112,10 @@ def build_audit(root: Path) -> dict[str, Any]:
         ["repro/quic-go-min-repro/artifacts", "harness/results"],
         max_entries=10,
     )
+    final_trials = build_final_trial_audit(
+        root / "data" / "final-browser-handover-required-trials.csv",
+        root / "data" / "experiment-results.csv",
+    )
     files = file_checks(root)
     required_files_ok = all(item["exists"] for item in files)
     experiment_ids_unique = not duplicate_values(experiments, "trial_id")
@@ -148,6 +156,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         blockers.append("browser active network-change result is not done")
     if not controlled_public_result_done:
         blockers.append("controlled-public network-change result is not done")
+    if not final_trials["complete"]:
+        blockers.append("final browser handover trial protocol is not complete")
 
     goal_complete = not blockers
     return {
@@ -181,6 +191,12 @@ def build_audit(root: Path) -> dict[str, Any]:
             "total_artifact_human": human_size(int(storage["total_artifact_bytes"])),
             "top_artifact_dirs": storage["top_artifact_dirs"],
         },
+        "final_browser_handover_trials": {
+            "complete": final_trials["complete"],
+            "requirement_count": final_trials["requirement_count"],
+            "complete_count": final_trials["complete_count"],
+            "blockers": final_trials["blockers"],
+        },
         "goal_complete": goal_complete,
         "blockers": blockers,
         "required_files": files,
@@ -200,6 +216,7 @@ def emit_markdown(audit: dict[str, Any]) -> str:
     handover = audit["handover"]
     observability = audit["observability"]
     storage = audit["storage"]
+    final_trials = audit["final_browser_handover_trials"]
     active = ", ".join(
         f"{item['name']}({','.join(item['ipv4'])})"
         for item in handover["active_ipv4_interfaces"]
@@ -222,6 +239,7 @@ def emit_markdown(audit: dict[str, Any]) -> str:
         f"| matrix items | `{audit['matrix_item_count']}` |",
         f"| matrix ids unique | `{markdown_bool(audit['matrix_ids_unique'])}` |",
         f"| paper tables current | `{markdown_bool(audit['paper_tables_current'])}` |",
+        f"| final browser handover trials | `{final_trials['complete_count']}/{final_trials['requirement_count']}` |",
         f"| goal complete | `{markdown_bool(audit['goal_complete'])}` |",
         "",
         "## Readiness",
@@ -239,9 +257,24 @@ def emit_markdown(audit: dict[str, Any]) -> str:
         f"| Safari WebDriver ready | `{markdown_bool(observability['safari_webdriver_ready'])}` |",
         f"| packet capture tooling ready | `{markdown_bool(observability['packet_capture_tooling_ready'])}` |",
         "",
-        "## Blockers",
+        "## Final Browser Handover Trials",
+        "",
+        "| check | value |",
+        "| --- | --- |",
+        f"| complete | `{markdown_bool(final_trials['complete'])}` |",
+        f"| requirements complete | `{final_trials['complete_count']}/{final_trials['requirement_count']}` |",
+        "",
+        "Incomplete final trial requirements:",
         "",
     ]
+    lines.extend(f"- {blocker}" for blocker in (final_trials["blockers"] or ["-"]))
+    lines.extend(
+        [
+            "",
+            "## Blockers",
+            "",
+        ]
+    )
     lines.extend(f"- {blocker}" for blocker in blockers)
     return "\n".join(lines).rstrip() + "\n"
 

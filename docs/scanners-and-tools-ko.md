@@ -664,6 +664,7 @@ bash harness/scripts/controlled-public-preflight.sh || true
 python3 tools/capture_network_path_snapshot.py --url https://www.google.com/generate_204 --output /tmp/quic-cm-path-before.json
 python3 tools/compare_network_path_snapshots.py /tmp/quic-cm-path-before.json /tmp/quic-cm-path-before.json
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py tools/run_android_chrome_navigation.py
+python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md
 bash -n repro/quic-go-min-repro/scripts/run-safari-controlled-public-network-change.sh
 bash -n repro/quic-go-min-repro/scripts/run-android-chrome-controlled-public-network-change.sh
 
@@ -728,6 +729,7 @@ python3 tools/audit_research_bundle.py --require-complete
 | experiment CSV | trial count, status count, trial id uniqueness |
 | matrix CSV | item count, id uniqueness |
 | paper tables | `build_paper_tables.py` 결과와 checked-in table 일치 여부 |
+| final browser handover trials | `audit_final_browser_handover_trials.py` 기준 본 실험 필수 trial 충족 여부 |
 | handover readiness | secondary path, Android, AWS, disk 상태 |
 | observability readiness | Chrome NetLog, Safari WebDriver, packet capture tooling |
 
@@ -752,3 +754,29 @@ python3 tools/report_artifact_storage.py --output docs/results/artifact-storage-
 | largest artifact directories | cleanup 우선순위를 판단할 수 있는 상위 artifact 디렉터리 |
 
 이 도구는 파일을 삭제하지 않는다. 삭제는 결과 문서화 여부를 확인한 뒤 수동으로 수행해야 한다.
+
+## 24. `tools/audit_final_browser_handover_trials.py`
+
+최종 browser/mobile handover 본 실험이 논문 프로토콜을 만족할 만큼 채워졌는지 `data/final-browser-handover-required-trials.csv`와 `data/experiment-results.csv`를 대조한다.
+
+실행:
+
+```bash
+python3 tools/audit_final_browser_handover_trials.py \
+  --output docs/results/final-browser-handover-trial-audit-20260624.md
+
+python3 tools/audit_final_browser_handover_trials.py --require-complete
+```
+
+현재 요구사항:
+
+| requirement | 기준 |
+| --- | --- |
+| Chrome controlled public H3 baseline | 최소 1회 |
+| Chrome downlink no-heartbeat active CM | 최소 3회 |
+| Chrome downlink heartbeat active CM | 최소 3회 |
+| Chrome downlink no-heartbeat no-change baseline | 최소 1회 |
+| Chrome downlink heartbeat no-change baseline | 최소 1회 |
+| Safari 또는 Android Chrome feasibility | 최소 1회 |
+
+이 audit은 local Chrome forced-QUIC baseline이나 inactive interface toggle을 본 실험으로 세지 않는다. `controlled-public`, `network-change`, classification, negative-control exclusion 조건을 모두 만족해야 한다.
