@@ -42,6 +42,18 @@ ANDROID_REQUIRED = [
 ]
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        print(text, end="")
+        return
+    if output_arg:
+        output = Path(output_arg)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+    else:
+        print(text, end="")
+
+
 @dataclass
 class KeyCheck:
     key: str
@@ -213,12 +225,7 @@ def main() -> int:
 
     report = build_report(Path(args.config), args.check_files)
     text = json.dumps(report, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(report)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     if args.require_active_ready and not report["active_network_change_config_ready"]:
         return 1
     if args.require_baseline_ready and not report["baseline_config_ready"]:

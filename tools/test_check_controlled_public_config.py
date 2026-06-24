@@ -3,10 +3,13 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
+import os
 import tempfile
 from pathlib import Path
 
-from check_controlled_public_config import build_report
+from check_controlled_public_config import build_report, write_output
 from check_final_browser_handover_readiness import parse_env_file
 
 
@@ -106,6 +109,20 @@ def test_preflight_defaults_match_final_baseline_trial_id() -> None:
     assert "browser-downlink?duration_ms=15000" in text
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("config\n", "-")
+            assert buffer.getvalue() == "config\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_missing_config_is_not_ready()
     test_baseline_ready_does_not_require_active_keys()
@@ -113,6 +130,7 @@ def main() -> int:
     test_example_placeholders_are_not_ready()
     test_tracked_example_matches_final_baseline_trial_id()
     test_preflight_defaults_match_final_baseline_trial_id()
+    test_dash_output_prints_stdout_without_dash_file()
     print("check_controlled_public_config=ok")
     return 0
 

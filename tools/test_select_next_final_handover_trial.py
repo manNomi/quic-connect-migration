@@ -5,11 +5,14 @@ from __future__ import annotations
 
 import argparse
 import csv
+import contextlib
+import io
+import os
 import tempfile
 from pathlib import Path
 
 from draft_final_handover_result_row import CSV_FIELDS, build_row
-from select_next_final_handover_trial import build_selection
+from select_next_final_handover_trial import build_selection, write_output
 
 
 REQUIREMENTS = "data/final-browser-handover-required-trials.csv"
@@ -136,11 +139,26 @@ def test_active_repetition_advances_by_trial_id() -> None:
     assert selection["next_trial_index"] == 6
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("hello\n", "-")
+            assert buffer.getvalue() == "hello\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_empty_selects_baseline()
     test_after_baseline_selects_nochange_first()
     test_after_baselines_selects_first_active_noheartbeat()
     test_active_repetition_advances_by_trial_id()
+    test_dash_output_prints_stdout_without_dash_file()
     print("select_next_final_handover_trial=ok")
     return 0
 

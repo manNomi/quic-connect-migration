@@ -3,7 +3,13 @@
 
 from __future__ import annotations
 
-from check_next_final_handover_trial_readiness import evaluate_required_gates, required_gate_names
+import contextlib
+import io
+import os
+import tempfile
+from pathlib import Path
+
+from check_next_final_handover_trial_readiness import evaluate_required_gates, required_gate_names, write_output
 
 
 def trial(phase: str, browser: str) -> dict:
@@ -59,6 +65,20 @@ def test_evaluate_required_gates_reports_missing() -> None:
     assert missing == []
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("ready\n", "-")
+            assert buffer.getvalue() == "ready\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_baseline_does_not_require_network_change()
     test_local_file_check_requires_tls_paths_on_origin_host()
@@ -66,6 +86,7 @@ def main() -> int:
     test_safari_p1_requires_safari_and_secondary_path()
     test_android_p1_requires_android_command_and_adb()
     test_evaluate_required_gates_reports_missing()
+    test_dash_output_prints_stdout_without_dash_file()
     print("check_next_final_handover_trial_readiness=ok")
     return 0
 

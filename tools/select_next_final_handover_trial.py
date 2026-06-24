@@ -25,6 +25,18 @@ DEFAULT_EXPERIMENTS = "data/experiment-results.csv"
 DEFAULT_OUTPUT = "docs/results/final-handover-next-trial-20260624.md"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        print(text, end="")
+        return
+    if output_arg:
+        output = Path(output_arg)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+    else:
+        print(text, end="")
+
+
 def plan_values(config: str, use_local_config: bool) -> dict[str, str]:
     values = dict(PUBLIC_TEMPLATE_VALUES)
     if use_local_config:
@@ -206,12 +218,7 @@ def main() -> int:
 
     selection = build_selection(args)
     text = json.dumps(selection, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(selection)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     return 0
 
 

@@ -26,6 +26,18 @@ DEFAULT_SAFARI = "/Applications/Safari.app/Contents/MacOS/Safari"
 DEFAULT_SAFARI_TP = "/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        print(text, end="")
+        return
+    if output_arg:
+        output = Path(output_arg)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+    else:
+        print(text, end="")
+
+
 def required_gate_names(next_trial: dict[str, Any] | None, check_local_files: bool = False) -> list[str]:
     if not next_trial:
         return []
@@ -248,12 +260,7 @@ def main() -> int:
 
     readiness = build_readiness(args)
     text = json.dumps(readiness, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(readiness)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     return 0 if readiness["ready"] else 1
 
 
