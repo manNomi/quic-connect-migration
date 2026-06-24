@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "73d02a1",
+    "commit": "3d629c2",
     "branch": "main"
   },
   "experiment_corpus": {
@@ -40,8 +40,8 @@
     "workflow": "research-verify",
     "branch": "main",
     "event": "push",
-    "run_id": "28101354700",
-    "duration": "49s"
+    "run_id": "28101620517",
+    "duration": "33s"
   },
   "key_paths": {
     "audit": "docs/results/research-bundle-audit-20260624.md",

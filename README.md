@@ -189,6 +189,7 @@
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Public H3 and CM evidence boundary literature refresh](docs/results/literature-refresh-public-h3-and-cm-evidence-20260624.md)
+- [Latest QUIC CM evidence boundary refresh](docs/results/literature-refresh-latest-cm-boundary-20260624.md)
 - [Public H3 expanded browser candidate results](docs/results/public-h3-expanded-browser-candidate-results-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)
 - [quic-go local HTTP/3 migration replication results](docs/results/quic-go-local-h3-replication-results-20260624.md)

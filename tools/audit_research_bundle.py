@@ -37,6 +37,7 @@ REQUIRED_FILES = [
     "docs/results/artifact-cleanup-plan-20260624.md",
     "docs/results/artifact-cleanup-safety-audit-20260624.md",
     "docs/results/evidence-chain-and-gap-synthesis-20260624.md",
+    "docs/results/literature-refresh-latest-cm-boundary-20260624.md",
     "docs/results/paper-evidence-gap-register-20260624.md",
     "docs/results/final-handover-trial-artifact-validator-20260624.md",
     "docs/results/final-handover-next-trial-20260624.md",
