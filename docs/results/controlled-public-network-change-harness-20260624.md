@@ -22,6 +22,9 @@ controlled public application H3 gate가 통과한 뒤, 같은 public WebPKI ori
 ```text
 controlled-public-h3-baseline-summary.json
   status = PASS
+
+check_controlled_public_experiment_readiness.py
+  can_run_network_change = true
 ```
 
 이 파일은 `run-controlled-public-h3-browser-baseline.sh`와 `classify_controlled_public_h3_baseline.py`가 만든다.
@@ -30,6 +33,7 @@ controlled-public-h3-baseline-summary.json
 
 ```text
 baseline PASS summary 확인
+  -> controlled public experiment readiness 확인
   -> public origin readiness check
   -> Chrome headless navigation to long-running workload
   -> NETWORK_CHANGE_AFTER_SECONDS 뒤 NETWORK_CHANGE_CMD 실행

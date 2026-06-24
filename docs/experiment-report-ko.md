@@ -609,6 +609,7 @@ workload:
 - controlled public application H3 gate를 위해 server request log, server qlog, Chrome public NetLog summary, readiness JSON을 합치는 `classify_controlled_public_h3_baseline.py`를 추가했음
 - local regression에서 forced H3 artifact는 `PASS_FEASIBILITY`, H1-only Alt-Svc artifact는 `PASS_NEGATIVE_CONTROL`로 분리되어 gate가 application H3와 discovery-only/H1-only를 구분함을 확인했음
 - controlled public network-change 하네스와 `classify_controlled_public_h3_network_change.py`를 추가해 baseline PASS 이후 tuple change, qlog path validation, Chrome QUIC session evidence를 함께 분류할 수 있게 했음
+- controlled public experiment readiness checker를 추가했고, 현재 환경은 Chrome과 harness는 준비됐지만 public origin URL, application H3 baseline PASS summary, active secondary path, `NETWORK_CHANGE_CMD`가 없어 real network-change 실행 조건을 만족하지 못함
 
 이 baseline은 network path change를 포함하지 않는다. 따라서 다음 단계에서는 controlled public WebPKI origin에서 application HTTP/3 no-change baseline을 먼저 통과시킨 뒤, 같은 browser workload를 유지한 채 network-change trigger만 추가해야 한다.
 
@@ -682,3 +683,4 @@ network-change 판정 기준:
 - [Controlled public WebPKI H3 origin plan](results/controlled-public-origin-h3-plan-20260624.md)
 - [Controlled public application H3 evidence gate](results/controlled-public-application-h3-gate-20260624.md)
 - [Controlled public Chrome H3 network-change harness](results/controlled-public-network-change-harness-20260624.md)
+- [Controlled public experiment readiness](results/controlled-public-experiment-readiness-20260624.md)

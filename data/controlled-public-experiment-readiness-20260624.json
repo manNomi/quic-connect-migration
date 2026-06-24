@@ -1,0 +1,44 @@
+{
+  "check_date": "2026-06-24",
+  "public_origin_url": "",
+  "controlled_public_origin_ready": false,
+  "application_h3_baseline_ready": false,
+  "network_change_harness_ready": true,
+  "desktop_handover_ready": false,
+  "can_run_application_h3_baseline": false,
+  "can_run_network_change": false,
+  "chrome_found": true,
+  "secondary_path_ready": false,
+  "active_ipv4_interfaces": [
+    {
+      "name": "en0",
+      "active": true,
+      "ipv4": [
+        "192.168.0.212"
+      ]
+    }
+  ],
+  "network_change_command_present": false,
+  "network_change_command_preview": "",
+  "baseline_summary": {
+    "path": "",
+    "exists": false,
+    "status": "",
+    "classification": "",
+    "error": "not provided"
+  },
+  "server_artifact": {
+    "path": "",
+    "exists": false,
+    "status": "",
+    "classification": "",
+    "error": "not provided"
+  },
+  "public_origin": null,
+  "blockers": [
+    "public origin URL is not provided",
+    "controlled public application H3 baseline summary is not PASS",
+    "active secondary network path is not ready",
+    "NETWORK_CHANGE_CMD is not provided"
+  ]
+}

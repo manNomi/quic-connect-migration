@@ -486,6 +486,7 @@ classifier:
 관련 파일:
 
 - `tools/check_public_origin_readiness.py`
+- `tools/check_controlled_public_experiment_readiness.py`
 - `tools/classify_controlled_public_h3_baseline.py`
 - `tools/classify_controlled_public_h3_network_change.py`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh`
@@ -527,6 +528,16 @@ DNS/TLS/Alt-Svc readiness check
 ### 11.1 Controlled public network-change gate
 
 application H3 baseline summary가 `status=PASS`인 경우에만 active network-change 실험으로 넘어간다.
+
+readiness gate:
+
+```text
+public origin readiness
+  + application H3 baseline summary
+  + active secondary path
+  + NETWORK_CHANGE_CMD
+  -> can_run_network_change
+```
 
 추가 흐름:
 

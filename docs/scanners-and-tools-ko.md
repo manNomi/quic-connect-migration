@@ -359,7 +359,34 @@ python3 tools/check_handover_readiness.py --format json --output data/handover-r
 
 기본 출력은 공개 repo에 넣을 수 있도록 raw command output을 저장하지 않는다. 로컬 디버깅이 필요할 때만 `--include-command-output`을 사용한다.
 
-## 13. `tools/classify_controlled_public_h3_network_change.py`
+## 13. `tools/check_controlled_public_experiment_readiness.py`
+
+controlled public Chrome HTTP/3 network-change 실험을 실행해도 되는지 통합 점검한다.
+
+실행:
+
+```bash
+python3 tools/check_controlled_public_experiment_readiness.py \
+  --public-origin-url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
+  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+  --network-change-cmd '...' \
+  --format markdown
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `controlled_public_origin_ready` | public URL의 DNS/TLS/HTTPS가 준비됐는지 |
+| `application_h3_baseline_ready` | baseline summary가 `status=PASS`인지 |
+| `secondary_path_ready` | active non-loopback IPv4 path가 2개 이상인지 |
+| `network_change_command_present` | `NETWORK_CHANGE_CMD`가 제공됐는지 |
+| `can_run_network_change` | 실제 network-change 실험 실행 가능 여부 |
+| `blockers` | 실행 전 해결해야 할 항목 |
+
+현재 2026-06-24 점검에서는 Chrome과 harness는 준비됐지만 controlled public URL, baseline PASS summary, secondary active path, `NETWORK_CHANGE_CMD`가 없어 `can_run_network_change=false`다.
+
+## 14. `tools/classify_controlled_public_h3_network_change.py`
 
 controlled public origin에서 Chrome workload 중 network-change trigger를 넣은 결과를 분류한다.
 
@@ -393,7 +420,7 @@ classification:
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
-## 14. 실험 실행 코드
+## 15. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -437,7 +464,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 15. 최소 검증 세트
+## 16. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -449,6 +476,8 @@ python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt 
 python3 tools/scan_public_origin_readiness.py --url-file data/public-alt-svc-targets.txt --format markdown
 python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
 python3 tools/check_handover_readiness.py --format markdown
+# readiness가 false이면 exit code 1을 반환한다. 출력의 blockers를 확인한다.
+python3 tools/check_controlled_public_experiment_readiness.py --format markdown || true
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py
 
 cd repro/quic-go-min-repro

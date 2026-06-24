@@ -39,6 +39,7 @@
 ├── README.md
 ├── data/
 │   ├── experiment-results.csv
+│   ├── controlled-public-experiment-readiness-20260624.json
 │   ├── implementation-survey.csv
 │   ├── handover-readiness-20260624.json
 │   ├── literature-review-tracker.csv
@@ -61,6 +62,7 @@
 │   ├── scan_implementation_evidence.py
 │   ├── check_public_origin_readiness.py
 │   ├── check_handover_readiness.py
+│   ├── check_controlled_public_experiment_readiness.py
 │   ├── classify_controlled_public_h3_baseline.py
 │   ├── classify_controlled_public_h3_network_change.py
 │   ├── scan_public_alt_svc.py
@@ -80,6 +82,7 @@
 - [스캐너와 도구 설명](docs/scanners-and-tools-ko.md)
 - [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
 - [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
+- [Controlled public experiment readiness](docs/results/controlled-public-experiment-readiness-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)

@@ -589,6 +589,16 @@ python3 tools/check_public_origin_readiness.py \
 
 application H3 baseline summary가 `status=PASS`인 뒤에만 실행한다.
 
+먼저 readiness를 확인한다.
+
+```bash
+python3 tools/check_controlled_public_experiment_readiness.py \
+  --public-origin-url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
+  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+  --network-change-cmd '...' \
+  --format markdown
+```
+
 Server side:
 
 ```bash
