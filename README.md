@@ -78,6 +78,7 @@
 66. P0 baseline preflight check는 `--require-go` guard로, server/client capture를 시작해도 되는 상태인지 판정하고 현재처럼 config gate가 남아 있으면 실패하도록 한다.
 67. P0 baseline preflight control report는 synthetic fixture 3개로 guard가 missing config/stale needed-now에서는 닫히고, modeled-ready baseline에서만 열리는지 검증한다.
 68. P0 baseline execution packet의 stage 1 preflight 명령은 이제 `check_p0_baseline_preflight.py --require-go`를 포함해 guard 통과 전 stage 2 capture를 열지 않는다.
+69. Final capture storage budget은 현재 여유공간으로 next planned execution은 가능하지만, 2GiB reserve 기준 remaining final queue 전체에는 추가 cleanup/provisioning이 필요함을 분리한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -109,6 +110,7 @@
 │   ├── p0-baseline-execution-packet-20260624.csv
 │   ├── p0-baseline-preflight-check-20260624.csv
 │   ├── p0-baseline-preflight-control-report-20260624.csv
+│   ├── final-capture-storage-budget-20260624.csv
 │   ├── paper-evidence-gap-register-20260624.csv
 │   ├── paper-claim-support-matrix-20260624.csv
 │   ├── replication-sufficiency-audit-20260624.csv
@@ -144,6 +146,7 @@
 │   ├── build_p0_baseline_execution_packet.py
 │   ├── check_p0_baseline_preflight.py
 │   ├── build_p0_preflight_control_report.py
+│   ├── build_final_capture_storage_budget.py
 │   ├── build_cm_operational_friction_matrix.py
 │   ├── build_paper_evidence_gap_register.py
 │   ├── build_paper_claim_support_matrix.py
@@ -238,6 +241,7 @@
 - [P0 baseline execution packet](docs/results/p0-baseline-execution-packet-20260624.md)
 - [P0 baseline preflight check](docs/results/p0-baseline-preflight-check-20260624.md)
 - [P0 baseline preflight control report](docs/results/p0-baseline-preflight-control-report-20260624.md)
+- [Final capture storage budget](docs/results/final-capture-storage-budget-20260624.md)
 - [Research status dashboard](docs/results/research-status-dashboard-20260624.md)
 - [CM operational friction matrix](docs/results/cm-operational-friction-matrix-20260624.md)
 - [Browser CM observability matrix](docs/results/browser-cm-observability-matrix-20260624.md)

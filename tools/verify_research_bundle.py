@@ -108,6 +108,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     p0_baseline_preflight_controls = "docs/results/p0-baseline-preflight-control-report-20260624.md"
     p0_baseline_preflight_controls_csv = "data/p0-baseline-preflight-control-report-20260624.csv"
     p0_baseline_preflight_controls_input = "data/p0-baseline-preflight-control-report-20260624.csv"
+    final_capture_storage_budget = "docs/results/final-capture-storage-budget-20260624.md"
+    final_capture_storage_budget_csv = "data/final-capture-storage-budget-20260624.csv"
+    final_capture_storage_budget_input = "data/final-capture-storage-budget-20260624.csv"
     research_status_dashboard = "docs/results/research-status-dashboard-20260624.md"
     research_status_dashboard_json = "data/research-status-dashboard-20260624.json"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
@@ -166,6 +169,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         p0_baseline_preflight_controls = str(generated_dir / "p0-baseline-preflight-control-report.md")
         p0_baseline_preflight_controls_csv = str(generated_dir / "p0-baseline-preflight-control-report.csv")
         p0_baseline_preflight_controls_input = p0_baseline_preflight_controls_csv
+        final_capture_storage_budget = str(generated_dir / "final-capture-storage-budget.md")
+        final_capture_storage_budget_csv = str(generated_dir / "final-capture-storage-budget.csv")
+        final_capture_storage_budget_input = final_capture_storage_budget_csv
         research_status_dashboard = str(generated_dir / "research-status-dashboard.md")
         research_status_dashboard_json = str(generated_dir / "research-status-dashboard.json")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
@@ -209,6 +215,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_p0_baseline_execution_packet.py",
                 "tools/check_p0_baseline_preflight.py",
                 "tools/build_p0_preflight_control_report.py",
+                "tools/build_final_capture_storage_budget.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
@@ -252,6 +259,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_p0_baseline_execution_packet.py",
                 "tools/test_check_p0_baseline_preflight.py",
                 "tools/test_build_p0_preflight_control_report.py",
+                "tools/test_build_final_capture_storage_budget.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
@@ -580,6 +588,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             60,
         ),
         (
+            "final_capture_storage_budget_regression",
+            [python_bin, "tools/test_build_final_capture_storage_budget.py"],
+            {0},
+            30,
+        ),
+        (
+            "final_capture_storage_budget",
+            [
+                python_bin,
+                "tools/build_final_capture_storage_budget.py",
+                "--output",
+                final_capture_storage_budget,
+                "--csv-output",
+                final_capture_storage_budget_csv,
+            ],
+            {0},
+            60,
+        ),
+        (
             "research_status_dashboard_regression",
             [python_bin, "tools/test_build_research_status_dashboard.py"],
             {0},
@@ -608,6 +635,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 p0_baseline_preflight_input,
                 "--p0-baseline-preflight-controls",
                 p0_baseline_preflight_controls_input,
+                "--final-capture-storage-budget",
+                final_capture_storage_budget_input,
             ],
             {0},
             30,

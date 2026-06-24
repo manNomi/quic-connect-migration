@@ -1899,7 +1899,28 @@ python3 tools/build_p0_preflight_control_report.py \
 - synthetic control 3개가 모두 통과했다.
 - modeled-ready fixture에서만 `start-origin-server-and-client-baseline-capture`로 열린다.
 
-## 44. Artifact 정책
+## 44. Final capture storage budget 재생성
+
+남은 final browser handover capture를 저장할 수 있는지 보수적으로 계산한다.
+
+```bash
+python3 tools/build_final_capture_storage_budget.py \
+  --output docs/results/final-capture-storage-budget-20260624.md \
+  --csv-output data/final-capture-storage-budget-20260624.csv
+```
+
+기본 가정:
+
+- planned execution 1개당 `2.0GiB`를 예약한다.
+- heavy artifact capture 뒤에도 최소 `5.0GiB`는 남긴다.
+- 이 값은 미래 artifact 크기 측정값이 아니라 실행 전 planning bound다.
+
+현재 관찰된 기준:
+
+- next planned execution은 storage-ready다.
+- remaining final queue 전체는 storage-ready가 아니며, 현재 기준 약 `10GiB` 이상의 추가 cleanup 또는 storage provisioning이 필요하다.
+
+## 45. Artifact 정책
 
 commit 가능한 것:
 

@@ -27,6 +27,7 @@ DEFAULT_P0_UNBLOCK = "data/p0-unblock-status-20260624.csv"
 DEFAULT_P0_BASELINE_EXECUTION_PACKET = "data/p0-baseline-execution-packet-20260624.csv"
 DEFAULT_P0_BASELINE_PREFLIGHT = "data/p0-baseline-preflight-check-20260624.csv"
 DEFAULT_P0_BASELINE_PREFLIGHT_CONTROLS = "data/p0-baseline-preflight-control-report-20260624.csv"
+DEFAULT_FINAL_CAPTURE_STORAGE_BUDGET = "data/final-capture-storage-budget-20260624.csv"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -133,6 +134,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
             "p0_baseline_execution_packet": args.p0_baseline_execution_packet,
             "p0_baseline_preflight": args.p0_baseline_preflight,
             "p0_baseline_preflight_controls": args.p0_baseline_preflight_controls,
+            "final_capture_storage_budget": args.final_capture_storage_budget,
             "acceptance_scorecard": args.scorecard,
             "operational_friction_matrix": args.friction,
             "paper_claim_support_matrix": args.claim_support,
@@ -215,6 +217,7 @@ def main() -> int:
     parser.add_argument("--p0-baseline-execution-packet", default=DEFAULT_P0_BASELINE_EXECUTION_PACKET)
     parser.add_argument("--p0-baseline-preflight", default=DEFAULT_P0_BASELINE_PREFLIGHT)
     parser.add_argument("--p0-baseline-preflight-controls", default=DEFAULT_P0_BASELINE_PREFLIGHT_CONTROLS)
+    parser.add_argument("--final-capture-storage-budget", default=DEFAULT_FINAL_CAPTURE_STORAGE_BUDGET)
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--json-output", default=DEFAULT_JSON_OUTPUT)
     parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
