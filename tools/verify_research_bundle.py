@@ -71,6 +71,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     paper_tables = "docs/results/paper-tables-20260624.md"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
+    final_trial_acceptance_scorecard = "docs/results/final-trial-acceptance-scorecard-20260624.md"
+    final_trial_acceptance_scorecard_csv = "data/final-trial-acceptance-scorecard-20260624.csv"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
     final_readiness = "docs/results/final-browser-handover-readiness-20260624.md"
     final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
@@ -93,6 +95,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         paper_tables = str(generated_dir / "paper-tables.md")
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
+        final_trial_acceptance_scorecard = str(generated_dir / "final-trial-acceptance-scorecard.md")
+        final_trial_acceptance_scorecard_csv = str(generated_dir / "final-trial-acceptance-scorecard.csv")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
         final_readiness = str(generated_dir / "final-browser-handover-readiness.md")
         final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
@@ -125,6 +129,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/append_final_handover_result_row.py",
                 "tools/build_final_handover_operator_checklist.py",
                 "tools/build_final_handover_trial_packet.py",
+                "tools/build_final_trial_acceptance_scorecard.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
                 "tools/build_paper_evidence_gap_register.py",
@@ -146,6 +151,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_audit_artifact_cleanup_safety.py",
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_build_final_handover_trial_packet.py",
+                "tools/test_build_final_trial_acceptance_scorecard.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
                 "tools/test_build_paper_evidence_gap_register.py",
@@ -190,6 +196,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 paper_gap_register,
                 "--csv-output",
                 paper_gap_register_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "final_trial_acceptance_scorecard_regression",
+            [python_bin, "tools/test_build_final_trial_acceptance_scorecard.py"],
+            {0},
+            30,
+        ),
+        (
+            "final_trial_acceptance_scorecard",
+            [
+                python_bin,
+                "tools/build_final_trial_acceptance_scorecard.py",
+                "--output",
+                final_trial_acceptance_scorecard,
+                "--csv-output",
+                final_trial_acceptance_scorecard_csv,
             ],
             {0},
             30,

@@ -74,6 +74,7 @@
 │   ├── public-alt-svc-expanded-survey-20260624.csv
 │   ├── public-origin-readiness-survey-20260624.csv
 │   ├── public-origin-readiness-expanded-survey-20260624.csv
+│   ├── final-trial-acceptance-scorecard-20260624.csv
 │   ├── paper-evidence-gap-register-20260624.csv
 │   ├── reproducibility-manifest-20260624.json
 │   └── quiche-path-event-timeline.csv
@@ -99,6 +100,7 @@
 │   ├── check_next_final_handover_trial_readiness.py
 │   ├── check_aws_identity_public_safe.py
 │   ├── build_controlled_public_origin_deploy_packet.py
+│   ├── build_final_trial_acceptance_scorecard.py
 │   ├── build_paper_evidence_gap_register.py
 │   ├── build_reproducibility_manifest.py
 │   ├── plan_final_browser_handover_runs.py
@@ -181,6 +183,7 @@
 - [Final handover external inputs handoff](docs/results/final-handover-external-inputs-20260624.md)
 - [Final handover trial packet](docs/results/final-handover-trial-packet-20260624.md)
 - [Final handover trial artifact bundle check](docs/results/final-handover-trial-artifact-bundle-check-20260624.md)
+- [Final trial acceptance scorecard](docs/results/final-trial-acceptance-scorecard-20260624.md)
 - [Active path-change operator cookbook](docs/results/active-path-change-operator-cookbook-20260624.md)
 - [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [CI safe verification result](docs/results/ci-safe-verification-result-20260624.md)

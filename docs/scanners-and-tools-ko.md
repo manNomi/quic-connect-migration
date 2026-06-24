@@ -1482,3 +1482,30 @@ python3 tools/build_paper_evidence_gap_register.py \
 ```bash
 python3 tools/test_build_paper_evidence_gap_register.py
 ```
+
+## 46. `tools/build_final_trial_acceptance_scorecard.py`
+
+final browser handover trial을 논문 protocol에 count할 수 있는지 requirement별 acceptance 기준으로 정리한다. 각 requirement마다 필요한 최소 row 수, 현재 matched count, planned trial id, acceptance rule, reject rule, 필수 artifact role을 함께 출력한다.
+
+이 도구는 실험 결과를 생성하지 않는다. 대신 결과를 논문 claim으로 받아들일 수 있는지 판단하는 기준을 public-safe하게 고정한다.
+
+산출물:
+
+| 파일 | 용도 |
+| --- | --- |
+| `docs/results/final-trial-acceptance-scorecard-20260624.md` | 사람이 읽는 final trial acceptance 기준표 |
+| `data/final-trial-acceptance-scorecard-20260624.csv` | 논문 표/부록용 machine-readable scorecard |
+
+실행:
+
+```bash
+python3 tools/build_final_trial_acceptance_scorecard.py \
+  --output docs/results/final-trial-acceptance-scorecard-20260624.md \
+  --csv-output data/final-trial-acceptance-scorecard-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_final_trial_acceptance_scorecard.py
+```
