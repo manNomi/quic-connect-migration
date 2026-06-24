@@ -175,6 +175,7 @@
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)
+- [quic-go local HTTP/3 migration replication results](docs/results/quic-go-local-h3-replication-results-20260624.md)
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)
 - [Paper-ready generated tables](docs/results/paper-tables-20260624.md)
 - [Research completion audit](docs/results/research-completion-audit-20260624.md)

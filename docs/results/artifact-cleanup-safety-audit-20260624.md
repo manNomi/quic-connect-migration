@@ -7,18 +7,18 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `1.6 GiB` |
+| disk free | `54.9 GiB` |
 | target free GiB | `5.0` |
-| artifact roots total | `908.3 MiB` |
-| cleanup candidates | `40` |
-| CSV-referenced candidates | `19` |
+| artifact roots total | `910.2 MiB` |
+| cleanup candidates | `42` |
+| CSV-referenced candidates | `21` |
 | planned final-trial candidates | `0` |
 | review-unreferenced candidates | `19` |
 | review-unreferenced size | `62.3 MiB` |
-| protected referenced/planned size | `840.3 MiB` |
-| projected free if review-unreferenced removed | `1.7 GiB` |
-| target met if review-unreferenced removed | `no` |
-| remaining gap then | `3.3 GiB` |
+| protected referenced/planned size | `842.2 MiB` |
+| projected free if review-unreferenced removed | `55.0 GiB` |
+| target met if review-unreferenced removed | `yes` |
+| remaining gap then | `0 B` |
 
 ## Recommendations
 
@@ -68,9 +68,11 @@ Generated: `2026-06-24`
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-noheartbeat-inactive-if-toggle-20260624` | `3.5 MiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-heartbeat-inactive-if-toggle-20260624` | `3.5 MiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-h3-midflight` | `1.8 MiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/local-h3-midflight-rerun-20260624` | `1.7 MiB` | quic-go-local-h3-midflight-upload-rerun-20260624-001, quic-go-local-h3-midflight-download-rerun-20260624-001 | artifact path is referenced by data/experiment-results.csv |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/local-20260624T045440Z` | `1.4 MiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-happy-named` | `1.4 MiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/local-h3-workload-rerun-20260624` | `150.4 KiB` | quic-go-local-h3-workload-rerun-20260624-001 | artifact path is referenced by data/experiment-results.csv |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-preflight-20260624T094137Z` | `1.8 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | - | artifact path is not referenced by the experiment CSV or planned final-trial ids |
 

@@ -8,8 +8,8 @@ Generated: `2026-06-24`
 | --- | --- |
 | publication bundle ok | `yes` |
 | required files ok | `yes` |
-| experiment trials | `35` |
-| experiment status counts | `{'PASS': 18, 'PASS_NEGATIVE_CONTROL': 16, 'PASS_FEASIBILITY': 1}` |
+| experiment trials | `38` |
+| experiment status counts | `{'PASS': 21, 'PASS_NEGATIVE_CONTROL': 16, 'PASS_FEASIBILITY': 1}` |
 | experiment ids unique | `yes` |
 | matrix items | `81` |
 | matrix ids unique | `yes` |
@@ -26,8 +26,8 @@ Generated: `2026-06-24`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `1.6` |
-| local artifact roots total | `908.3 MiB` |
+| disk available GiB | `54.92` |
+| local artifact roots total | `910.2 MiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |
 | packet capture tooling ready | `yes` |
@@ -53,7 +53,6 @@ Incomplete final trial requirements:
 - desktop active secondary path is not ready
 - Android device is not connected over ADB
 - AWS identity is not available
-- disk free space is below 5 GiB; large NetLog/pcap experiments should wait
 - browser active network-change result is not done
 - controlled-public network-change result is not done
 - final browser handover trial protocol is not complete

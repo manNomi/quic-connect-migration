@@ -6,10 +6,10 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 35 |
-| status counts | PASS=18; PASS_FEASIBILITY=1; PASS_NEGATIVE_CONTROL=16 |
-| application success counts | false=3; true=32 |
-| experiment groups | browser / public web=20; cloud deployment=10; implementation control=4; proxy / intermediary=1 |
+| total trials | 38 |
+| status counts | PASS=21; PASS_FEASIBILITY=1; PASS_NEGATIVE_CONTROL=16 |
+| application success counts | false=3; true=35 |
+| experiment groups | browser / public web=20; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
 | non-none failure layers | browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=3; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
@@ -31,6 +31,7 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | trial | implementation | environment | trigger | path validation | tuple change | app success | note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | quic-go-local-h3-workload-001 | quic-go + HTTP/3 | local direct origin | HTTP/3 POST upload before; AddPath -> Probe -> Switch; HTTP/3 GET download after | yes | yes | yes | client source port changed 63819 -> 63361; server observed before remote 127.0.0.1:63819 and after remote 127.0.0.1:63361; h3 ALP... |
+| quic-go-local-h3-workload-rerun-20260624-001 | quic-go + HTTP/3 | local direct origin replication | HTTP/3 POST upload before; AddPath -> Probe -> Switch; HTTP/3 GET download after | yes | yes | yes | replication run; client source port changed 54306 -> 53492; server observed before/after HTTP/3.0 requests with ALPN h3; qlog PAT... |
 | quiche-local-path-event-timeline-001 | Cloudflare quiche | local direct origin | sample client --perform-migration; source port 53238 -> 61867 | yes | yes | yes | server observed new path, validation, and migration; qlog PATH_CHALLENGE/PATH_RESPONSE evidence; timeline in data/quiche-path-eve... |
 | quic-go-ec2-direct-origin-001 | quic-go | EC2 direct origin | client socket A -> socket B; AddPath -> Probe -> Switch | yes | yes | yes | server observed client source port change 64273 -> 58085; qlog and pcap collected; AWS resources cleaned up |
 | aws-nlb-h3-tcp-quic-443-001 | quic-go + AWS NLB | AWS NLB TCP_QUIC :443 passthrough | HTTP/3 POST upload before; AddPath -> Probe -> Switch through NLB; HTTP/3 GET download af... | yes | yes | yes | workload=h3; target-a received before/after HTTP/3 requests; client source port changed 54110 -> 50930; server observed remote ad... |
@@ -39,11 +40,10 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | aws-nlb-tcp-quic-443-001 | quic-go + AWS NLB | AWS NLB TCP_QUIC passthrough | client socket A -> socket B through TCP_QUIC :443 NLB; AddPath -> Probe -> Switch | yes | yes | yes | TCP_QUIC listener and target group on port 443; QUIC-LB plaintext CID format; target-b received before and after streams; client... |
 | s2n-quic-nlb-local-data-plane-001 | s2n-quic | AWS NLB local prerequisite proof | no network path migration; local CID-aware routing simulation plus s2n-quic echo | no | no | yes | generated target A/B CIDs use 0x00 + 8-byte Server ID + 7-byte nonce; simulated router selects target-a/target-b and rejects wron... |
 | quic-go-local-h3-midflight-download-001 | quic-go + HTTP/3 | local direct origin | HTTP/3 streaming GET /download response in flight; migration triggered after threshold | yes | yes | yes | client final addr changed 49959 -> 52767; migration threshold 524288 bytes; client decoded full 1MiB response; qlog ALPN h3 and P... |
+| quic-go-local-h3-midflight-download-rerun-20260624-001 | quic-go + HTTP/3 | local direct origin replication | HTTP/3 streaming GET /download response in flight; migration triggered after threshold | yes | yes | yes | replication run; migration triggered at 524288 bytes; client decoded full 1MiB response; qlog PATH_CHALLENGE/PATH_RESPONSE and HT... |
 | quic-go-local-h3-midflight-upload-001 | quic-go + HTTP/3 | local direct origin | HTTP/3 POST /upload body in flight; migration triggered after threshold | yes | yes | yes | client final addr changed 53663 -> 63569; migration threshold 532480 bytes; server decoded full 1MiB upload; qlog ALPN h3 and PAT... |
+| quic-go-local-h3-midflight-upload-rerun-20260624-001 | quic-go + HTTP/3 | local direct origin replication | HTTP/3 POST /upload body in flight; migration triggered after threshold | yes | yes | yes | replication run; migration triggered at 532480 bytes; server decoded full 1MiB body; qlog PATH_CHALLENGE/PATH_RESPONSE and HTTP/3... |
 | chrome-h3-local-baseline-001 | Chrome 149 + quic-go H3 | local browser baseline | Chrome --origin-to-force-quic-on local H3 origin; fixed test cert with SPKI exception | no | no | yes | Chrome NetLog shows QUIC_SESSION and HTTP_STREAM_JOB using_quic=true; server received GET /download from 127.0.0.1:65402; qlog ch... |
-| chrome-h3-local-poll-nochange-001 | Chrome 149 + quic-go H3 | local browser no-change baseline | Chrome forced QUIC local H3 origin; browser polling page with no network-change command | no | no | yes | Classifier result no_path_change_baseline; server received 6 requests from same remote addr 127.0.0.1:60133; NetLog JSON parsed w... |
-| chrome-h3-local-sequence-001 | Chrome 149 + quic-go H3 | local browser baseline | Chrome --origin-to-force-quic-on local H3 origin; browser page loads two SVG subresources | no | no | yes | Chrome NetLog shows one target QUIC_SESSION and 3 HTTP_STREAM_JOB using_quic=true; server received 3 requests from same remote ad... |
-| chrome-h3-slow-wifi-ip-nochange-001 | Chrome 149 + quic-go H3 | local Wi-Fi IP browser baseline | server listens on 0.0.0.0:4443; Chrome origin is local Wi-Fi IP 192.168.32.190:4443; no n... | no | no | yes | classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190:61509; NetLog JSON par... |
 
 ## Table 4. Negative Controls and Failure-Layer Evidence
 
