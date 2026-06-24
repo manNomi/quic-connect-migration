@@ -395,30 +395,64 @@ classifier:
 | `tuple_changed_without_path_validation` | tuple change는 있으나 path validation evidence 없음 |
 | `browser_h3_request_failed` | browser workload가 H3로 완료되지 않음 |
 
-## 9. 실행 예시
+## 9. Chrome natural Alt-Svc control
 
-### 9.1 Local QUIC transport
+script:
+
+- `repro/quic-go-min-repro/scripts/run-chrome-h3-alt-svc.sh`
+
+목적:
+
+강제 QUIC flag 없이, TCP HTTPS response의 `Alt-Svc: h3=":4443"; ma=60` 광고만으로 Chrome이 다음 request를 HTTP/3로 전환하는지 확인한다. 이 실험은 migration 실험이 아니라 natural browser HTTP/3 discovery control이다.
+
+흐름:
+
+```text
+openssl로 local test cert/key 생성
+  -> cert SPKI hash 계산
+  -> h3server가 UDP HTTP/3 listener와 TCP HTTPS listener를 동시에 실행
+  -> Chrome headless bootstrap request 실행
+  -> 같은 Chrome profile로 second request 실행
+  -> server JSON, Chrome NetLog, qlog 수집
+```
+
+성공 기준:
+
+- server request 중 TCP bootstrap `HTTP/1.1` request가 있어야 한다.
+- server request 중 `HTTP/3` request가 있어야 한다.
+- target NetLog에 confirmed `QUIC_SESSION`이 있어야 한다.
+- qlog에 `http3:frame` evidence가 있어야 한다.
+
+classifier:
+
+- `tools/classify_chrome_alt_svc_artifacts.py`
+
+현재 local self-signed control에서는 `127.0.0.1`과 `localhost` 모두 `alt_svc_advertised_but_h3_not_observed`로 분류됐다.
+
+## 10. 실행 예시
+
+### 10.1 Local QUIC transport
 
 ```bash
 cd repro/quic-go-min-repro
 ./scripts/run-local-happy-path.sh
 ```
 
-### 9.2 Local HTTP/3 post-migration workload
+### 10.2 Local HTTP/3 post-migration workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 ```
 
-### 9.3 Local HTTP/3 mid-flight workload
+### 10.3 Local HTTP/3 mid-flight workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 ```
 
-### 9.4 Chrome local HTTP/3 baseline
+### 10.4 Chrome local HTTP/3 baseline
 
 ```bash
 cd repro/quic-go-min-repro
@@ -430,7 +464,15 @@ LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=s
 WORKLOAD=poll NETWORK_CHANGE_AFTER_SECONDS=2 NETWORK_CHANGE_CMD='...' RUN_ID=chrome-h3-poll-network-change ./scripts/run-chrome-h3-local.sh
 ```
 
-### 9.5 AWS NLB transport
+### 10.5 Chrome natural Alt-Svc control
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
+RUN_ID=chrome-h3-alt-svc-localhost-20260624 ADDR=localhost:4443 LISTEN_ADDR=127.0.0.1:4443 TCP_ADDR=127.0.0.1:4443 ./scripts/run-chrome-h3-alt-svc.sh
+```
+
+### 10.6 AWS NLB transport
 
 ```bash
 WORKLOAD=transport \
@@ -439,7 +481,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 9.6 AWS NLB HTTP/3 post-migration
+### 10.7 AWS NLB HTTP/3 post-migration
 
 ```bash
 WORKLOAD=h3 \
@@ -448,7 +490,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 9.7 AWS NLB HTTP/3 mid-flight upload
+### 10.8 AWS NLB HTTP/3 mid-flight upload
 
 ```bash
 WORKLOAD=h3-midflight-upload \
@@ -458,7 +500,7 @@ PAYLOAD_BYTES=1048576 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 9.8 AWS NLB HTTP/3 mid-flight download
+### 10.9 AWS NLB HTTP/3 mid-flight download
 
 ```bash
 WORKLOAD=h3-midflight-download \

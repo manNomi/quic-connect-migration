@@ -6,6 +6,8 @@ REPRO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPRO_DIR"
 
 LISTEN_ADDR="${LISTEN_ADDR:-0.0.0.0:4243}"
+TCP_ADDR="${TCP_ADDR:-}"
+ALT_SVC="${ALT_SVC:-}"
 TIMEOUT="${TIMEOUT:-120s}"
 COMPLETION_GRACE="${COMPLETION_GRACE:-500ms}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-artifacts/h3server-$(date -u +%Y%m%dT%H%M%SZ)}"
@@ -20,6 +22,8 @@ fi
 
 exec go run ./cmd/h3server \
   --addr "$LISTEN_ADDR" \
+  --tcp-addr "$TCP_ADDR" \
+  --alt-svc "$ALT_SVC" \
   --log "$ARTIFACT_DIR/logs/server.jsonl" \
   --result "$ARTIFACT_DIR/results/server.json" \
   --qlog-dir "$ARTIFACT_DIR/qlog" \

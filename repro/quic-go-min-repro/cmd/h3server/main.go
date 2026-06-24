@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/sha256"
+	"crypto/tls"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -34,6 +35,8 @@ type requestRecord struct {
 	ResponseBytes       int    `json:"response_bytes"`
 	ResponseSHA256      string `json:"response_sha256,omitempty"`
 	ResponseContentType string `json:"response_content_type,omitempty"`
+	Proto               string `json:"proto,omitempty"`
+	TLSALPN             string `json:"tls_alpn,omitempty"`
 	HandledAt           string `json:"handled_at"`
 	Workload            string `json:"workload"`
 	StreamResponse      bool   `json:"stream_response,omitempty"`
@@ -61,13 +64,15 @@ func main() {
 	resultPath := flag.String("result", "artifacts/results/h3server.json", "result JSON path")
 	keyLogPath := flag.String("keylog", "", "TLS key log path")
 	qlogDir := flag.String("qlog-dir", "artifacts/qlog", "qlog output directory")
+	tcpAddr := flag.String("tcp-addr", "", "optional TCP HTTPS listen address for Alt-Svc bootstrap")
+	altSvc := flag.String("alt-svc", "", "optional Alt-Svc header value to advertise HTTP/3")
 	timeout := flag.Duration("timeout", 30*time.Second, "overall server timeout")
 	completionGrace := flag.Duration("completion-grace", 500*time.Millisecond, "grace period after expected requests before server close")
 	serverIDHex := flag.String("server-id", "", "optional AWS NLB QUIC Server ID as 16 hex chars")
-	expectedRequests := flag.Int("expected-requests", 2, "number of HTTP/3 requests to wait for before exiting")
+	expectedRequests := flag.Int("expected-requests", 2, "number of requests to wait for before exiting")
 	flag.Parse()
 
-	result, err := run(*addr, *logPath, *resultPath, *keyLogPath, *qlogDir, *timeout, *completionGrace, *serverIDHex, *expectedRequests)
+	result, err := run(*addr, *tcpAddr, *altSvc, *logPath, *resultPath, *keyLogPath, *qlogDir, *timeout, *completionGrace, *serverIDHex, *expectedRequests)
 	if writeErr := common.WriteJSONFile(*resultPath, result); writeErr != nil {
 		log.Printf("write result: %v", writeErr)
 	}
@@ -76,7 +81,7 @@ func main() {
 	}
 }
 
-func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, completionGrace time.Duration, serverIDHex string, expectedRequests int) (serverResult, error) {
+func run(addr, tcpAddr, altSvc, logPath, resultPath, keyLogPath, qlogDir string, timeout, completionGrace time.Duration, serverIDHex string, expectedRequests int) (serverResult, error) {
 	started := time.Now().UTC()
 	result := serverResult{
 		Role:             "h3server",
@@ -172,6 +177,9 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 	var doneOnce sync.Once
 	var mu sync.Mutex
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if altSvc != "" {
+			w.Header().Set("Alt-Svc", altSvc)
+		}
 		record, status, response := handleWorkloadRequest(r)
 		mu.Lock()
 		result.Requests = append(result.Requests, record)
@@ -182,6 +190,8 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 			"method":          record.Method,
 			"path":            record.Path,
 			"remote_addr":     record.RemoteAddr,
+			"proto":           record.Proto,
+			"tls_alpn":        record.TLSALPN,
 			"request_bytes":   record.RequestBytes,
 			"response_bytes":  record.ResponseBytes,
 			"workload":        record.Workload,
@@ -201,15 +211,33 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 		}
 	})
 
-	server := &http3.Server{
+	h3Server := &http3.Server{
 		TLSConfig:  tlsConf,
 		QUICConfig: quicConf,
 		Handler:    handler,
 	}
-	serveErr := make(chan error, 1)
+	serveErr := make(chan error, 2)
 	go func() {
-		serveErr <- server.ServeListener(listener)
+		serveErr <- h3Server.ServeListener(listener)
 	}()
+
+	var tcpServer *http.Server
+	var tcpListener net.Listener
+	if tcpAddr != "" {
+		tcpTLSConf := tlsConf.Clone()
+		tcpTLSConf.NextProtos = []string{"http/1.1"}
+		tcpListener, err = tls.Listen("tcp", tcpAddr, tcpTLSConf)
+		if err != nil {
+			result.Error = err.Error()
+			result.CompletedAt = time.Now().UTC().Format(time.RFC3339Nano)
+			return result, err
+		}
+		defer tcpListener.Close()
+		tcpServer = &http.Server{Handler: handler}
+		go func() {
+			serveErr <- tcpServer.Serve(tcpListener)
+		}()
+	}
 
 	_ = logger.Log("listening", map[string]any{
 		"addr":                listener.Addr().String(),
@@ -220,6 +248,8 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 		"connection_id_mode":  result.ConnectionIDMode,
 		"aws_server_id":       result.AWSServerID,
 		"expected_requests":   expectedRequests,
+		"tcp_addr":            tcpAddr,
+		"alt_svc":             altSvc,
 	})
 
 	timer := time.NewTimer(timeout)
@@ -234,7 +264,7 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 			return result, err
 		}
 	case <-timer.C:
-		err := fmt.Errorf("timed out waiting for %d HTTP/3 requests", expectedRequests)
+		err := fmt.Errorf("timed out waiting for %d requests", expectedRequests)
 		result.Error = err.Error()
 		result.CompletedAt = time.Now().UTC().Format(time.RFC3339Nano)
 		return result, err
@@ -243,7 +273,13 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 	if completionGrace > 0 {
 		time.Sleep(completionGrace)
 	}
-	_ = server.Close()
+	_ = h3Server.Close()
+	if tcpServer != nil {
+		_ = tcpServer.Close()
+	}
+	if tcpListener != nil {
+		_ = tcpListener.Close()
+	}
 	_ = listener.Close()
 	result.CompletedAt = time.Now().UTC().Format(time.RFC3339Nano)
 	_ = logger.Log("server_success", map[string]any{
@@ -257,7 +293,11 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		Method:     r.Method,
 		Path:       r.URL.Path,
 		RemoteAddr: r.RemoteAddr,
+		Proto:      r.Proto,
 		HandledAt:  time.Now().UTC().Format(time.RFC3339Nano),
+	}
+	if r.TLS != nil {
+		record.TLSALPN = r.TLS.NegotiatedProtocol
 	}
 	label := r.URL.Query().Get("label")
 	if label == "" {

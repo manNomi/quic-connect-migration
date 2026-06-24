@@ -144,7 +144,32 @@ python3 tools/classify_chrome_h3_artifacts.py \
 
 `QUIC_CONNECTION_MIGRATION_MODE` 같은 NetLog event는 설정 evidence로만 보고, 실제 migration evidence는 tuple change와 qlog path validation을 함께 요구한다.
 
-## 6. 실험 실행 코드
+## 6. `tools/classify_chrome_alt_svc_artifacts.py`
+
+Chrome natural Alt-Svc control artifact를 server protocol record, Chrome NetLog, qlog 기준으로 분류한다.
+
+실행:
+
+```bash
+python3 tools/classify_chrome_alt_svc_artifacts.py \
+  repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624 \
+  --addr 127.0.0.1:4443 \
+  --expected-requests 2
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `classification` | natural Alt-Svc upgrade 관찰 여부 |
+| `server_request_protos` | server가 기록한 request protocol |
+| `h3_netlog_has_quic_candidate` | target origin에 대해 h3 candidate job이 있었는지 |
+| `h3_netlog_has_confirmed_quic_session` | JSON NetLog에서 target QUIC session이 확정됐는지 |
+| `qlog_has_h3` | server qlog에서 HTTP/3 frame evidence가 있는지 |
+
+`h3_netlog_has_quic_candidate=true`만으로 HTTP/3 사용을 주장하지 않는다. server protocol record와 qlog evidence가 함께 필요하다.
+
+## 7. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -153,7 +178,7 @@ python3 tools/classify_chrome_h3_artifacts.py \
 | `cmd/client/main.go` | QUIC transport stream migration client |
 | `cmd/server/main.go` | QUIC transport stream migration server |
 | `cmd/h3client/main.go` | HTTP/3 workload migration client |
-| `cmd/h3server/main.go` | HTTP/3 upload/download server, Chrome sequence/poll/slow baseline endpoint |
+| `cmd/h3server/main.go` | HTTP/3 upload/download server, Chrome sequence/poll/slow baseline endpoint, optional TCP Alt-Svc bootstrap listener |
 | `internal/common/aws_nlb_cid.go` | AWS NLB QUIC-LB plaintext CID generator |
 | `internal/common/payload.go` | deterministic payload/checksum |
 | `internal/common/logging.go` | JSONL/result JSON writer |
@@ -167,6 +192,7 @@ python3 tools/classify_chrome_h3_artifacts.py \
 | `scripts/run-local-h3-workload.sh` | HTTP/3 POST before, migrate, GET after |
 | `scripts/run-local-h3-midflight.sh` | HTTP/3 upload/download body in-flight migration |
 | `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll/slow baseline and optional network-change hook |
+| `scripts/run-chrome-h3-alt-svc.sh` | Chrome natural Alt-Svc HTTP/3 control |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -183,7 +209,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 7. 최소 검증 세트
+## 8. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -201,6 +227,7 @@ WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-l
 WORKLOAD=poll POLL_COUNT=5 POLL_INTERVAL_MS=300 RUN_ID=chrome-h3-poll-nochange-classifier-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=slow SLOW_DURATION_MS=8000 SLOW_CHUNKS=8 RUN_ID=chrome-h3-slow-inactive-if-toggle ./scripts/run-chrome-h3-local.sh
 LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=slow RUN_ID=chrome-h3-slow-wifi-ip-nochange ./scripts/run-chrome-h3-local.sh
+RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
 ```
 
 AWS 결과를 갱신할 때는 [재현 가이드](reproducibility-guide-ko.md)의 cleanup 확인까지 포함한다.

@@ -358,6 +358,38 @@ RUN_ID=chrome-h3-slow-wifi-ip-inactive-if-toggle \
 
 이 실험은 `127.0.0.1`이 아닌 local Wi-Fi IP를 origin으로 사용한다. 다만 inactive service toggle은 active Wi-Fi path를 바꾸지 않으므로 실제 handover 근거로 사용하지 않는다.
 
+Alt-Svc natural HTTP/3 control:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
+```
+
+localhost 대조:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-localhost-20260624 \
+ADDR=localhost:4443 \
+LISTEN_ADDR=127.0.0.1:4443 \
+TCP_ADDR=127.0.0.1:4443 \
+./scripts/run-chrome-h3-alt-svc.sh
+```
+
+성공 기준:
+
+- natural upgrade가 성공하려면 `classification=alt_svc_h3_upgrade_observed`
+- server request에 `HTTP/1.1` bootstrap request와 `HTTP/3` request가 모두 존재해야 함
+- target NetLog에 confirmed `QUIC_SESSION`이 있어야 함
+- qlog에 `http3:frame` evidence가 있어야 함
+
+현재 local self-signed control 결과:
+
+- `127.0.0.1`과 `localhost` 모두 `classification=alt_svc_advertised_but_h3_not_observed`
+- 두 server request 모두 `HTTP/1.1`
+- qlog `http3_frame=0`
+- 이 결과는 forced-QUIC Chrome baseline과 natural browser deployment baseline을 분리해야 함을 보여준다.
+
 ## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
