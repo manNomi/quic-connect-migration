@@ -44,6 +44,11 @@
 ├── paper/
 │   ├── detailed-paper-plan-ko.md
 │   └── detailed-paper-plan-en.md
+├── tools/
+│   ├── scan_implementation_evidence.py
+│   ├── scan_qlog_events.py
+│   ├── summarize_experiment_results.py
+│   └── validate_publication_bundle.py
 └── repro/
     └── quic-go-min-repro/
 ```
@@ -52,6 +57,8 @@
 
 - [실험 결과 상세 보고서](docs/experiment-report-ko.md)
 - [코드/하네스 구조 설명](docs/code-architecture-ko.md)
+- [재현 가이드](docs/reproducibility-guide-ko.md)
+- [스캐너와 도구 설명](docs/scanners-and-tools-ko.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)
@@ -70,6 +77,19 @@
 - `internal/common`: payload, TLS, logging, AWS NLB CID helper
 - `scripts`: local/EC2/AWS 실행 wrapper
 
+가장 빠른 로컬 검증:
+
+```bash
+python3 tools/validate_publication_bundle.py
+python3 tools/summarize_experiment_results.py
+cd repro/quic-go-min-repro
+go test ./...
+RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
+RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
+```
+
+AWS까지 포함한 재현 절차는 [재현 가이드](docs/reproducibility-guide-ko.md)에 정리했다.
+
 ## 주의
 
 이 저장소에는 공개 가능한 source, markdown, CSV만 포함한다.
@@ -84,4 +104,3 @@
 - 대용량 실행 artifact
 
 개별 실험의 자세한 artifact 위치와 결과 값은 [docs/experiment-report-ko.md](docs/experiment-report-ko.md)와 [data/experiment-results.csv](data/experiment-results.csv)에 정리되어 있다.
-

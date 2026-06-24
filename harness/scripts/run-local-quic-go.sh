@@ -9,7 +9,7 @@ load_harness_env
 
 require_command go
 
-REPRO_DIR="$PROJECT_ROOT/experiments/quic-go-min-repro"
+REPRO_DIR="$PROJECT_ROOT/repro/quic-go-min-repro"
 RUN_ID="${RUN_ID:-local-quic-go-$(timestamp_utc)}"
 ARTIFACT_DIR="$HARNESS_DIR/results/$RUN_ID"
 

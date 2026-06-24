@@ -30,6 +30,8 @@ bin/
 dist/
 tmp/
 *.test
+__pycache__/
+.pytest_cache/
 
 # Public summarized result documents are intentionally tracked.
 !docs/results/

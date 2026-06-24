@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/_lib.sh"
 
 load_harness_env
 
-REPRO_DIR="$PROJECT_ROOT/experiments/quic-go-min-repro"
+REPRO_DIR="$PROJECT_ROOT/repro/quic-go-min-repro"
 PACKAGE_DIR_REL="../../harness/results/packages"
 PACKAGE_NAME="${PACKAGE_NAME:-quic-go-min-repro-$(timestamp_utc).tar.gz}"
 PACKAGE_DIR_ABS="$HARNESS_DIR/results/packages"

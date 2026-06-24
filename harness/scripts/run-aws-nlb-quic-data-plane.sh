@@ -198,7 +198,7 @@ start_target() {
 
   log "bootstrap target $target_name at $ip"
   scp_quiet "$PACKAGE_PATH" "ec2-user@$ip:$REMOTE_PACKAGE"
-  scp_quiet "$PROJECT_ROOT/experiments/quic-go-min-repro/scripts/ec2-bootstrap-go.sh" "ec2-user@$ip:$REMOTE_BOOTSTRAP"
+  scp_quiet "$PROJECT_ROOT/repro/quic-go-min-repro/scripts/ec2-bootstrap-go.sh" "ec2-user@$ip:$REMOTE_BOOTSTRAP"
 
   ssh_quiet "$ip" "bash $REMOTE_BOOTSTRAP" | tee "$LOG_DIR/bootstrap-$target_name.log"
 
@@ -454,10 +454,10 @@ if (( CLIENT_START_DELAY_SECONDS > 0 )); then
 fi
 CLIENT_ARTIFACT="$RUN_DIR/client"
 CLIENT_EXIT=0
-CLIENT_SCRIPT="$PROJECT_ROOT/experiments/quic-go-min-repro/scripts/run-ec2-client.sh"
+CLIENT_SCRIPT="$PROJECT_ROOT/repro/quic-go-min-repro/scripts/run-ec2-client.sh"
 CLIENT_MODE="upload-download"
 if [[ "$WORKLOAD" == h3* ]]; then
-  CLIENT_SCRIPT="$PROJECT_ROOT/experiments/quic-go-min-repro/scripts/run-h3-client.sh"
+  CLIENT_SCRIPT="$PROJECT_ROOT/repro/quic-go-min-repro/scripts/run-h3-client.sh"
   case "$WORKLOAD" in
     h3)
       CLIENT_MODE="upload-download"
