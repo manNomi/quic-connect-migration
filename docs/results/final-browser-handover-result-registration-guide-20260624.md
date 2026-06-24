@@ -69,6 +69,13 @@ controlled-public-android-chrome-downlink-network-change-001,2026-06-24,PASS_FEA
 
 ## 7. 등록 후 검증
 
+실험을 시작하기 전 현재 CSV 기준 다음 실행 항목을 확인한다.
+
+```bash
+python3 tools/select_next_final_handover_trial.py \
+  --output docs/results/final-handover-next-trial-20260624.md
+```
+
 실제 artifact가 있는 경우 CSV row 초안은 다음 도구로 먼저 생성한다.
 
 ```bash

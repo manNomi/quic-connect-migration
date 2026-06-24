@@ -1002,3 +1002,37 @@ python3 tools/append_final_handover_result_row.py \
 ```bash
 python3 tools/test_append_final_handover_result_row.py
 ```
+
+## 32. `tools/select_next_final_handover_trial.py`
+
+현재 `data/experiment-results.csv`와 final required-trials CSV를 기준으로 다음에 실행해야 할 final browser handover trial을 선택한다. 전체 run plan의 실행 큐 순서를 따르므로 baseline 이후 no-change baseline을 먼저 실행하고, 그 다음 active 반복 trial로 넘어간다.
+
+실행:
+
+```bash
+python3 tools/select_next_final_handover_trial.py \
+  --output docs/results/final-handover-next-trial-20260624.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| `next_trial` | 다음 실행 대상 trial_id, requirement, phase, expected requests |
+| server/origin terminal | public origin host에서 실행할 server wrapper 명령 |
+| browser/client terminal | browser/navigation side에서 실행할 wrapper 명령 |
+| post-trial registration commands | validation, dry-run append, apply, audit 명령 |
+
+로컬 private config 값을 반영한 다음 trial은 추적 문서가 아니라 임시 경로에 생성한다.
+
+```bash
+python3 tools/select_next_final_handover_trial.py \
+  --use-local-config \
+  --output /tmp/final-handover-next-trial.md
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_select_next_final_handover_trial.py
+```

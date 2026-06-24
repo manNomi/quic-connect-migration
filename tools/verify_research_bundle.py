@@ -72,6 +72,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
     final_readiness = "docs/results/final-browser-handover-readiness-20260624.md"
     final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
+    final_next_trial = "docs/results/final-handover-next-trial-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
@@ -80,6 +81,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
         final_readiness = str(generated_dir / "final-browser-handover-readiness.md")
         final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
+        final_next_trial = str(generated_dir / "final-handover-next-trial.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
         research_audit = str(generated_dir / "research-bundle-audit.md")
@@ -98,11 +100,13 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/draft_final_handover_result_row.py",
                 "tools/plan_artifact_cleanup.py",
                 "tools/plan_final_browser_handover_runs.py",
+                "tools/select_next_final_handover_trial.py",
                 "tools/validate_final_handover_trial_artifact.py",
                 "tools/test_append_final_handover_result_row.py",
                 "tools/test_draft_final_handover_result_row.py",
                 "tools/test_final_browser_handover_trial_audit.py",
                 "tools/test_validate_final_handover_trial_artifact.py",
+                "tools/test_select_next_final_handover_trial.py",
                 "tools/verify_research_bundle.py",
                 "tools/run_android_chrome_navigation.py",
                 "tools/run_safari_webdriver_navigation.py",
@@ -154,6 +158,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "final_handover_next_trial_selector_regression",
+            [python_bin, "tools/test_select_next_final_handover_trial.py"],
+            {0},
+            30,
+        ),
+        (
             "final_browser_handover_readiness_expected_incomplete",
             [python_bin, "tools/check_final_browser_handover_readiness.py", "--output", final_readiness],
             {1},
@@ -162,6 +172,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_browser_handover_run_plan",
             [python_bin, "tools/plan_final_browser_handover_runs.py", "--output", final_run_plan],
+            {0},
+            30,
+        ),
+        (
+            "final_handover_next_trial_selector",
+            [python_bin, "tools/select_next_final_handover_trial.py", "--output", final_next_trial],
             {0},
             30,
         ),
