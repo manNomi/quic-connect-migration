@@ -70,6 +70,7 @@
 58. Polling/dashboard형 반복 fetch workload는 250ms/1500ms/3000ms outage에서 9/9 PASS였지만 모든 row가 Chrome target QUIC session 2개, qlog PATH_CHALLENGE/PATH_RESPONSE 0/0으로 관찰되어, 작업 완료와 single-session browser CM을 분리해야 함을 추가로 확인했다.
 59. Polling/dashboard long-boundary에서는 4000ms가 1/3 PASS로 혼재했고 6000ms/9000ms는 0/6 PASS여서, 이 local polling workload의 transition zone은 3초 all-pass 이후 4초부터 시작되고 6초부터 반복 실패하는 것으로 관찰됐다.
 60. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+61. Paper claim support matrix는 현재 결과로 쓸 수 있는 논문 문장과 쓰면 안 되는 과장 문장을 claim별로 분리한다. 결론적으로 controlled implementation/deployment claim은 가능하지만, browser/mobile active handover 성공 claim은 아직 pending이다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -98,6 +99,7 @@
 │   ├── final-protocol-readiness-matrix-20260624.csv
 │   ├── final-trial-acceptance-scorecard-20260624.csv
 │   ├── paper-evidence-gap-register-20260624.csv
+│   ├── paper-claim-support-matrix-20260624.csv
 │   ├── research-status-dashboard-20260624.json
 │   ├── reproducibility-manifest-20260624.json
 │   └── quiche-path-event-timeline.csv
@@ -127,6 +129,7 @@
 │   ├── build_final_trial_acceptance_scorecard.py
 │   ├── build_cm_operational_friction_matrix.py
 │   ├── build_paper_evidence_gap_register.py
+│   ├── build_paper_claim_support_matrix.py
 │   ├── build_research_status_dashboard.py
 │   ├── build_reproducibility_manifest.py
 │   ├── plan_final_browser_handover_runs.py
@@ -219,6 +222,7 @@
 - [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [CI safe verification result](docs/results/ci-safe-verification-result-20260624.md)
 - [Paper evidence gap register](docs/results/paper-evidence-gap-register-20260624.md)
+- [Paper claim support matrix](docs/results/paper-claim-support-matrix-20260624.md)
 - [Reproducibility manifest](docs/results/reproducibility-manifest-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)

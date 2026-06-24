@@ -1730,7 +1730,30 @@ python3 tools/build_polling_transition_zone_table.py \
 - 6000ms/9000ms는 0/6 PASS로 반복 실패 구간이다.
 - 모든 PASS row가 Chrome target QUIC session 2개였으므로, dashboard continuity는 session attribution과 함께 보고해야 한다.
 
-## 37. Artifact 정책
+## 37. Paper claim support matrix 재생성
+
+논문 문장을 쓰기 전, 현재 CSV 결과가 뒷받침하는 claim과 아직 금지해야 할 claim을 분리한다.
+
+```bash
+python3 tools/build_paper_claim_support_matrix.py \
+  --output docs/results/paper-claim-support-matrix-20260624.md \
+  --csv-output data/paper-claim-support-matrix-20260624.csv
+```
+
+성공 기준:
+
+- `supported_scoped` claim은 구현체 survey, quic-go direct-origin, AWS NLB controlled 실험처럼 범위가 명확한 positive evidence다.
+- `supported_local_control` claim은 Chrome forced-H3 local UDP rebinding control에 한정한다.
+- `negative_control_supported` claim은 HTTP/3 지원, tuple change, qlog event, browser session evidence가 각각 단독으로는 충분하지 않다는 방어 근거다.
+- `not_supported_yet` claim은 최종 browser/mobile active handover protocol이 채워지기 전까지 초록이나 결론에서 성공으로 쓰면 안 된다.
+
+현재 관찰된 기준:
+
+- controlled implementation/deployment claim은 논문에 제한적으로 쓸 수 있다.
+- workload boundary와 application retry recovery는 local control 결과로 쓸 수 있다.
+- Chrome/Safari/Android 실제 Wi-Fi/LTE handover 성공 claim은 아직 pending이다.
+
+## 38. Artifact 정책
 
 commit 가능한 것:
 

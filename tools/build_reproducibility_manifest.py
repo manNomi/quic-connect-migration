@@ -136,6 +136,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "final_protocol_readiness_matrix": "docs/results/final-protocol-readiness-matrix-20260624.md",
             "final_trial_acceptance_scorecard": "docs/results/final-trial-acceptance-scorecard-20260624.md",
             "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
+            "paper_claim_support_matrix": "docs/results/paper-claim-support-matrix-20260624.md",
             "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
             "trial_packet": "docs/results/final-handover-trial-packet-20260624.md",
             "deploy_packet": "docs/results/controlled-public-origin-deploy-packet-20260624.md",

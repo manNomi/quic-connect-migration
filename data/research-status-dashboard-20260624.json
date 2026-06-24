@@ -8,8 +8,8 @@
     "PASS_NEGATIVE_CONTROL": 32
   },
   "verification": {
-    "checks": "72",
-    "passed": "72",
+    "checks": "74",
+    "passed": "74",
     "ok": "yes"
   },
   "ci": {
@@ -31,6 +31,12 @@
     "related-work support only": 1,
     "source-backed explanation with repo evidence": 10
   },
+  "claim_support_counts": {
+    "negative_control_supported": 1,
+    "not_supported_yet": 2,
+    "supported_local_control": 4,
+    "supported_scoped": 2
+  },
   "missing_gate_counts": {
     "baseline_summary_ready": 7,
     "controlled_public_config_present": 10,
@@ -47,6 +53,7 @@
     "readiness_matrix": "data/final-protocol-readiness-matrix-20260624.csv",
     "acceptance_scorecard": "data/final-trial-acceptance-scorecard-20260624.csv",
     "operational_friction_matrix": "data/cm-operational-friction-matrix-20260624.csv",
+    "paper_claim_support_matrix": "data/paper-claim-support-matrix-20260624.csv",
     "experiment_results": "data/experiment-results.csv"
   }
 }

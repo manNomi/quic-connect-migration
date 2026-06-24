@@ -81,6 +81,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     workload_transition_zone_csv = "data/workload-transition-zone-synthesis-20260624.csv"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
+    paper_claim_support_matrix = "docs/results/paper-claim-support-matrix-20260624.md"
+    paper_claim_support_matrix_csv = "data/paper-claim-support-matrix-20260624.csv"
+    paper_claim_support_matrix_input = "data/paper-claim-support-matrix-20260624.csv"
     cm_operational_friction_matrix = "docs/results/cm-operational-friction-matrix-20260624.md"
     cm_operational_friction_matrix_csv = "data/cm-operational-friction-matrix-20260624.csv"
     final_trial_acceptance_scorecard = "docs/results/final-trial-acceptance-scorecard-20260624.md"
@@ -118,6 +121,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         workload_transition_zone_csv = str(generated_dir / "workload-transition-zone-synthesis.csv")
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
+        paper_claim_support_matrix = str(generated_dir / "paper-claim-support-matrix.md")
+        paper_claim_support_matrix_csv = str(generated_dir / "paper-claim-support-matrix.csv")
+        paper_claim_support_matrix_input = paper_claim_support_matrix_csv
         cm_operational_friction_matrix = str(generated_dir / "cm-operational-friction-matrix.md")
         cm_operational_friction_matrix_csv = str(generated_dir / "cm-operational-friction-matrix.csv")
         final_trial_acceptance_scorecard = str(generated_dir / "final-trial-acceptance-scorecard.md")
@@ -169,6 +175,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
                 "tools/build_paper_evidence_gap_register.py",
+                "tools/build_paper_claim_support_matrix.py",
                 "tools/build_reproducibility_manifest.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_controlled_public_config.py",
@@ -204,6 +211,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
                 "tools/test_build_paper_evidence_gap_register.py",
+                "tools/test_build_paper_claim_support_matrix.py",
                 "tools/test_build_reproducibility_manifest.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_controlled_public_config.py",
@@ -304,6 +312,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "paper_claim_support_matrix_regression",
+            [python_bin, "tools/test_build_paper_claim_support_matrix.py"],
+            {0},
+            30,
+        ),
+        (
+            "paper_claim_support_matrix",
+            [
+                python_bin,
+                "tools/build_paper_claim_support_matrix.py",
+                "--output",
+                paper_claim_support_matrix,
+                "--csv-output",
+                paper_claim_support_matrix_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
             "cm_operational_friction_matrix_regression",
             [python_bin, "tools/test_build_cm_operational_friction_matrix.py"],
             {0},
@@ -375,6 +402,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 research_status_dashboard,
                 "--json-output",
                 research_status_dashboard_json,
+                "--claim-support",
+                paper_claim_support_matrix_input,
             ],
             {0},
             30,

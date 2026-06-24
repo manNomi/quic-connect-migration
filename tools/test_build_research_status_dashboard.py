@@ -36,6 +36,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         matrix = root / "matrix.csv"
         scorecard = root / "scorecard.csv"
         friction = root / "friction.csv"
+        claim_support = root / "claim-support.csv"
         manifest = root / "manifest.json"
         write_fixture(
             experiments,
@@ -66,6 +67,14 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             active-path-proof,source-backed explanation with repo evidence
             """,
         )
+        write_fixture(
+            claim_support,
+            """
+            claim_id,support_level
+            c1,supported_scoped
+            c2,not_supported_yet
+            """,
+        )
         manifest.write_text(
             json.dumps(
                 {
@@ -82,12 +91,14 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             scorecard=scorecard.as_posix(),
             manifest=manifest.as_posix(),
             friction=friction.as_posix(),
+            claim_support=claim_support.as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)
         assert dashboard["experiment_trials"] == 2
         assert dashboard["planned_execution_state_counts"] == {"blocked": 1}
         assert dashboard["operational_friction_paper_use_counts"] == {"source-backed explanation with repo evidence": 1}
+        assert dashboard["claim_support_counts"] == {"not_supported_yet": 1, "supported_scoped": 1}
         assert dashboard["final_browser_handover"] == "0/6"
         assert "PRIVATE_KEY" not in markdown
         assert "AKIA" not in markdown

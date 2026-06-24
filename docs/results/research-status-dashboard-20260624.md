@@ -10,10 +10,11 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | --- | --- |
 | experiment trials | `63` |
 | experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 32}` |
-| verification | `72/72 passed; ok=yes` |
+| verification | `74/74 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `0/6` |
 | planned execution states | `{'blocked': 10}` |
+| claim support | `{'negative_control_supported': 1, 'not_supported_yet': 2, 'supported_local_control': 4, 'supported_scoped': 2}` |
 | paper-use scorecard | `{'pending; do not claim browser CM success': 3, 'pending; required before active CM claim': 3}` |
 | operational friction | `{'cautious explanatory support': 2, 'related-work support only': 1, 'source-backed explanation with repo evidence': 10}` |
 
@@ -45,4 +46,5 @@ Do not claim Chrome/Safari/Android browser handover CM success until the final b
 | `readiness_matrix` | `data/final-protocol-readiness-matrix-20260624.csv` |
 | `acceptance_scorecard` | `data/final-trial-acceptance-scorecard-20260624.csv` |
 | `operational_friction_matrix` | `data/cm-operational-friction-matrix-20260624.csv` |
+| `paper_claim_support_matrix` | `data/paper-claim-support-matrix-20260624.csv` |
 | `experiment_results` | `data/experiment-results.csv` |
