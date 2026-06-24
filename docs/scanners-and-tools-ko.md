@@ -420,7 +420,30 @@ classification:
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
-## 15. 실험 실행 코드
+## 15. `harness/scripts/controlled-public-preflight.sh`
+
+controlled public Chrome H3 network-change 실험의 local-only 설정을 읽어서 통합 readiness를 실행하는 wrapper다.
+
+실행:
+
+```bash
+cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/controlled-public-preflight.sh
+```
+
+동작:
+
+| 항목 | 의미 |
+| --- | --- |
+| config load | `harness/config/controlled-public-origin.env`를 있으면 source |
+| readiness JSON | ignored artifact directory에 `controlled-public-experiment-readiness.json` 생성 |
+| readiness Markdown | 같은 directory에 사람이 읽을 summary 생성 |
+| next commands | server, baseline, network-change command template 출력 |
+| safety | 실제 `NETWORK_CHANGE_CMD`는 실행하지 않음 |
+
+이 wrapper가 `controlled_public_preflight=ready`를 출력해야 `run-controlled-public-h3-network-change.sh`를 본 실험으로 실행할 수 있다. `blocked`이면 출력된 blockers를 실험 전제 미충족으로 기록한다.
+
+## 16. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -464,7 +487,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 16. 최소 검증 세트
+## 17. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -478,6 +501,7 @@ python3 tools/check_public_origin_readiness.py --url https://www.google.com/gene
 python3 tools/check_handover_readiness.py --format markdown
 # readiness가 false이면 exit code 1을 반환한다. 출력의 blockers를 확인한다.
 python3 tools/check_controlled_public_experiment_readiness.py --format markdown || true
+bash harness/scripts/controlled-public-preflight.sh || true
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py
 
 cd repro/quic-go-min-repro

@@ -83,6 +83,7 @@
 - [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
 - [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
 - [Controlled public experiment readiness](docs/results/controlled-public-experiment-readiness-20260624.md)
+- [Controlled public origin operations runbook](docs/results/controlled-public-origin-operations-runbook-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)

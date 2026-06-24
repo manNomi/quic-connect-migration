@@ -40,12 +40,14 @@ AWS 하네스:
 harness/
 ├── config/
 │   ├── aws.env.example
+│   ├── controlled-public-origin.env.example
 │   └── experiment.env.example
 ├── manifests/
 │   └── experiment-matrix.csv
 └── scripts/
     ├── _lib.sh
     ├── aws-preflight.sh
+    ├── controlled-public-preflight.sh
     ├── package-quic-go-ec2.sh
     ├── run-aws-nlb-quic-data-plane.sh
     ├── run-local-quic-go.sh
@@ -327,6 +329,18 @@ negative control에서 확인한 것:
 | --- | --- |
 | `NLB_PROTOCOL` | `QUIC`, `TCP_QUIC` |
 | `PORT` | `4242`, `443` |
+
+controlled public origin preflight:
+
+- `harness/config/controlled-public-origin.env.example`
+- `harness/scripts/controlled-public-preflight.sh`
+
+역할:
+
+1. local-only public origin config를 로드한다.
+2. public URL, baseline summary, server artifact, secondary path, `NETWORK_CHANGE_CMD`를 통합 점검한다.
+3. ignored artifact directory에 readiness JSON/Markdown을 남긴다.
+4. server, baseline, network-change 실행 command template을 출력한다.
 
 ## 8. Chrome 브라우저 baseline
 

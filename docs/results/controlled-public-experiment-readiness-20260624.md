@@ -69,6 +69,15 @@ python3 tools/check_controlled_public_experiment_readiness.py \
 5. 실제 active path를 바꾸는 `NETWORK_CHANGE_CMD` 확정
 6. 그 후 `run-controlled-public-h3-network-change.sh` 실행
 
+반복 실행용 local preflight wrapper:
+
+```bash
+cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/controlled-public-preflight.sh
+```
+
+상세 운영 절차는 [controlled-public-origin-operations-runbook-20260624.md](controlled-public-origin-operations-runbook-20260624.md)에 정리했다.
+
 ## 6. 논문상 의미
 
 이 readiness gate는 실험 실패를 연구 결과로 오해하지 않기 위한 안전장치다. browser CM 연구에서는 “network change를 넣었다”는 사실만으로 충분하지 않고, 실제 active path 변화가 있었는지와 application H3 precondition이 성립했는지를 먼저 증명해야 한다.

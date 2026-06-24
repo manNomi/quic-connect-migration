@@ -529,6 +529,18 @@ python3 tools/scan_public_alt_svc.py \
 
 third-party public endpoint는 browser discovery control에는 유용하지만, upload/download/dashboard workload를 제어할 수 없다. 실제 browser CM 실험 전에는 연구자가 제어하는 public origin을 준비한다.
 
+local-only config:
+
+```bash
+cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+```
+
+먼저 안전한 preflight를 실행한다. 이 command는 실제 network-change를 수행하지 않고 ignored artifact directory에 readiness JSON/Markdown만 만든다.
+
+```bash
+bash harness/scripts/controlled-public-preflight.sh
+```
+
 Server side:
 
 ```bash
@@ -590,6 +602,12 @@ python3 tools/check_public_origin_readiness.py \
 application H3 baseline summary가 `status=PASS`인 뒤에만 실행한다.
 
 먼저 readiness를 확인한다.
+
+```bash
+bash harness/scripts/controlled-public-preflight.sh
+```
+
+수동으로 직접 확인할 수도 있다.
 
 ```bash
 python3 tools/check_controlled_public_experiment_readiness.py \
