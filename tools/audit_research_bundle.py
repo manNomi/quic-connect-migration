@@ -121,6 +121,7 @@ REQUIRED_FILES = [
     "tools/test_check_p0_baseline_preflight.py",
     "tools/test_build_p0_preflight_control_report.py",
     "tools/test_build_final_capture_storage_budget.py",
+    "tools/test_final_p0_baseline_preflight_wrapper.py",
     "tools/test_build_research_status_dashboard.py",
     "tools/test_build_replication_sufficiency_audit.py",
     "tools/test_build_replication_run_plan.py",
