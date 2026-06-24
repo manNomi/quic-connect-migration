@@ -232,6 +232,19 @@ Upload fine boundary의 핵심:
 - 4750ms부터 실패가 섞였고 4900ms 이상은 반복 실패했다.
 - 실패 row의 DOM error timing은 6917-6922ms로 좁게 모였으며, 모든 실패 row에 qlog H3/path evidence가 남았다.
 
+[Chrome H3 Local Rebinding Transient Upload Retry Boundary](./chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md)는 같은 4900ms/5000ms failure region에서 upload page에 application-level retry를 1회 추가했다.
+
+| retry condition | rows | status | browser session interpretation |
+| --- | ---: | --- | --- |
+| no retry, 4900ms/5000ms | 6 | 0/6 PASS | qlog H3/path evidence가 있어도 DOM upload는 실패했다. |
+| one retry after 1000ms | 6 | 6/6 PASS | 작업 완료는 회복됐지만 Chrome target QUIC session은 모두 2개였다. |
+
+Retry boundary의 핵심:
+
+- application-level retry는 local upload failure region에서 사용자 작업 완료를 회복할 수 있다.
+- 그러나 모든 retry PASS row가 `nat_rebinding_multiple_quic_sessions`였으므로, 이는 single-session browser CM success가 아니다.
+- 논문에서는 "transport continuity", "browser session continuity", "application task recovery"를 별도 outcome으로 보고해야 한다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.
@@ -241,7 +254,7 @@ Upload fine boundary의 핵심:
 | 1. Application H3 baseline | server request `HTTP/3.0`, TLS ALPN `h3`, qlog H3 frame, browser NetLog | local forced Chrome에서 관찰; controlled public origin은 pending |
 | 2. 실제 client path 변화 | before/after route/interface/public IP 변화 | inactive toggle은 no-change; real active path pending |
 | 3. 같은 logical QUIC connection 유지 | tuple change와 함께 qlog path validation, replacement session 아님 | quic-go controlled client에서 관찰; Chrome browser pending |
-| 4. application task continuity | downlink/upload/polling task complete, manual refresh 없음 | local controls pass; public active path-change pending |
+| 4. application task continuity | downlink/upload/polling task complete, manual refresh 없음 | local controls pass; retry can recover local upload failure via multiple sessions; public active path-change pending |
 | 5. deployment continuity | LB/CDN/proxy가 changed tuple을 같은 logical backend로 유지 | AWS NLB TCP_QUIC positive/negative controls 있음; CDN pending |
 
 machine-readable rubric은 [data/evidence-chain-rubric.csv](../../data/evidence-chain-rubric.csv)에 고정했다.

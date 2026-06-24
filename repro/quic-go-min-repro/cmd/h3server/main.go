@@ -481,10 +481,18 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		if size > 16*1024*1024 {
 			size = 16 * 1024 * 1024
 		}
+		retryAttempts := queryInt(r, "retry_attempts", 0)
+		if retryAttempts > 5 {
+			retryAttempts = 5
+		}
+		retryDelayMillis := queryInt(r, "retry_delay_ms", 500)
+		if retryDelayMillis > 60000 {
+			retryDelayMillis = 60000
+		}
 		if label == "" {
 			label = "browser-upload"
 		}
-		html := buildBrowserUploadHTML(label, durationMillis, chunks, size)
+		html := buildBrowserUploadHTML(label, durationMillis, chunks, size, retryAttempts, retryDelayMillis)
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
@@ -682,23 +690,24 @@ func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, he
 	return body
 }
 
-func buildBrowserUploadHTML(label string, durationMillis, chunks, size int) string {
+func buildBrowserUploadHTML(label string, durationMillis, chunks, size, retryAttempts, retryDelayMillis int) string {
 	escapedLabel := html.EscapeString(label)
 	queryLabel := url.QueryEscape(label)
 	uploadURL := fmt.Sprintf("/upload-sink?label=%s-sink", queryLabel)
 	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Browser H3 upload</title><link rel=\"icon\" href=\"data:,\"></head><body>"
 	body += fmt.Sprintf("<h1>Browser H3 upload</h1><div id=\"status\" data-label=\"%s\">loading</div><pre id=\"events\"></pre>", escapedLabel)
 	body += "<script>"
-	body += fmt.Sprintf("const uploadUrl=%q,totalBytes=%d,chunks=%d,durationMs=%d;", uploadURL, size, chunks, durationMillis)
+	body += fmt.Sprintf("const uploadUrl=%q,totalBytes=%d,chunks=%d,durationMs=%d,retryAttempts=%d,retryDelayMs=%d;", uploadURL, size, chunks, durationMillis, retryAttempts, retryDelayMillis)
 	body += "const events=document.getElementById('events');"
 	body += "const startedAt=performance.now();"
 	body += "function note(line){events.textContent+=line+'\\n';}"
 	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
 	body += "function chunk(index,size){const data=new Uint8Array(size);for(let i=0;i<size;i++){data[i]=(index+i)%251;}return data;}"
-	body += "async function runUpload(){let sent=0,index=0;const chunkBytes=Math.max(1,Math.ceil(totalBytes/chunks));const delay=Math.max(1,Math.floor(durationMs/chunks));"
-	body += "const stream=new ReadableStream({async pull(controller){if(sent>=totalBytes){controller.close();return;}const next=Math.min(chunkBytes,totalBytes-sent);controller.enqueue(chunk(index,next));sent+=next;index+=1;document.body.dataset.uploadBytes=String(sent);note('sent:'+sent);if(sent<totalBytes){await sleep(delay);}}});"
-	body += "const res=await fetch(uploadUrl,{method:'POST',body:stream,duplex:'half',cache:'no-store',headers:{'content-type':'application/octet-stream'}});const json=await res.json();document.body.dataset.uploadStatus=String(res.status);document.body.dataset.uploadResponseBytes=String(json.bytes||0);document.body.dataset.uploadElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.uploadComplete='true';note('upload:'+res.status+':'+(json.bytes||0));document.getElementById('status').textContent='complete';}"
-	body += "runUpload().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.uploadErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.uploadError=String(error);note('upload-error:'+error);});"
+	body += "async function attemptUpload(attempt){let sent=0,index=0;const chunkBytes=Math.max(1,Math.ceil(totalBytes/chunks));const delay=Math.max(1,Math.floor(durationMs/chunks));document.body.dataset.uploadAttempt=String(attempt);"
+	body += "const stream=new ReadableStream({async pull(controller){if(sent>=totalBytes){controller.close();return;}const next=Math.min(chunkBytes,totalBytes-sent);controller.enqueue(chunk(index,next));sent+=next;index+=1;document.body.dataset.uploadBytes=String(sent);note('attempt:'+attempt+':sent:'+sent);if(sent<totalBytes){await sleep(delay);}}});"
+	body += "const targetUrl=uploadUrl+'&attempt='+attempt+'&ts='+Date.now();const res=await fetch(targetUrl,{method:'POST',body:stream,duplex:'half',cache:'no-store',headers:{'content-type':'application/octet-stream'}});const json=await res.json();return {status:res.status,bytes:json.bytes||0};}"
+	body += "async function runUpload(){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{const result=await attemptUpload(attempt);if(result.status!==200||result.bytes!==totalBytes){throw new Error('unexpected upload response '+result.status+':'+result.bytes);}document.body.dataset.uploadStatus=String(result.status);document.body.dataset.uploadResponseBytes=String(result.bytes);document.body.dataset.uploadElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.uploadRetriesUsed=String(attempt-1);document.body.dataset.uploadComplete='true';note('upload:'+result.status+':'+result.bytes+':attempt:'+attempt);document.getElementById('status').textContent='complete';return;}catch(error){lastError=String(error);document.body.dataset.uploadLastError=lastError;document.body.dataset.uploadLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));note('upload-error:'+lastError+':attempt:'+attempt);if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'upload failed');}"
+	body += "runUpload().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.uploadErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.uploadError=String(error);note('upload-final-error:'+error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body

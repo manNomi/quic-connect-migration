@@ -57,7 +57,8 @@
 45. transient return-path outage sweep에서는 A+B return path를 250ms/1500ms/3000ms/4000ms 막은 1MiB downlink/upload가 8/8 PASS였지만, 5000ms/6000ms/9000ms는 6/6 FAIL이었다. 이 local workload의 outage-tolerance boundary는 4초와 5초 사이로 좁혀졌다.
 46. transient boundary repetition에서는 4000ms와 4500ms가 각각 6/6 PASS였고, 5000ms는 downlink 3/3 PASS와 upload 0/3 PASS로 갈려 outage tolerance가 workload-sensitive transition zone임을 확인했다.
 47. upload-only fine boundary에서는 4600ms upload가 3/3 PASS, 4750ms가 1/3 PASS, 4900ms와 5000ms가 6/6 FAIL이어서 upload 안정 완료 구간과 실패 구간을 더 좁혔다.
-48. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+48. 같은 4900ms/5000ms upload 실패 구간에서 application-level upload retry를 1회 허용하면 6/6 PASS로 작업 완료가 회복됐다. 다만 모든 row가 Chrome target QUIC session 2개로 분류되어, 이는 single-session CM 성공이 아니라 retry/reconnect 기반 작업 회복 control로 해석해야 한다.
+49. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -220,6 +221,7 @@
 - [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
 - [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
 - [Chrome H3 local transient upload fine boundary](docs/results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md)
+- [Chrome H3 local transient upload retry boundary](docs/results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md)
 - [quic-go local HTTP/3 migration replication results](docs/results/quic-go-local-h3-replication-results-20260624.md)
 - [quic-go local HTTP/3 mid-flight repetition summary](docs/results/quic-go-h3-midflight-repetition-summary-20260624.md)
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)

@@ -16,6 +16,9 @@ CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-18}"
 REPETITIONS="${REPETITIONS:-3}"
 DROP_WINDOWS_MS="${DROP_WINDOWS_MS:-4000 4500 5000}"
 WORKLOADS="${WORKLOADS:-downlink upload}"
+EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
+UPLOAD_RETRY_ATTEMPTS="${UPLOAD_RETRY_ATTEMPTS:-0}"
+UPLOAD_RETRY_DELAY_MS="${UPLOAD_RETRY_DELAY_MS:-500}"
 
 mkdir -p "$ARTIFACT_ROOT/results"
 
@@ -34,12 +37,12 @@ write_spec() {
   local drop_window="$7"
   local drop_window_ms="$8"
   local repetition="$9"
-  python3 - "$artifact_dir" "$profile" "$workload" "$bytes" "$chunks" "$duration_ms" "$REBIND_AFTER" "$drop_window" "$drop_window_ms" "$repetition" <<'PY'
+  python3 - "$artifact_dir" "$profile" "$workload" "$bytes" "$chunks" "$duration_ms" "$REBIND_AFTER" "$drop_window" "$drop_window_ms" "$repetition" "$UPLOAD_RETRY_ATTEMPTS" "$UPLOAD_RETRY_DELAY_MS" <<'PY'
 import json
 import sys
 from pathlib import Path
 
-artifact_dir, profile, workload, bytes_value, chunks, duration_ms, rebind_after, drop_window, drop_window_ms, repetition = sys.argv[1:]
+artifact_dir, profile, workload, bytes_value, chunks, duration_ms, rebind_after, drop_window, drop_window_ms, repetition, upload_retry_attempts, upload_retry_delay_ms = sys.argv[1:]
 path = Path(artifact_dir) / "results" / "transient-return-path-spec.json"
 path.parent.mkdir(parents=True, exist_ok=True)
 path.write_text(
@@ -56,6 +59,8 @@ path.write_text(
             "drop_window": drop_window,
             "drop_window_ms": int(drop_window_ms),
             "repetition": int(repetition),
+            "upload_retry_attempts": int(upload_retry_attempts),
+            "upload_retry_delay_ms": int(upload_retry_delay_ms),
             "expected_status": "MEASURE",
         },
         indent=2,
@@ -98,7 +103,7 @@ run_case() {
     TIMEOUT="$TIMEOUT" \
     CHROME_TIMEOUT_SECONDS="$CHROME_TIMEOUT_SECONDS" \
     CHROME_HOLD_SECONDS="$CHROME_HOLD_SECONDS" \
-    EXPECTED_REQUESTS=2 \
+    EXPECTED_REQUESTS="$EXPECTED_REQUESTS" \
     DOWNLINK_HEARTBEAT=false \
     DOWNLINK_BYTES="$bytes" \
     DOWNLINK_CHUNKS="$chunks" \
@@ -106,6 +111,8 @@ run_case() {
     UPLOAD_BYTES="$bytes" \
     UPLOAD_CHUNKS="$chunks" \
     UPLOAD_DURATION_MS="$duration_ms" \
+    UPLOAD_RETRY_ATTEMPTS="$UPLOAD_RETRY_ATTEMPTS" \
+    UPLOAD_RETRY_DELAY_MS="$UPLOAD_RETRY_DELAY_MS" \
     ./scripts/run-chrome-h3-rebinding-proxy.sh
 
   run_index=$((run_index + 1))

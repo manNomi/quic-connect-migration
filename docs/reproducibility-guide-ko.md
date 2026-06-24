@@ -1229,7 +1229,54 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 4900ms와 5000ms upload는 `6/6 FAIL`
 - 이 결과도 local upload-specific transition-zone control이며 public handover evidence가 아니다.
 
-## 26. Artifact 정책
+## 26. Chrome local upload retry recovery boundary 재현
+
+4900ms/5000ms upload는 no-retry 조건에서 반복 실패했으므로, 동일한 outage window에서 application-level retry가 작업 완료를 회복하는지 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624 \
+BASE_PORT=7900 \
+REBIND_AFTER=500ms \
+TIMEOUT=52s \
+CHROME_TIMEOUT_SECONDS=46 \
+CHROME_HOLD_SECONDS=24 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="4900 5000" \
+WORKLOADS="upload" \
+UPLOAD_RETRY_ATTEMPTS=1 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624/rep01-upload-1m-drop-ab-4900ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624/rep01-upload-1m-drop-ab-5000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624/rep02-upload-1m-drop-ab-4900ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624/rep02-upload-1m-drop-ab-5000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624/rep03-upload-1m-drop-ab-4900ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624/rep03-upload-1m-drop-ab-5000ms \
+  --output docs/results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 4900ms retry upload는 `3/3 PASS`
+- 5000ms retry upload는 `3/3 PASS`
+- 모든 row가 `/upload-sink` request 2개와 최종 1MiB 수신을 기록했다.
+- 모든 row가 `nat_rebinding_multiple_quic_sessions`였으므로, 이는 application retry/reconnect recovery control이며 single-session browser CM success가 아니다.
+- 이 결과도 local recovery control이며 public active handover evidence가 아니다.
+
+## 27. Artifact 정책
 
 commit 가능한 것:
 

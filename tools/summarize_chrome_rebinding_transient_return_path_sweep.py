@@ -20,6 +20,8 @@ CSV_FIELDS = [
     "configured_bytes",
     "configured_chunks",
     "duration_ms",
+    "upload_retry_attempts",
+    "upload_retry_delay_ms",
     "rebind_after",
     "drop_window",
     "drop_window_ms",
@@ -113,6 +115,8 @@ def row_from_spec(raw: str) -> dict[str, str]:
         "configured_bytes": str(spec.get("bytes") or ""),
         "configured_chunks": str(spec.get("chunks") or ""),
         "duration_ms": str(spec.get("duration_ms") or ""),
+        "upload_retry_attempts": str(spec.get("upload_retry_attempts") or 0),
+        "upload_retry_delay_ms": str(spec.get("upload_retry_delay_ms") or 0),
         "rebind_after": str(spec.get("rebind_after") or ""),
         "drop_window": str(spec.get("drop_window") or ""),
         "drop_window_ms": str(spec.get("drop_window_ms") or ""),
@@ -203,18 +207,19 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
         "",
         "## Runs",
         "",
-        "| profile | workload | drop window | status | classification | app complete | complete ms | error ms | server requests | Chrome QUIC sessions | qlog PATH C/R | dropped A/B packets | max drop ms | client packets A/B | server packets A/B | upload bytes |",
-        "| --- | --- | ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- | --- | ---: |",
+        "| profile | workload | retry | drop window | status | classification | app complete | complete ms | error ms | server requests | Chrome QUIC sessions | qlog PATH C/R | dropped A/B packets | max drop ms | client packets A/B | server packets A/B | upload bytes |",
+        "| --- | --- | ---: | ---: | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- | --- | ---: |",
     ]
     for row in rows:
         upload_bytes = row["upload_sink_request_bytes"] or "-"
         lines.append(
-            "| {profile} | {workload} | {drop_window} | {status} | `{classification}` | "
+            "| {profile} | {workload} | {retry} | {drop_window} | {status} | `{classification}` | "
             "{dump_application_complete} | {complete_ms} | {error_ms} | {server_request_count} | {netlog_target_quic_session_count} | "
             "{qlog_path_challenge}/{qlog_path_response} | {dropped_server_packets_a}/{dropped_server_packets_b} | "
             "{max_drop_since_switch_ms} | {proxy_client_packets_a}/{proxy_client_packets_b} | "
             "{proxy_server_packets_a}/{proxy_server_packets_b} | {upload_bytes} |".format(
                 **row,
+                retry=f"{row['upload_retry_attempts']}x/{row['upload_retry_delay_ms']}ms",
                 complete_ms=row["dump_task_elapsed_ms"] or "-",
                 error_ms=row["dump_task_error_elapsed_ms"] or "-",
                 upload_bytes=upload_bytes,

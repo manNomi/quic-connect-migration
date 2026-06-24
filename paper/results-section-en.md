@@ -48,6 +48,8 @@ The boundary repetition shows that this boundary is not a single deterministic c
 
 We then refined the upload transition with upload-only repetitions at 4600 ms, 4750 ms, 4900 ms, and 5000 ms. The 4600 ms upload window passed 3/3, 4750 ms split with 1/3 pass, and 4900 ms plus 5000 ms failed 6/6. In this local 1 MiB upload workload, the stable completion region therefore extends to 4600 ms, the unstable transition begins at 4750 ms, and repeated failure starts at 4900 ms. All failed rows still retained qlog HTTP/3/path evidence, reinforcing that transport-level path evidence does not guarantee application-level upload continuity.
 
+Finally, we ran an application-level retry control in the same 4900 ms and 5000 ms upload failure region. The browser upload page retried once with a fresh stream 1000 ms after the first `fetch()` failure. All six rows passed, each row produced two `/upload-sink` requests, and the final attempt delivered the 1 MiB body. However, all six rows reported two Chrome target QUIC sessions and were classified as `nat_rebinding_multiple_quic_sessions`. This is therefore not evidence that single-session browser connection migration succeeded. It shows that application-level retry can recover user-visible task completion while transport continuity and browser session continuity must still be reported separately.
+
 Thus, a source tuple change at the server, even with qlog path validation, is not sufficient evidence of browser connection migration; conversely, the absence of a request-level tuple change does not prove that packet-level rebinding or path validation did not occur. Packet forwarding logs, qlog path validation, request-level tuples, and Chrome NetLog session attribution are distinct evidence layers. Heartbeats or browser connection management can create multiple QUIC sessions without migration. The classifier therefore separates these cases as `multiple_quic_sessions_without_network_change`, `multiple_quic_sessions_without_client_path_change`, `nat_rebinding_path_validation_without_observed_tuple_change`, and `nat_rebinding_multiple_quic_sessions`.
 
 For the follow-up main experiments, we prepared controlled-public network-change harnesses for Chrome, Safari, and Android Chrome. However, the browser observability matrix shows that only Chrome desktop currently provides NetLog-based session attribution in this harness. Safari and Android Chrome currently lack browser-internal QUIC session logs here, so their outcomes must be interpreted as server/qlog-centered `PASS_FEASIBILITY` evidence. Harness readiness is not itself a successful handover result.
@@ -68,6 +70,6 @@ The current results do not yet support the following claims.
 2. Safari preserves HTTP/3 connection migration across a real handover.
 3. Android Chrome preserves HTTP/3 connection migration across a real Wi-Fi/LTE handover.
 4. Managed CDN edge deployments preserve end-to-end QUIC connection migration.
-5. Service Worker recovery or application heartbeat improves real handover continuity.
+5. Service Worker recovery, application heartbeat, or upload retry improves real handover continuity.
 
 These claims require follow-up experiments with a controlled public origin, an active secondary network path, Android/Safari observability, and packet capture.

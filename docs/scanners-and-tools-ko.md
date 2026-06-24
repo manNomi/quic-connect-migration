@@ -1930,3 +1930,34 @@ WORKLOADS="upload" \
 - 4750ms upload `1/3 PASS`
 - 4900ms/5000ms upload `6/6 FAIL`
 - local upload-specific transition-zone control이며, public active handover 결과가 아니다.
+
+## 55. Chrome transient upload retry boundary
+
+`run-chrome-h3-rebinding-transient-boundary-repetition.sh`는 upload page의 `retry_attempts`와 `retry_delay_ms`를 넘길 수 있다. no-retry fine boundary에서 반복 실패한 4900ms/5000ms 구간을 application-level retry control로 재검수한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624 \
+BASE_PORT=7900 \
+REBIND_AFTER=500ms \
+TIMEOUT=52s \
+CHROME_TIMEOUT_SECONDS=46 \
+CHROME_HOLD_SECONDS=24 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="4900 5000" \
+WORKLOADS="upload" \
+UPLOAD_RETRY_ATTEMPTS=1 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+현재 결과:
+
+- 4900ms retry upload `3/3 PASS`
+- 5000ms retry upload `3/3 PASS`
+- 모든 row가 `/upload-sink` 2회와 최종 1MiB 수신을 기록했다.
+- 모든 row의 Chrome target QUIC session count는 2였으므로, 이 결과는 application task recovery control이지 single-session browser CM evidence가 아니다.
