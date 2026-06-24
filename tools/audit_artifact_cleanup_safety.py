@@ -17,6 +17,7 @@ from report_artifact_storage import DEFAULT_ROOTS, directory_size, human_size, i
 
 
 DEFAULT_EXPERIMENTS = "data/experiment-results.csv"
+DEFAULT_ARTIFACT_REFERENCE_CSVS = ["data/chrome-h3-rebinding-repetition-summary-20260624.csv"]
 DEFAULT_OUTPUT = "docs/results/artifact-cleanup-safety-audit-20260624.md"
 
 
@@ -51,14 +52,23 @@ def path_overlaps(candidate: str, reference: str) -> bool:
     return candidate == reference or candidate.startswith(reference + "/") or reference.startswith(candidate + "/")
 
 
-def load_references(experiments_path: Path) -> list[ArtifactReference]:
-    with experiments_path.open(newline="", encoding="utf-8") as fp:
+def load_references_from_csv(path: Path) -> list[ArtifactReference]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as fp:
         rows = csv.DictReader(fp)
         return [
-            ArtifactReference(row.get("trial_id", ""), row.get("artifact_dir", ""))
+            ArtifactReference(row.get("trial_id") or row.get("run_id") or row.get("artifact_dir", ""), row.get("artifact_dir", ""))
             for row in rows
             if row.get("artifact_dir")
         ]
+
+
+def load_references(experiments_path: Path, extra_reference_csvs: list[Path] | None = None) -> list[ArtifactReference]:
+    references = load_references_from_csv(experiments_path)
+    for path in extra_reference_csvs or []:
+        references.extend(load_references_from_csv(path))
+    return references
 
 
 def planned_final_trial_ids(repetitions: int, prefer_p1: str) -> set[str]:
@@ -82,7 +92,7 @@ def classify_candidate(
             planned_final,
             controlled_public_like,
             "keep-referenced",
-            "artifact path is referenced by data/experiment-results.csv",
+            "artifact path is referenced by a tracked artifact reference CSV",
         )
     if planned_final:
         return (
@@ -108,7 +118,7 @@ def classify_candidate(
         False,
         False,
         "review-unreferenced",
-        "artifact path is not referenced by the experiment CSV or planned final-trial ids",
+        "artifact path is not referenced by tracked artifact CSVs or planned final-trial ids",
     )
 
 
@@ -118,8 +128,11 @@ def build_audit(
     target_free_gib: float,
     repetitions: int,
     prefer_p1: str,
+    extra_reference_csvs: list[Path] | None = None,
 ) -> dict[str, Any]:
-    references = load_references(experiments_path)
+    if extra_reference_csvs is None:
+        extra_reference_csvs = [Path(path) for path in DEFAULT_ARTIFACT_REFERENCE_CSVS]
+    references = load_references(experiments_path, extra_reference_csvs)
     planned_ids = planned_final_trial_ids(repetitions, prefer_p1)
     candidates = []
     for root in roots:
@@ -158,6 +171,7 @@ def build_audit(
     return {
         "check_date": date.today().isoformat(),
         "experiments": experiments_path.as_posix(),
+        "artifact_reference_csvs": [path.as_posix() for path in extra_reference_csvs],
         "roots": roots,
         "target_free_gib": target_free_gib,
         "disk_free_bytes": disk.free,
@@ -195,6 +209,7 @@ def emit_markdown(audit: dict[str, Any]) -> str:
         f"| disk free | `{audit['disk_free_human']}` |",
         f"| target free GiB | `{audit['target_free_gib']}` |",
         f"| artifact roots total | `{audit['artifact_roots_total_human']}` |",
+        f"| extra artifact reference CSVs | `{audit['artifact_reference_csvs']}` |",
         f"| cleanup candidates | `{audit['candidate_count']}` |",
         f"| CSV-referenced candidates | `{audit['referenced_candidate_count']}` |",
         f"| planned final-trial candidates | `{audit['planned_final_candidate_count']}` |",
@@ -209,10 +224,10 @@ def emit_markdown(audit: dict[str, Any]) -> str:
         "",
         "| recommendation | meaning |",
         "| --- | --- |",
-        "| `keep-referenced` | referenced by `data/experiment-results.csv`; keep unless archived and paper evidence is preserved |",
+        "| `keep-referenced` | referenced by a tracked artifact CSV; keep unless archived and paper evidence is preserved |",
         "| `keep-planned-final-trial` | matches a planned final browser handover trial id |",
         "| `review-controlled-public` | controlled-public preparation output; inspect manually before cleanup |",
-        "| `review-unreferenced` | not referenced by current CSV/planned final ids; still review before deletion |",
+        "| `review-unreferenced` | not referenced by current artifact CSVs or planned final ids; still review before deletion |",
         "",
         "## Candidates",
         "",
@@ -234,6 +249,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", action="append", dest="roots")
     parser.add_argument("--experiments", default=DEFAULT_EXPERIMENTS)
+    parser.add_argument("--reference-csv", action="append", dest="reference_csvs")
     parser.add_argument("--target-free-gib", type=float, default=5.0)
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--prefer-p1", choices=["safari", "android", "both"], default="safari")
@@ -252,6 +268,7 @@ def main() -> int:
         args.target_free_gib,
         args.repetitions,
         args.prefer_p1,
+        [Path(path) for path in args.reference_csvs] if args.reference_csvs is not None else None,
     )
     text = json.dumps(audit, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(audit)
     if args.output:

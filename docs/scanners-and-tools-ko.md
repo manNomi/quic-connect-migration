@@ -200,6 +200,28 @@ classifier regression:
 python3 tools/test_classify_chrome_h3_artifacts.py
 ```
 
+반복 실행 matrix:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-repetition-20260624 \
+REPEAT_COUNT=3 \
+BASE_PORT=4700 \
+./scripts/run-chrome-h3-rebinding-proxy-matrix.sh
+```
+
+matrix wrapper는 no-heartbeat와 heartbeat 조건을 각각 `REPEAT_COUNT`회 실행하고, `tools/summarize_chrome_rebinding_proxy_matrix.py`로 artifact summary를 만든다.
+
+수동 요약:
+
+```bash
+python3 tools/summarize_chrome_rebinding_proxy_matrix.py \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/noheartbeat-r1 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/heartbeat-r1 \
+  --output docs/results/chrome-h3-rebinding-repetition-summary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-repetition-summary-20260624.csv
+```
+
 ## 5.1 `tools/run_chrome_cdp_navigation.js`
 
 Chrome을 DevTools Protocol로 열고 지정한 real-time hold 구간 동안 page를 유지한 뒤 DOM과 body dataset을 저장한다. `--dump-dom` runner에서 JavaScript timer나 virtual time 때문에 heartbeat timing이 왜곡될 때 사용한다.

@@ -131,6 +131,7 @@ result:
 - local UDP rebinding proxy로 Chrome HTTP/3 workload에서 server-side path validation을 유도할 수 있다.
 - request success, tuple change, qlog path validation이 모두 있어도 browser session continuity artifact가 따로 필요하다.
 - heartbeat는 post-rebind request evidence를 만들지만 replacement/multiple-session 가능성도 함께 만든다.
+- 같은 조건의 3회 반복 결과는 [Chrome H3 local UDP rebinding repetition summary](chrome-h3-rebinding-repetition-summary-20260624.md)에 정리했다.
 
 아직 주장하면 안 되는 것:
 

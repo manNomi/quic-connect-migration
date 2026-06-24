@@ -1,0 +1,7 @@
+run_id,heartbeat,status,classification,server_remote_addr_count,netlog_target_quic_session_count,netlog_target_using_quic_job_count,qlog_path_challenge,qlog_path_response,proxy_switched,proxy_upstream_a_addr,proxy_upstream_b_addr,artifact_dir
+noheartbeat-r1,noheartbeat,PASS,nat_rebinding_path_validation_without_observed_tuple_change,1,1,2,1,1,true,127.0.0.1:62015,127.0.0.1:49361,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/noheartbeat-r1
+noheartbeat-r2,noheartbeat,PASS,nat_rebinding_path_validation_without_observed_tuple_change,1,1,2,1,1,true,127.0.0.1:50705,127.0.0.1:61327,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/noheartbeat-r2
+noheartbeat-r3,noheartbeat,PASS,nat_rebinding_path_validation_without_observed_tuple_change,1,1,2,1,1,true,127.0.0.1:59143,127.0.0.1:52104,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/noheartbeat-r3
+heartbeat-r1,heartbeat,PASS,nat_rebinding_multiple_quic_sessions,2,2,3,1,1,true,127.0.0.1:59895,127.0.0.1:60043,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/heartbeat-r1
+heartbeat-r2,heartbeat,PASS,nat_rebinding_multiple_quic_sessions,2,2,3,1,1,true,127.0.0.1:50990,127.0.0.1:63235,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/heartbeat-r2
+heartbeat-r3,heartbeat,PASS,nat_rebinding_multiple_quic_sessions,2,2,3,1,1,true,127.0.0.1:60279,127.0.0.1:50863,repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624/heartbeat-r3

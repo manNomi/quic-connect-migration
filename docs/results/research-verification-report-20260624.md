@@ -1,13 +1,13 @@
 # Research Verification Report
 
-Generated: `2026-06-24T14:21:16Z`
+Generated: `2026-06-24T14:30:48Z`
 
 ## Summary
 
 | check | value |
 | --- | --- |
-| checks | `57` |
-| passed | `57` |
+| checks | `58` |
+| passed | `58` |
 | verification ok | `yes` |
 
 ## Checks
@@ -15,62 +15,63 @@ Generated: `2026-06-24T14:21:16Z`
 | check | exit | expected | ok | duration s |
 | --- | ---: | --- | --- | ---: |
 | `python_compile_core_tools` | 0 | `0` | `yes` | 0.091 |
-| `publication_bundle` | 0 | `0` | `yes` | 0.156 |
+| `publication_bundle` | 0 | `0` | `yes` | 0.138 |
 | `experiment_summary` | 0 | `0` | `yes` | 0.03 |
-| `paper_tables_regeneration_check` | 0 | `0` | `yes` | 0.029 |
-| `paper_evidence_gap_register_regression` | 0 | `0` | `yes` | 0.045 |
-| `paper_evidence_gap_register` | 0 | `0` | `yes` | 0.042 |
-| `cm_operational_friction_matrix_regression` | 0 | `0` | `yes` | 0.041 |
-| `cm_operational_friction_matrix` | 0 | `0` | `yes` | 0.045 |
-| `final_trial_acceptance_scorecard_regression` | 0 | `0` | `yes` | 0.072 |
-| `final_trial_acceptance_scorecard` | 0 | `0` | `yes` | 0.062 |
-| `final_protocol_readiness_matrix_regression` | 0 | `0` | `yes` | 0.061 |
-| `final_protocol_readiness_matrix` | 0 | `0` | `yes` | 1.266 |
-| `research_status_dashboard_regression` | 0 | `0` | `yes` | 0.048 |
+| `paper_tables_regeneration_check` | 0 | `0` | `yes` | 0.034 |
+| `paper_evidence_gap_register_regression` | 0 | `0` | `yes` | 0.046 |
+| `paper_evidence_gap_register` | 0 | `0` | `yes` | 0.043 |
+| `cm_operational_friction_matrix_regression` | 0 | `0` | `yes` | 0.051 |
+| `cm_operational_friction_matrix` | 0 | `0` | `yes` | 0.043 |
+| `final_trial_acceptance_scorecard_regression` | 0 | `0` | `yes` | 0.066 |
+| `final_trial_acceptance_scorecard` | 0 | `0` | `yes` | 0.071 |
+| `final_protocol_readiness_matrix_regression` | 0 | `0` | `yes` | 0.053 |
+| `final_protocol_readiness_matrix` | 0 | `0` | `yes` | 1.057 |
+| `research_status_dashboard_regression` | 0 | `0` | `yes` | 0.039 |
 | `research_status_dashboard` | 0 | `0` | `yes` | 0.036 |
-| `final_browser_handover_trial_audit` | 0 | `0` | `yes` | 0.042 |
-| `final_browser_handover_trial_audit_regression` | 0 | `0` | `yes` | 0.037 |
-| `final_handover_result_row_drafter_regression` | 0 | `0` | `yes` | 0.034 |
-| `final_handover_trial_artifact_validator_regression` | 0 | `0` | `yes` | 0.043 |
-| `final_handover_result_row_append_regression` | 0 | `0` | `yes` | 0.065 |
-| `final_handover_next_trial_selector_regression` | 0 | `0` | `yes` | 0.049 |
-| `final_handover_next_trial_readiness_regression` | 0 | `0` | `yes` | 0.06 |
-| `final_handover_operator_checklist_regression` | 0 | `0` | `yes` | 0.061 |
-| `final_handover_external_inputs_regression` | 0 | `0` | `yes` | 0.063 |
-| `final_handover_trial_packet_regression` | 0 | `0` | `yes` | 0.052 |
-| `final_handover_trial_artifact_bundle_regression` | 0 | `0` | `yes` | 0.062 |
-| `artifact_disk_guard_regression` | 0 | `0` | `yes` | 0.094 |
-| `chrome_h3_artifact_classifier_regression` | 0 | `0` | `yes` | 0.028 |
-| `controlled_public_network_change_classifier_regression` | 0 | `0` | `yes` | 0.028 |
-| `android_path_snapshot_comparator_regression` | 0 | `0` | `yes` | 0.041 |
-| `controlled_public_config_regression` | 0 | `0` | `yes` | 0.059 |
-| `controlled_public_config_worksheet_regression` | 0 | `0` | `yes` | 0.056 |
-| `controlled_public_config_expected_incomplete` | 1 | `1` | `yes` | 0.055 |
-| `controlled_public_config_worksheet` | 0 | `0` | `yes` | 0.056 |
-| `controlled_public_origin_deploy_packet_regression` | 0 | `0` | `yes` | 0.034 |
-| `controlled_public_origin_deploy_packet` | 0 | `0` | `yes` | 0.039 |
-| `reproducibility_manifest_regression` | 0 | `0` | `yes` | 0.113 |
-| `reproducibility_manifest` | 0 | `0` | `yes` | 0.083 |
-| `final_browser_handover_readiness_expected_incomplete` | 1 | `1` | `yes` | 1.026 |
-| `final_handover_next_trial_readiness_expected_incomplete` | 1 | `1` | `yes` | 1.024 |
+| `final_browser_handover_trial_audit` | 0 | `0` | `yes` | 0.041 |
+| `final_browser_handover_trial_audit_regression` | 0 | `0` | `yes` | 0.035 |
+| `final_handover_result_row_drafter_regression` | 0 | `0` | `yes` | 0.036 |
+| `final_handover_trial_artifact_validator_regression` | 0 | `0` | `yes` | 0.05 |
+| `final_handover_result_row_append_regression` | 0 | `0` | `yes` | 0.069 |
+| `final_handover_next_trial_selector_regression` | 0 | `0` | `yes` | 0.05 |
+| `final_handover_next_trial_readiness_regression` | 0 | `0` | `yes` | 0.057 |
+| `final_handover_operator_checklist_regression` | 0 | `0` | `yes` | 0.06 |
+| `final_handover_external_inputs_regression` | 0 | `0` | `yes` | 0.061 |
+| `final_handover_trial_packet_regression` | 0 | `0` | `yes` | 0.053 |
+| `final_handover_trial_artifact_bundle_regression` | 0 | `0` | `yes` | 0.06 |
+| `artifact_disk_guard_regression` | 0 | `0` | `yes` | 0.092 |
+| `chrome_h3_artifact_classifier_regression` | 0 | `0` | `yes` | 0.027 |
+| `controlled_public_network_change_classifier_regression` | 0 | `0` | `yes` | 0.03 |
+| `android_path_snapshot_comparator_regression` | 0 | `0` | `yes` | 0.047 |
+| `chrome_rebinding_matrix_summary_regression` | 0 | `0` | `yes` | 0.048 |
+| `controlled_public_config_regression` | 0 | `0` | `yes` | 0.065 |
+| `controlled_public_config_worksheet_regression` | 0 | `0` | `yes` | 0.06 |
+| `controlled_public_config_expected_incomplete` | 1 | `1` | `yes` | 0.057 |
+| `controlled_public_config_worksheet` | 0 | `0` | `yes` | 0.06 |
+| `controlled_public_origin_deploy_packet_regression` | 0 | `0` | `yes` | 0.036 |
+| `controlled_public_origin_deploy_packet` | 0 | `0` | `yes` | 0.038 |
+| `reproducibility_manifest_regression` | 0 | `0` | `yes` | 0.123 |
+| `reproducibility_manifest` | 0 | `0` | `yes` | 0.084 |
+| `final_browser_handover_readiness_expected_incomplete` | 1 | `1` | `yes` | 1.052 |
+| `final_handover_next_trial_readiness_expected_incomplete` | 1 | `1` | `yes` | 1.073 |
 | `final_browser_handover_run_plan` | 0 | `0` | `yes` | 0.041 |
-| `final_handover_next_trial_selector` | 0 | `0` | `yes` | 0.041 |
-| `artifact_storage_report` | 0 | `0` | `yes` | 0.327 |
-| `artifact_cleanup_dry_run_plan` | 0 | `0` | `yes` | 0.492 |
-| `artifact_cleanup_safety_regression` | 0 | `0` | `yes` | 0.048 |
-| `artifact_cleanup_safety_audit` | 0 | `0` | `yes` | 0.361 |
-| `final_handover_operator_checklist` | 0 | `0` | `yes` | 1.508 |
-| `final_handover_external_inputs` | 0 | `0` | `yes` | 1.898 |
-| `final_handover_trial_packet` | 0 | `0` | `yes` | 1.005 |
+| `final_handover_next_trial_selector` | 0 | `0` | `yes` | 0.048 |
+| `artifact_storage_report` | 0 | `0` | `yes` | 0.373 |
+| `artifact_cleanup_dry_run_plan` | 0 | `0` | `yes` | 0.527 |
+| `artifact_cleanup_safety_regression` | 0 | `0` | `yes` | 0.045 |
+| `artifact_cleanup_safety_audit` | 0 | `0` | `yes` | 0.419 |
+| `final_handover_operator_checklist` | 0 | `0` | `yes` | 1.54 |
+| `final_handover_external_inputs` | 0 | `0` | `yes` | 1.96 |
+| `final_handover_trial_packet` | 0 | `0` | `yes` | 1.035 |
 | `final_handover_trial_artifact_bundle_check` | 0 | `0` | `yes` | 0.062 |
-| `final_handover_trial_artifact_bundle_require_complete_expected_incomplete` | 1 | `1` | `yes` | 0.06 |
-| `research_bundle_audit` | 0 | `0` | `yes` | 1.155 |
-| `research_bundle_require_complete_expected_incomplete` | 1 | `1` | `yes` | 1.143 |
-| `final_trials_require_complete_expected_incomplete` | 1 | `1` | `yes` | 0.049 |
-| `handover_readiness` | 0 | `0` | `yes` | 0.5 |
-| `browser_observability` | 0 | `0` | `yes` | 0.25 |
-| `controlled_public_wrapper_script_syntax` | 0 | `0` | `yes` | 0.005 |
-| `git_diff_check` | 0 | `0` | `yes` | 0.038 |
+| `final_handover_trial_artifact_bundle_require_complete_expected_incomplete` | 1 | `1` | `yes` | 0.063 |
+| `research_bundle_audit` | 0 | `0` | `yes` | 1.192 |
+| `research_bundle_require_complete_expected_incomplete` | 1 | `1` | `yes` | 1.171 |
+| `final_trials_require_complete_expected_incomplete` | 1 | `1` | `yes` | 0.044 |
+| `handover_readiness` | 0 | `0` | `yes` | 0.49 |
+| `browser_observability` | 0 | `0` | `yes` | 0.254 |
+| `controlled_public_wrapper_script_syntax` | 0 | `0` | `yes` | 0.007 |
+| `git_diff_check` | 0 | `0` | `yes` | 0.026 |
 
 ## Failed Output
 

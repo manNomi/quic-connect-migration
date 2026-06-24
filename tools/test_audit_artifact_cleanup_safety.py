@@ -40,6 +40,13 @@ def write_experiments(path: Path, referenced_artifact: Path) -> None:
         writer.writerow(row)
 
 
+def write_repetition_summary(path: Path, referenced_artifact: Path) -> None:
+    with path.open("w", newline="", encoding="utf-8") as fp:
+        writer = csv.DictWriter(fp, fieldnames=["run_id", "artifact_dir"])
+        writer.writeheader()
+        writer.writerow({"run_id": "repetition-r1", "artifact_dir": referenced_artifact.as_posix()})
+
+
 def test_classify_candidate_prefers_csv_reference() -> None:
     referenced, trials, planned, controlled, recommendation, _ = classify_candidate(
         "artifacts/controlled-public-chrome-h3-baseline-001",
@@ -78,9 +85,34 @@ def test_build_audit_marks_referenced_and_unreferenced() -> None:
         assert audit["candidate_count"] == 2
 
 
+def test_build_audit_keeps_extra_reference_csv_artifacts() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        artifacts = root / "artifacts"
+        referenced = artifacts / "repetition-artifact"
+        write_file(referenced / "result.txt")
+        experiments = root / "experiments.csv"
+        write_experiments(experiments, artifacts / "other-artifact")
+        repetition_summary = root / "repetition.csv"
+        write_repetition_summary(repetition_summary, referenced)
+
+        audit = build_audit(
+            [artifacts.as_posix()],
+            experiments,
+            target_free_gib=0.01,
+            repetitions=3,
+            prefer_p1="safari",
+            extra_reference_csvs=[repetition_summary],
+        )
+        by_name = {Path(item["path"]).name: item for item in audit["items"]}
+        assert by_name["repetition-artifact"]["recommendation"] == "keep-referenced"
+        assert by_name["repetition-artifact"]["referenced_trial_ids"] == ["repetition-r1"]
+
+
 def main() -> int:
     test_classify_candidate_prefers_csv_reference()
     test_build_audit_marks_referenced_and_unreferenced()
+    test_build_audit_keeps_extra_reference_csv_artifacts()
     print("audit_artifact_cleanup_safety=ok")
     return 0
 
