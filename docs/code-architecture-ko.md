@@ -477,30 +477,52 @@ classifier:
 - `https://cloudflare-quic.com/cdn-cgi/trace`
 - `https://www.google.com/generate_204`
 
-## 11. 실행 예시
+## 11. Controlled public WebPKI origin gate
 
-### 11.1 Local QUIC transport
+관련 파일:
+
+- `tools/check_public_origin_readiness.py`
+- `repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh`
+- `repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh`
+
+목적:
+
+연구자가 제어하는 public DNS/WebPKI origin에서 Chrome natural HTTP/3 no-change baseline을 먼저 통과시키기 위한 gate다. 이 gate가 통과한 뒤에만 active network change를 넣는다.
+
+흐름:
+
+```text
+DNS/TLS/Alt-Svc readiness check
+  -> public h3server with WebPKI cert/key
+  -> Chrome bootstrap/second navigation
+  -> NetLog classification
+  -> server request log and qlog inspection
+```
+
+## 12. 실행 예시
+
+### 12.1 Local QUIC transport
 
 ```bash
 cd repro/quic-go-min-repro
 ./scripts/run-local-happy-path.sh
 ```
 
-### 11.2 Local HTTP/3 post-migration workload
+### 12.2 Local HTTP/3 post-migration workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 ```
 
-### 11.3 Local HTTP/3 mid-flight workload
+### 12.3 Local HTTP/3 mid-flight workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 ```
 
-### 11.4 Chrome local HTTP/3 baseline
+### 12.4 Chrome local HTTP/3 baseline
 
 ```bash
 cd repro/quic-go-min-repro
@@ -512,7 +534,7 @@ LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=s
 WORKLOAD=poll NETWORK_CHANGE_AFTER_SECONDS=2 NETWORK_CHANGE_CMD='...' RUN_ID=chrome-h3-poll-network-change ./scripts/run-chrome-h3-local.sh
 ```
 
-### 11.5 Chrome natural Alt-Svc control
+### 12.5 Chrome natural Alt-Svc control
 
 ```bash
 cd repro/quic-go-min-repro
@@ -520,7 +542,7 @@ RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
 RUN_ID=chrome-h3-alt-svc-localhost-20260624 ADDR=localhost:4443 LISTEN_ADDR=127.0.0.1:4443 TCP_ADDR=127.0.0.1:4443 ./scripts/run-chrome-h3-alt-svc.sh
 ```
 
-### 11.6 Chrome public natural H3 baseline
+### 12.6 Chrome public natural H3 baseline
 
 ```bash
 cd repro/quic-go-min-repro
@@ -528,7 +550,15 @@ RUN_ID=chrome-public-h3-cloudflare-quic-trace-20260624 TARGET_URL=https://cloudf
 RUN_ID=chrome-public-h3-google-generate204-20260624 TARGET_URL=https://www.google.com/generate_204 ./scripts/run-chrome-public-h3.sh
 ```
 
-### 11.7 AWS NLB transport
+### 12.7 Controlled public H3 origin gate
+
+```bash
+cd repro/quic-go-min-repro
+PUBLIC_ORIGIN_HOST=h3.example.com TLS_CERT_FILE=/path/fullchain.pem TLS_KEY_FILE=/path/privkey.pem ./scripts/run-controlled-public-h3-server.sh
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' ./scripts/run-controlled-public-h3-browser-baseline.sh
+```
+
+### 12.8 AWS NLB transport
 
 ```bash
 WORKLOAD=transport \
@@ -537,7 +567,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 11.8 AWS NLB HTTP/3 post-migration
+### 12.9 AWS NLB HTTP/3 post-migration
 
 ```bash
 WORKLOAD=h3 \
@@ -546,7 +576,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 11.9 AWS NLB HTTP/3 mid-flight upload
+### 12.10 AWS NLB HTTP/3 mid-flight upload
 
 ```bash
 WORKLOAD=h3-midflight-upload \
@@ -556,7 +586,7 @@ PAYLOAD_BYTES=1048576 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 11.10 AWS NLB HTTP/3 mid-flight download
+### 12.11 AWS NLB HTTP/3 mid-flight download
 
 ```bash
 WORKLOAD=h3-midflight-download \
@@ -567,7 +597,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-## 12. 검증 명령
+## 13. 검증 명령
 
 Go test:
 
@@ -601,7 +631,7 @@ for path in [
 PY
 ```
 
-## 13. 공개 repo에서 제외한 것
+## 14. 공개 repo에서 제외한 것
 
 이 저장소에는 source와 문서만 포함했다.
 

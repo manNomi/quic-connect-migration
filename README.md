@@ -22,7 +22,8 @@
 10. Chrome natural Alt-Svc control에서는 local self-signed 또는 mkcert origin이 h3를 광고해도 강제 QUIC 없이 실제 HTTP/3 application request가 관찰되지는 않았다. HTML diagnostic에서는 QUIC/H3 후보 연결이 열렸지만 인증서 검증 실패 또는 broken alternative service로 끝났다.
 11. 같은 Chrome 149 headless 조건에서 public WebPKI origin인 Cloudflare/Google endpoint는 강제 QUIC 없이 natural HTTP/3로 도달했다. 따라서 local Alt-Svc 실패는 Chrome 자체의 H3 부재가 아니라 local trust/origin/policy 문제로 분리된다.
 12. public endpoint survey에서는 Google/Cloudflare/YouTube 계열은 H3 Alt-Svc 후보였지만 GitHub/Naver/Kakao는 이번 관찰에서 H3 후보가 아니었다. 따라서 browser CM target selection 자체가 별도 실험 조건이다.
-13. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+13. controlled public WebPKI origin 실험을 위한 readiness checker와 server/browser wrapper를 추가했다. 이 단계는 아직 handover 결과가 아니라 다음 browser CM 실험의 통제 조건이다.
+14. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -53,6 +54,7 @@
 │   └── detailed-paper-plan-en.md
 ├── tools/
 │   ├── scan_implementation_evidence.py
+│   ├── check_public_origin_readiness.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_qlog_events.py
 │   ├── summarize_experiment_results.py

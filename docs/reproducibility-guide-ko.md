@@ -507,7 +507,50 @@ python3 tools/scan_public_alt_svc.py \
 
 이 스캐너는 `Alt-Svc: h3` 광고 여부만 본다. Chrome이 실제 HTTP/3를 선택했는지는 `run-chrome-public-h3.sh` 결과와 NetLog classifier로 별도 확인해야 한다.
 
-## 11. AWS NLB 실험 설정
+## 11. Controlled public WebPKI origin gate
+
+third-party public endpoint는 browser discovery positive control에는 유용하지만, upload/download/dashboard workload를 제어할 수 없다. 실제 browser CM 실험 전에는 연구자가 제어하는 public origin을 준비한다.
+
+Server side:
+
+```bash
+cd repro/quic-go-min-repro
+PUBLIC_ORIGIN_HOST=h3.example.com \
+TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
+TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
+PUBLIC_ORIGIN_PORT=443 \
+EXPECTED_REQUESTS=2 \
+./scripts/run-controlled-public-h3-server.sh
+```
+
+Browser side:
+
+```bash
+cd repro/quic-go-min-repro
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
+CHROME_TIMEOUT_SECONDS=20 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
+./scripts/run-controlled-public-h3-browser-baseline.sh
+```
+
+사전 readiness check:
+
+```bash
+python3 tools/check_public_origin_readiness.py \
+  --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
+  --require-h3-alt-svc \
+  --format markdown
+```
+
+성공 기준:
+
+- DNS가 public host를 해석한다.
+- WebPKI TLS handshake와 hostname verification이 성공한다.
+- response에 `Alt-Svc: h3`가 있다.
+- Chrome classifier가 `public_natural_h3_observed`를 반환한다.
+- server request log와 qlog가 workload request를 기록한다.
+
+## 12. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
 
@@ -543,7 +586,7 @@ preflight:
 - region opt-in 상태 확인
 - default VPC/subnet 조회 가능
 
-## 12. AWS NLB transport 재현
+## 13. AWS NLB transport 재현
 
 ```bash
 WORKLOAD=transport \
@@ -562,7 +605,7 @@ PAYLOAD_BYTES=65536 \
 - summary status `PASS`
 - cleanup status `deleted-listener-lb-tg-instances-sg-keypair`
 
-## 13. AWS NLB HTTP/3 post-migration 재현
+## 14. AWS NLB HTTP/3 post-migration 재현
 
 ```bash
 WORKLOAD=h3 \
@@ -580,7 +623,7 @@ PAYLOAD_BYTES=65536 \
 - 같은 target이 두 request를 모두 수신
 - summary status `PASS`
 
-## 14. AWS NLB HTTP/3 mid-flight 재현
+## 15. AWS NLB HTTP/3 mid-flight 재현
 
 Upload:
 
@@ -611,7 +654,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 - qlog에 path validation evidence가 있음
 - summary status `PASS`
 
-## 15. Negative control 재현
+## 16. Negative control 재현
 
 잘못된 Server ID를 의도적으로 넣는다.
 
@@ -635,7 +678,7 @@ EXPECTED_OUTCOME=client-failure \
 
 이 negative control은 “HTTP/3가 켜져 있다”와 “migration continuity가 된다”가 같은 말이 아님을 보여주는 배포 계층 근거다.
 
-## 16. AWS cleanup 확인
+## 17. AWS cleanup 확인
 
 하네스는 정상 종료와 실패 종료 모두에서 cleanup trap을 실행한다. 실행 후 다음을 확인한다.
 
@@ -662,7 +705,7 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 17. Artifact 정책
+## 18. Artifact 정책
 
 commit 가능한 것:
 

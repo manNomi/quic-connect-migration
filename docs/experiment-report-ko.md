@@ -601,6 +601,8 @@ workload:
 - public Alt-Svc survey에서 `github.com`, `naver.com`, `kakao.com`은 이번 관찰 시점의 browser H3 target 후보가 아니었음
 - `amazon.com`은 H3 Alt-Svc를 광고했지만 status가 `HTTP/2 503`이라 안정적인 workload target으로 쓰기 어려움
 - readiness 점검에서 ADB는 설치돼 있었지만 연결된 Android device가 없었고, active 일반 네트워크 interface는 Wi-Fi `en0`만 확인됐음
+- controlled public WebPKI origin gate를 위해 DNS/TLS/Alt-Svc readiness checker, public H3 server wrapper, Chrome public browser baseline wrapper를 추가했음
+- controlled public browser baseline wrapper는 Google `generate_204` smoke test에서 `public_natural_h3_observed`로 통과했음
 
 이 baseline은 network path change를 포함하지 않는다. 따라서 다음 단계에서는 public 또는 controlled public WebPKI origin에서 같은 browser workload를 유지한 채 network-change trigger만 추가해야 한다.
 
@@ -635,6 +637,7 @@ network-change 판정 기준:
 - 또한 browser가 target origin을 실제 HTTP/3로 선택했다는 evidence를 먼저 확보해야 한다. local self-signed/mkcert Alt-Svc control에서는 h3 광고만으로 충분하지 않았다.
 - public WebPKI origin에서는 natural HTTP/3 positive control이 확보됐지만, 이는 migration evidence가 아니라 browser discovery prerequisite evidence다.
 - 현재 장비 상태에서는 active secondary network와 Android device가 확인되지 않았으므로 실제 handover 실험은 준비 후 실행해야 한다.
+- third-party public H3 endpoint는 discovery positive control에는 충분하지만 upload/download/dashboard workload continuity 실험에는 controlled public origin이 필요하다.
 - Chromium/Cronet source evidence상 browser stack에는 migration hook과 NetLog event가 있지만, runtime policy와 embedding default가 실제 migration 여부를 좌우한다.
 
 ## 19. 참고 데이터
@@ -667,3 +670,4 @@ network-change 판정 기준:
 - [Chrome public natural HTTP/3 baseline 결과](results/chrome-public-natural-h3-results-20260624.md)
 - [Public HTTP/3 Alt-Svc endpoint survey](results/public-alt-svc-endpoint-survey-20260624.md)
 - [Browser handover readiness and next experiment plan](results/browser-handover-readiness-plan-20260624.md)
+- [Controlled public WebPKI H3 origin plan](results/controlled-public-origin-h3-plan-20260624.md)

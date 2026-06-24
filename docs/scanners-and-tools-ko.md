@@ -246,7 +246,34 @@ python3 tools/scan_public_alt_svc.py \
 
 이 도구는 Chrome이 실제 HTTP/3를 사용했는지 판정하지 않는다. target 후보를 줄인 뒤 `run-chrome-public-h3.sh`와 `classify_chrome_public_h3_artifacts.py`로 browser evidence를 별도 확인한다.
 
-## 9. 실험 실행 코드
+## 9. `tools/check_public_origin_readiness.py`
+
+controlled public origin을 Chrome browser CM 실험에 쓰기 전에 DNS, WebPKI TLS, HTTP response, `Alt-Svc: h3` 광고 여부를 확인한다.
+
+실행:
+
+```bash
+python3 tools/check_public_origin_readiness.py \
+  --url https://h3.example.com/browser-slow?duration_ms=6000 \
+  --require-h3-alt-svc \
+  --format markdown
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| `dns_addresses` | hostname이 해석된 IP 목록 |
+| `tcp_tls_ok` | Python SSL 또는 curl 기준 HTTPS 검증 성공 여부 |
+| `python_tls_ok` | Python SSL trust store 기준 검증 성공 여부 |
+| `curl_https_ok` | curl 기준 HTTPS 검증 성공 여부 |
+| `final_status` | `curl -I -L` 기준 마지막 HTTP status |
+| `has_h3_alt_svc` | response chain에서 `h3` Alt-Svc가 관찰됐는지 |
+| `errors` | DNS/TLS/curl 오류 |
+
+이 도구가 통과해도 migration이 증명되는 것은 아니다. Chrome NetLog와 server qlog를 포함한 no-change natural H3 baseline을 추가로 통과해야 한다.
+
+## 10. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -271,6 +298,8 @@ python3 tools/scan_public_alt_svc.py \
 | `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll/slow baseline and optional network-change hook |
 | `scripts/run-chrome-h3-alt-svc.sh` | Chrome natural Alt-Svc HTTP/3 control |
 | `scripts/run-chrome-public-h3.sh` | Chrome public WebPKI natural HTTP/3 baseline |
+| `scripts/run-controlled-public-h3-server.sh` | WebPKI cert/key를 사용하는 controlled public H3 origin server wrapper |
+| `scripts/run-controlled-public-h3-browser-baseline.sh` | controlled public origin readiness + Chrome natural H3 baseline wrapper |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -287,7 +316,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 10. 최소 검증 세트
+## 11. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -296,6 +325,7 @@ python3 tools/validate_publication_bundle.py
 python3 tools/summarize_experiment_results.py --format markdown
 python3 tools/scan_implementation_evidence.py repro/quic-go-min-repro --format markdown
 python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt --format markdown
+python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
 
 cd repro/quic-go-min-repro
 go test ./...
