@@ -29,6 +29,7 @@ DEFAULT_ARTIFACT_REFERENCE_CSVS = [
     "data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv",
     "data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv",
     "data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv",
+    "data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv",
     "data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv",
     "data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv",
     "data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv",

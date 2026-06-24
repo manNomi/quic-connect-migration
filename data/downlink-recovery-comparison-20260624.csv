@@ -1,0 +1,5 @@
+policy,source_csv,drop_window_ms,runs,pass_count,fail_count,application_complete_count,retries_used_summary,classification_summary,complete_ms_min,complete_ms_median,complete_ms_max,error_ms_min,error_ms_median,error_ms_max,chrome_quic_sessions_min,chrome_quic_sessions_max
+wait_only_no_retry,data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv,6000,3,0,3,0,-=3,browser_application_task_failed=3,,,,6926,6927,6931,1,1
+wait_only_no_retry,data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv,9000,3,0,3,0,-=3,browser_application_task_failed=3,,,,6923,6924,6935,1,1
+retry_enabled_1x500ms,data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv,6000,3,3,0,3,0=1; 1=2,nat_rebinding_multiple_quic_sessions=2; nat_rebinding_path_validation_without_observed_tuple_change=1,15487,15491,15954,,,,1,2
+retry_enabled_1x500ms,data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv,9000,3,3,0,3,0=2; 1=1,nat_rebinding_multiple_quic_sessions=1; nat_rebinding_path_validation_without_observed_tuple_change=2,19104,19693,21713,,,,1,2

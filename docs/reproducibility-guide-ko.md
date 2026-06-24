@@ -1574,7 +1574,58 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - retry 미사용 PASS는 단일 Chrome target QUIC session으로 완료됐고, retry 사용 PASS는 target session 2개로 완료됐다.
 - 따라서 이 결과는 retransmission-only completion과 application retry/multiple-session recovery를 분리해서 보고해야 한다.
 
-## 35. Artifact 정책
+## 35. Chrome transient downlink wait-only 및 comparison 재현
+
+downlink retry control과 같은 6000ms/9000ms window, 같은 hold/grace 조건에서 retry만 끈다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-downlink-wait-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624 \
+BASE_PORT=7800 \
+DROP_WINDOWS_MS="6000 9000" \
+WORKLOADS="downlink" \
+DOWNLINK_RETRY_ATTEMPTS=0 \
+DOWNLINK_RETRY_DELAY_MS=500 \
+DOWNLINK_COMPLETION_GRACE_MS=17500 \
+TIMEOUT=52s \
+CHROME_TIMEOUT_SECONDS=42 \
+CHROME_HOLD_SECONDS=26 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624/rep01-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624/rep01-downlink-1m-drop-ab-9000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624/rep02-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624/rep02-downlink-1m-drop-ab-9000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624/rep03-downlink-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624/rep03-downlink-1m-drop-ab-9000ms \
+  --output docs/results/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv
+```
+
+retry/wait comparison 재생성:
+
+```bash
+python3 tools/build_downlink_recovery_comparison.py \
+  --output docs/results/downlink-recovery-comparison-20260624.md \
+  --csv-output data/downlink-recovery-comparison-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- wait-only no-retry는 6000ms/9000ms 모두 `0/3 PASS`였다.
+- retry-enabled control은 6000ms/9000ms 모두 `3/3 PASS`였다.
+- wait-only 실패 row의 DOM error timing은 6923-6935ms로 모였다.
+- 이 비교는 downlink recovery PASS가 단순한 wait-time artifact가 아님을 보여주지만, retry-enabled PASS 역시 single-session browser CM evidence는 아니다.
+
+## 36. Artifact 정책
 
 commit 가능한 것:
 

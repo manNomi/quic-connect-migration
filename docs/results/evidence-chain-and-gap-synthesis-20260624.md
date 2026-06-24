@@ -322,6 +322,16 @@ Downlink retry boundary의 핵심:
 - 따라서 같은 PASS라도 retransmission-only completion과 application retry/multiple-session recovery를 분리해야 한다.
 - 이는 application recovery가 task completion을 개선할 수 있음을 보여주지만, single-session browser CM success나 public handover success의 근거는 아니다.
 
+[Chrome H3 Local Rebinding Transient Downlink Wait Boundary](./chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.md)는 같은 6000ms/9000ms outage window와 긴 hold/grace timing을 유지하되 retry를 끈 대조군이다. [Downlink Recovery Comparison](./downlink-recovery-comparison-20260624.md)은 두 CSV를 한 표로 합친다.
+
+Downlink wait/retry comparison의 핵심:
+
+- wait-only no-retry는 6000ms/9000ms 모두 0/3 PASS였다.
+- retry-enabled control은 6000ms/9000ms 모두 3/3 PASS였다.
+- wait-only 실패 row도 qlog H3/path evidence와 Chrome target QUIC session 1개를 남겼다.
+- 따라서 retry-enabled PASS는 단순히 긴 hold/grace 때문이라고 볼 수 없다.
+- 그러나 retry-enabled PASS도 `retries_used=0`과 `retries_used=1`이 섞이므로, single-session browser CM success가 아니라 downlink recovery/timer/session-management evidence로 보고해야 한다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

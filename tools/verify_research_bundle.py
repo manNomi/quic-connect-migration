@@ -75,6 +75,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     paper_tables = "docs/results/paper-tables-20260624.md"
     application_recovery_tradeoff = "docs/results/application-recovery-tradeoff-20260624.md"
     application_recovery_tradeoff_csv = "data/application-recovery-tradeoff-20260624.csv"
+    downlink_recovery_comparison = "docs/results/downlink-recovery-comparison-20260624.md"
+    downlink_recovery_comparison_csv = "data/downlink-recovery-comparison-20260624.csv"
     workload_transition_zone = "docs/results/workload-transition-zone-synthesis-20260624.md"
     workload_transition_zone_csv = "data/workload-transition-zone-synthesis-20260624.csv"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
@@ -110,6 +112,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         paper_tables = str(generated_dir / "paper-tables.md")
         application_recovery_tradeoff = str(generated_dir / "application-recovery-tradeoff.md")
         application_recovery_tradeoff_csv = str(generated_dir / "application-recovery-tradeoff.csv")
+        downlink_recovery_comparison = str(generated_dir / "downlink-recovery-comparison.md")
+        downlink_recovery_comparison_csv = str(generated_dir / "downlink-recovery-comparison.csv")
         workload_transition_zone = str(generated_dir / "workload-transition-zone-synthesis.md")
         workload_transition_zone_csv = str(generated_dir / "workload-transition-zone-synthesis.csv")
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
@@ -154,6 +158,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_research_bundle.py",
                 "tools/append_final_handover_result_row.py",
                 "tools/build_application_recovery_tradeoff.py",
+                "tools/build_downlink_recovery_comparison.py",
                 "tools/build_final_handover_operator_checklist.py",
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_final_trial_acceptance_scorecard.py",
@@ -249,6 +254,19 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 application_recovery_tradeoff,
                 "--csv-output",
                 application_recovery_tradeoff_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "downlink_recovery_comparison",
+            [
+                python_bin,
+                "tools/build_downlink_recovery_comparison.py",
+                "--output",
+                downlink_recovery_comparison,
+                "--csv-output",
+                downlink_recovery_comparison_csv,
             ],
             {0},
             30,
