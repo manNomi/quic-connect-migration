@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -38,6 +39,8 @@ def tail(text: str, limit: int = 2000) -> str:
 
 def run_check(name: str, command: list[str], expected_exit_codes: set[int], timeout: int) -> CheckResult:
     started = time.monotonic()
+    env = dict(os.environ)
+    env["TZ"] = "UTC"
     try:
         proc = subprocess.run(
             command,
@@ -46,6 +49,7 @@ def run_check(name: str, command: list[str], expected_exit_codes: set[int], time
             stderr=subprocess.PIPE,
             timeout=timeout,
             check=False,
+            env=env,
         )
         exit_code = proc.returncode
         stdout = proc.stdout
@@ -196,6 +200,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_summarize_chrome_rebinding_proxy_matrix.py",
                 "tools/test_summarize_chrome_rebinding_upload_matrix.py",
                 "tools/test_summarize_quic_go_h3_midflight_matrix.py",
+                "tools/test_verify_research_bundle.py",
                 "tools/verify_research_bundle.py",
                 "tools/run_android_chrome_navigation.py",
                 "tools/run_safari_webdriver_navigation.py",
@@ -204,6 +209,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         ("publication_bundle", [python_bin, "tools/validate_publication_bundle.py"], {0}, 30),
+        ("verify_research_bundle_regression", [python_bin, "tools/test_verify_research_bundle.py"], {0}, 30),
         ("experiment_summary", [python_bin, "tools/summarize_experiment_results.py", "--format", "markdown"], {0}, 30),
         (
             "paper_tables_regeneration_check",

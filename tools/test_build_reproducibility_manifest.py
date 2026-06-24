@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
-from build_reproducibility_manifest import build_manifest, emit_markdown
+from datetime import datetime, timezone
+
+from build_reproducibility_manifest import build_manifest, emit_markdown, today_utc
 
 
 def test_manifest_contains_core_public_safe_fields() -> None:
@@ -27,9 +29,14 @@ def test_manifest_points_to_authoritative_artifacts() -> None:
     assert paths["trial_packet"].endswith("final-handover-trial-packet-20260624.md")
 
 
+def test_generated_date_uses_utc_day() -> None:
+    assert today_utc() == datetime.now(timezone.utc).date().isoformat()
+
+
 def main() -> int:
     test_manifest_contains_core_public_safe_fields()
     test_manifest_points_to_authoritative_artifacts()
+    test_generated_date_uses_utc_day()
     print("build_reproducibility_manifest=ok")
     return 0
 

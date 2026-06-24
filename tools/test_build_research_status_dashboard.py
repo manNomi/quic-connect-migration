@@ -5,11 +5,12 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from build_research_status_dashboard import build_dashboard, emit_markdown, first_action_from_missing_gates
+from build_research_status_dashboard import build_dashboard, emit_markdown, first_action_from_missing_gates, today_utc
 
 
 def write_fixture(path: Path, text: str) -> None:
@@ -91,9 +92,14 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         assert "AKIA" not in markdown
 
 
+def test_generated_date_uses_utc_day() -> None:
+    assert today_utc() == datetime.now(timezone.utc).date().isoformat()
+
+
 def main() -> int:
     test_first_action_prioritizes_config_before_later_gates()
     test_dashboard_summarizes_public_safe_inputs()
+    test_generated_date_uses_utc_day()
     print("build_research_status_dashboard=ok")
     return 0
 
