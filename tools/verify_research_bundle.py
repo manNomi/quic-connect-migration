@@ -79,6 +79,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     downlink_recovery_comparison_csv = "data/downlink-recovery-comparison-20260624.csv"
     workload_transition_zone = "docs/results/workload-transition-zone-synthesis-20260624.md"
     workload_transition_zone_csv = "data/workload-transition-zone-synthesis-20260624.csv"
+    replication_sufficiency_audit = "docs/results/replication-sufficiency-audit-20260624.md"
+    replication_sufficiency_audit_csv = "data/replication-sufficiency-audit-20260624.csv"
+    replication_sufficiency_audit_input = "data/replication-sufficiency-audit-20260624.csv"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
     paper_claim_support_matrix = "docs/results/paper-claim-support-matrix-20260624.md"
@@ -119,6 +122,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         downlink_recovery_comparison_csv = str(generated_dir / "downlink-recovery-comparison.csv")
         workload_transition_zone = str(generated_dir / "workload-transition-zone-synthesis.md")
         workload_transition_zone_csv = str(generated_dir / "workload-transition-zone-synthesis.csv")
+        replication_sufficiency_audit = str(generated_dir / "replication-sufficiency-audit.md")
+        replication_sufficiency_audit_csv = str(generated_dir / "replication-sufficiency-audit.csv")
+        replication_sufficiency_audit_input = replication_sufficiency_audit_csv
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
         paper_claim_support_matrix = str(generated_dir / "paper-claim-support-matrix.md")
@@ -171,6 +177,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_protocol_readiness_matrix.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
+                "tools/build_replication_sufficiency_audit.py",
                 "tools/build_cm_operational_friction_matrix.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
@@ -207,6 +214,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_trial_acceptance_scorecard.py",
                 "tools/test_build_final_protocol_readiness_matrix.py",
                 "tools/test_build_research_status_dashboard.py",
+                "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_cm_operational_friction_matrix.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
@@ -288,6 +296,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 workload_transition_zone,
                 "--csv-output",
                 workload_transition_zone_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "replication_sufficiency_audit_regression",
+            [python_bin, "tools/test_build_replication_sufficiency_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "replication_sufficiency_audit",
+            [
+                python_bin,
+                "tools/build_replication_sufficiency_audit.py",
+                "--output",
+                replication_sufficiency_audit,
+                "--csv-output",
+                replication_sufficiency_audit_csv,
             ],
             {0},
             30,
@@ -404,6 +431,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 research_status_dashboard_json,
                 "--claim-support",
                 paper_claim_support_matrix_input,
+                "--replication-audit",
+                replication_sufficiency_audit_input,
             ],
             {0},
             30,

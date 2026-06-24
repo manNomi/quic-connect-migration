@@ -17,7 +17,7 @@ Generated: `2026-06-24`
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
 | protected referenced/planned size | `22.4 GiB` |
-| projected free if review-unreferenced removed | `16.7 GiB` |
+| projected free if review-unreferenced removed | `16.6 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 

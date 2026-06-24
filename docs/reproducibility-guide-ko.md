@@ -1753,7 +1753,29 @@ python3 tools/build_paper_claim_support_matrix.py \
 - workload boundary와 application retry recovery는 local control 결과로 쓸 수 있다.
 - Chrome/Safari/Android 실제 Wi-Fi/LTE handover 성공 claim은 아직 pending이다.
 
-## 38. Artifact 정책
+## 38. Replication sufficiency audit 재생성
+
+local 반복 실험의 반복수가 논문 문장 강도를 얼마나 뒷받침하는지 계산한다.
+
+```bash
+python3 tools/build_replication_sufficiency_audit.py \
+  --output docs/results/replication-sufficiency-audit-20260624.md \
+  --csv-output data/replication-sufficiency-audit-20260624.csv
+```
+
+성공 기준:
+
+- 각 조건별 `PASS/runs`와 Wilson 95% confidence interval이 생성된다.
+- all-pass row는 `stable_candidate`, all-fail row는 `failure_candidate`, mixed row는 `transition_zone`으로 분류된다.
+- n이 작은 all-pass/all-fail row에는 strong local condition wording을 위해 필요한 추가 반복수가 계산된다.
+
+현재 관찰된 기준:
+
+- n=3 all-pass/all-fail row는 방향성 근거로는 유용하지만 reliability probability나 guarantee로 쓰기에는 부족하다.
+- mixed row는 threshold가 아니라 transition zone 근거로 써야 한다.
+- 본 audit는 새 실험 결과를 만들지 않고, 기존 local control 결과의 논문 표현 강도를 제한한다.
+
+## 39. Artifact 정책
 
 commit 가능한 것:
 

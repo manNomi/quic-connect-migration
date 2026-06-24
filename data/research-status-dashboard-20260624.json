@@ -8,8 +8,8 @@
     "PASS_NEGATIVE_CONTROL": 32
   },
   "verification": {
-    "checks": "74",
-    "passed": "74",
+    "checks": "76",
+    "passed": "76",
     "ok": "yes"
   },
   "ci": {
@@ -37,6 +37,11 @@
     "supported_local_control": 4,
     "supported_scoped": 2
   },
+  "replication_role_counts": {
+    "failure_candidate": 11,
+    "stable_candidate": 14,
+    "transition_zone": 5
+  },
   "missing_gate_counts": {
     "baseline_summary_ready": 7,
     "controlled_public_config_present": 10,
@@ -54,6 +59,7 @@
     "acceptance_scorecard": "data/final-trial-acceptance-scorecard-20260624.csv",
     "operational_friction_matrix": "data/cm-operational-friction-matrix-20260624.csv",
     "paper_claim_support_matrix": "data/paper-claim-support-matrix-20260624.csv",
+    "replication_sufficiency_audit": "data/replication-sufficiency-audit-20260624.csv",
     "experiment_results": "data/experiment-results.csv"
   }
 }

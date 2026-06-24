@@ -37,6 +37,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         scorecard = root / "scorecard.csv"
         friction = root / "friction.csv"
         claim_support = root / "claim-support.csv"
+        replication_audit = root / "replication-audit.csv"
         manifest = root / "manifest.json"
         write_fixture(
             experiments,
@@ -75,6 +76,14 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             c2,not_supported_yet
             """,
         )
+        write_fixture(
+            replication_audit,
+            """
+            condition_id,evidence_role
+            r1,stable_candidate
+            r2,transition_zone
+            """,
+        )
         manifest.write_text(
             json.dumps(
                 {
@@ -92,6 +101,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             manifest=manifest.as_posix(),
             friction=friction.as_posix(),
             claim_support=claim_support.as_posix(),
+            replication_audit=replication_audit.as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)
@@ -99,6 +109,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         assert dashboard["planned_execution_state_counts"] == {"blocked": 1}
         assert dashboard["operational_friction_paper_use_counts"] == {"source-backed explanation with repo evidence": 1}
         assert dashboard["claim_support_counts"] == {"not_supported_yet": 1, "supported_scoped": 1}
+        assert dashboard["replication_role_counts"] == {"stable_candidate": 1, "transition_zone": 1}
         assert dashboard["final_browser_handover"] == "0/6"
         assert "PRIVATE_KEY" not in markdown
         assert "AKIA" not in markdown
