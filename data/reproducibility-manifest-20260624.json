@@ -3,15 +3,15 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "ab4be0c",
+    "commit": "bc68f04",
     "branch": "main"
   },
   "experiment_corpus": {
-    "total_trials": 43,
+    "total_trials": 45,
     "status_counts": {
       "PASS": 25,
-      "PASS_FEASIBILITY": 1,
-      "PASS_NEGATIVE_CONTROL": 17
+      "PASS_FEASIBILITY": 2,
+      "PASS_NEGATIVE_CONTROL": 18
     },
     "final_required_rows": 6
   },
@@ -40,8 +40,8 @@
     "workflow": "research-verify",
     "branch": "main",
     "event": "push",
-    "run_id": "28104160388",
-    "duration": "31s"
+    "run_id": "28104410419",
+    "duration": "35s"
   },
   "key_paths": {
     "audit": "docs/results/research-bundle-audit-20260624.md",

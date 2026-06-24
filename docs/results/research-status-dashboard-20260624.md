@@ -8,10 +8,10 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 | field | value |
 | --- | --- |
-| experiment trials | `43` |
-| experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 1, 'PASS_NEGATIVE_CONTROL': 17}` |
+| experiment trials | `45` |
+| experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 2, 'PASS_NEGATIVE_CONTROL': 18}` |
 | verification | `56/56 passed; ok=yes` |
-| CI | `completed/success (28104160388)` |
+| CI | `completed/success (28104410419)` |
 | final browser handover | `0/6` |
 | planned execution states | `{'blocked': 10}` |
 | paper-use scorecard | `{'pending; do not claim browser CM success': 3, 'pending; required before active CM claim': 3}` |

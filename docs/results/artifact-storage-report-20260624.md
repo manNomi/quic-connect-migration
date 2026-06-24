@@ -7,14 +7,14 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | disk free | `47.9 GiB` |
-| disk free GiB | `47.91` |
+| disk free GiB | `47.87` |
 | local artifact roots total | `1.0 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `1.0 GiB` | 8602 | 2567 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `1.0 GiB` | 9217 | 2782 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -28,6 +28,8 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-instagram-home-20260624` | `20.4 MiB` | 283 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-facebook-home-20260624` | `15.5 MiB` | 268 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-blog-20260624` | `13.0 MiB` | 332 | 62 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-heartbeat-smoke2-20260624` | `8.2 MiB` | 206 | 71 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-noheartbeat-smoke-20260624` | `8.1 MiB` | 205 | 71 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-quic-20260624` | `7.4 MiB` | 219 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | 213 | 62 |
 | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | `5.7 MiB` | 212 | 63 |
@@ -36,11 +38,9 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-inactive-if-toggle` | `4.7 MiB` | 202 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-nochange` | `4.7 MiB` | 200 | 67 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-nochange-check` | `4.6 MiB` | 200 | 67 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-heartbeat-smoke-20260624` | `4.5 MiB` | 204 | 70 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-ip-20260624` | `4.3 MiB` | 197 | 59 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-quic-trace-20260624` | `4.3 MiB` | 186 | 55 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-local-20260624` | `4.3 MiB` | 195 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-ignore-cert-local-20260624` | `4.2 MiB` | 195 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-heartbeat-cdp-inactive-if-toggle-20260624` | `4.2 MiB` | 211 | 70 |
 
 ## Cleanup Note
 

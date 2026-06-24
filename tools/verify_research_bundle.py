@@ -551,6 +551,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh",
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh",
                 "repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh",
+                "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh",
                 "repro/quic-go-min-repro/scripts/run-safari-controlled-public-baseline.sh",
                 "repro/quic-go-min-repro/scripts/run-safari-controlled-public-network-change.sh",
                 "repro/quic-go-min-repro/scripts/run-android-chrome-controlled-public-network-change.sh",

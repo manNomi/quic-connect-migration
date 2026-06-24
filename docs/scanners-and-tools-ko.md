@@ -171,6 +171,21 @@ downlink/heartbeat 실험에서 추가로 쓰는 classification:
 
 이 두 classification은 migration 성공이 아니다. tuple 변화 단독 주장의 반례로 사용한다.
 
+local UDP rebinding proxy 실험은 같은 downlink workload를 proxy 경유로 실행한다. Chrome은 proxy address에 접속하고, proxy가 첫 client packet 이후 `REBIND_AFTER`가 지나면 server-facing UDP socket A에서 B로 전환한다.
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-rebinding-noheartbeat-smoke-20260624 \
+PROXY_ADDR=127.0.0.1:4547 \
+SERVER_ADDR=127.0.0.1:4548 \
+WORKLOAD=downlink \
+DOWNLINK_HEARTBEAT=false \
+REBIND_AFTER=2s \
+./scripts/run-chrome-h3-rebinding-proxy.sh
+```
+
+이 실험은 실제 Wi-Fi/LTE handover가 아니라 NAT rebinding에 가까운 local control이다. qlog `PATH_CHALLENGE`/`PATH_RESPONSE`와 server tuple 변화가 있어도 Chrome NetLog에서 target QUIC session이 2개이면 session continuity claim으로 쓰면 안 된다.
+
 ## 5.1 `tools/run_chrome_cdp_navigation.js`
 
 Chrome을 DevTools Protocol로 열고 지정한 real-time hold 구간 동안 page를 유지한 뒤 DOM과 body dataset을 저장한다. `--dump-dom` runner에서 JavaScript timer나 virtual time 때문에 heartbeat timing이 왜곡될 때 사용한다.

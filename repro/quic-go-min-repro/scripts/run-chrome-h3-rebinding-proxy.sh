@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPRO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$(cd "$REPRO_DIR/../.." && pwd)"
+cd "$REPRO_DIR"
+
+CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
+RUN_ID="${RUN_ID:-chrome-h3-rebinding-proxy-$(date -u +%Y%m%dT%H%M%SZ)}"
+ARTIFACT_DIR="${ARTIFACT_DIR:-artifacts/${RUN_ID}}"
+PROXY_ADDR="${PROXY_ADDR:-127.0.0.1:4443}"
+SERVER_ADDR="${SERVER_ADDR:-127.0.0.1:4444}"
+REBIND_AFTER="${REBIND_AFTER:-3s}"
+WORKLOAD="${WORKLOAD:-downlink}"
+TIMEOUT="${TIMEOUT:-45s}"
+CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-35}"
+CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-22}"
+CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
+NODE_BIN="${NODE_BIN:-node}"
+
+case "$WORKLOAD" in
+  downlink)
+    DOWNLINK_DURATION_MS="${DOWNLINK_DURATION_MS:-15000}"
+    DOWNLINK_CHUNKS="${DOWNLINK_CHUNKS:-15}"
+    DOWNLINK_BYTES="${DOWNLINK_BYTES:-65536}"
+    DOWNLINK_HEARTBEAT="${DOWNLINK_HEARTBEAT:-false}"
+    DOWNLINK_HEARTBEAT_DELAY_MS="${DOWNLINK_HEARTBEAT_DELAY_MS:-$((DOWNLINK_DURATION_MS / 2))}"
+    DOWNLINK_COMPLETION_GRACE_MS="${DOWNLINK_COMPLETION_GRACE_MS:-$((DOWNLINK_DURATION_MS + 1000))}"
+    COMPLETION_GRACE="${COMPLETION_GRACE:-${DOWNLINK_COMPLETION_GRACE_MS}ms}"
+    REQUEST_PATH="${REQUEST_PATH:-/browser-downlink?duration_ms=${DOWNLINK_DURATION_MS}&chunks=${DOWNLINK_CHUNKS}&bytes=${DOWNLINK_BYTES}&heartbeat=${DOWNLINK_HEARTBEAT}&heartbeat_delay_ms=${DOWNLINK_HEARTBEAT_DELAY_MS}&label=chrome-rebinding-downlink}"
+    if [[ "$DOWNLINK_HEARTBEAT" == "true" || "$DOWNLINK_HEARTBEAT" == "1" ]]; then
+      EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-3}"
+    else
+      EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
+    fi
+    ;;
+  *)
+    echo "unsupported WORKLOAD=$WORKLOAD" >&2
+    exit 2
+    ;;
+esac
+
+mkdir -p "$ARTIFACT_DIR/bin" "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/certs" "$ARTIFACT_DIR/logs" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/qlog" "$ARTIFACT_DIR/keylog"
+
+if [[ ! -x "$CHROME_BIN" ]]; then
+  echo "Chrome binary not found or not executable: $CHROME_BIN" >&2
+  exit 2
+fi
+
+CERT_FILE="$ARTIFACT_DIR/certs/server.pem"
+KEY_FILE="$ARTIFACT_DIR/certs/server-key.pem"
+SPKI_FILE="$ARTIFACT_DIR/certs/server.spki"
+
+openssl req -x509 -newkey rsa:2048 -nodes \
+  -keyout "$KEY_FILE" \
+  -out "$CERT_FILE" \
+  -days 1 \
+  -subj "/CN=quic-cm-repro.local" \
+  -addext "subjectAltName=DNS:localhost,DNS:quic-cm-repro.local,IP:127.0.0.1,IP:::1" \
+  >/dev/null 2>&1
+
+SPKI_HASH="$(
+  openssl x509 -pubkey -noout -in "$CERT_FILE" |
+    openssl pkey -pubin -outform der |
+    openssl dgst -sha256 -binary |
+    base64
+)"
+printf '%s\n' "$SPKI_HASH" >"$SPKI_FILE"
+
+QUIC_CM_CERT_FILE="$CERT_FILE" \
+QUIC_CM_KEY_FILE="$KEY_FILE" \
+EXPECTED_REQUESTS="$EXPECTED_REQUESTS" \
+ARTIFACT_DIR="$ARTIFACT_DIR" \
+LISTEN_ADDR="$SERVER_ADDR" \
+TIMEOUT="$TIMEOUT" \
+COMPLETION_GRACE="${COMPLETION_GRACE:-500ms}" \
+./scripts/run-h3-server.sh >"$ARTIFACT_DIR/logs/server-wrapper.log" 2>&1 &
+SERVER_PID=$!
+
+go build -o "$ARTIFACT_DIR/bin/udprebindproxy" ./cmd/udprebindproxy
+
+"$ARTIFACT_DIR/bin/udprebindproxy" \
+  --listen "$PROXY_ADDR" \
+  --server "$SERVER_ADDR" \
+  --switch-after "$REBIND_AFTER" \
+  --timeout "$TIMEOUT" \
+  --log "$ARTIFACT_DIR/logs/rebinding-proxy.jsonl" \
+  --result "$ARTIFACT_DIR/results/rebinding-proxy.json" \
+  >"$ARTIFACT_DIR/logs/rebinding-proxy.stdout.log" 2>&1 &
+PROXY_PID=$!
+
+cleanup() {
+  if kill -0 "$SERVER_PID" >/dev/null 2>&1; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" >/dev/null 2>&1 || true
+  fi
+  if kill -0 "$PROXY_PID" >/dev/null 2>&1; then
+    kill "$PROXY_PID" >/dev/null 2>&1 || true
+    wait "$PROXY_PID" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT
+
+sleep 2
+
+"$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
+  --chrome-bin "$CHROME_BIN" \
+  --artifact-dir "$ARTIFACT_DIR" \
+  --url "https://${PROXY_ADDR}${REQUEST_PATH}" \
+  --origin-to-force-quic-on "$PROXY_ADDR" \
+  --spki-hash "$SPKI_HASH" \
+  --netlog-name "netlog.json" \
+  --dump-name "dump-dom.txt" \
+  --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
+  --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
+  --hold-seconds "$CHROME_HOLD_SECONDS" || CHROME_EXIT=$?
+CHROME_EXIT="${CHROME_EXIT:-0}"
+
+SERVER_EXIT=0
+wait "$SERVER_PID" || SERVER_EXIT=$?
+
+PROXY_EXIT=0
+if kill -0 "$PROXY_PID" >/dev/null 2>&1; then
+  kill "$PROXY_PID" >/dev/null 2>&1 || true
+fi
+wait "$PROXY_PID" || PROXY_EXIT=$?
+trap - EXIT
+
+python3 "$PROJECT_ROOT/tools/classify_chrome_h3_artifacts.py" "$ARTIFACT_DIR" \
+  --addr "$PROXY_ADDR" \
+  --expected-requests "$EXPECTED_REQUESTS" \
+  --workload "rebinding-proxy-${WORKLOAD}" \
+  --chrome-exit "$CHROME_EXIT" \
+  --server-exit "$SERVER_EXIT" \
+  --output "$ARTIFACT_DIR/results/chrome-summary.json"
+
+python3 - "$ARTIFACT_DIR/results/chrome-summary.json" "$ARTIFACT_DIR/results/rebinding-proxy.json" "$PROXY_EXIT" <<'PY'
+import json
+import sys
+summary_path, proxy_path, proxy_exit = sys.argv[1:]
+summary = json.load(open(summary_path, encoding="utf-8"))
+proxy = json.load(open(proxy_path, encoding="utf-8")) if __import__("pathlib").Path(proxy_path).exists() else {}
+summary["rebinding_proxy"] = {
+    "proxy_exit": int(proxy_exit),
+    "switched": proxy.get("switched"),
+    "upstream_a_addr": proxy.get("upstream_a_addr"),
+    "upstream_b_addr": proxy.get("upstream_b_addr"),
+    "client_packets": proxy.get("client_packets"),
+    "server_packets_a": proxy.get("server_packets_a"),
+    "server_packets_b": proxy.get("server_packets_b"),
+}
+with open(summary_path, "w", encoding="utf-8") as fp:
+    json.dump(summary, fp, indent=2)
+    fp.write("\n")
+print(json.dumps(summary, indent=2))
+PY

@@ -1,11 +1,11 @@
 {
   "generated": "2026-06-24",
   "public_safe": true,
-  "experiment_trials": 43,
+  "experiment_trials": 45,
   "experiment_status_counts": {
     "PASS": 25,
-    "PASS_FEASIBILITY": 1,
-    "PASS_NEGATIVE_CONTROL": 17
+    "PASS_FEASIBILITY": 2,
+    "PASS_NEGATIVE_CONTROL": 18
   },
   "verification": {
     "checks": "56",
@@ -16,7 +16,7 @@
     "available": "yes",
     "status": "completed",
     "conclusion": "success",
-    "run_id": "28104160388"
+    "run_id": "28104410419"
   },
   "final_browser_handover": "0/6",
   "planned_execution_state_counts": {
