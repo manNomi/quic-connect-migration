@@ -1821,7 +1821,30 @@ python3 tools/build_p0_unblock_status.py \
 - `controlled_public_config_present`, `public_origin_host_configured`, `public_origin_url_configured`, `tls_config_present`가 P0 baseline을 막는 now gate다.
 - `baseline_summary_ready`, `network_change_command_present`, `desktop_secondary_path_ready`는 baseline 등록 이후 active trial gate다.
 
-## 41. Artifact 정책
+## 41. P0 baseline execution packet 재생성
+
+P0 baseline trial을 private config 작성부터 artifact 등록까지 stage별로 실행 가능한 패킷으로 만든다.
+
+```bash
+python3 tools/build_p0_baseline_execution_packet.py \
+  --matrix data/final-protocol-readiness-matrix-20260624.csv \
+  --scorecard data/final-trial-acceptance-scorecard-20260624.csv \
+  --output docs/results/p0-baseline-execution-packet-20260624.md \
+  --csv-output data/p0-baseline-execution-packet-20260624.csv
+```
+
+성공 기준:
+
+- stage 0은 private config 작성이고, needed-now gate가 남아 있으면 blocked다.
+- stage 1은 preflight이며, required gate가 남아 있으면 server/client capture로 넘어가지 않는다.
+- stage 2 이후는 origin server, browser client, artifact validation, CSV append 순서를 유지한다.
+
+현재 관찰된 기준:
+
+- P0 baseline은 아직 `blocked_by_readiness`다.
+- server/client capture는 private config와 public origin baseline preflight가 통과한 뒤에만 실행해야 한다.
+
+## 42. Artifact 정책
 
 commit 가능한 것:
 

@@ -99,6 +99,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     p0_unblock_status = "docs/results/p0-unblock-status-20260624.md"
     p0_unblock_status_csv = "data/p0-unblock-status-20260624.csv"
     p0_unblock_status_input = "data/p0-unblock-status-20260624.csv"
+    p0_baseline_execution_packet = "docs/results/p0-baseline-execution-packet-20260624.md"
+    p0_baseline_execution_packet_csv = "data/p0-baseline-execution-packet-20260624.csv"
+    p0_baseline_execution_packet_input = "data/p0-baseline-execution-packet-20260624.csv"
     research_status_dashboard = "docs/results/research-status-dashboard-20260624.md"
     research_status_dashboard_json = "data/research-status-dashboard-20260624.json"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
@@ -148,6 +151,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         p0_unblock_status = str(generated_dir / "p0-unblock-status.md")
         p0_unblock_status_csv = str(generated_dir / "p0-unblock-status.csv")
         p0_unblock_status_input = p0_unblock_status_csv
+        p0_baseline_execution_packet = str(generated_dir / "p0-baseline-execution-packet.md")
+        p0_baseline_execution_packet_csv = str(generated_dir / "p0-baseline-execution-packet.csv")
+        p0_baseline_execution_packet_input = p0_baseline_execution_packet_csv
         research_status_dashboard = str(generated_dir / "research-status-dashboard.md")
         research_status_dashboard_json = str(generated_dir / "research-status-dashboard.json")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
@@ -188,6 +194,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_trial_acceptance_scorecard.py",
                 "tools/build_final_protocol_readiness_matrix.py",
                 "tools/build_p0_unblock_status.py",
+                "tools/build_p0_baseline_execution_packet.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
@@ -228,6 +235,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_trial_acceptance_scorecard.py",
                 "tools/test_build_final_protocol_readiness_matrix.py",
                 "tools/test_build_p0_unblock_status.py",
+                "tools/test_build_p0_baseline_execution_packet.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
@@ -473,6 +481,29 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "p0_baseline_execution_packet_regression",
+            [python_bin, "tools/test_build_p0_baseline_execution_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "p0_baseline_execution_packet",
+            [
+                python_bin,
+                "tools/build_p0_baseline_execution_packet.py",
+                "--matrix",
+                final_protocol_readiness_matrix_csv,
+                "--scorecard",
+                final_trial_acceptance_scorecard_csv,
+                "--output",
+                p0_baseline_execution_packet,
+                "--csv-output",
+                p0_baseline_execution_packet_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
             "research_status_dashboard_regression",
             [python_bin, "tools/test_build_research_status_dashboard.py"],
             {0},
@@ -495,6 +526,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 replication_run_plan_input,
                 "--p0-unblock",
                 p0_unblock_status_input,
+                "--p0-baseline-execution-packet",
+                p0_baseline_execution_packet_input,
             ],
             {0},
             30,
