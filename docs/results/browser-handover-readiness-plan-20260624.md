@@ -10,27 +10,34 @@ Chrome public natural H3 baseline과 public Alt-Svc target survey 이후, 실제
 
 ## 2. 현재 readiness 점검
 
-확인 명령:
+수동 확인에 더해 다음 도구를 추가했다.
+
+파일:
+
+- `tools/check_handover_readiness.py`
+- `data/handover-readiness-20260624.json`
+
+실행:
 
 ```bash
-command -v adb
-adb devices
-networksetup -listallnetworkservices
-ifconfig
-command -v aws
-aws sts get-caller-identity
+python3 tools/check_handover_readiness.py --format markdown
+python3 tools/check_handover_readiness.py --format json --output data/handover-readiness-20260624.json
 ```
 
-관찰:
+현재 도구 출력 요약:
 
 | 항목 | 결과 | 해석 |
 | --- | --- | --- |
 | ADB | 설치됨 | Android/Cronet 실험 도구는 있음 |
 | Android device | 연결된 device 없음 | Android Chrome/Cronet handover는 지금 즉시 실행 불가 |
-| active local interface | `en0` Wi-Fi, `lo0`, `awdl0` | 실제 active path switch를 만들 보조 data interface가 확인되지 않음 |
+| active local interface | `en0` Wi-Fi | 실제 active path switch를 만들 보조 data interface가 확인되지 않음 |
 | network services | `USB 10/100 LAN`, `Thunderbolt Bridge`, `Wi-Fi`, `iPhone USB` | `iPhone USB`는 후보지만 현재 active IP evidence는 없음 |
 | AWS CLI | 설치됨 | controlled public origin 자동 구축 후보 |
-| AWS identity | readiness check에서 caller identity 확인 안 됨 | public origin 자동 구축 전 credential/profile 확인 필요 |
+| AWS identity | `false` | public origin 자동 구축 전 credential/profile 확인 필요 |
+| desktop handover ready | `false` | active non-loopback IPv4 interface가 2개 이상 필요 |
+| Android handover ready | `false` | ADB device가 필요 |
+
+공개용 JSON에는 raw `ifconfig`, ADB serial, AWS identity 원문을 저장하지 않는다. 필요할 때만 `--include-command-output`을 사용한다.
 
 ## 3. 지금 실행하면 안 되는 것
 

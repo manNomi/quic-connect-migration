@@ -273,7 +273,31 @@ python3 tools/check_public_origin_readiness.py \
 
 이 도구가 통과해도 migration이 증명되는 것은 아니다. Chrome NetLog와 server qlog를 포함한 no-change natural H3 baseline을 추가로 통과해야 한다.
 
-## 10. 실험 실행 코드
+## 10. `tools/check_handover_readiness.py`
+
+Chrome/Cronet handover 실험을 실행해도 되는 로컬 상태인지 확인한다.
+
+실행:
+
+```bash
+python3 tools/check_handover_readiness.py --format markdown
+python3 tools/check_handover_readiness.py --format json --output data/handover-readiness-20260624.json
+```
+
+확인 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| `chrome_found` | Chrome binary가 실행 가능한지 |
+| `adb_found`, `adb_devices` | Android 실험 도구와 연결 device 여부 |
+| `active_ipv4_interfaces` | active non-loopback IPv4 interface 목록 |
+| `secondary_path_ready` | desktop path-change 실험에 필요한 두 번째 active path 여부 |
+| `aws_identity_ok` | controlled public origin 자동 구축을 위한 AWS identity 여부 |
+| `blockers` | 지금 handover를 실행하지 말아야 하는 이유 |
+
+기본 출력은 공개 repo에 넣을 수 있도록 raw command output을 저장하지 않는다. 로컬 디버깅이 필요할 때만 `--include-command-output`을 사용한다.
+
+## 11. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -316,7 +340,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 11. 최소 검증 세트
+## 12. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -326,6 +350,7 @@ python3 tools/summarize_experiment_results.py --format markdown
 python3 tools/scan_implementation_evidence.py repro/quic-go-min-repro --format markdown
 python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt --format markdown
 python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
+python3 tools/check_handover_readiness.py --format markdown
 
 cd repro/quic-go-min-repro
 go test ./...

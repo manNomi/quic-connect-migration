@@ -646,6 +646,7 @@ network-change 판정 기준:
 
 - [실험 결과 CSV](../data/experiment-results.csv)
 - [구현체 조사 CSV](../data/implementation-survey.csv)
+- [handover readiness JSON](../data/handover-readiness-20260624.json)
 - [문헌 조사 CSV](../data/literature-review-tracker.csv)
 - [public Alt-Svc endpoint survey CSV](../data/public-alt-svc-survey-20260624.csv)
 - [quiche path-event timeline](../data/quiche-path-event-timeline.csv)

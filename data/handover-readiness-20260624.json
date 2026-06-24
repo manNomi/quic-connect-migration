@@ -1,0 +1,63 @@
+{
+  "check_date": "2026-06-24",
+  "chrome_found": true,
+  "chrome_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "adb_found": true,
+  "adb_devices": [],
+  "android_ready": false,
+  "network_services": [
+    "USB 10/100 LAN",
+    "Thunderbolt Bridge",
+    "Wi-Fi",
+    "iPhone USB"
+  ],
+  "active_ipv4_interfaces": [
+    {
+      "name": "en0",
+      "active": true,
+      "ipv4": [
+        "192.168.32.190"
+      ]
+    }
+  ],
+  "secondary_path_ready": false,
+  "aws_found": true,
+  "aws_identity_ok": false,
+  "aws_identity_redacted": "",
+  "disk_available_gib": 5.02,
+  "blockers": [
+    "Need at least two active non-loopback IPv4 interfaces for desktop path-change experiments",
+    "No Android device connected over ADB",
+    "AWS caller identity is not available for automated public-origin provisioning"
+  ],
+  "commands": {
+    "adb_devices": {
+      "command": "adb devices",
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "network_services": {
+      "command": "networksetup -listallnetworkservices",
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "ifconfig": {
+      "command": "ifconfig",
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "aws_identity": {
+      "command": "aws sts get-caller-identity --output json",
+      "found": true,
+      "exit_code": 254,
+      "stdout": "",
+      "stderr": ""
+    }
+  }
+}
