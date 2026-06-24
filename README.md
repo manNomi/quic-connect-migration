@@ -31,7 +31,8 @@
 19. inactive interface toggle 대조군에서는 command exit은 0이었지만 client path snapshot은 `no_client_path_change_observed`였고 qlog path validation도 없었다.
 20. Safari controlled public network-change harness를 추가하고, Chrome NetLog가 없는 Safari 결과는 `PASS_FEASIBILITY` 수준으로 별도 분류하도록 했다.
 21. Android Chrome controlled public network-change harness를 추가하고, ADB 기반 navigation과 Android raw network snapshot 수집 경로를 준비했다.
-22. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+22. 최종 browser handover protocol을 만족하기 위한 10개 실행 계획과 명령 template를 생성했다.
+23. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -72,6 +73,7 @@
 │   ├── check_handover_readiness.py
 │   ├── check_controlled_public_experiment_readiness.py
 │   ├── check_final_browser_handover_readiness.py
+│   ├── plan_final_browser_handover_runs.py
 │   ├── check_browser_cm_observability.py
 │   ├── classify_controlled_public_h3_baseline.py
 │   ├── classify_controlled_public_h3_network_change.py
@@ -111,6 +113,7 @@
 - [Android Chrome controlled public H3 network-change harness](docs/results/android-chrome-controlled-public-network-change-harness-20260624.md)
 - [Final browser handover experiment protocol](docs/results/final-browser-handover-experiment-protocol-20260624.md)
 - [Final browser handover readiness](docs/results/final-browser-handover-readiness-20260624.md)
+- [Final browser handover run plan](docs/results/final-browser-handover-run-plan-20260624.md)
 - [Final browser handover result registration guide](docs/results/final-browser-handover-result-registration-guide-20260624.md)
 - [Final browser handover trial audit](docs/results/final-browser-handover-trial-audit-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)

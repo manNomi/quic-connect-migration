@@ -840,3 +840,35 @@ python3 tools/check_final_browser_handover_readiness.py \
 ```
 
 현재 환경처럼 준비가 덜 된 상태에서는 exit 1을 반환한다. 이 실패는 본 실험 blocker를 드러내는 정상적인 readiness 결과다.
+
+## 27. `tools/plan_final_browser_handover_runs.py`
+
+최종 browser/mobile handover 본 실험을 완료하기 위해 어떤 trial을 어떤 순서와 명령으로 실행해야 하는지 생성한다. 이 도구는 실험을 실행하지 않으며, 기본 출력은 실제 도메인이나 network-change 명령이 새지 않도록 public template 값만 사용한다.
+
+실행:
+
+```bash
+python3 tools/plan_final_browser_handover_runs.py \
+  --output docs/results/final-browser-handover-run-plan-20260624.md
+```
+
+로컬 private config 값을 반영한 실행 계획은 추적 문서가 아니라 임시 경로에 생성한다.
+
+```bash
+python3 tools/plan_final_browser_handover_runs.py \
+  --use-local-config \
+  --output /tmp/final-browser-handover-run-plan.md
+```
+
+기본 계획은 다음 요구사항을 채운다.
+
+| requirement | planned |
+| --- | ---: |
+| Chrome controlled public application H3 baseline | 1 |
+| Chrome downlink no-heartbeat no-change baseline | 1 |
+| Chrome downlink heartbeat no-change baseline | 1 |
+| Chrome downlink no-heartbeat active CM | 3 |
+| Chrome downlink heartbeat active CM | 3 |
+| Safari P1 feasibility | 1 |
+
+각 trial마다 origin/server terminal 명령과 browser/client terminal 명령을 분리해서 출력한다. 결과 row를 `data/experiment-results.csv`에 등록한 뒤 `audit_final_browser_handover_trials.py --require-complete`가 exit 0이 되어야 논문 Results에서 본 실험 완료를 주장할 수 있다.

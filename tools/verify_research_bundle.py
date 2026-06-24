@@ -71,12 +71,14 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     paper_tables = "docs/results/paper-tables-20260624.md"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
     final_readiness = "docs/results/final-browser-handover-readiness-20260624.md"
+    final_run_plan = "docs/results/final-browser-handover-run-plan-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
         final_readiness = str(generated_dir / "final-browser-handover-readiness.md")
+        final_run_plan = str(generated_dir / "final-browser-handover-run-plan.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         research_audit = str(generated_dir / "research-bundle-audit.md")
 
@@ -90,6 +92,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_final_browser_handover_trials.py",
                 "tools/audit_research_bundle.py",
                 "tools/check_final_browser_handover_readiness.py",
+                "tools/plan_final_browser_handover_runs.py",
                 "tools/test_final_browser_handover_trial_audit.py",
                 "tools/verify_research_bundle.py",
                 "tools/run_android_chrome_navigation.py",
@@ -128,6 +131,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             [python_bin, "tools/check_final_browser_handover_readiness.py", "--output", final_readiness],
             {1},
             60,
+        ),
+        (
+            "final_browser_handover_run_plan",
+            [python_bin, "tools/plan_final_browser_handover_runs.py", "--output", final_run_plan],
+            {0},
+            30,
         ),
         (
             "artifact_storage_report",
