@@ -1,0 +1,52 @@
+# Results
+
+## RQ1. Do deployed QUIC implementations expose usable connection migration primitives?
+
+Our implementation survey and local/EC2 positive controls show that QUIC connection migration is not merely a specification-level feature. In quic-go, active migration can be driven through the `AddPath -> Probe -> Switch` sequence. In both local direct-origin and EC2 direct-origin experiments, payload checksums remained valid across migration and qlog exposed path validation evidence, including `PATH_CHALLENGE` and `PATH_RESPONSE`.
+
+Thus, the research question should not be framed as “connection migration is unused because it is not implemented.” A more defensible framing is that transport primitives exist, but browser policy, deployment routing, and application workloads determine whether those primitives translate into web task continuity.
+
+## RQ2. Does the deployment path preserve migration continuity?
+
+The AWS NLB experiments show that deployment routing directly affects migration maturity. With NLB `TCP_QUIC :443`, continuity was preserved when the QUIC-LB plaintext connection ID format matched the registered `QuicServerId`. In contrast, malformed connection IDs or mismatched Server IDs caused QUIC application payload failure even when target health checks remained green.
+
+This means HTTP/3 support at a CDN or load balancer is insufficient evidence for end-to-end QUIC connection migration. CID routing, backend affinity, target protocol behavior, and qlog evidence must be evaluated together.
+
+## RQ3. Can HTTP/3 application tasks complete after migration?
+
+In the controlled quic-go client setting, HTTP/3 post-migration request continuity and mid-flight upload/download continuity were observed. In local direct-origin and AWS NLB `TCP_QUIC :443` conditions, 1 MiB upload and download workloads completed without manual retry, while qlog retained HTTP/3 frame and path validation evidence.
+
+However, this result applies to a custom controlled client. It cannot be directly generalized to browser workloads, where HTTP/3 discovery, certificate trust, client policy, JavaScript timers, and page lifecycle behavior can alter the outcome.
+
+## RQ4. Is Chrome browser HTTP/3 workload evidence sufficient?
+
+With Chrome 149 headless and a forced local QUIC origin, single request, page-subresource sequence, polling, slow subresource, and downlink-dominant streaming workloads reached the quic-go HTTP/3 server. Server request logs, Chrome NetLog, and qlog jointly supported application HTTP/3 evidence.
+
+In contrast, natural Alt-Svc local controls did not produce confirmed application HTTP/3 requests under self-signed or mkcert local origins. Some runs produced QUIC/H3 candidate evidence, but the application request still fell back or failed due to certificate validation or broken alternative service state. Public third-party endpoints produced discovery hints, but those hints were not sufficient to confirm application HTTP/3.
+
+Therefore, browser migration experiments require a controlled public WebPKI origin and a passing application HTTP/3 baseline before any network-change result can be interpreted.
+
+## RQ5. What evidence is required for a browser-level connection migration claim?
+
+The Chrome CDP downlink/heartbeat controls provide the strongest caution for browser-level interpretation. In a no-change downlink workload without heartbeat, the server observed one remote tuple and Chrome reported one target QUIC session. In a no-change downlink workload with heartbeat, the server observed two remote tuples and Chrome reported two target QUIC sessions. In an inactive-interface-toggle control, the command exited successfully, but the client path snapshot reported `no_client_path_change_observed`, and qlog showed no path validation.
+
+Thus, a source tuple change at the server is not sufficient evidence of browser connection migration. Heartbeats or browser connection management can create multiple QUIC sessions without migration. The classifier therefore separates these cases as `multiple_quic_sessions_without_network_change` or `multiple_quic_sessions_without_client_path_change`.
+
+## Overall Findings
+
+The current results support the following claims.
+
+1. QUIC connection migration primitives work in controlled implementations and selected deployment paths.
+2. HTTP/3 application workloads can complete after migration in controlled clients.
+3. LB/CDN/proxy paths can determine success or failure through CID routing and backend affinity.
+4. Browser experiments require application HTTP/3 baseline, active client path change, qlog path validation, and browser session continuity evidence.
+5. Tuple changes or NetLog mode events alone are not sufficient to claim connection migration success.
+
+The current results do not yet support the following claims.
+
+1. Chrome preserves HTTP/3 connection migration across a real Wi-Fi/LTE handover.
+2. Safari preserves HTTP/3 connection migration across a real handover.
+3. Managed CDN edge deployments preserve end-to-end QUIC connection migration.
+4. Service Worker recovery or application heartbeat improves real handover continuity.
+
+These claims require follow-up experiments with a controlled public origin, an active secondary network path, Android/Safari observability, and packet capture.

@@ -102,6 +102,8 @@
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
+- [논문 Results 섹션 한국어](paper/results-section-ko.md)
+- [논문 Results 섹션 영어](paper/results-section-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)
 - [구현체 조사 CSV](data/implementation-survey.csv)
 
