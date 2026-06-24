@@ -17,6 +17,8 @@ from typing import Any
 from build_paper_tables import build_markdown, load_rows
 from check_browser_cm_observability import build_readiness as build_observability_readiness
 from check_handover_readiness import build_readiness as build_handover_readiness
+from report_artifact_storage import build_report as build_storage_report
+from report_artifact_storage import human_size
 
 
 REQUIRED_FILES = [
@@ -32,6 +34,7 @@ REQUIRED_FILES = [
     "paper/results-section-ko.md",
     "paper/results-section-en.md",
     "tools/build_paper_tables.py",
+    "tools/report_artifact_storage.py",
     "tools/validate_publication_bundle.py",
     "repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh",
     "repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh",
@@ -97,6 +100,10 @@ def build_audit(root: Path) -> dict[str, Any]:
         "/Applications/Safari.app/Contents/MacOS/Safari",
         "/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview",
     )
+    storage = build_storage_report(
+        ["repro/quic-go-min-repro/artifacts", "harness/results"],
+        max_entries=10,
+    )
     files = file_checks(root)
     required_files_ok = all(item["exists"] for item in files)
     experiment_ids_unique = not duplicate_values(experiments, "trial_id")
@@ -131,6 +138,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         blockers.append("Android device is not connected over ADB")
     if not handover.aws_identity_ok:
         blockers.append("AWS identity is not available")
+    if handover.disk_available_gib < 5:
+        blockers.append("disk free space is below 5 GiB; large NetLog/pcap experiments should wait")
     if not public_browser_network_change_done:
         blockers.append("browser active network-change result is not done")
     if not controlled_public_result_done:
@@ -162,6 +171,12 @@ def build_audit(root: Path) -> dict[str, Any]:
             "ios_remote_capture_candidate": observability.ios_remote_capture_candidate,
             "blockers": observability.blockers,
         },
+        "storage": {
+            "disk_free_gib": storage["disk"]["free_gib"],
+            "total_artifact_bytes": storage["total_artifact_bytes"],
+            "total_artifact_human": human_size(int(storage["total_artifact_bytes"])),
+            "top_artifact_dirs": storage["top_artifact_dirs"],
+        },
         "goal_complete": goal_complete,
         "blockers": blockers,
         "required_files": files,
@@ -180,6 +195,7 @@ def markdown_bool(value: bool) -> str:
 def emit_markdown(audit: dict[str, Any]) -> str:
     handover = audit["handover"]
     observability = audit["observability"]
+    storage = audit["storage"]
     active = ", ".join(
         f"{item['name']}({','.join(item['ipv4'])})"
         for item in handover["active_ipv4_interfaces"]
@@ -214,6 +230,7 @@ def emit_markdown(audit: dict[str, Any]) -> str:
         f"| Android ready | `{markdown_bool(handover['android_ready'])}` |",
         f"| AWS identity OK | `{markdown_bool(handover['aws_identity_ok'])}` |",
         f"| disk available GiB | `{handover['disk_available_gib']}` |",
+        f"| local artifact roots total | `{storage['total_artifact_human']}` |",
         f"| Chrome NetLog ready | `{markdown_bool(observability['chrome_netlog_ready'])}` |",
         f"| Safari WebDriver ready | `{markdown_bool(observability['safari_webdriver_ready'])}` |",
         f"| packet capture tooling ready | `{markdown_bool(observability['packet_capture_tooling_ready'])}` |",

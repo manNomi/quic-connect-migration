@@ -701,3 +701,23 @@ python3 tools/audit_research_bundle.py --require-complete
 | observability readiness | Chrome NetLog, Safari WebDriver, packet capture tooling |
 
 기본 실행은 blocker가 있어도 exit 0이다. CI나 최종 제출 전처럼 목표 완료가 반드시 필요할 때만 `--require-complete`를 사용한다.
+
+## 23. `tools/report_artifact_storage.py`
+
+로컬에 남아 있는 ignored experiment artifact의 용량을 요약한다. qlog, NetLog, pcap 같은 raw artifact는 공개 저장소에 올리지 않지만, 실험을 더 진행할 수 있는 디스크 상태와 cleanup 후보는 논문 재현성 로그에 남겨야 한다.
+
+실행:
+
+```bash
+python3 tools/report_artifact_storage.py --output docs/results/artifact-storage-report-20260624.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| disk free | 현재 워크스페이스가 있는 볼륨의 여유 공간 |
+| artifact roots | ignored artifact root별 용량, 파일 수, 디렉터리 수 |
+| largest artifact directories | cleanup 우선순위를 판단할 수 있는 상위 artifact 디렉터리 |
+
+이 도구는 파일을 삭제하지 않는다. 삭제는 결과 문서화 여부를 확인한 뒤 수동으로 수행해야 한다.

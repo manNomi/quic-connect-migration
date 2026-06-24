@@ -11,7 +11,7 @@ Generated: `2026-06-24`
 | experiment trials | `35` |
 | experiment status counts | `{'PASS': 18, 'PASS_NEGATIVE_CONTROL': 16, 'PASS_FEASIBILITY': 1}` |
 | experiment ids unique | `yes` |
-| matrix items | `51` |
+| matrix items | `52` |
 | matrix ids unique | `yes` |
 | paper tables current | `yes` |
 | goal complete | `no` |
@@ -26,6 +26,7 @@ Generated: `2026-06-24`
 | Android ready | `no` |
 | AWS identity OK | `no` |
 | disk available GiB | `2.44` |
+| local artifact roots total | `908.3 MiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |
 | packet capture tooling ready | `yes` |
@@ -35,5 +36,6 @@ Generated: `2026-06-24`
 - desktop active secondary path is not ready
 - Android device is not connected over ADB
 - AWS identity is not available
+- disk free space is below 5 GiB; large NetLog/pcap experiments should wait
 - browser active network-change result is not done
 - controlled-public network-change result is not done
