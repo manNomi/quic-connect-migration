@@ -97,8 +97,10 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/draft_final_handover_result_row.py",
                 "tools/plan_artifact_cleanup.py",
                 "tools/plan_final_browser_handover_runs.py",
+                "tools/validate_final_handover_trial_artifact.py",
                 "tools/test_draft_final_handover_result_row.py",
                 "tools/test_final_browser_handover_trial_audit.py",
+                "tools/test_validate_final_handover_trial_artifact.py",
                 "tools/verify_research_bundle.py",
                 "tools/run_android_chrome_navigation.py",
                 "tools/run_safari_webdriver_navigation.py",
@@ -134,6 +136,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_handover_result_row_drafter_regression",
             [python_bin, "tools/test_draft_final_handover_result_row.py"],
+            {0},
+            30,
+        ),
+        (
+            "final_handover_trial_artifact_validator_regression",
+            [python_bin, "tools/test_validate_final_handover_trial_artifact.py"],
             {0},
             30,
         ),

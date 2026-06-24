@@ -926,3 +926,40 @@ python3 tools/plan_artifact_cleanup.py \
 | remaining external cleanup gap | repo artifact 정리만으로 목표를 못 채울 때 추가로 필요한 외부 정리 용량 |
 
 2026-06-24 현재는 artifact root 전체를 정리해도 5 GiB 목표에 약 1.7 GiB가 부족하므로, 최종 browser handover capture 전에는 저장소 외부 파일도 정리해야 한다.
+
+## 30. `tools/validate_final_handover_trial_artifact.py`
+
+단일 최종 browser/mobile handover artifact가 `data/experiment-results.csv`에 등록 가능한지, 그리고 최종 protocol requirement에 실제로 카운트되는지를 검증한다. row 생성은 `draft_final_handover_result_row.py`가 담당하고, 이 도구는 그 row가 `audit_final_browser_handover_trials.py`의 matcher와 맞는지 확인한다.
+
+실행:
+
+```bash
+python3 tools/validate_final_handover_trial_artifact.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --output /tmp/final-handover-artifact-validation.md
+```
+
+최종 protocol에 카운트되는 결과만 허용:
+
+```bash
+python3 tools/validate_final_handover_trial_artifact.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable
+```
+
+주요 출력:
+
+| 항목 | 의미 |
+| --- | --- |
+| `appendable_to_experiment_results` | CSV row로 기록 가능한지 |
+| `counts_toward_final_protocol` | final required trial로 카운트되는지 |
+| `claim_strength` | `counts_toward_final_protocol`, `p1_feasibility_counts_toward_protocol`, `negative_control_record_only` 등 |
+| `warnings` | overclaim 방지를 위한 경고 |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_validate_final_handover_trial_artifact.py
+```

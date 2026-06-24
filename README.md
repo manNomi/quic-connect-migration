@@ -33,8 +33,9 @@
 21. Android Chrome controlled public network-change harness를 추가하고, ADB 기반 navigation과 Android raw network snapshot 수집 경로를 준비했다.
 22. 최종 browser handover protocol을 만족하기 위한 10개 실행 계획과 명령 template를 생성했다.
 23. 최종 handover classifier summary를 `data/experiment-results.csv` row 초안으로 변환하는 도구와 regression test를 추가했다.
-24. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
-25. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+24. 단일 final handover artifact가 CSV 등록 가능하고 최종 protocol requirement에 실제로 카운트되는지 검증하는 validator를 추가했다.
+25. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
+26. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -83,6 +84,7 @@
 │   ├── compare_network_path_snapshots.py
 │   ├── audit_final_browser_handover_trials.py
 │   ├── draft_final_handover_result_row.py
+│   ├── validate_final_handover_trial_artifact.py
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
@@ -92,6 +94,7 @@
 │   ├── run_safari_webdriver_navigation.py
 │   ├── test_final_browser_handover_trial_audit.py
 │   ├── test_draft_final_handover_result_row.py
+│   ├── test_validate_final_handover_trial_artifact.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
@@ -121,6 +124,7 @@
 - [Final browser handover run plan](docs/results/final-browser-handover-run-plan-20260624.md)
 - [Final browser handover result registration guide](docs/results/final-browser-handover-result-registration-guide-20260624.md)
 - [Final browser handover trial audit](docs/results/final-browser-handover-trial-audit-20260624.md)
+- [Final handover trial artifact validator](docs/results/final-handover-trial-artifact-validator-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)

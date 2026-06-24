@@ -81,6 +81,17 @@ python3 tools/draft_final_handover_result_row.py \
 
 이 도구는 classifier summary를 읽어 positive CM, reconnect/multiple-session negative control, Safari/Android `PASS_FEASIBILITY`, no-change baseline row의 status/notes를 구분한다. 단, 최종 등록 전에는 raw artifact와 summary를 직접 확인한다.
 
+CSV에 붙이기 전에 단일 artifact validation을 실행한다.
+
+```bash
+python3 tools/validate_final_handover_trial_artifact.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --output /tmp/final-handover-artifact-validation.md
+```
+
+최종 protocol에 카운트되는 성공 trial만 허용하려면 `--require-final-countable`을 붙인다. 이 옵션은 reconnect/multiple-session negative control처럼 기록은 가능하지만 final CM success로 세면 안 되는 row에서 exit 1을 반환한다.
+
 row를 추가한 뒤 다음을 실행한다.
 
 ```bash
