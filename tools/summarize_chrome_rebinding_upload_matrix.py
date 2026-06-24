@@ -20,6 +20,9 @@ CSV_FIELDS = [
     "server_remote_addr_count",
     "netlog_target_quic_session_count",
     "netlog_target_using_quic_job_count",
+    "netlog_target_path_challenge_received",
+    "netlog_target_path_response_sent",
+    "netlog_target_path_validation_observed",
     "upload_sink_request_count",
     "upload_sink_request_bytes",
     "qlog_path_challenge",
@@ -40,6 +43,39 @@ def read_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+
+
+def reverse_netlog_event_types(netlog: dict[str, Any]) -> dict[int, str]:
+    event_types = netlog.get("constants", {}).get("logEventTypes", {})
+    reverse: dict[int, str] = {}
+    for name, value in event_types.items():
+        try:
+            reverse[int(value)] = str(name)
+        except (TypeError, ValueError):
+            continue
+    return reverse
+
+
+def target_netlog_path_counts(artifact_dir: Path, summary: dict[str, Any]) -> dict[str, int]:
+    target_ids = {str(item) for item in summary.get("netlog_target_quic_source_ids") or []}
+    counts = {
+        "netlog_target_path_challenge_received": 0,
+        "netlog_target_path_response_sent": 0,
+    }
+    if not target_ids:
+        return counts
+    netlog = read_json(artifact_dir / "chrome" / "netlog.json")
+    reverse_types = reverse_netlog_event_types(netlog)
+    for event in netlog.get("events", []):
+        source_id = str((event.get("source") or {}).get("id", ""))
+        if source_id not in target_ids:
+            continue
+        name = reverse_types.get(event.get("type"), str(event.get("type")))
+        if name == "QUIC_SESSION_PATH_CHALLENGE_FRAME_RECEIVED":
+            counts["netlog_target_path_challenge_received"] += 1
+        elif name == "QUIC_SESSION_PATH_RESPONSE_FRAME_SENT":
+            counts["netlog_target_path_response_sent"] += 1
+    return counts
 
 
 def proxy_forwarding_stats(artifact_dir: Path) -> dict[str, int]:
@@ -82,7 +118,12 @@ def row_from_artifact(artifact_dir: Path) -> dict[str, str]:
     qlog_counts = summary.get("qlog_counts") if isinstance(summary.get("qlog_counts"), dict) else {}
     uploads = upload_sink_records(artifact_dir, summary)
     forwarding = proxy_forwarding_stats(artifact_dir)
+    netlog_path = target_netlog_path_counts(artifact_dir, summary)
     packet_rebind_observed = forwarding["proxy_client_packets_a"] > 0 and forwarding["proxy_client_packets_b"] > 0
+    netlog_path_observed = (
+        netlog_path["netlog_target_path_challenge_received"] > 0
+        and netlog_path["netlog_target_path_response_sent"] > 0
+    )
     return {
         "run_id": artifact_dir.name,
         "status": str(summary.get("status") or "missing"),
@@ -90,6 +131,9 @@ def row_from_artifact(artifact_dir: Path) -> dict[str, str]:
         "server_remote_addr_count": str(summary.get("server_remote_addr_count") or 0),
         "netlog_target_quic_session_count": str(summary.get("netlog_target_quic_session_count") or 0),
         "netlog_target_using_quic_job_count": str(summary.get("netlog_target_using_quic_job_count") or 0),
+        "netlog_target_path_challenge_received": str(netlog_path["netlog_target_path_challenge_received"]),
+        "netlog_target_path_response_sent": str(netlog_path["netlog_target_path_response_sent"]),
+        "netlog_target_path_validation_observed": str(netlog_path_observed).lower(),
         "upload_sink_request_count": str(len(uploads)),
         "upload_sink_request_bytes": str(sum(int(item.get("request_bytes") or 0) for item in uploads)),
         "qlog_path_challenge": str(qlog_counts.get("path_challenge") or 0),
@@ -131,17 +175,20 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
         f"| classification counts | `{count_by(rows, 'classification')}` |",
         f"| upload request counts | `{count_by(rows, 'upload_sink_request_count')}` |",
         f"| packet rebinding observed counts | `{count_by(rows, 'proxy_packet_rebind_observed')}` |",
+        f"| NetLog target path validation counts | `{count_by(rows, 'netlog_target_path_validation_observed')}` |",
         "",
         "## Runs",
         "",
-        "| run | status | classification | remote tuples | Chrome QUIC sessions | upload sink requests | upload bytes | qlog PATH_CHALLENGE/PATH_RESPONSE | proxy client packets A/B | packet rebind |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |",
+        "| run | status | classification | remote tuples | Chrome QUIC sessions | upload sink requests | upload bytes | qlog PATH_CHALLENGE/PATH_RESPONSE | NetLog target PATH C/R | proxy client packets A/B | packet rebind |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |",
     ]
     for row in rows:
         lines.append(
             "| {run_id} | {status} | `{classification}` | {server_remote_addr_count} | "
             "{netlog_target_quic_session_count} | {upload_sink_request_count} | {upload_sink_request_bytes} | "
-            "{qlog_path_challenge}/{qlog_path_response} | {proxy_client_packets_a}/{proxy_client_packets_b} | "
+            "{qlog_path_challenge}/{qlog_path_response} | "
+            "{netlog_target_path_challenge_received}/{netlog_target_path_response_sent} | "
+            "{proxy_client_packets_a}/{proxy_client_packets_b} | "
             "{proxy_packet_rebind_observed} |".format(**row)
         )
     lines.extend(
@@ -149,7 +196,7 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
             "",
             "## Interpretation Boundary",
             "",
-            "Use these rows as a client-sending local control. Each run records client packets forwarded through both proxy upstream sockets, while the request-level server tuple remains stable. This strengthens the evidence boundary: request logs alone may miss packet-level rebinding, so qlog, proxy packet logs, and browser NetLog remain required. These rows do not complete the final controlled-public browser handover protocol.",
+            "Use these rows as a client-sending local control. Each run records client packets forwarded through both proxy upstream sockets, while the request-level server tuple remains stable. Chrome NetLog target-session path frames align with server qlog path validation, strengthening the evidence boundary: request logs alone may miss packet-level rebinding, so qlog, proxy packet logs, and browser NetLog remain required. These rows do not complete the final controlled-public browser handover protocol.",
         ]
     )
     return "\n".join(lines).rstrip() + "\n"

@@ -18,6 +18,7 @@ def write_summary(artifact_dir: Path, *, classification: str, sessions: int, upl
         "classification": classification,
         "server_remote_addr_count": 1,
         "netlog_target_quic_session_count": sessions,
+        "netlog_target_quic_source_ids": ["7"],
         "netlog_target_using_quic_job_count": 2,
         "qlog_counts": {"path_challenge": 1, "path_response": 1},
         "server_requests": [
@@ -50,6 +51,26 @@ def write_summary(artifact_dir: Path, *, classification: str, sessions: int, upl
         + "\n",
         encoding="utf-8",
     )
+    chrome = artifact_dir / "chrome"
+    chrome.mkdir(parents=True, exist_ok=True)
+    (chrome / "netlog.json").write_text(
+        json.dumps(
+            {
+                "constants": {
+                    "logEventTypes": {
+                        "QUIC_SESSION_PATH_CHALLENGE_FRAME_RECEIVED": 1,
+                        "QUIC_SESSION_PATH_RESPONSE_FRAME_SENT": 2,
+                    }
+                },
+                "events": [
+                    {"type": 1, "source": {"id": 7}},
+                    {"type": 2, "source": {"id": 7}},
+                    {"type": 2, "source": {"id": 99}},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
 
 
 def test_upload_rows_include_sink_bytes() -> None:
@@ -68,8 +89,10 @@ def test_upload_rows_include_sink_bytes() -> None:
         assert rows[0]["proxy_client_packets_a"] == "1"
         assert rows[0]["proxy_client_packets_b"] == "1"
         assert rows[0]["proxy_packet_rebind_observed"] == "true"
+        assert rows[0]["netlog_target_path_validation_observed"] == "true"
         markdown = emit_markdown(rows)
         assert "Chrome H3 Local UDP Rebinding Upload Summary" in markdown
+        assert "NetLog target PATH C/R" in markdown
         assert "262144" in markdown
         assert "packet rebinding observed counts" in markdown
 
