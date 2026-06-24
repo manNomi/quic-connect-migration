@@ -32,7 +32,8 @@
 20. Safari controlled public network-change harness를 추가하고, Chrome NetLog가 없는 Safari 결과는 `PASS_FEASIBILITY` 수준으로 별도 분류하도록 했다.
 21. Android Chrome controlled public network-change harness를 추가하고, ADB 기반 navigation과 Android raw network snapshot 수집 경로를 준비했다.
 22. 최종 browser handover protocol을 만족하기 위한 10개 실행 계획과 명령 template를 생성했다.
-23. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+23. 최종 handover classifier summary를 `data/experiment-results.csv` row 초안으로 변환하는 도구와 regression test를 추가했다.
+24. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -80,6 +81,7 @@
 │   ├── capture_network_path_snapshot.py
 │   ├── compare_network_path_snapshots.py
 │   ├── audit_final_browser_handover_trials.py
+│   ├── draft_final_handover_result_row.py
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
@@ -87,6 +89,7 @@
 │   ├── run_android_chrome_navigation.py
 │   ├── run_safari_webdriver_navigation.py
 │   ├── test_final_browser_handover_trial_audit.py
+│   ├── test_draft_final_handover_result_row.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py

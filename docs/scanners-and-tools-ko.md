@@ -872,3 +872,34 @@ python3 tools/plan_final_browser_handover_runs.py \
 | Safari P1 feasibility | 1 |
 
 각 trial마다 origin/server terminal 명령과 browser/client terminal 명령을 분리해서 출력한다. 결과 row를 `data/experiment-results.csv`에 등록한 뒤 `audit_final_browser_handover_trials.py --require-complete`가 exit 0이 되어야 논문 Results에서 본 실험 완료를 주장할 수 있다.
+
+## 28. `tools/draft_final_handover_result_row.py`
+
+최종 handover artifact의 classifier summary를 읽어 `data/experiment-results.csv`에 붙일 row 초안을 생성한다. 이 도구는 결과를 자동으로 확정하지 않고, 등록 실수를 줄이는 보조 도구다.
+
+실행:
+
+```bash
+python3 tools/draft_final_handover_result_row.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --format markdown \
+  --output /tmp/final-handover-row.md
+```
+
+주요 분기:
+
+| 입력 classification | CSV status/failure layer |
+| --- | --- |
+| `possible_connection_migration` + Chrome | `PASS / none` |
+| `reconnect_or_multiple_sessions` | `PASS_NEGATIVE_CONTROL / browser-reconnect-or-multiple-sessions` |
+| `possible_connection_migration_server_qlog_only` + Safari/Android | `PASS_FEASIBILITY / server-qlog-only` |
+| no-change baseline trial_id | `PASS` row에 `no_path_change_baseline` note 추가 |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_draft_final_handover_result_row.py
+```
+
+테스트는 synthetic summary에서 생성한 row가 `audit_final_browser_handover_trials.py`의 matcher에 맞게 세어지는지 확인한다.
