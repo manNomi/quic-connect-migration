@@ -359,7 +359,41 @@ python3 tools/check_handover_readiness.py --format json --output data/handover-r
 
 기본 출력은 공개 repo에 넣을 수 있도록 raw command output을 저장하지 않는다. 로컬 디버깅이 필요할 때만 `--include-command-output`을 사용한다.
 
-## 13. 실험 실행 코드
+## 13. `tools/classify_controlled_public_h3_network_change.py`
+
+controlled public origin에서 Chrome workload 중 network-change trigger를 넣은 결과를 분류한다.
+
+실행:
+
+```bash
+python3 tools/classify_controlled_public_h3_network_change.py \
+  repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001 \
+  --server-artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001 \
+  --url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
+  --output repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `server_requests.remote_addr_count` | server가 본 client tuple 종류 수 |
+| `server_qlog_has_path_validation` | server qlog의 PATH_CHALLENGE/PATH_RESPONSE evidence |
+| `network_change.exit` | network-change command exit code |
+| `netlog.target_quic_session_count` | Chrome NetLog target QUIC session 수 |
+| `netlog_has_application_h3` | Chrome NetLog application H3 evidence |
+
+classification:
+
+| classification | 의미 |
+| --- | --- |
+| `possible_connection_migration` | tuple change와 qlog path validation이 함께 관찰됨 |
+| `reconnect_or_multiple_sessions` | tuple change가 있으나 여러 QUIC session evidence |
+| `tuple_changed_without_path_validation` | tuple change가 있으나 path validation evidence 없음 |
+| `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
+| `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
+
+## 14. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -386,6 +420,7 @@ python3 tools/check_handover_readiness.py --format json --output data/handover-r
 | `scripts/run-chrome-public-h3.sh` | Chrome public WebPKI H3 discovery/application baseline |
 | `scripts/run-controlled-public-h3-server.sh` | WebPKI cert/key를 사용하는 controlled public H3 origin server wrapper |
 | `scripts/run-controlled-public-h3-browser-baseline.sh` | controlled public origin readiness + Chrome application H3 baseline wrapper |
+| `scripts/run-controlled-public-h3-network-change.sh` | baseline PASS 이후 Chrome controlled public network-change 실험 wrapper |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -402,7 +437,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 14. 최소 검증 세트
+## 15. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -414,6 +449,7 @@ python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt 
 python3 tools/scan_public_origin_readiness.py --url-file data/public-alt-svc-targets.txt --format markdown
 python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
 python3 tools/check_handover_readiness.py --format markdown
+python3 -m py_compile tools/classify_controlled_public_h3_network_change.py
 
 cd repro/quic-go-min-repro
 go test ./...

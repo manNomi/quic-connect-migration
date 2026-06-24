@@ -25,7 +25,8 @@
 13. controlled public WebPKI origin 실험을 위한 readiness checker와 server/browser wrapper를 추가했다. 이 단계는 아직 handover 결과가 아니라 다음 browser CM 실험의 통제 조건이다.
 14. handover readiness scanner 기준 현재 장비는 Chrome/ADB는 준비됐지만 Android device, active secondary network, AWS identity가 부족하다.
 15. public origin readiness survey에서는 Google/YouTube `generate_204`만 H3 discovery와 2xx lightweight workload 후보로 남았다.
-16. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+16. controlled public application H3 baseline gate와 network-change harness를 추가해, 실제 active path change 실험의 판정 기준을 server/qlog/NetLog 조합으로 고정했다.
+17. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -61,6 +62,7 @@
 │   ├── check_public_origin_readiness.py
 │   ├── check_handover_readiness.py
 │   ├── classify_controlled_public_h3_baseline.py
+│   ├── classify_controlled_public_h3_network_change.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
 │   ├── scan_qlog_events.py
@@ -77,6 +79,7 @@
 - [재현 가이드](docs/reproducibility-guide-ko.md)
 - [스캐너와 도구 설명](docs/scanners-and-tools-ko.md)
 - [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
+- [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)

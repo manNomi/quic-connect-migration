@@ -585,7 +585,52 @@ python3 tools/check_public_origin_readiness.py \
 - server request log와 qlog가 workload request를 기록한다.
 - combined classifier가 `controlled_public_application_h3_confirmed` 또는 `controlled_public_server_qlog_h3_confirmed_browser_netlog_inconclusive`를 반환한다.
 
-## 12. AWS NLB 실험 설정
+## 12. Controlled public Chrome H3 network-change
+
+application H3 baseline summary가 `status=PASS`인 뒤에만 실행한다.
+
+Server side:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
+PUBLIC_ORIGIN_HOST=h3.example.com \
+TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
+TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
+PUBLIC_ORIGIN_PORT=443 \
+EXPECTED_REQUESTS=2 \
+./scripts/run-controlled-public-h3-server.sh
+```
+
+Browser/network side:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
+NETWORK_CHANGE_AFTER_SECONDS=3 \
+NETWORK_CHANGE_CMD='...' \
+./scripts/run-controlled-public-h3-network-change.sh
+```
+
+결과 파일:
+
+```text
+artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
+```
+
+주요 판정:
+
+- `possible_connection_migration`: tuple change와 qlog path validation이 함께 관찰됨
+- `reconnect_or_multiple_sessions`: 여러 QUIC session 단서가 있어 reconnect 가능성이 큼
+- `tuple_changed_without_path_validation`: tuple은 바뀌었으나 QUIC migration evidence 부족
+- `no_path_change_after_trigger`: network-change command는 실행됐지만 active path 변화가 관찰되지 않음
+
+## 13. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
 
@@ -621,7 +666,7 @@ preflight:
 - region opt-in 상태 확인
 - default VPC/subnet 조회 가능
 
-## 13. AWS NLB transport 재현
+## 14. AWS NLB transport 재현
 
 ```bash
 WORKLOAD=transport \
@@ -640,7 +685,7 @@ PAYLOAD_BYTES=65536 \
 - summary status `PASS`
 - cleanup status `deleted-listener-lb-tg-instances-sg-keypair`
 
-## 14. AWS NLB HTTP/3 post-migration 재현
+## 15. AWS NLB HTTP/3 post-migration 재현
 
 ```bash
 WORKLOAD=h3 \
@@ -658,7 +703,7 @@ PAYLOAD_BYTES=65536 \
 - 같은 target이 두 request를 모두 수신
 - summary status `PASS`
 
-## 15. AWS NLB HTTP/3 mid-flight 재현
+## 16. AWS NLB HTTP/3 mid-flight 재현
 
 Upload:
 
@@ -689,7 +734,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 - qlog에 path validation evidence가 있음
 - summary status `PASS`
 
-## 16. Negative control 재현
+## 17. Negative control 재현
 
 잘못된 Server ID를 의도적으로 넣는다.
 
@@ -713,7 +758,7 @@ EXPECTED_OUTCOME=client-failure \
 
 이 negative control은 “HTTP/3가 켜져 있다”와 “migration continuity가 된다”가 같은 말이 아님을 보여주는 배포 계층 근거다.
 
-## 17. AWS cleanup 확인
+## 18. AWS cleanup 확인
 
 하네스는 정상 종료와 실패 종료 모두에서 cleanup trap을 실행한다. 실행 후 다음을 확인한다.
 
@@ -740,7 +785,7 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 18. Artifact 정책
+## 19. Artifact 정책
 
 commit 가능한 것:
 

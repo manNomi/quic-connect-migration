@@ -487,8 +487,10 @@ classifier:
 
 - `tools/check_public_origin_readiness.py`
 - `tools/classify_controlled_public_h3_baseline.py`
+- `tools/classify_controlled_public_h3_network_change.py`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh`
+- `repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh`
 
 목적:
 
@@ -521,6 +523,28 @@ DNS/TLS/Alt-Svc readiness check
 | `controlled_public_server_qlog_h3_confirmed_browser_netlog_inconclusive` | server/qlog는 application H3를 직접 증명하지만 browser NetLog는 discovery 수준 |
 | `controlled_public_h3_discovery_without_server_application_h3` | browser discovery는 있으나 server/qlog application H3가 없음 |
 | `controlled_public_application_h3_not_confirmed` | application H3 evidence 부족 |
+
+### 11.1 Controlled public network-change gate
+
+application H3 baseline summary가 `status=PASS`인 경우에만 active network-change 실험으로 넘어간다.
+
+추가 흐름:
+
+```text
+baseline PASS summary 확인
+  -> long-running browser workload 실행
+  -> NETWORK_CHANGE_CMD 실행
+  -> server remote tuple + server qlog path validation + Chrome NetLog 분류
+```
+
+주요 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `possible_connection_migration` | tuple change + qlog path validation + single-session 계열 evidence |
+| `reconnect_or_multiple_sessions` | tuple change는 있으나 여러 QUIC session evidence |
+| `tuple_changed_without_path_validation` | tuple change는 있으나 path validation 없음 |
+| `no_path_change_after_trigger` | network-change command는 실행됐지만 tuple 변화 없음 |
 
 ## 12. 실행 예시
 
@@ -596,7 +620,25 @@ PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6
 
 - `artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json`
 
-### 12.8 AWS NLB transport
+### 12.8 Controlled public H3 network-change
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
+NETWORK_CHANGE_AFTER_SECONDS=3 \
+NETWORK_CHANGE_CMD='...' \
+./scripts/run-controlled-public-h3-network-change.sh
+```
+
+최종 판정 파일:
+
+- `artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json`
+
+### 12.9 AWS NLB transport
 
 ```bash
 WORKLOAD=transport \
@@ -605,7 +647,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 12.9 AWS NLB HTTP/3 post-migration
+### 12.10 AWS NLB HTTP/3 post-migration
 
 ```bash
 WORKLOAD=h3 \
@@ -614,7 +656,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 12.10 AWS NLB HTTP/3 mid-flight upload
+### 12.11 AWS NLB HTTP/3 mid-flight upload
 
 ```bash
 WORKLOAD=h3-midflight-upload \
@@ -624,7 +666,7 @@ PAYLOAD_BYTES=1048576 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 12.11 AWS NLB HTTP/3 mid-flight download
+### 12.12 AWS NLB HTTP/3 mid-flight download
 
 ```bash
 WORKLOAD=h3-midflight-download \
