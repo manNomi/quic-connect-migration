@@ -113,6 +113,8 @@ endpoint:
 | --- | --- | --- |
 | POST | `/upload` | request body를 읽고 deterministic message checksum 검증 |
 | GET | `/download` | deterministic response body 생성 |
+| GET | `/browser-sequence` | Chrome page+subresource baseline용 HTML 생성 |
+| GET | `/pixel` | Chrome subresource baseline용 SVG image 생성 |
 
 특수 query:
 
@@ -330,6 +332,13 @@ script:
 
 Chrome browser가 quic-go H3 test origin으로 실제 HTTP/3 request를 보낼 수 있는지 확인한다. 이 실험은 migration 실험이 아니라 browser baseline이다.
 
+지원 workload:
+
+| `WORKLOAD` | 요청 |
+| --- | --- |
+| `single` | `GET /download?bytes=128&label=chrome-baseline` |
+| `sequence` | `GET /browser-sequence`, two `GET /pixel` subresources |
+
 흐름:
 
 ```text
@@ -346,7 +355,8 @@ openssl로 local test cert/key 생성
 
 - Chrome NetLog에 `QUIC_SESSION`이 존재
 - Chrome NetLog의 target origin `HTTP_STREAM_JOB`에 `using_quic=true`
-- server가 `GET /download` request를 수신
+- `single`에서는 server가 `GET /download` request를 수신
+- `sequence`에서는 server가 HTML page와 subresource request를 모두 수신
 - qlog에 `chosen_alpn`과 `http3:frame` evidence가 있음
 
 주의:
@@ -381,6 +391,7 @@ RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
+WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-local.sh
 ```
 
 ### 9.5 AWS NLB transport

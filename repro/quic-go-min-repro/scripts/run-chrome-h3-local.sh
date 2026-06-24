@@ -9,7 +9,22 @@ CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google 
 RUN_ID="${RUN_ID:-chrome-h3-local-$(date -u +%Y%m%dT%H%M%SZ)}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-artifacts/${RUN_ID}}"
 ADDR="${ADDR:-127.0.0.1:4443}"
-REQUEST_PATH="${REQUEST_PATH:-/download?bytes=128&label=chrome-baseline}"
+WORKLOAD="${WORKLOAD:-single}"
+case "$WORKLOAD" in
+  single)
+    REQUEST_PATH="${REQUEST_PATH:-/download?bytes=128&label=chrome-baseline}"
+    EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-1}"
+    ;;
+  sequence)
+    SEQUENCE_RESOURCES="${SEQUENCE_RESOURCES:-2}"
+    REQUEST_PATH="${REQUEST_PATH:-/browser-sequence?resources=${SEQUENCE_RESOURCES}&bytes=128&label=chrome-sequence}"
+    EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-$((SEQUENCE_RESOURCES + 1))}"
+    ;;
+  *)
+    echo "unsupported WORKLOAD=$WORKLOAD" >&2
+    exit 2
+    ;;
+esac
 TIMEOUT="${TIMEOUT:-60s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-45}"
 
@@ -42,7 +57,7 @@ printf '%s\n' "$SPKI_HASH" >"$SPKI_FILE"
 
 QUIC_CM_CERT_FILE="$CERT_FILE" \
 QUIC_CM_KEY_FILE="$KEY_FILE" \
-EXPECTED_REQUESTS=1 \
+EXPECTED_REQUESTS="$EXPECTED_REQUESTS" \
 ARTIFACT_DIR="$ARTIFACT_DIR" \
 LISTEN_ADDR="$ADDR" \
 TIMEOUT="$TIMEOUT" \
@@ -83,6 +98,7 @@ cmd = [
     f"--user-data-dir={artifact / 'chrome' / 'profile'}",
     f"--log-net-log={artifact / 'chrome' / 'netlog.json'}",
     "--net-log-capture-mode=Everything",
+    "--virtual-time-budget=5000",
     "--dump-dom",
     url,
 ]
@@ -97,7 +113,7 @@ SERVER_EXIT=0
 wait "$SERVER_PID" || SERVER_EXIT=$?
 trap - EXIT
 
-python3 - "$ARTIFACT_DIR" "$CHROME_EXIT" "$SERVER_EXIT" <<'PY'
+python3 - "$ARTIFACT_DIR" "$CHROME_EXIT" "$SERVER_EXIT" "$ADDR" "$EXPECTED_REQUESTS" "$WORKLOAD" <<'PY'
 import json
 import pathlib
 import sys
@@ -105,10 +121,13 @@ import sys
 base = pathlib.Path(sys.argv[1])
 chrome_exit = int(sys.argv[2])
 server_exit = int(sys.argv[3])
+addr = sys.argv[4]
+expected_requests = int(sys.argv[5])
+workload = sys.argv[6]
 server_path = base / "results" / "server.json"
 server = json.loads(server_path.read_text()) if server_path.exists() else {}
 netlog_path = base / "chrome" / "netlog.json"
-netlog = netlog_path.read_text(errors="ignore") if netlog_path.exists() else ""
+netlog_text = netlog_path.read_text(errors="ignore") if netlog_path.exists() else ""
 dump_path = base / "chrome" / "dump-dom.txt"
 dump = dump_path.read_text(errors="ignore") if dump_path.exists() else ""
 qlog_text = ""
@@ -116,13 +135,35 @@ for path in (base / "qlog").glob("*"):
     if path.is_file():
         qlog_text += path.read_text(errors="ignore")
 requests = server.get("requests") or []
-netlog_has_quic_session = "QUIC_SESSION" in netlog
+target_host, target_port = addr.rsplit(":", 1)
+netlog_target_quic_sessions = 0
+netlog_target_using_quic_jobs = 0
+netlog_target_url_requests = 0
+if netlog_text:
+    try:
+        netlog = json.loads(netlog_text)
+        event_types = netlog.get("constants", {}).get("logEventTypes", {})
+        reverse_types = {value: key for key, value in event_types.items()}
+        for event in netlog.get("events", []):
+            name = reverse_types.get(event.get("type"), str(event.get("type")))
+            params = event.get("params") or {}
+            if name == "QUIC_SESSION" and params.get("host") == target_host and str(params.get("port")) == target_port:
+                netlog_target_quic_sessions += 1
+            if name == "HTTP_STREAM_JOB" and params.get("destination") == f"https://{addr}" and params.get("using_quic") is True:
+                netlog_target_using_quic_jobs += 1
+            if name == "URL_REQUEST_START_JOB" and str(params.get("url", "")).startswith(f"https://{addr}/"):
+                netlog_target_url_requests += 1
+    except json.JSONDecodeError:
+        pass
+netlog_has_quic_session = netlog_target_quic_sessions > 0
 qlog_has_h3 = "http3:frame" in qlog_text
-request_reached_server = server.get("ok") is True and len(requests) >= 1
-passed = request_reached_server and netlog_has_quic_session and qlog_has_h3
+request_reached_server = server.get("ok") is True and len(requests) >= expected_requests
+passed = request_reached_server and netlog_has_quic_session and netlog_target_using_quic_jobs > 0 and qlog_has_h3
 summary = {
     "status": "PASS" if passed else "FAIL",
     "artifact_dir": str(base),
+    "workload": workload,
+    "expected_requests": expected_requests,
     "chrome_exit": chrome_exit,
     "chrome_completed_cleanly": chrome_exit == 0,
     "chrome_timed_out_after_request": chrome_exit == 124 and request_reached_server,
@@ -131,8 +172,13 @@ summary = {
     "server_error": server.get("error"),
     "server_request_count": len(requests),
     "server_remote_addr": requests[0].get("remote_addr") if requests else None,
-    "netlog_has_forced_origin": "origin-to-force-quic" in netlog or "127.0.0.1" in netlog,
+    "server_remote_addrs": sorted({request.get("remote_addr") for request in requests if request.get("remote_addr")}),
+    "server_request_labels": [request.get("label") for request in requests],
+    "netlog_has_forced_origin": "origin-to-force-quic" in netlog_text or addr in netlog_text,
     "netlog_has_quic_session": netlog_has_quic_session,
+    "netlog_target_quic_session_count": netlog_target_quic_sessions,
+    "netlog_target_using_quic_job_count": netlog_target_using_quic_jobs,
+    "netlog_target_url_request_count": netlog_target_url_requests,
     "qlog_has_h3": qlog_has_h3,
     "qlog_has_path_validation": "path_challenge" in qlog_text or "path_response" in qlog_text,
     "dump_dom_bytes": len(dump),

@@ -1,13 +1,17 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html"
 	"io"
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"sync"
@@ -21,20 +25,21 @@ import (
 )
 
 type requestRecord struct {
-	Label            string `json:"label"`
-	Method           string `json:"method"`
-	Path             string `json:"path"`
-	RemoteAddr       string `json:"remote_addr"`
-	RequestBytes     int    `json:"request_bytes"`
-	RequestSHA256    string `json:"request_sha256,omitempty"`
-	ResponseBytes    int    `json:"response_bytes"`
-	ResponseSHA256   string `json:"response_sha256,omitempty"`
-	HandledAt        string `json:"handled_at"`
-	Workload         string `json:"workload"`
-	StreamResponse   bool   `json:"stream_response,omitempty"`
-	ChunkBytes       int    `json:"chunk_bytes,omitempty"`
-	ChunkDelayMillis int64  `json:"chunk_delay_millis,omitempty"`
-	DecodeSuccessful bool   `json:"decode_successful"`
+	Label               string `json:"label"`
+	Method              string `json:"method"`
+	Path                string `json:"path"`
+	RemoteAddr          string `json:"remote_addr"`
+	RequestBytes        int    `json:"request_bytes"`
+	RequestSHA256       string `json:"request_sha256,omitempty"`
+	ResponseBytes       int    `json:"response_bytes"`
+	ResponseSHA256      string `json:"response_sha256,omitempty"`
+	ResponseContentType string `json:"response_content_type,omitempty"`
+	HandledAt           string `json:"handled_at"`
+	Workload            string `json:"workload"`
+	StreamResponse      bool   `json:"stream_response,omitempty"`
+	ChunkBytes          int    `json:"chunk_bytes,omitempty"`
+	ChunkDelayMillis    int64  `json:"chunk_delay_millis,omitempty"`
+	DecodeSuccessful    bool   `json:"decode_successful"`
 }
 
 type serverResult struct {
@@ -185,7 +190,7 @@ func run(addr, logPath, resultPath, keyLogPath, qlogDir string, timeout, complet
 			"chunk_delay_ms":  record.ChunkDelayMillis,
 			"count":           count,
 		})
-		if err := writeWorkloadResponse(w, status, response, record.StreamResponse, record.ChunkBytes, time.Duration(record.ChunkDelayMillis)*time.Millisecond); err != nil {
+		if err := writeWorkloadResponse(w, status, response, record.ResponseContentType, record.StreamResponse, record.ChunkBytes, time.Duration(record.ChunkDelayMillis)*time.Millisecond); err != nil {
 			_ = logger.Log("response_write_error", map[string]any{
 				"label": record.Label,
 				"error": err.Error(),
@@ -280,6 +285,7 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		return record, http.StatusOK, []byte("ok\n")
 	case r.Method == http.MethodGet && r.URL.Path == "/download":
 		record.Workload = "download"
+		record.ResponseContentType = "application/octet-stream"
 		size := 65536
 		if value := r.URL.Query().Get("bytes"); value != "" {
 			parsed, err := strconv.Atoi(value)
@@ -303,14 +309,45 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseSHA256 = header.SHA256
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, msg
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-sequence":
+		record.Workload = "browser-sequence"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		resources := queryInt(r, "resources", 2)
+		if resources > 10 {
+			resources = 10
+		}
+		size := queryInt(r, "bytes", 128)
+		if label == "" {
+			label = "chrome-sequence"
+		}
+		html := buildBrowserSequenceHTML(label, resources, size)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/pixel":
+		record.Workload = "pixel"
+		record.ResponseContentType = "image/svg+xml"
+		if label == "" {
+			label = "pixel"
+		}
+		svg := buildPixelSVG(label)
+		sum := sha256.Sum256([]byte(svg))
+		record.Label = label
+		record.ResponseBytes = len(svg)
+		record.ResponseSHA256 = hex.EncodeToString(sum[:])
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(svg)
 	default:
 		body, _ := json.Marshal(map[string]string{"error": "not found"})
 		return record, http.StatusNotFound, body
 	}
 }
 
-func writeWorkloadResponse(w http.ResponseWriter, status int, response []byte, stream bool, chunkBytes int, chunkDelay time.Duration) error {
-	w.Header().Set("Content-Type", "application/octet-stream")
+func writeWorkloadResponse(w http.ResponseWriter, status int, response []byte, contentType string, stream bool, chunkBytes int, chunkDelay time.Duration) error {
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Content-Length", strconv.Itoa(len(response)))
 	w.WriteHeader(status)
 	if !stream || status != http.StatusOK {
@@ -338,6 +375,24 @@ func writeWorkloadResponse(w http.ResponseWriter, status int, response []byte, s
 		}
 	}
 	return nil
+}
+
+func buildBrowserSequenceHTML(label string, resources, size int) string {
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 sequence</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += "<h1>Chrome H3 sequence</h1>"
+	body += "<ol>"
+	for i := 1; i <= resources; i++ {
+		resourceLabel := fmt.Sprintf("%s-%d", label, i)
+		body += fmt.Sprintf("<li><img alt=\"%s\" src=\"/pixel?bytes=%d&label=%s\"></li>", html.EscapeString(resourceLabel), size, url.QueryEscape(resourceLabel))
+	}
+	body += "</ol>"
+	body += "<script>document.body.dataset.sequenceReady = 'true';</script>"
+	body += "</body></html>"
+	return body
+}
+
+func buildPixelSVG(label string) string {
+	return fmt.Sprintf("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1\" height=\"1\"><title>%s</title><rect width=\"1\" height=\"1\" fill=\"#0a84ff\"/></svg>", html.EscapeString(label))
 }
 
 func queryInt(r *http.Request, key string, fallback int) int {

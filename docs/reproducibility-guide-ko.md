@@ -10,7 +10,7 @@
 1. quic-go transport-level active migration 로컬 실험
 2. quic-go HTTP/3 post-migration request continuity 로컬 실험
 3. quic-go HTTP/3 mid-flight upload/download continuity 로컬 실험
-4. Chrome browser local HTTP/3 baseline
+4. Chrome browser local HTTP/3 baseline과 sequence baseline
 5. AWS NLB QUIC/TCP_QUIC passthrough 실험용 하네스
 6. 구현체별 connection migration evidence scanner
 7. qlog event scanner
@@ -237,6 +237,23 @@ RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
 - 이 실험은 browser HTTP/3 baseline이며 connection migration 실험은 아니다.
 - Chrome headless가 response 이후 clean exit하지 않아 `chrome_exit=124`를 남길 수 있다.
 - server request, NetLog, qlog evidence가 모두 있으면 baseline은 PASS로 분류한다.
+
+sequence baseline:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-local.sh
+```
+
+성공 기준:
+
+- summary status `PASS`
+- server result `ok=true`
+- server request count 3
+- Chrome NetLog에 target `QUIC_SESSION` 1개 이상 존재
+- target origin `HTTP_STREAM_JOB`에 `using_quic=true` 3개 이상 존재
+- qlog에 `chosen_alpn`, `http3:frame` evidence 존재
+- `path_challenge`, `path_response`는 없어야 정상이다. 이 실험은 migration을 시도하지 않는다.
 
 ## 10. AWS NLB 실험 설정
 
