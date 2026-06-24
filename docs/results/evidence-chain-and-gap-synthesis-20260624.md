@@ -146,6 +146,25 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - 그러나 heartbeat downlink는 old-path-drop 조건에서도 Chrome target QUIC session 2개로 갈라졌으므로, task completion은 여전히 session continuity의 충분조건이 아니다.
 - 이 결과는 final active handover protocol에서 “task completion + path validation + browser session continuity”를 동시에 요구해야 하는 근거를 더 강화한다.
 
+### 4.7 Old-path-drop stress는 크기 확장 후에도 같은 evidence boundary를 유지한다
+
+[Chrome H3 Local Rebinding Old-Path Drop Stress Summary](./chrome-h3-rebinding-old-path-drop-stress-20260624.md)는 old-path-drop 조건을 1MiB/4MiB downlink 및 upload workload로 확장했다.
+
+| profile | workload | PASS | configured/received bytes | dropped A server packets | Chrome QUIC sessions | qlog path validation | Chrome target NetLog path validation |
+| --- | --- | ---: | ---: | ---: | ---: | --- | --- |
+| downlink-1m-noheartbeat | downlink | 1/1 | 1048576 configured | 39 | 1 | true | true |
+| downlink-1m-heartbeat | downlink | 1/1 | 1048576 configured | 12 | 2 | true | true |
+| downlink-4m-noheartbeat | downlink | 1/1 | 4194304 configured | 0 | 1 | true | true |
+| upload-1m | upload | 1/1 | 1048576 received | 20 | 1 | true | true |
+| upload-4m | upload | 1/1 | 4194304 received | 34 | 1 | true | true |
+
+해석:
+
+- 총 5/5 stress row가 완료됐고, upload는 총 5MiB가 server에 도달했다.
+- 전체 stress row에서 old-path A-side server packet 105개, 74279 bytes가 drop됐는데도 application task는 완료됐다.
+- no-heartbeat downlink와 upload는 Chrome target QUIC session 1개로 유지됐지만, heartbeat downlink는 stress 조건에서도 target session 2개로 갈라졌다.
+- 따라서 이 결과는 “local NAT rebinding under old-path-unavailable control”의 강한 feasibility evidence로는 쓸 수 있지만, real Wi-Fi/LTE browser handover evidence로는 쓸 수 없다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

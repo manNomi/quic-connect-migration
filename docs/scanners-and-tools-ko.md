@@ -1720,3 +1720,55 @@ python3 tools/build_cm_operational_friction_matrix.py \
 ```bash
 python3 tools/test_build_cm_operational_friction_matrix.py
 ```
+
+## 50. `tools/summarize_chrome_rebinding_stress_matrix.py`
+
+Chrome forced-H3 local UDP rebinding stress artifact를 old-path-drop 조건 기준으로 요약한다. 각 artifact의 `results/stress-spec.json`을 읽어서 workload profile, configured bytes, chunks, duration, rebind timing과 qlog/Chrome NetLog/proxy packet evidence를 한 CSV/Markdown으로 묶는다.
+
+이 도구가 요약하는 실험은 `repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-old-path-drop-stress.sh`로 실행한다. 기본 profile은 다음 5개다.
+
+| profile | workload | 목적 |
+| --- | --- | --- |
+| `downlink-1m-noheartbeat` | downlink | 1MiB no-heartbeat downlink에서 old-path drop 후 단일 target session 유지 여부 |
+| `downlink-1m-heartbeat` | downlink | heartbeat가 session attribution을 흔드는지 확인 |
+| `downlink-4m-noheartbeat` | downlink | 4MiB downlink stress |
+| `upload-1m` | upload | 1MiB streaming fetch upload stress |
+| `upload-4m` | upload | 4MiB streaming fetch upload stress |
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-old-path-drop-stress-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624 \
+BASE_PORT=6200 \
+REBIND_AFTER=500ms \
+TIMEOUT=40s \
+CHROME_TIMEOUT_SECONDS=35 \
+CHROME_HOLD_SECONDS=16 \
+./scripts/run-chrome-h3-rebinding-old-path-drop-stress.sh
+```
+
+논문용 summary 재생성:
+
+```bash
+python3 tools/summarize_chrome_rebinding_stress_matrix.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/downlink-1m-noheartbeat \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/downlink-1m-heartbeat \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/downlink-4m-noheartbeat \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/upload-1m \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/upload-4m \
+  --output docs/results/chrome-h3-rebinding-old-path-drop-stress-20260624.md \
+  --csv-output data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_summarize_chrome_rebinding_stress_matrix.py
+```
+
+주의:
+
+- `BASE_PORT=6000`은 Chrome restricted port라 request가 서버까지 도달하지 않는다.
+- 이 결과는 local NAT rebinding old-path-unavailable control이며, 실제 Chrome/Safari/Android Wi-Fi/LTE handover success claim으로 쓰면 안 된다.

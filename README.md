@@ -52,7 +52,8 @@
 40. 최종 handover 본 실험을 재개하기 전 사용자가 제공해야 할 외부 입력을 public-safe handoff packet으로 생성하게 했다.
 41. controlled public Chrome H3 baseline이 active network-change trial을 열 수 있는지, PASS summary와 raw artifact bundle complete를 함께 확인하는 unlock gate를 추가했다.
 42. Chrome local UDP rebinding proxy에서 streaming browser upload를 3회 반복했고, upload는 성공했지만 request-level remote tuple은 그대로여서 qlog/NetLog 없이 request log만으로 path change를 판단하면 안 된다는 근거를 추가했다.
-43. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+43. Chrome forced-H3 local old-path-drop stress matrix에서 1MiB/4MiB downlink/upload 5회가 모두 완료됐고, A-side server packet 105개가 drop된 상태에서도 qlog/Chrome NetLog path validation이 관찰됐다.
+44. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 

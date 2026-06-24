@@ -45,6 +45,8 @@
 
 또한 old-path-drop proxy control을 반복했다. switch 이후 upstream A의 server-to-client packet을 drop하는 조건에서 downlink 7회와 upload 4회를 실행했고 11/11이 PASS였다. upload에서는 A-side server packet 총 60개가 drop됐는데도 매 run에서 256KiB upload가 완료됐다. 반복 upload 3회는 Chrome target QUIC session도 1개로 유지됐지만, heartbeat downlink 3회는 여전히 multiple session으로 갈라졌다. 따라서 task completion과 session continuity를 별도로 검증해야 한다는 결론은 더 강해졌다.
 
+같은 old-path-drop 조건을 1MiB/4MiB stress workload로 키운 실험도 수행했다. downlink 3회, upload 2회가 모두 PASS였고, upload는 총 5MiB가 `/upload-sink`에 도달했다. 전체 stress row에서 A-side server packet 105개, 74279 bytes를 drop했지만 qlog와 Chrome target NetLog path validation은 5/5로 관찰됐다. 다만 1MiB heartbeat downlink는 여전히 Chrome target QUIC session이 2개로 갈라졌다. 따라서 큰 작업에서도 local NAT rebinding feasibility는 강화됐지만, public active browser handover 성공이라고 일반화하면 안 된다.
+
 ## 3. 실험 환경
 
 ### 3.1 Local 개발 환경

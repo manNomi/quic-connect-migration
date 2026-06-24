@@ -6,10 +6,10 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 48 |
-| status counts | PASS=25; PASS_FEASIBILITY=5; PASS_NEGATIVE_CONTROL=18 |
-| application success counts | false=3; true=45 |
-| experiment groups | browser / public web=30; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
+| total trials | 49 |
+| status counts | PASS=25; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=18 |
+| application success counts | false=3; true=46 |
+| experiment groups | browser / public web=31; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
 | non-none failure layers | browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=1; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
@@ -98,6 +98,7 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-upload-local-001 | PASS_FEASIBILITY | local browser NAT rebinding proxy | local UDP proxy switches upstream socket A -> B during streaming browser fetch upload | yes | no | 3/3 upload repetitions PASS; each upload-sink request received 262144 bytes; qlog PATH_CHALLENGE/PATH_RESPONSE observed in every... |
 | chrome-h3-rebinding-timing-sensitivity-local-001 | PASS_FEASIBILITY | local browser NAT rebinding proxy | local UDP proxy switches upstream socket A -> B at 500ms or 5s during downlink/upload bro... | yes | no | 12/12 timing-sensitivity runs PASS; early and late rebinding both produced proxy packet rebinding, qlog path validation, and Chro... |
 | chrome-h3-rebinding-old-path-drop-local-001 | PASS_FEASIBILITY | local browser NAT rebinding proxy old-path-drop | local UDP proxy switches upstream socket A -> B and drops A-side server packets after swi... | yes | no | 11/11 old-path-drop rows PASS; downlink 7/7 completed with 0 dropped A-side server packets after switch; upload 4/4 completed whi... |
+| chrome-h3-rebinding-old-path-drop-stress-local-001 | PASS_FEASIBILITY | local browser NAT rebinding proxy old-path-drop stress | local UDP proxy switches upstream socket A -> B at 500ms and drops A-side server packets... | yes | no | 5/5 stress rows PASS; configured 6MiB downlink and received 5MiB upload; qlog and Chrome target NetLog path validation 5/5; old-p... |
 
 ## Table 6. Remaining Evidence Gaps
 

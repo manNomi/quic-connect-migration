@@ -172,6 +172,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/summarize_chrome_rebinding_upload_matrix.py",
                 "tools/summarize_chrome_rebinding_timing_sensitivity.py",
                 "tools/summarize_chrome_rebinding_old_path_drop.py",
+                "tools/summarize_chrome_rebinding_stress_matrix.py",
                 "tools/summarize_quic_go_h3_midflight_matrix.py",
                 "tools/validate_final_handover_trial_artifact.py",
                 "tools/test_append_final_handover_result_row.py",
@@ -203,6 +204,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_summarize_chrome_rebinding_upload_matrix.py",
                 "tools/test_summarize_chrome_rebinding_timing_sensitivity.py",
                 "tools/test_summarize_chrome_rebinding_old_path_drop.py",
+                "tools/test_summarize_chrome_rebinding_stress_matrix.py",
                 "tools/test_summarize_quic_go_h3_midflight_matrix.py",
                 "tools/test_research_clock.py",
                 "tools/test_verify_research_bundle.py",
@@ -435,6 +437,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "chrome_rebinding_old_path_drop_summary_regression",
             [python_bin, "tools/test_summarize_chrome_rebinding_old_path_drop.py"],
+            {0},
+            30,
+        ),
+        (
+            "chrome_rebinding_stress_summary_regression",
+            [python_bin, "tools/test_summarize_chrome_rebinding_stress_matrix.py"],
             {0},
             30,
         ),

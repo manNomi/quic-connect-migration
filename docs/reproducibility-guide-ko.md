@@ -1011,7 +1011,54 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 21. Artifact 정책
+## 21. Chrome local old-path-drop stress 재현
+
+Chrome forced-H3 local NAT rebinding에서 old path가 더 이상 return path로 쓸 수 없는 상황을 흉내내기 위해 UDP rebinding proxy가 upstream B로 전환한 뒤 upstream A의 server-to-client packet을 drop한다. 이 실험은 실제 Wi-Fi/LTE handover가 아니라 local old-path-unavailable control이다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-old-path-drop-stress-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624 \
+BASE_PORT=6200 \
+REBIND_AFTER=500ms \
+TIMEOUT=40s \
+CHROME_TIMEOUT_SECONDS=35 \
+CHROME_HOLD_SECONDS=16 \
+./scripts/run-chrome-h3-rebinding-old-path-drop-stress.sh
+```
+
+주의:
+
+- `BASE_PORT=6000`은 Chrome restricted port라 서버에 request가 도달하지 않는다.
+- raw Chrome profile, NetLog, qlog artifact가 크므로 실행 전 디스크 여유를 확인한다.
+- 이 결과를 actual browser handover success로 쓰지 않는다.
+
+성공 기준:
+
+- stress row 5개가 모두 `PASS`
+- qlog path validation 5/5
+- Chrome target NetLog path validation 5/5
+- proxy switched 5/5
+- old-path drop enabled 5/5
+- 1MiB/4MiB upload가 `/upload-sink`에 도달
+
+논문용 summary 재생성:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_stress_matrix.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/downlink-1m-noheartbeat \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/downlink-1m-heartbeat \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/downlink-4m-noheartbeat \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/upload-1m \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624/upload-4m \
+  --output docs/results/chrome-h3-rebinding-old-path-drop-stress-20260624.md \
+  --csv-output data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv
+```
+
+## 22. Artifact 정책
 
 commit 가능한 것:
 
