@@ -34,8 +34,9 @@
 22. 최종 browser handover protocol을 만족하기 위한 10개 실행 계획과 명령 template를 생성했다.
 23. 최종 handover classifier summary를 `data/experiment-results.csv` row 초안으로 변환하는 도구와 regression test를 추가했다.
 24. 단일 final handover artifact가 CSV 등록 가능하고 최종 protocol requirement에 실제로 카운트되는지 검증하는 validator를 추가했다.
-25. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
-26. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+25. 검증된 final handover row만 dry-run/apply 방식으로 `data/experiment-results.csv`에 추가하는 append 도구를 추가했다.
+26. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
+27. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -85,6 +86,7 @@
 │   ├── audit_final_browser_handover_trials.py
 │   ├── draft_final_handover_result_row.py
 │   ├── validate_final_handover_trial_artifact.py
+│   ├── append_final_handover_result_row.py
 │   ├── audit_research_bundle.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
@@ -95,6 +97,7 @@
 │   ├── test_final_browser_handover_trial_audit.py
 │   ├── test_draft_final_handover_result_row.py
 │   ├── test_validate_final_handover_trial_artifact.py
+│   ├── test_append_final_handover_result_row.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py

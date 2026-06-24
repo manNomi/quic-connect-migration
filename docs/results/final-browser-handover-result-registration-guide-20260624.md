@@ -92,6 +92,26 @@ python3 tools/validate_final_handover_trial_artifact.py \
 
 최종 protocol에 카운트되는 성공 trial만 허용하려면 `--require-final-countable`을 붙인다. 이 옵션은 reconnect/multiple-session negative control처럼 기록은 가능하지만 final CM success로 세면 안 되는 row에서 exit 1을 반환한다.
 
+CSV에 붙일 때는 먼저 dry-run으로 확인한다.
+
+```bash
+python3 tools/append_final_handover_result_row.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --output /tmp/final-handover-append-dry-run.md
+```
+
+dry-run 결과에서 `duplicate trial_id=no`, `counts toward final protocol=yes`를 확인한 뒤에만 `--apply`를 붙인다.
+
+```bash
+python3 tools/append_final_handover_result_row.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --apply
+```
+
 row를 추가한 뒤 다음을 실행한다.
 
 ```bash
