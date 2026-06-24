@@ -65,6 +65,8 @@
 │   ├── check_controlled_public_experiment_readiness.py
 │   ├── classify_controlled_public_h3_baseline.py
 │   ├── classify_controlled_public_h3_network_change.py
+│   ├── capture_network_path_snapshot.py
+│   ├── compare_network_path_snapshots.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
 │   ├── scan_qlog_events.py

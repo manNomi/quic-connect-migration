@@ -12,6 +12,8 @@ controlled public application H3 gate가 통과한 뒤, 같은 public WebPKI ori
 
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh`
 - `tools/classify_controlled_public_h3_network_change.py`
+- `tools/capture_network_path_snapshot.py`
+- `tools/compare_network_path_snapshots.py`
 
 ## 3. 실행 전제
 
@@ -35,9 +37,11 @@ check_controlled_public_experiment_readiness.py
 baseline PASS summary 확인
   -> controlled public experiment readiness 확인
   -> public origin readiness check
+  -> client route/interface snapshot 기록
   -> Chrome headless navigation to long-running workload
   -> NETWORK_CHANGE_AFTER_SECONDS 뒤 NETWORK_CHANGE_CMD 실행
-  -> Chrome NetLog, network-change JSON, server request log, server qlog 수집
+  -> command 전후 client route/interface snapshot 비교
+  -> Chrome NetLog, network-change JSON, client path summary, server request log, server qlog 수집
   -> controlled-public-h3-network-change-summary.json 생성
 ```
 
@@ -79,6 +83,7 @@ NETWORK_CHANGE_CMD='...' \
 
 ```text
 results/controlled-public-h3-network-change-summary.json
+results/client-path-change-summary.json
 ```
 
 주요 classification:
@@ -93,6 +98,15 @@ results/controlled-public-h3-network-change-summary.json
 | `controlled_public_network_change_workload_failed` | workload가 expected request count에 도달하지 못함 |
 | `controlled_public_network_change_application_h3_precondition_failed` | server/qlog application H3 evidence가 없음 |
 
+client path-change classification:
+
+| classification | 의미 |
+| --- | --- |
+| `client_active_path_changed` | client route/interface/gateway/public IP 중 active path 변화 관찰 |
+| `interface_set_changed_without_route_change` | active interface set은 바뀌었지만 target/default route 변화는 없음 |
+| `no_client_path_change_observed` | command 전후 client route 관점 변화가 관찰되지 않음 |
+| `path_snapshot_missing` | before/after snapshot이 없어 client-side path evidence 부족 |
+
 ## 7. 논문상 의미
 
 이 하네스는 connection migration의 성패를 단순히 Chrome NetLog 하나로 판단하지 않도록 만든다.
@@ -101,8 +115,9 @@ results/controlled-public-h3-network-change-summary.json
 
 1. controlled public application H3 baseline PASS
 2. active network-change command 실행 성공
-3. server request log의 remote tuple 변화 여부
-4. server qlog의 PATH_CHALLENGE/PATH_RESPONSE 여부
-5. Chrome NetLog의 QUIC session/reconnect 단서
+3. client route/interface snapshot의 active path 변화 여부
+4. server request log의 remote tuple 변화 여부
+5. server qlog의 PATH_CHALLENGE/PATH_RESPONSE 여부
+6. Chrome NetLog의 QUIC session/reconnect 단서
 
-이 다섯 가지를 함께 봐야 browser-level HTTP/3 Connection Migration과 단순 reconnect를 분리할 수 있다.
+이 여섯 가지를 함께 봐야 browser-level HTTP/3 Connection Migration, 단순 reconnect, 그리고 no-op network-change trigger를 분리할 수 있다.

@@ -649,6 +649,7 @@ NETWORK_CHANGE_CMD='...' \
 
 ```text
 artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
+artifacts/controlled-public-h3-network-change-001/results/client-path-change-summary.json
 ```
 
 주요 판정:
@@ -657,6 +658,7 @@ artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-n
 - `reconnect_or_multiple_sessions`: 여러 QUIC session 단서가 있어 reconnect 가능성이 큼
 - `tuple_changed_without_path_validation`: tuple은 바뀌었으나 QUIC migration evidence 부족
 - `no_path_change_after_trigger`: network-change command는 실행됐지만 active path 변화가 관찰되지 않음
+- `client-path-change-summary.json`의 `client_active_path_changed`: client route/interface 관점에서 command가 실제 path 변화를 만들었는지 확인
 
 ## 13. AWS NLB 실험 설정
 

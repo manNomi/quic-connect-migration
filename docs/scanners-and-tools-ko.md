@@ -407,6 +407,7 @@ python3 tools/classify_controlled_public_h3_network_change.py \
 | `server_requests.remote_addr_count` | server가 본 client tuple 종류 수 |
 | `server_qlog_has_path_validation` | server qlog의 PATH_CHALLENGE/PATH_RESPONSE evidence |
 | `network_change.exit` | network-change command exit code |
+| `client_path_change.classification` | client route/interface 변화 판정 |
 | `netlog.target_quic_session_count` | Chrome NetLog target QUIC session 수 |
 | `netlog_has_application_h3` | Chrome NetLog application H3 evidence |
 
@@ -420,7 +421,38 @@ classification:
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
-## 15. `harness/scripts/controlled-public-preflight.sh`
+## 15. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`
+
+browser network-change 실험에서 client 측 route/interface 변화가 실제로 있었는지 기록한다.
+
+실행:
+
+```bash
+python3 tools/capture_network_path_snapshot.py \
+  --url 'https://h3.example.com/browser-slow?duration_ms=15000' \
+  --output /tmp/path-before.json
+
+python3 tools/capture_network_path_snapshot.py \
+  --url 'https://h3.example.com/browser-slow?duration_ms=15000' \
+  --output /tmp/path-after.json
+
+python3 tools/compare_network_path_snapshots.py \
+  /tmp/path-before.json \
+  /tmp/path-after.json
+```
+
+비교 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `client_active_path_changed` | default/target route, gateway, public IP 중 active path 변화 관찰 |
+| `interface_set_changed_without_route_change` | active interface 목록만 바뀌고 route 변화는 없음 |
+| `no_client_path_change_observed` | command 전후 client path 변화가 관찰되지 않음 |
+| `path_snapshot_missing` | before/after snapshot 부족 |
+
+이 도구는 server tuple/qlog evidence를 대체하지 않는다. inactive interface toggle 같은 no-op control을 분리하기 위한 보조 evidence다.
+
+## 16. `harness/scripts/controlled-public-preflight.sh`
 
 controlled public Chrome H3 network-change 실험의 local-only 설정을 읽어서 통합 readiness를 실행하는 wrapper다.
 
@@ -443,7 +475,7 @@ bash harness/scripts/controlled-public-preflight.sh
 
 이 wrapper가 `controlled_public_preflight=ready`를 출력해야 `run-controlled-public-h3-network-change.sh`를 본 실험으로 실행할 수 있다. `blocked`이면 출력된 blockers를 실험 전제 미충족으로 기록한다.
 
-## 16. 실험 실행 코드
+## 17. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -487,7 +519,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 17. 최소 검증 세트
+## 18. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -502,6 +534,8 @@ python3 tools/check_handover_readiness.py --format markdown
 # readiness가 false이면 exit code 1을 반환한다. 출력의 blockers를 확인한다.
 python3 tools/check_controlled_public_experiment_readiness.py --format markdown || true
 bash harness/scripts/controlled-public-preflight.sh || true
+python3 tools/capture_network_path_snapshot.py --url https://www.google.com/generate_204 --output /tmp/quic-cm-path-before.json
+python3 tools/compare_network_path_snapshots.py /tmp/quic-cm-path-before.json /tmp/quic-cm-path-before.json
 python3 -m py_compile tools/classify_controlled_public_h3_network_change.py
 
 cd repro/quic-go-min-repro

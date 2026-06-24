@@ -33,6 +33,23 @@ def network_change_summary(path: Path) -> dict[str, Any]:
     }
 
 
+def client_path_change_summary(path: Path) -> dict[str, Any]:
+    data, error = read_json(path)
+    return {
+        "error": error,
+        "classification": data.get("classification"),
+        "active_path_changed": bool(data.get("active_path_changed")),
+        "active_interface_set_changed": bool(data.get("active_interface_set_changed")),
+        "default_interface_changed": bool(data.get("default_interface_changed")),
+        "target_interface_changed": bool(data.get("target_interface_changed")),
+        "default_gateway_changed": bool(data.get("default_gateway_changed")),
+        "target_gateway_changed": bool(data.get("target_gateway_changed")),
+        "public_ip_changed": bool(data.get("public_ip_changed")),
+        "before": data.get("before") if isinstance(data.get("before"), dict) else {},
+        "after": data.get("after") if isinstance(data.get("after"), dict) else {},
+    }
+
+
 def classify(summary: dict[str, Any]) -> tuple[str, str]:
     server_requests = summary["server_requests"]
     network_change = summary["network_change"]
@@ -84,6 +101,7 @@ def main() -> int:
     dump = read_text(artifact_dir / "chrome" / "network-change-dump-dom.txt")
     server_requests = request_summary(server, args.expected_requests)
     network_change = network_change_summary(artifact_dir / "results" / "network-change.json")
+    client_path_change = client_path_change_summary(artifact_dir / "results" / "client-path-change-summary.json")
 
     summary: dict[str, Any] = {
         "status": "FAIL",
@@ -100,6 +118,7 @@ def main() -> int:
         "server_result_error": server.get("error"),
         "server_requests": server_requests,
         "network_change": network_change,
+        "client_path_change": client_path_change,
         "public_origin_readiness": {
             "https_ok": readiness.get("https_ok"),
             "has_h3_alt_svc": readiness.get("has_h3_alt_svc"),

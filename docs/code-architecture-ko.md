@@ -503,6 +503,8 @@ classifier:
 - `tools/check_controlled_public_experiment_readiness.py`
 - `tools/classify_controlled_public_h3_baseline.py`
 - `tools/classify_controlled_public_h3_network_change.py`
+- `tools/capture_network_path_snapshot.py`
+- `tools/compare_network_path_snapshots.py`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh`

@@ -156,6 +156,12 @@ network-change 결과는 다음 파일로 판정한다.
 artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
 ```
 
+client 쪽 active path 변화는 다음 파일에 별도로 남는다.
+
+```text
+artifacts/controlled-public-h3-network-change-001/results/client-path-change-summary.json
+```
+
 핵심 classification:
 
 | classification | 해석 |
@@ -165,6 +171,15 @@ artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-n
 | `tuple_changed_without_path_validation` | tuple은 바뀌었지만 QUIC path validation evidence 부족 |
 | `no_path_change_after_trigger` | command 실행 후에도 server 관점 path 변화 없음 |
 | `controlled_public_network_change_application_h3_precondition_failed` | baseline/application H3 조건 미충족 |
+
+client path-change summary의 핵심 classification:
+
+| classification | 해석 |
+| --- | --- |
+| `client_active_path_changed` | client route/interface/gateway/public IP 중 active path 변화 관찰 |
+| `interface_set_changed_without_route_change` | interface 목록은 바뀌었지만 target/default route 변화는 없음 |
+| `no_client_path_change_observed` | command 전후 client route 관점 변화 없음 |
+| `path_snapshot_missing` | before/after snapshot이 없어 client-side path evidence 부족 |
 
 논문에서는 `possible_connection_migration`만을 browser-level CM 후보 성공으로 다룬다. 나머지는 각각 reconnect, no-op, precondition failure로 분리한다.
 

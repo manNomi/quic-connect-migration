@@ -50,12 +50,26 @@ fi
 python3 "$PROJECT_ROOT/tools/check_public_origin_readiness.py" "${READINESS_ARGS[@]}" \
   >"$ARTIFACT_DIR/results/public-origin-readiness.json"
 
+python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+  --url "$PUBLIC_ORIGIN_URL" \
+  --output "$ARTIFACT_DIR/results/client-path-before.json" || true
+
 (
   sleep "$NETWORK_CHANGE_AFTER_SECONDS"
   STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+    --url "$PUBLIC_ORIGIN_URL" \
+    --output "$ARTIFACT_DIR/results/client-path-command-before.json" || true
   EXIT_CODE=0
   bash -lc "$NETWORK_CHANGE_CMD" || EXIT_CODE=$?
   COMPLETED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+    --url "$PUBLIC_ORIGIN_URL" \
+    --output "$ARTIFACT_DIR/results/client-path-command-after.json" || true
+  python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \
+    "$ARTIFACT_DIR/results/client-path-command-before.json" \
+    "$ARTIFACT_DIR/results/client-path-command-after.json" \
+    --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
   python3 - "$ARTIFACT_DIR/results/network-change.json" "$EXIT_CODE" "$STARTED_AT" "$COMPLETED_AT" <<'PY'
 import json
 import sys
@@ -133,6 +147,17 @@ with open(output, "w", encoding="utf-8") as fp:
     json.dump({"command_present": True, "exit": int(exit_code)}, fp, indent=2)
     fp.write("\n")
 PY
+fi
+
+python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+  --url "$PUBLIC_ORIGIN_URL" \
+  --output "$ARTIFACT_DIR/results/client-path-final.json" || true
+
+if [[ -f "$ARTIFACT_DIR/results/client-path-command-before.json" && -f "$ARTIFACT_DIR/results/client-path-command-after.json" && ! -f "$ARTIFACT_DIR/results/client-path-change-summary.json" ]]; then
+  python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \
+    "$ARTIFACT_DIR/results/client-path-command-before.json" \
+    "$ARTIFACT_DIR/results/client-path-command-after.json" \
+    --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
 fi
 
 for _ in $(seq 1 "$SERVER_RESULT_WAIT_SECONDS"); do
