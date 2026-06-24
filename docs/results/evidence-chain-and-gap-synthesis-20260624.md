@@ -61,6 +61,7 @@ CDP real-time runner로 downlink streaming 중 heartbeat를 실행했다.
 - heartbeat 자체는 application-level recovery 전략 후보지만, 관측 해석을 어렵게 만들 수 있다.
 - server가 본 remote tuple이 늘어났다고 해서 곧바로 connection migration이라고 볼 수 없다.
 - qlog path validation, Chrome session continuity, client active path change를 함께 요구해야 한다.
+- NetLog migration 관련 event는 `QUIC_CONNECTION_MIGRATION_MODE` 같은 mode evidence와 실제 trigger/success/failure evidence를 분리해야 한다.
 
 ### 4.2 Inactive interface toggle은 path-change trigger가 아니다
 

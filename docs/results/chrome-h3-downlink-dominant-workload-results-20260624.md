@@ -279,6 +279,7 @@ result:
 | server request count | 3 |
 | server remote addr count | 2 |
 | Chrome target QUIC session count | 2 |
+| NetLog migration event class | `mode=4`, trigger/success/failure 없음 |
 | qlog path validation | false |
 | page dataset | `heartbeatStatus=200`, `downlinkComplete=true` |
 
@@ -287,4 +288,5 @@ result:
 - inactive interface toggle은 command 자체는 성공하지만 active client path를 바꾸지 않는다.
 - heartbeat request 때문에 server remote addr와 QUIC session은 2개가 될 수 있다.
 - client path snapshot이 없었다면 이 결과를 reconnect나 migration처럼 오해할 수 있다.
+- NetLog의 migration 관련 문자열은 `QUIC_CONNECTION_MIGRATION_MODE`뿐이었고, 실제 trigger/success/failure event는 관찰되지 않았다.
 - 이 대조군은 논문에서 “CM evidence chain은 tuple change 단독이 아니라 client path change, qlog path validation, browser session evidence를 함께 요구해야 한다”는 근거로 사용할 수 있다.

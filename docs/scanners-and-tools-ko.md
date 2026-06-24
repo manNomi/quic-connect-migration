@@ -141,6 +141,7 @@ python3 tools/classify_chrome_h3_artifacts.py \
 | `netlog_target_using_quic_job_count` | target origin HTTP stream job 중 QUIC 사용 수 |
 | `server_remote_addr_count` | server가 본 client remote tuple 수 |
 | `qlog_has_path_validation` | qlog의 `PATH_CHALLENGE`/`PATH_RESPONSE` evidence 여부 |
+| `netlog_migration_event_class_counts` | NetLog migration 관련 event를 `mode`, `trigger`, `success`, `failure`, `other`로 분리한 count |
 
 `QUIC_CONNECTION_MIGRATION_MODE` 같은 NetLog event는 설정 evidence로만 보고, 실제 migration evidence는 tuple change와 qlog path validation을 함께 요구한다.
 

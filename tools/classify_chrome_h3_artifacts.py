@@ -23,6 +23,21 @@ QLOG_PATTERNS = {
 }
 
 
+def classify_netlog_migration_event(name: str) -> str:
+    upper = name.upper()
+    if "MIGRAT" not in upper:
+        return ""
+    if "MODE" in upper:
+        return "mode"
+    if "SUCCESS" in upper:
+        return "success"
+    if "FAIL" in upper:
+        return "failure"
+    if "_ON_" in upper or "TRIGGER" in upper or "PATH_DEGRADING" in upper or "WRITE_ERROR" in upper:
+        return "trigger"
+    return "other"
+
+
 def read_json(path: Path) -> tuple[dict, str | None]:
     if not path.exists():
         return {}, "missing"
@@ -79,6 +94,7 @@ def parse_netlog(netlog: dict, addr: str) -> dict[str, object]:
     target_http_stream_jobs = 0
     target_non_quic_jobs = 0
     migration_event_counts: Counter[str] = Counter()
+    migration_event_class_counts: Counter[str] = Counter()
     network_event_counts: Counter[str] = Counter()
 
     for event in netlog.get("events", []):
@@ -104,6 +120,9 @@ def parse_netlog(netlog: dict, addr: str) -> dict[str, object]:
         upper_name = name.upper()
         if "MIGRAT" in upper_name:
             migration_event_counts[name] += 1
+            migration_class = classify_netlog_migration_event(name)
+            if migration_class:
+                migration_event_class_counts[migration_class] += 1
         if "NETWORK" in upper_name and ("CHANGE" in upper_name or "CHANGED" in upper_name):
             network_event_counts[name] += 1
 
@@ -116,6 +135,7 @@ def parse_netlog(netlog: dict, addr: str) -> dict[str, object]:
         "target_non_quic_job_count": target_non_quic_jobs,
         "target_url_request_count": target_url_requests,
         "migration_event_counts": dict(sorted(migration_event_counts.items())),
+        "migration_event_class_counts": dict(sorted(migration_event_class_counts.items())),
         "network_event_counts": dict(sorted(network_event_counts.items())),
     }
 
@@ -145,6 +165,7 @@ def parse_netlog_text_fallback(netlog_text: str, addr: str) -> dict[str, object]
         "target_non_quic_job_count": 0,
         "target_url_request_count": target_url_requests,
         "migration_event_counts": {},
+        "migration_event_class_counts": {},
         "network_event_counts": {},
     }
 
@@ -219,6 +240,7 @@ def main() -> int:
             "target_non_quic_job_count": 0,
             "target_url_request_count": 0,
             "migration_event_counts": {},
+            "migration_event_class_counts": {},
             "network_event_counts": {},
         }
     request_reached_server = server.get("ok") is True and len(requests) >= args.expected_requests
@@ -256,6 +278,7 @@ def main() -> int:
         "netlog_target_non_quic_job_count": netlog_summary["target_non_quic_job_count"],
         "netlog_target_url_request_count": netlog_summary["target_url_request_count"],
         "netlog_migration_event_counts": netlog_summary["migration_event_counts"],
+        "netlog_migration_event_class_counts": netlog_summary["migration_event_class_counts"],
         "netlog_network_event_counts": netlog_summary["network_event_counts"],
         "qlog_counts": {key: qcounts[key] for key in QLOG_PATTERNS},
         "qlog_has_h3": qcounts["http3_frame"] > 0,
