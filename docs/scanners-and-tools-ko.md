@@ -1203,3 +1203,47 @@ python3 tools/build_final_handover_trial_packet.py \
 ```bash
 python3 tools/test_build_final_handover_trial_packet.py
 ```
+
+## 37. `tools/check_final_handover_trial_artifact_bundle.py`
+
+trial 실행 후 expected raw artifact bundle이 모두 있는지 확인한다. `build_final_handover_trial_packet.py`와 같은 expected artifact 규칙을 사용하며, summary만 존재하는 결과가 CSV에 들어가는 일을 막기 위한 post-trial gate다.
+
+실행:
+
+```bash
+python3 tools/check_final_handover_trial_artifact_bundle.py \
+  --output docs/results/final-handover-trial-artifact-bundle-check-20260624.md
+```
+
+특정 trial을 검사:
+
+```bash
+python3 tools/check_final_handover_trial_artifact_bundle.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --output /tmp/final-handover-artifact-bundle-check.md
+```
+
+완료 gate로 사용:
+
+```bash
+python3 tools/check_final_handover_trial_artifact_bundle.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --require-complete
+```
+
+확인 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| artifact bundle complete | packet이 요구한 raw artifact가 모두 있는지 |
+| registration ready | bundle complete이며 final protocol에 카운트되는 row로 검증되는지 |
+| artifact checks | server result, qlog, public readiness, summary, NetLog/path snapshot 등 trial별 파일 존재 |
+| validation | `validate_final_handover_trial_artifact.py` 결과 요약 |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_check_final_handover_trial_artifact_bundle.py
+```

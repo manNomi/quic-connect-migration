@@ -134,6 +134,17 @@ python3 tools/draft_final_handover_result_row.py \
 
 CSV에 붙이기 전에 단일 artifact validation을 실행한다.
 
+먼저 expected raw artifact bundle이 모두 있는지 확인한다.
+
+```bash
+python3 tools/check_final_handover_trial_artifact_bundle.py \
+  --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --require-final-countable \
+  --output /tmp/final-handover-artifact-bundle-check.md
+```
+
+이 gate는 server result, qlog, public-origin readiness, classifier summary, NetLog, client path summary 같은 trial별 raw artifact 존재를 확인한다. `--require-complete`를 붙이면 bundle 또는 registration readiness가 부족할 때 exit 1을 반환한다.
+
 ```bash
 python3 tools/validate_final_handover_trial_artifact.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
