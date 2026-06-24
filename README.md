@@ -178,6 +178,7 @@
 - [Final handover trial packet](docs/results/final-handover-trial-packet-20260624.md)
 - [Final handover trial artifact bundle check](docs/results/final-handover-trial-artifact-bundle-check-20260624.md)
 - [Active path-change operator cookbook](docs/results/active-path-change-operator-cookbook-20260624.md)
+- [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Public H3 and CM evidence boundary literature refresh](docs/results/literature-refresh-public-h3-and-cm-evidence-20260624.md)

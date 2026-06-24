@@ -1,0 +1,51 @@
+name: research-verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  safe-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: repro/quic-go-min-repro/go.mod
+          cache-dependency-path: repro/quic-go-min-repro/go.sum
+
+      - name: Validate publication bundle
+        run: python3 tools/validate_publication_bundle.py
+
+      - name: Run research verifier in scratch mode
+        run: |
+          python3 tools/verify_research_bundle.py \
+            --scratch-dir "$RUNNER_TEMP/quic-cm-verify" \
+            --output "$RUNNER_TEMP/research-verification-report.md"
+
+      - name: Run Go unit tests
+        working-directory: repro/quic-go-min-repro
+        run: go test ./...
+
+      - name: Check shell script syntax
+        run: |
+          bash -n harness/scripts/*.sh
+          bash -n repro/quic-go-min-repro/scripts/*.sh
+
+      - name: Ensure generated verification did not modify tracked files
+        run: git diff --exit-code

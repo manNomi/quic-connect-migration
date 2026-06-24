@@ -7,7 +7,7 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `49.4 GiB` |
+| disk free | `49.3 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `1.0 GiB` |
 | cleanup candidates | `47` |
