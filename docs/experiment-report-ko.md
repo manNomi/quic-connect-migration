@@ -613,6 +613,7 @@ network-change 판정 기준:
 - loopback origin에서는 server remote tuple이 바뀌지 않는다.
 - local Wi-Fi IP origin은 loopback보다는 나은 browser baseline이지만, 같은 머신의 active route가 바뀌지 않으면 migration evidence가 나오지 않는다.
 - 따라서 실제 browser CM 검증에는 public/non-loopback origin과 active interface 전환이 필요하다.
+- Chromium/Cronet source evidence상 browser stack에는 migration hook과 NetLog event가 있지만, runtime policy와 embedding default가 실제 migration 여부를 좌우한다.
 
 ## 19. 참고 데이터
 
@@ -638,3 +639,4 @@ network-change 판정 기준:
 - [Chrome local HTTP/3 polling no-change baseline 결과](results/chrome-h3-poll-nochange-results-20260624.md)
 - [Chrome slow HTTP/3 inactive interface toggle 결과](results/chrome-h3-slow-inactive-if-toggle-results-20260624.md)
 - [Chrome Wi-Fi IP HTTP/3 limited control 결과](results/chrome-h3-wifi-ip-limited-control-results-20260624.md)
+- [Chromium/Cronet source evidence](results/chromium-cronet-source-evidence-20260624.md)
