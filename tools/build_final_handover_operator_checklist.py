@@ -66,6 +66,7 @@ def build_actions(
             "The next selected trial is a controlled-public Chrome baseline and config baseline readiness is false.",
             [
                 "cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env",
+                "python3 tools/build_controlled_public_config_worksheet.py --output docs/results/controlled-public-config-worksheet-20260624.md",
                 "$EDITOR harness/config/controlled-public-origin.env",
                 "python3 tools/check_controlled_public_config.py --require-baseline-ready",
             ],
@@ -78,7 +79,10 @@ def build_actions(
             "controlled public baseline",
             "Controlled public baseline config is ready.",
             "Baseline config keys are present and non-placeholder.",
-            ["python3 tools/check_controlled_public_config.py --require-baseline-ready"],
+            [
+                "python3 tools/build_controlled_public_config_worksheet.py --output docs/results/controlled-public-config-worksheet-20260624.md",
+                "python3 tools/check_controlled_public_config.py --require-baseline-ready",
+            ],
         )
 
     if not cleanup["target_met_by_selected"]:

@@ -47,7 +47,8 @@
 35. trial 실행 후 summary뿐 아니라 qlog/NetLog/path snapshot 등 expected raw artifact bundle이 모두 있는지 확인하는 gate를 추가했다.
 36. final handover append 도구가 `--require-artifact-bundle` 옵션으로 summary-only 결과의 CSV 등록을 차단하게 했다.
 37. 디스크 정리 전 raw artifact가 `data/experiment-results.csv`나 planned final trial에 연결되는지 확인하는 cleanup safety audit를 추가했다.
-38. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+38. controlled-public private config를 공개 값 없이 채울 수 있도록 stage/owner/privacy/next action worksheet를 추가했다.
+39. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -107,6 +108,7 @@
 │   ├── check_final_handover_trial_artifact_bundle.py
 │   ├── audit_research_bundle.py
 │   ├── audit_artifact_cleanup_safety.py
+│   ├── build_controlled_public_config_worksheet.py
 │   ├── build_paper_tables.py
 │   ├── report_artifact_storage.py
 │   ├── plan_artifact_cleanup.py
@@ -123,6 +125,7 @@
 │   ├── test_build_final_handover_operator_checklist.py
 │   ├── test_build_final_handover_trial_packet.py
 │   ├── test_check_final_handover_trial_artifact_bundle.py
+│   ├── test_build_controlled_public_config_worksheet.py
 │   ├── test_classify_controlled_public_h3_network_change.py
 │   ├── test_compare_android_path_snapshots.py
 │   ├── test_check_controlled_public_config.py
@@ -144,6 +147,7 @@
 - [스캐너와 도구 설명](docs/scanners-and-tools-ko.md)
 - [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
 - [Controlled public config check](docs/results/controlled-public-config-check-20260624.md)
+- [Controlled public config worksheet](docs/results/controlled-public-config-worksheet-20260624.md)
 - [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
 - [Controlled public experiment readiness](docs/results/controlled-public-experiment-readiness-20260624.md)
 - [Controlled public origin operations runbook](docs/results/controlled-public-origin-operations-runbook-20260624.md)

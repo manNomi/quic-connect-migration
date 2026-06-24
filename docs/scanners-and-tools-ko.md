@@ -1287,3 +1287,38 @@ python3 tools/audit_artifact_cleanup_safety.py \
 ```bash
 python3 tools/test_audit_artifact_cleanup_safety.py
 ```
+
+## 39. `tools/build_controlled_public_config_worksheet.py`
+
+`harness/config/controlled-public-origin.env`를 채우기 전에 어떤 값을 어느 단계에서 누가 준비해야 하는지 정리하는 public-safe worksheet를 생성한다. 실제 도메인, TLS 경로, private key 경로, `NETWORK_CHANGE_CMD` 값은 출력하지 않는다.
+
+실행:
+
+```bash
+python3 tools/build_controlled_public_config_worksheet.py \
+  --output docs/results/controlled-public-config-worksheet-20260624.md
+```
+
+local private config를 채운 뒤 임시 경로로 확인:
+
+```bash
+python3 tools/build_controlled_public_config_worksheet.py \
+  --check-files \
+  --output /tmp/controlled-public-config-worksheet.md
+```
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| stage | `baseline`, `active`, `android` 중 어떤 실험 단계에서 필요한지 |
+| owner | origin host, client, Android 중 누가 값을 준비해야 하는지 |
+| privacy | 공개 문서에 남기면 안 되는 값인지 |
+| expected shape | 실제 값 대신 필요한 형식 |
+| next action | missing, placeholder, path mismatch 등을 해결하기 위한 다음 행동 |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_controlled_public_config_worksheet.py
+```

@@ -18,6 +18,8 @@ controlled public Chrome HTTP/3 connection migration 실험은 세 조건을 먼
 
 ```bash
 cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+python3 tools/build_controlled_public_config_worksheet.py \
+  --output docs/results/controlled-public-config-worksheet-20260624.md
 ```
 
 수정해야 할 값:
@@ -32,6 +34,13 @@ cp harness/config/controlled-public-origin.env.example harness/config/controlled
 | `NETWORK_CHANGE_CMD` | 사용자가 명시적으로 허용한 active path change command |
 
 이 파일은 `.gitignore` 대상이다. 실제 private key, domain-specific command, 계정 정보는 commit하지 않는다.
+
+worksheet는 실제 값을 출력하지 않고 stage, owner, privacy class, expected shape, next action만 기록한다. config를 수정한 뒤에는 다음처럼 다시 생성한다.
+
+```bash
+python3 tools/build_controlled_public_config_worksheet.py \
+  --output /tmp/controlled-public-config-worksheet.md
+```
 
 ## 3. Public origin 준비
 
