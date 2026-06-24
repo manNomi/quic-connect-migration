@@ -144,6 +144,23 @@ python3 tools/classify_chrome_h3_artifacts.py \
 
 `QUIC_CONNECTION_MIGRATION_MODE` 같은 NetLog event는 설정 evidence로만 보고, 실제 migration evidence는 tuple change와 qlog path validation을 함께 요구한다.
 
+`run-chrome-h3-local.sh`의 `WORKLOAD=downlink`는 같은 classifier를 사용한다.
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink DOWNLINK_HEARTBEAT=false ./scripts/run-chrome-h3-local.sh
+WORKLOAD=downlink DOWNLINK_HEARTBEAT=true ADDR=127.0.0.1:4453 LISTEN_ADDR=127.0.0.1:4453 ORIGIN_ADDR=127.0.0.1:4453 ./scripts/run-chrome-h3-local.sh
+```
+
+해석:
+
+| mode | expected request | 의미 |
+| --- | --- | --- |
+| `DOWNLINK_HEARTBEAT=false` | 2 | `GET /browser-downlink`와 streaming `GET /downlink-stream`만 관찰 |
+| `DOWNLINK_HEARTBEAT=true` | 3 | 위 두 request에 더해 `GET /heartbeat`가 같은 H3 connection evidence chain에 포함 |
+
+이 workload는 client-silent downlink와 application heartbeat variant를 비교하기 위한 것이다. path 변화가 없으면 정상 classification은 `no_path_change_baseline`이다.
+
 ## 6. `tools/classify_chrome_alt_svc_artifacts.py`
 
 Chrome natural Alt-Svc control artifact를 server protocol record, Chrome NetLog, qlog 기준으로 분류한다.

@@ -358,6 +358,47 @@ RUN_ID=chrome-h3-slow-wifi-ip-inactive-if-toggle \
 
 이 실험은 `127.0.0.1`이 아닌 local Wi-Fi IP를 origin으로 사용한다. 다만 inactive service toggle은 active Wi-Fi path를 바꾸지 않으므로 실제 handover 근거로 사용하지 않는다.
 
+downlink-dominant no-change baseline:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=1200 \
+DOWNLINK_CHUNKS=3 \
+DOWNLINK_BYTES=4096 \
+DOWNLINK_HEARTBEAT=false \
+CHROME_TIMEOUT_SECONDS=12 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+RUN_ID=chrome-h3-downlink-noheartbeat-20260624 \
+./scripts/run-chrome-h3-local.sh
+```
+
+downlink-dominant heartbeat baseline:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=downlink \
+DOWNLINK_DURATION_MS=1200 \
+DOWNLINK_CHUNKS=3 \
+DOWNLINK_BYTES=4096 \
+DOWNLINK_HEARTBEAT=true \
+DOWNLINK_HEARTBEAT_DELAY_MS=400 \
+CHROME_TIMEOUT_SECONDS=12 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+ADDR=127.0.0.1:4453 \
+LISTEN_ADDR=127.0.0.1:4453 \
+ORIGIN_ADDR=127.0.0.1:4453 \
+RUN_ID=chrome-h3-downlink-heartbeat-20260624-rerun \
+./scripts/run-chrome-h3-local.sh
+```
+
+성공 기준:
+
+- no-heartbeat: `classification=no_path_change_baseline`, server request count 2, target `using_quic=true` job count 2
+- heartbeat: `classification=no_path_change_baseline`, server request count 3, target `using_quic=true` job count 3
+- 두 경우 모두 qlog에 `chosen_alpn`과 `http3:frame` evidence가 있어야 한다.
+- 이 baseline은 migration 성공 근거가 아니다. 실제 network-change 실험 전에 downlink streaming workload와 optional application heartbeat가 Chrome/quic-go H3에서 정상 관측되는지 확인하는 gate다.
+
 Alt-Svc natural HTTP/3 control:
 
 ```bash

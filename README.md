@@ -26,7 +26,8 @@
 14. handover readiness scanner 기준 현재 장비는 Chrome/ADB는 준비됐지만 Android device, active secondary network, AWS identity가 부족하다.
 15. public origin readiness survey에서는 Google/YouTube `generate_204`만 H3 discovery와 2xx lightweight workload 후보로 남았다.
 16. controlled public application H3 baseline gate와 network-change harness를 추가해, 실제 active path change 실험의 판정 기준을 server/qlog/NetLog 조합으로 고정했다.
-17. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+17. Chrome forced-QUIC local H3에서 downlink-dominant streaming workload와 optional heartbeat variant가 HTTP/3로 정상 관찰되는 것을 확인했다.
+18. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -92,6 +93,7 @@
 - [Browser CM observability readiness](docs/results/browser-cm-observability-readiness-20260624.md)
 - [Safari controlled public H3 baseline harness](docs/results/safari-controlled-public-baseline-harness-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
+- [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)

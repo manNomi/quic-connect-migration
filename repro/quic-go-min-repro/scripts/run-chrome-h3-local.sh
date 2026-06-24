@@ -35,6 +35,19 @@ case "$WORKLOAD" in
     REQUEST_PATH="${REQUEST_PATH:-/browser-slow?duration_ms=${SLOW_DURATION_MS}&chunks=${SLOW_CHUNKS}&label=chrome-slow}"
     EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
     ;;
+  downlink)
+    DOWNLINK_DURATION_MS="${DOWNLINK_DURATION_MS:-15000}"
+    DOWNLINK_CHUNKS="${DOWNLINK_CHUNKS:-15}"
+    DOWNLINK_BYTES="${DOWNLINK_BYTES:-65536}"
+    DOWNLINK_HEARTBEAT="${DOWNLINK_HEARTBEAT:-false}"
+    DOWNLINK_HEARTBEAT_DELAY_MS="${DOWNLINK_HEARTBEAT_DELAY_MS:-$((DOWNLINK_DURATION_MS / 2))}"
+    REQUEST_PATH="${REQUEST_PATH:-/browser-downlink?duration_ms=${DOWNLINK_DURATION_MS}&chunks=${DOWNLINK_CHUNKS}&bytes=${DOWNLINK_BYTES}&heartbeat=${DOWNLINK_HEARTBEAT}&heartbeat_delay_ms=${DOWNLINK_HEARTBEAT_DELAY_MS}&label=chrome-downlink}"
+    if [[ "$DOWNLINK_HEARTBEAT" == "true" || "$DOWNLINK_HEARTBEAT" == "1" ]]; then
+      EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-3}"
+    else
+      EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-2}"
+    fi
+    ;;
   *)
     echo "unsupported WORKLOAD=$WORKLOAD" >&2
     exit 2

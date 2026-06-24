@@ -416,6 +416,85 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-downlink":
+		record.Workload = "browser-downlink"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		durationMillis := queryInt(r, "duration_ms", 15000)
+		if durationMillis > 120000 {
+			durationMillis = 120000
+		}
+		chunks := queryInt(r, "chunks", 15)
+		if chunks > 200 {
+			chunks = 200
+		}
+		size := queryInt(r, "bytes", 65536)
+		if size > 16*1024*1024 {
+			size = 16 * 1024 * 1024
+		}
+		heartbeat := queryBool(r, "heartbeat", false)
+		heartbeatDelayMillis := queryInt(r, "heartbeat_delay_ms", durationMillis/2)
+		if heartbeatDelayMillis > durationMillis {
+			heartbeatDelayMillis = durationMillis
+		}
+		if label == "" {
+			label = "browser-downlink"
+		}
+		html := buildBrowserDownlinkHTML(label, durationMillis, chunks, size, heartbeat, heartbeatDelayMillis)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/downlink-stream":
+		record.Workload = "downlink-stream"
+		record.ResponseContentType = "application/octet-stream"
+		durationMillis := queryInt(r, "duration_ms", 15000)
+		if durationMillis > 120000 {
+			durationMillis = 120000
+		}
+		chunks := queryInt(r, "chunks", 15)
+		if chunks > 200 {
+			chunks = 200
+		}
+		size := queryInt(r, "bytes", 65536)
+		if size > 16*1024*1024 {
+			size = 16 * 1024 * 1024
+		}
+		if label == "" {
+			label = "downlink-stream"
+		}
+		msg, header, err := common.BuildMessage(label, size)
+		if err != nil {
+			return record, http.StatusInternalServerError, []byte(err.Error())
+		}
+		delayMillis := durationMillis / chunks
+		if delayMillis <= 0 {
+			delayMillis = 1
+		}
+		record.Label = header.Label
+		record.ResponseBytes = header.PayloadBytes
+		record.ResponseSHA256 = header.SHA256
+		record.StreamResponse = true
+		record.ChunkBytes = len(msg) / chunks
+		if record.ChunkBytes <= 0 {
+			record.ChunkBytes = 1
+		}
+		record.ChunkDelayMillis = int64(delayMillis)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, msg
+	case r.Method == http.MethodGet && r.URL.Path == "/heartbeat":
+		record.Workload = "heartbeat"
+		record.ResponseContentType = "application/json"
+		if label == "" {
+			label = "heartbeat"
+		}
+		body, _ := json.Marshal(map[string]any{
+			"ok":         true,
+			"label":      label,
+			"handled_at": record.HandledAt,
+		})
+		record.Label = label
+		record.ResponseBytes = len(body)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, body
 	case r.Method == http.MethodGet && r.URL.Path == "/slow-js":
 		record.Workload = "slow-js"
 		record.ResponseContentType = "application/javascript"
@@ -538,6 +617,25 @@ func buildBrowserSlowHTML(label string, durationMillis, chunks int) string {
 	return body
 }
 
+func buildBrowserDownlinkHTML(label string, durationMillis, chunks, size int, heartbeat bool, heartbeatDelayMillis int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	streamURL := fmt.Sprintf("/downlink-stream?duration_ms=%d&chunks=%d&bytes=%d&label=%s-stream", durationMillis, chunks, size, queryLabel)
+	heartbeatURL := fmt.Sprintf("/heartbeat?label=%s-heartbeat&ts=", queryLabel)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Browser H3 downlink</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Browser H3 downlink</h1><div id=\"status\" data-label=\"%s\">loading</div><pre id=\"events\"></pre>", escapedLabel)
+	body += "<script>"
+	body += fmt.Sprintf("const streamUrl=%q, heartbeatUrl=%q, heartbeat=%t, heartbeatDelay=%d;", streamURL, heartbeatURL, heartbeat, heartbeatDelayMillis)
+	body += "const events=document.getElementById('events');"
+	body += "function note(line){events.textContent+=line+'\\n';}"
+	body += "async function runStream(){const res=await fetch(streamUrl,{cache:'no-store'});const reader=res.body.getReader();let total=0;for(;;){const item=await reader.read();if(item.done)break;total+=item.value.byteLength;note('chunk:'+total);}document.body.dataset.downlinkBytes=String(total);document.body.dataset.downlinkComplete='true';document.getElementById('status').textContent='complete';}"
+	body += "if(heartbeat){setTimeout(()=>{fetch(heartbeatUrl+Date.now(),{cache:'no-store'}).then((res)=>{document.body.dataset.heartbeatStatus=String(res.status);note('heartbeat:'+res.status);}).catch((error)=>{document.body.dataset.heartbeatError=String(error);note('heartbeat-error:'+error);});},heartbeatDelay);}"
+	body += "runStream().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.downlinkError=String(error);note('stream-error:'+error);});"
+	body += "</script>"
+	body += "</body></html>"
+	return body
+}
+
 func buildSlowJS(label string, chunks int) string {
 	body := ""
 	for i := 1; i <= chunks; i++ {
@@ -565,6 +663,18 @@ func queryInt(r *http.Request, key string, fallback int) int {
 	}
 	parsed, err := strconv.Atoi(value)
 	if err != nil || parsed <= 0 {
+		return fallback
+	}
+	return parsed
+}
+
+func queryBool(r *http.Request, key string, fallback bool) bool {
+	value := r.URL.Query().Get(key)
+	if value == "" {
+		return fallback
+	}
+	parsed, err := strconv.ParseBool(value)
+	if err != nil {
 		return fallback
 	}
 	return parsed
