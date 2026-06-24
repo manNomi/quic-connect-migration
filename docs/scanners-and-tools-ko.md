@@ -131,7 +131,7 @@ python3 tools/scan_qlog_events.py repro/quic-go-min-repro/artifacts/local-h3-mid
 | `internal/common/aws_nlb_cid.go` | AWS NLB QUIC-LB plaintext CID generator |
 | `internal/common/payload.go` | deterministic payload/checksum |
 | `internal/common/logging.go` | JSONL/result JSON writer |
-| `internal/common/tls.go` | self-signed TLS config |
+| `internal/common/tls.go` | self-signed TLS config, browser test cert/key injection |
 
 로컬 wrapper:
 
@@ -140,6 +140,7 @@ python3 tools/scan_qlog_events.py repro/quic-go-min-repro/artifacts/local-h3-mid
 | `scripts/run-local-happy-path.sh` | transport-level local migration |
 | `scripts/run-local-h3-workload.sh` | HTTP/3 POST before, migrate, GET after |
 | `scripts/run-local-h3-midflight.sh` | HTTP/3 upload/download body in-flight migration |
+| `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 baseline |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -169,6 +170,7 @@ cd repro/quic-go-min-repro
 go test ./...
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
+RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
 ```
 
 AWS 결과를 갱신할 때는 [재현 가이드](reproducibility-guide-ko.md)의 cleanup 확인까지 포함한다.

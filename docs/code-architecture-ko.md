@@ -25,6 +25,7 @@ repro/quic-go-min-repro/
     ├── run-local-happy-path.sh
     ├── run-local-h3-workload.sh
     ├── run-local-h3-midflight.sh
+    ├── run-chrome-h3-local.sh
     ├── run-server.sh
     ├── run-h3-server.sh
     ├── run-ec2-client.sh
@@ -319,30 +320,70 @@ negative control에서 확인한 것:
 | `NLB_PROTOCOL` | `QUIC`, `TCP_QUIC` |
 | `PORT` | `4242`, `443` |
 
-## 8. 실행 예시
+## 8. Chrome 브라우저 baseline
 
-### 8.1 Local QUIC transport
+script:
+
+- `repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh`
+
+목적:
+
+Chrome browser가 quic-go H3 test origin으로 실제 HTTP/3 request를 보낼 수 있는지 확인한다. 이 실험은 migration 실험이 아니라 browser baseline이다.
+
+흐름:
+
+```text
+openssl로 local test cert/key 생성
+  -> cert SPKI hash 계산
+  -> quic-go h3server를 cert/key로 실행
+  -> Chrome headless 실행
+  -> --origin-to-force-quic-on=127.0.0.1:4443
+  -> --ignore-certificate-errors-spki-list=<SPKI>
+  -> Chrome NetLog, server JSON, qlog 수집
+```
+
+성공 기준:
+
+- Chrome NetLog에 `QUIC_SESSION`이 존재
+- Chrome NetLog의 target origin `HTTP_STREAM_JOB`에 `using_quic=true`
+- server가 `GET /download` request를 수신
+- qlog에 `chosen_alpn`과 `http3:frame` evidence가 있음
+
+주의:
+
+headless Chrome이 binary response 이후 clean exit하지 않고 timeout될 수 있다. 이 경우에도 server request, NetLog, qlog evidence가 모두 있으면 baseline은 PASS로 분류한다.
+
+## 9. 실행 예시
+
+### 9.1 Local QUIC transport
 
 ```bash
 cd repro/quic-go-min-repro
 ./scripts/run-local-happy-path.sh
 ```
 
-### 8.2 Local HTTP/3 post-migration workload
+### 9.2 Local HTTP/3 post-migration workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 ```
 
-### 8.3 Local HTTP/3 mid-flight workload
+### 9.3 Local HTTP/3 mid-flight workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 ```
 
-### 8.4 AWS NLB transport
+### 9.4 Chrome local HTTP/3 baseline
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
+```
+
+### 9.5 AWS NLB transport
 
 ```bash
 WORKLOAD=transport \
@@ -351,7 +392,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 8.5 AWS NLB HTTP/3 post-migration
+### 9.6 AWS NLB HTTP/3 post-migration
 
 ```bash
 WORKLOAD=h3 \
@@ -360,7 +401,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 8.6 AWS NLB HTTP/3 mid-flight upload
+### 9.7 AWS NLB HTTP/3 mid-flight upload
 
 ```bash
 WORKLOAD=h3-midflight-upload \
@@ -370,7 +411,7 @@ PAYLOAD_BYTES=1048576 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 8.7 AWS NLB HTTP/3 mid-flight download
+### 9.8 AWS NLB HTTP/3 mid-flight download
 
 ```bash
 WORKLOAD=h3-midflight-download \
@@ -381,7 +422,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-## 9. 검증 명령
+## 10. 검증 명령
 
 Go test:
 
@@ -394,6 +435,7 @@ Bash syntax:
 
 ```bash
 bash -n harness/scripts/run-aws-nlb-quic-data-plane.sh
+bash -n repro/quic-go-min-repro/scripts/run-chrome-h3-local.sh
 bash -n repro/quic-go-min-repro/scripts/run-local-h3-midflight.sh
 bash -n repro/quic-go-min-repro/scripts/run-h3-client.sh
 ```
@@ -413,7 +455,7 @@ for path in [
 PY
 ```
 
-## 10. 공개 repo에서 제외한 것
+## 11. 공개 repo에서 제외한 것
 
 이 저장소에는 source와 문서만 포함했다.
 
@@ -429,4 +471,3 @@ PY
 - `.tar.gz` package
 
 실험 결과 값은 [experiment-report-ko.md](experiment-report-ko.md), [data/experiment-results.csv](../data/experiment-results.csv), [docs/results](results/) 문서에 요약했다.
-

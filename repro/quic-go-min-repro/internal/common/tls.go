@@ -17,7 +17,7 @@ import (
 const ALPN = "quic-cm-repro"
 
 func ServerTLSConfig(keyLogPath string) (*tls.Config, io.Closer, error) {
-	cert, err := generateSelfSignedCert()
+	cert, err := loadOrGenerateServerCert()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -30,6 +30,15 @@ func ServerTLSConfig(keyLogPath string) (*tls.Config, io.Closer, error) {
 		NextProtos:   []string{ALPN},
 		KeyLogWriter: keyLog,
 	}, keyLog, nil
+}
+
+func loadOrGenerateServerCert() (tls.Certificate, error) {
+	certPath := os.Getenv("QUIC_CM_CERT_FILE")
+	keyPath := os.Getenv("QUIC_CM_KEY_FILE")
+	if certPath != "" || keyPath != "" {
+		return tls.LoadX509KeyPair(certPath, keyPath)
+	}
+	return generateSelfSignedCert()
 }
 
 func ClientTLSConfig(keyLogPath string) (*tls.Config, io.Closer, error) {

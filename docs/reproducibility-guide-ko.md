@@ -10,10 +10,11 @@
 1. quic-go transport-level active migration 로컬 실험
 2. quic-go HTTP/3 post-migration request continuity 로컬 실험
 3. quic-go HTTP/3 mid-flight upload/download continuity 로컬 실험
-4. AWS NLB QUIC/TCP_QUIC passthrough 실험용 하네스
-5. 구현체별 connection migration evidence scanner
-6. qlog event scanner
-7. CSV 결과 요약과 공개 번들 검증
+4. Chrome browser local HTTP/3 baseline
+5. AWS NLB QUIC/TCP_QUIC passthrough 실험용 하네스
+6. 구현체별 connection migration evidence scanner
+7. qlog event scanner
+8. CSV 결과 요약과 공개 번들 검증
 
 이 저장소만으로 자동 재현하지 않는 범위:
 
@@ -215,7 +216,29 @@ qlog scanner:
 python3 ../../tools/scan_qlog_events.py artifacts/local-h3-midflight-check --format markdown
 ```
 
-## 9. AWS NLB 실험 설정
+## 9. Chrome local HTTP/3 baseline 재현
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
+```
+
+성공 기준:
+
+- summary status `PASS`
+- server result `ok=true`
+- server request count 1
+- Chrome NetLog에 `QUIC_SESSION` 존재
+- target origin `HTTP_STREAM_JOB`에 `using_quic=true`
+- qlog에 `chosen_alpn`, `http3:frame` evidence 존재
+
+주의:
+
+- 이 실험은 browser HTTP/3 baseline이며 connection migration 실험은 아니다.
+- Chrome headless가 response 이후 clean exit하지 않아 `chrome_exit=124`를 남길 수 있다.
+- server request, NetLog, qlog evidence가 모두 있으면 baseline은 PASS로 분류한다.
+
+## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
 
@@ -251,7 +274,7 @@ preflight:
 - region opt-in 상태 확인
 - default VPC/subnet 조회 가능
 
-## 10. AWS NLB transport 재현
+## 11. AWS NLB transport 재현
 
 ```bash
 WORKLOAD=transport \
@@ -270,7 +293,7 @@ PAYLOAD_BYTES=65536 \
 - summary status `PASS`
 - cleanup status `deleted-listener-lb-tg-instances-sg-keypair`
 
-## 11. AWS NLB HTTP/3 post-migration 재현
+## 12. AWS NLB HTTP/3 post-migration 재현
 
 ```bash
 WORKLOAD=h3 \
@@ -288,7 +311,7 @@ PAYLOAD_BYTES=65536 \
 - 같은 target이 두 request를 모두 수신
 - summary status `PASS`
 
-## 12. AWS NLB HTTP/3 mid-flight 재현
+## 13. AWS NLB HTTP/3 mid-flight 재현
 
 Upload:
 
@@ -319,7 +342,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 - qlog에 path validation evidence가 있음
 - summary status `PASS`
 
-## 13. Negative control 재현
+## 14. Negative control 재현
 
 잘못된 Server ID를 의도적으로 넣는다.
 
@@ -343,7 +366,7 @@ EXPECTED_OUTCOME=client-failure \
 
 이 negative control은 “HTTP/3가 켜져 있다”와 “migration continuity가 된다”가 같은 말이 아님을 보여주는 배포 계층 근거다.
 
-## 14. AWS cleanup 확인
+## 15. AWS cleanup 확인
 
 하네스는 정상 종료와 실패 종료 모두에서 cleanup trap을 실행한다. 실행 후 다음을 확인한다.
 
@@ -370,7 +393,7 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 15. Artifact 정책
+## 16. Artifact 정책
 
 commit 가능한 것:
 
