@@ -1876,7 +1876,29 @@ python3 tools/check_p0_baseline_preflight.py \
 - `allowed next action`은 `fill-private-controlled-public-config`다.
 - origin server와 Chrome client capture는 아직 시작하면 안 된다.
 
-## 43. Artifact 정책
+## 43. P0 baseline preflight synthetic control 재생성
+
+실제 public origin을 쓰지 않는 synthetic fixture로 preflight guard의 상태 전이를 검증한다.
+
+```bash
+python3 tools/build_p0_preflight_control_report.py \
+  --output docs/results/p0-baseline-preflight-control-report-20260624.md \
+  --csv-output data/p0-baseline-preflight-control-report-20260624.csv
+```
+
+성공 기준:
+
+- `missing_config_blocks_capture`는 `actual_go=no`여야 한다.
+- `synthetic_ready_allows_baseline_capture`는 `actual_go=yes`여야 한다.
+- `stale_needed_now_gate_blocks_capture`는 `actual_go=no`여야 한다.
+- 이 control은 guard logic 검증이며, 실제 public browser CM 성공 근거로 사용하지 않는다.
+
+현재 관찰된 기준:
+
+- synthetic control 3개가 모두 통과했다.
+- modeled-ready fixture에서만 `start-origin-server-and-client-baseline-capture`로 열린다.
+
+## 44. Artifact 정책
 
 commit 가능한 것:
 

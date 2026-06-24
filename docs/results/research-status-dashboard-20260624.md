@@ -10,7 +10,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | --- | --- |
 | experiment trials | `63` |
 | experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 32}` |
-| verification | `85/85 passed; ok=yes` |
+| verification | `87/87 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `0/6` |
 | planned execution states | `{'blocked': 10}` |
@@ -48,6 +48,7 @@ Do not claim Chrome/Safari/Android browser handover CM success until the final b
 | `p0_unblock_status` | `data/p0-unblock-status-20260624.csv` |
 | `p0_baseline_execution_packet` | `data/p0-baseline-execution-packet-20260624.csv` |
 | `p0_baseline_preflight` | `data/p0-baseline-preflight-check-20260624.csv` |
+| `p0_baseline_preflight_controls` | `data/p0-baseline-preflight-control-report-20260624.csv` |
 | `acceptance_scorecard` | `data/final-trial-acceptance-scorecard-20260624.csv` |
 | `operational_friction_matrix` | `data/cm-operational-friction-matrix-20260624.csv` |
 | `paper_claim_support_matrix` | `data/paper-claim-support-matrix-20260624.csv` |

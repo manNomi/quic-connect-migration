@@ -106,6 +106,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             p0_unblock=(root / "p0-unblock-status.csv").as_posix(),
             p0_baseline_execution_packet=(root / "p0-baseline-execution-packet.csv").as_posix(),
             p0_baseline_preflight=(root / "p0-baseline-preflight-check.csv").as_posix(),
+            p0_baseline_preflight_controls=(root / "p0-baseline-preflight-control-report.csv").as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)
@@ -115,6 +116,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         assert dashboard["claim_support_counts"] == {"not_supported_yet": 1, "supported_scoped": 1}
         assert dashboard["replication_role_counts"] == {"stable_candidate": 1, "transition_zone": 1}
         assert dashboard["final_browser_handover"] == "0/6"
+        assert "p0_baseline_preflight_controls" in dashboard["key_paths"]
         assert "PRIVATE_KEY" not in markdown
         assert "AKIA" not in markdown
 

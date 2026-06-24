@@ -76,6 +76,7 @@
 64. P0 unblock status는 final protocol readiness matrix에서 현재 P0를 막는 gate를 압축해, next trial을 열기 위한 `needed-now` gate와 baseline 이후 gate를 분리한다.
 65. P0 baseline execution packet은 private config 작성, preflight, origin server, Chrome client, artifact validation, CSV append 순서를 stage별 stop condition과 함께 고정한다.
 66. P0 baseline preflight check는 `--require-go` guard로, server/client capture를 시작해도 되는 상태인지 판정하고 현재처럼 config gate가 남아 있으면 실패하도록 한다.
+67. P0 baseline preflight control report는 synthetic fixture 3개로 guard가 missing config/stale needed-now에서는 닫히고, modeled-ready baseline에서만 열리는지 검증한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -106,6 +107,7 @@
 │   ├── p0-unblock-status-20260624.csv
 │   ├── p0-baseline-execution-packet-20260624.csv
 │   ├── p0-baseline-preflight-check-20260624.csv
+│   ├── p0-baseline-preflight-control-report-20260624.csv
 │   ├── paper-evidence-gap-register-20260624.csv
 │   ├── paper-claim-support-matrix-20260624.csv
 │   ├── replication-sufficiency-audit-20260624.csv
@@ -140,6 +142,7 @@
 │   ├── build_p0_unblock_status.py
 │   ├── build_p0_baseline_execution_packet.py
 │   ├── check_p0_baseline_preflight.py
+│   ├── build_p0_preflight_control_report.py
 │   ├── build_cm_operational_friction_matrix.py
 │   ├── build_paper_evidence_gap_register.py
 │   ├── build_paper_claim_support_matrix.py
@@ -233,6 +236,7 @@
 - [P0 unblock status](docs/results/p0-unblock-status-20260624.md)
 - [P0 baseline execution packet](docs/results/p0-baseline-execution-packet-20260624.md)
 - [P0 baseline preflight check](docs/results/p0-baseline-preflight-check-20260624.md)
+- [P0 baseline preflight control report](docs/results/p0-baseline-preflight-control-report-20260624.md)
 - [Research status dashboard](docs/results/research-status-dashboard-20260624.md)
 - [CM operational friction matrix](docs/results/cm-operational-friction-matrix-20260624.md)
 - [Browser CM observability matrix](docs/results/browser-cm-observability-matrix-20260624.md)

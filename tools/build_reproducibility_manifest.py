@@ -137,6 +137,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "p0_unblock_status": "docs/results/p0-unblock-status-20260624.md",
             "p0_baseline_execution_packet": "docs/results/p0-baseline-execution-packet-20260624.md",
             "p0_baseline_preflight": "docs/results/p0-baseline-preflight-check-20260624.md",
+            "p0_baseline_preflight_controls": "docs/results/p0-baseline-preflight-control-report-20260624.md",
             "final_trial_acceptance_scorecard": "docs/results/final-trial-acceptance-scorecard-20260624.md",
             "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
             "paper_claim_support_matrix": "docs/results/paper-claim-support-matrix-20260624.md",

@@ -105,6 +105,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     p0_baseline_preflight = "docs/results/p0-baseline-preflight-check-20260624.md"
     p0_baseline_preflight_csv = "data/p0-baseline-preflight-check-20260624.csv"
     p0_baseline_preflight_input = "data/p0-baseline-preflight-check-20260624.csv"
+    p0_baseline_preflight_controls = "docs/results/p0-baseline-preflight-control-report-20260624.md"
+    p0_baseline_preflight_controls_csv = "data/p0-baseline-preflight-control-report-20260624.csv"
+    p0_baseline_preflight_controls_input = "data/p0-baseline-preflight-control-report-20260624.csv"
     research_status_dashboard = "docs/results/research-status-dashboard-20260624.md"
     research_status_dashboard_json = "data/research-status-dashboard-20260624.json"
     final_trials = "docs/results/final-browser-handover-trial-audit-20260624.md"
@@ -160,6 +163,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         p0_baseline_preflight = str(generated_dir / "p0-baseline-preflight-check.md")
         p0_baseline_preflight_csv = str(generated_dir / "p0-baseline-preflight-check.csv")
         p0_baseline_preflight_input = p0_baseline_preflight_csv
+        p0_baseline_preflight_controls = str(generated_dir / "p0-baseline-preflight-control-report.md")
+        p0_baseline_preflight_controls_csv = str(generated_dir / "p0-baseline-preflight-control-report.csv")
+        p0_baseline_preflight_controls_input = p0_baseline_preflight_controls_csv
         research_status_dashboard = str(generated_dir / "research-status-dashboard.md")
         research_status_dashboard_json = str(generated_dir / "research-status-dashboard.json")
         final_trials = str(generated_dir / "final-browser-handover-trial-audit.md")
@@ -202,6 +208,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_p0_unblock_status.py",
                 "tools/build_p0_baseline_execution_packet.py",
                 "tools/check_p0_baseline_preflight.py",
+                "tools/build_p0_preflight_control_report.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
@@ -244,6 +251,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_p0_unblock_status.py",
                 "tools/test_build_p0_baseline_execution_packet.py",
                 "tools/test_check_p0_baseline_preflight.py",
+                "tools/test_build_p0_preflight_control_report.py",
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
@@ -553,6 +561,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "p0_baseline_preflight_controls_regression",
+            [python_bin, "tools/test_build_p0_preflight_control_report.py"],
+            {0},
+            60,
+        ),
+        (
+            "p0_baseline_preflight_controls",
+            [
+                python_bin,
+                "tools/build_p0_preflight_control_report.py",
+                "--output",
+                p0_baseline_preflight_controls,
+                "--csv-output",
+                p0_baseline_preflight_controls_csv,
+            ],
+            {0},
+            60,
+        ),
+        (
             "research_status_dashboard_regression",
             [python_bin, "tools/test_build_research_status_dashboard.py"],
             {0},
@@ -579,6 +606,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 p0_baseline_execution_packet_input,
                 "--p0-baseline-preflight",
                 p0_baseline_preflight_input,
+                "--p0-baseline-preflight-controls",
+                p0_baseline_preflight_controls_input,
             ],
             {0},
             30,
