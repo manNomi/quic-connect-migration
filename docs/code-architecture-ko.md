@@ -26,6 +26,8 @@ repro/quic-go-min-repro/
     ├── run-local-h3-workload.sh
     ├── run-local-h3-midflight.sh
     ├── run-chrome-h3-local.sh
+    ├── run-chrome-h3-alt-svc.sh
+    ├── run-chrome-public-h3.sh
     ├── run-server.sh
     ├── run-h3-server.sh
     ├── run-ec2-client.sh
@@ -438,30 +440,67 @@ classifier:
 
 현재 local control에서는 binary-response 실험이 `alt_svc_advertised_but_h3_not_observed`, self-signed HTML diagnostic이 `alt_svc_quic_candidate_cert_rejected`, mkcert localhost diagnostic이 `alt_svc_marked_broken_without_h3_request`로 분류됐다.
 
-## 10. 실행 예시
+## 10. Chrome public WebPKI natural H3 baseline
 
-### 10.1 Local QUIC transport
+script:
+
+- `repro/quic-go-min-repro/scripts/run-chrome-public-h3.sh`
+
+목적:
+
+local self-signed/mkcert origin이 아니라 public trusted certificate를 가진 origin에서 Chrome이 forced QUIC 없이 natural HTTP/3를 사용하는지 확인한다. 이 실험은 migration 실험이 아니라 browser discovery positive control이다.
+
+흐름:
+
+```text
+public HTTPS target URL 선택
+  -> Chrome headless bootstrap navigation
+  -> 같은 profile로 second navigation
+  -> bootstrap/second NetLog 저장
+  -> target host 기준 QUIC_SESSION, using_quic job, Alt-Svc broken state 분류
+```
+
+classifier:
+
+- `tools/classify_chrome_public_h3_artifacts.py`
+
+주요 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `public_natural_h3_observed` | public origin에서 forced QUIC 없이 target HTTP/3 사용이 관찰됨 |
+| `public_alt_svc_marked_broken` | target alternative service가 broken으로 기록됨 |
+| `public_alt_svc_or_request_observed_but_h3_not_confirmed` | request/Alt-Svc evidence는 있으나 target H3 사용을 확정하지 못함 |
+
+현재 positive control:
+
+- `https://cloudflare-quic.com/cdn-cgi/trace`
+- `https://www.google.com/generate_204`
+
+## 11. 실행 예시
+
+### 11.1 Local QUIC transport
 
 ```bash
 cd repro/quic-go-min-repro
 ./scripts/run-local-happy-path.sh
 ```
 
-### 10.2 Local HTTP/3 post-migration workload
+### 11.2 Local HTTP/3 post-migration workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 ```
 
-### 10.3 Local HTTP/3 mid-flight workload
+### 11.3 Local HTTP/3 mid-flight workload
 
 ```bash
 cd repro/quic-go-min-repro
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 ```
 
-### 10.4 Chrome local HTTP/3 baseline
+### 11.4 Chrome local HTTP/3 baseline
 
 ```bash
 cd repro/quic-go-min-repro
@@ -473,7 +512,7 @@ LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=s
 WORKLOAD=poll NETWORK_CHANGE_AFTER_SECONDS=2 NETWORK_CHANGE_CMD='...' RUN_ID=chrome-h3-poll-network-change ./scripts/run-chrome-h3-local.sh
 ```
 
-### 10.5 Chrome natural Alt-Svc control
+### 11.5 Chrome natural Alt-Svc control
 
 ```bash
 cd repro/quic-go-min-repro
@@ -481,7 +520,15 @@ RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
 RUN_ID=chrome-h3-alt-svc-localhost-20260624 ADDR=localhost:4443 LISTEN_ADDR=127.0.0.1:4443 TCP_ADDR=127.0.0.1:4443 ./scripts/run-chrome-h3-alt-svc.sh
 ```
 
-### 10.6 AWS NLB transport
+### 11.6 Chrome public natural H3 baseline
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-public-h3-cloudflare-quic-trace-20260624 TARGET_URL=https://cloudflare-quic.com/cdn-cgi/trace ./scripts/run-chrome-public-h3.sh
+RUN_ID=chrome-public-h3-google-generate204-20260624 TARGET_URL=https://www.google.com/generate_204 ./scripts/run-chrome-public-h3.sh
+```
+
+### 11.7 AWS NLB transport
 
 ```bash
 WORKLOAD=transport \
@@ -490,7 +537,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 10.7 AWS NLB HTTP/3 post-migration
+### 11.8 AWS NLB HTTP/3 post-migration
 
 ```bash
 WORKLOAD=h3 \
@@ -499,7 +546,7 @@ PORT=443 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 10.8 AWS NLB HTTP/3 mid-flight upload
+### 11.9 AWS NLB HTTP/3 mid-flight upload
 
 ```bash
 WORKLOAD=h3-midflight-upload \
@@ -509,7 +556,7 @@ PAYLOAD_BYTES=1048576 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-### 10.9 AWS NLB HTTP/3 mid-flight download
+### 11.10 AWS NLB HTTP/3 mid-flight download
 
 ```bash
 WORKLOAD=h3-midflight-download \
@@ -520,7 +567,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 ./harness/scripts/run-aws-nlb-quic-data-plane.sh
 ```
 
-## 10. 검증 명령
+## 12. 검증 명령
 
 Go test:
 
@@ -554,7 +601,7 @@ for path in [
 PY
 ```
 
-## 11. 공개 repo에서 제외한 것
+## 13. 공개 repo에서 제외한 것
 
 이 저장소에는 source와 문서만 포함했다.
 

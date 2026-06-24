@@ -456,7 +456,48 @@ mkcert 진단 결과:
 - 두 경우 모두 application request는 `HTTP/1.1`
 - public WebPKI origin으로 natural HTTP/3 baseline을 다시 확인해야 한다.
 
-## 10. AWS NLB 실험 설정
+## 10. Chrome public WebPKI natural HTTP/3 baseline 재현
+
+local Alt-Svc control이 실패했을 때, Chrome 자체가 natural HTTP/3를 못 쓰는지 또는 local origin/trust 조건이 문제인지 분리한다.
+
+Cloudflare QUIC trace endpoint:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-public-h3-cloudflare-quic-trace-20260624 \
+TARGET_URL=https://cloudflare-quic.com/cdn-cgi/trace \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=1000 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+./scripts/run-chrome-public-h3.sh
+```
+
+Google generate_204 endpoint:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-public-h3-google-generate204-20260624 \
+TARGET_URL=https://www.google.com/generate_204 \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=1000 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+./scripts/run-chrome-public-h3.sh
+```
+
+성공 기준:
+
+- `classification=public_natural_h3_observed`
+- target host에 대한 `QUIC_SESSION`이 1개 이상
+- target host의 `HTTP_STREAM_JOB` 중 `using_quic=true`가 1개 이상
+- `broken_alternative_service=false`
+
+주의:
+
+- 이 실험은 connection migration 실험이 아니다.
+- 목적은 browser가 target origin을 forced QUIC 없이 실제 HTTP/3로 선택했는지 확인하는 것이다.
+- public endpoint 결과는 시간, region, server policy에 따라 바뀔 수 있으므로 실행일과 target URL을 CSV에 함께 기록한다.
+
+## 11. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
 
@@ -492,7 +533,7 @@ preflight:
 - region opt-in 상태 확인
 - default VPC/subnet 조회 가능
 
-## 11. AWS NLB transport 재현
+## 12. AWS NLB transport 재현
 
 ```bash
 WORKLOAD=transport \
@@ -511,7 +552,7 @@ PAYLOAD_BYTES=65536 \
 - summary status `PASS`
 - cleanup status `deleted-listener-lb-tg-instances-sg-keypair`
 
-## 12. AWS NLB HTTP/3 post-migration 재현
+## 13. AWS NLB HTTP/3 post-migration 재현
 
 ```bash
 WORKLOAD=h3 \
@@ -529,7 +570,7 @@ PAYLOAD_BYTES=65536 \
 - 같은 target이 두 request를 모두 수신
 - summary status `PASS`
 
-## 13. AWS NLB HTTP/3 mid-flight 재현
+## 14. AWS NLB HTTP/3 mid-flight 재현
 
 Upload:
 
@@ -560,7 +601,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 - qlog에 path validation evidence가 있음
 - summary status `PASS`
 
-## 14. Negative control 재현
+## 15. Negative control 재현
 
 잘못된 Server ID를 의도적으로 넣는다.
 
@@ -584,7 +625,7 @@ EXPECTED_OUTCOME=client-failure \
 
 이 negative control은 “HTTP/3가 켜져 있다”와 “migration continuity가 된다”가 같은 말이 아님을 보여주는 배포 계층 근거다.
 
-## 15. AWS cleanup 확인
+## 16. AWS cleanup 확인
 
 하네스는 정상 종료와 실패 종료 모두에서 cleanup trap을 실행한다. 실행 후 다음을 확인한다.
 
@@ -611,7 +652,7 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 16. Artifact 정책
+## 17. Artifact 정책
 
 commit 가능한 것:
 

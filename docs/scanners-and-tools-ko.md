@@ -180,7 +180,40 @@ python3 tools/classify_chrome_alt_svc_artifacts.py \
 | `alt_svc_quic_candidate_without_h3_request` | QUIC/H3 후보 evidence는 있으나 application request는 HTTP/3가 아님 |
 | `alt_svc_advertised_but_h3_not_observed` | Alt-Svc 광고 후에도 HTTP/3 후보/요청 evidence가 부족함 |
 
-## 7. 실험 실행 코드
+## 7. `tools/classify_chrome_public_h3_artifacts.py`
+
+Chrome public WebPKI natural HTTP/3 baseline artifact를 NetLog 기준으로 분류한다.
+
+실행:
+
+```bash
+python3 tools/classify_chrome_public_h3_artifacts.py \
+  repro/quic-go-min-repro/artifacts/chrome-public-h3-google-generate204-20260624 \
+  --url https://www.google.com/generate_204
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `classification` | public origin에서 natural HTTP/3가 관찰됐는지 |
+| `bootstrap_h3_observed` | bootstrap NetLog에서 target HTTP/3 evidence가 있는지 |
+| `second_h3_observed` | second NetLog에서 target HTTP/3 evidence가 있는지 |
+| `target_quic_session_count` | target host/port의 QUIC session 수 |
+| `target_using_quic_job_count` | target host/port의 `HTTP_STREAM_JOB using_quic=true` 수 |
+| `target_broken_alternative_service` | Alt-Svc가 broken으로 기록됐는지 |
+
+classification:
+
+| classification | 의미 |
+| --- | --- |
+| `public_natural_h3_observed` | public origin에서 target HTTP/3 사용이 관찰됨 |
+| `public_alt_svc_marked_broken` | target alternative service가 broken으로 기록됨 |
+| `public_alt_svc_or_request_observed_but_h3_not_confirmed` | target request 또는 Alt-Svc evidence는 있으나 HTTP/3 사용은 확정 불가 |
+
+이 도구는 local Alt-Svc negative control과 public WebPKI positive control을 분리하기 위한 것이다. migration evidence는 판정하지 않는다.
+
+## 8. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -204,6 +237,7 @@ python3 tools/classify_chrome_alt_svc_artifacts.py \
 | `scripts/run-local-h3-midflight.sh` | HTTP/3 upload/download body in-flight migration |
 | `scripts/run-chrome-h3-local.sh` | Chrome browser local HTTP/3 single/sequence/poll/slow baseline and optional network-change hook |
 | `scripts/run-chrome-h3-alt-svc.sh` | Chrome natural Alt-Svc HTTP/3 control |
+| `scripts/run-chrome-public-h3.sh` | Chrome public WebPKI natural HTTP/3 baseline |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -220,7 +254,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 8. 최소 검증 세트
+## 9. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -239,6 +273,7 @@ WORKLOAD=poll POLL_COUNT=5 POLL_INTERVAL_MS=300 RUN_ID=chrome-h3-poll-nochange-c
 WORKLOAD=slow SLOW_DURATION_MS=8000 SLOW_CHUNKS=8 RUN_ID=chrome-h3-slow-inactive-if-toggle ./scripts/run-chrome-h3-local.sh
 LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=slow RUN_ID=chrome-h3-slow-wifi-ip-nochange ./scripts/run-chrome-h3-local.sh
 RUN_ID=chrome-h3-alt-svc-local-20260624 ./scripts/run-chrome-h3-alt-svc.sh
+RUN_ID=chrome-public-h3-google-generate204-20260624 TARGET_URL=https://www.google.com/generate_204 ./scripts/run-chrome-public-h3.sh
 ```
 
 AWS 결과를 갱신할 때는 [재현 가이드](reproducibility-guide-ko.md)의 cleanup 확인까지 포함한다.
