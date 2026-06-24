@@ -411,6 +411,51 @@ H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html' \
 - qlog에는 QUIC connection과 HTTP/3 SETTINGS frame이 있었지만 request stream은 없었음
 - qlog close reason은 `certificate unknown / CERTIFICATE_VERIFY_FAILED`
 
+mkcert localhost diagnostic:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-html-mkcert-localhost-v2-20260624 \
+CERT_MODE=mkcert \
+CHROME_USE_SPKI_EXCEPTION=0 \
+ADDR=localhost:4443 \
+LISTEN_ADDR=127.0.0.1:4443 \
+TCP_ADDR=127.0.0.1:4443 \
+EXPECTED_REQUESTS=4 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+BOOTSTRAP_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-bootstrap-html-mkcert' \
+H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html-mkcert' \
+./scripts/run-chrome-h3-alt-svc.sh
+```
+
+mkcert IP literal diagnostic:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-html-mkcert-ip-20260624 \
+CERT_MODE=mkcert \
+CHROME_USE_SPKI_EXCEPTION=0 \
+ADDR=127.0.0.1:4443 \
+LISTEN_ADDR=127.0.0.1:4443 \
+TCP_ADDR=127.0.0.1:4443 \
+EXPECTED_REQUESTS=4 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+BOOTSTRAP_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-bootstrap-html-mkcert-ip' \
+H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html-mkcert-ip' \
+./scripts/run-chrome-h3-alt-svc.sh
+```
+
+mkcert 진단 결과:
+
+- `localhost`: `classification=alt_svc_marked_broken_without_h3_request`
+- `127.0.0.1`: `classification=alt_svc_quic_candidate_cert_rejected`
+- 두 경우 모두 application request는 `HTTP/1.1`
+- public WebPKI origin으로 natural HTTP/3 baseline을 다시 확인해야 한다.
+
 ## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.

@@ -34,8 +34,34 @@ def summarize_netlog(path: Path, addr: str) -> dict[str, object]:
     parsed = read_json(path)
     if parsed:
         summary = chrome_h3.parse_netlog(parsed, addr)
+        target_host, target_port = addr.rsplit(":", 1)
+        reverse_types = chrome_h3.reverse_netlog_event_types(parsed)
+        broken_alt_service = False
+        advertised_alt_service = False
+        for event in parsed.get("events", []):
+            name = reverse_types.get(event.get("type"), str(event.get("type")))
+            if name != "HTTP_SERVER_PROPERTIES_UPDATE_PREFS":
+                continue
+            params = event.get("params") or {}
+            for item in params.get("broken_alternative_services") or []:
+                if (
+                    item.get("host") == target_host
+                    and str(item.get("port")) == target_port
+                    and item.get("protocol_str") == "quic"
+                ):
+                    broken_alt_service = True
+            for server in params.get("servers") or []:
+                if server.get("server") != f"https://{addr}":
+                    continue
+                for alt in server.get("alternative_service") or []:
+                    if alt.get("protocol_str") == "quic":
+                        advertised_alt_service = True
+        summary["target_broken_alternative_service"] = broken_alt_service
+        summary["target_advertised_alternative_service"] = advertised_alt_service
     elif text:
         summary = chrome_h3.parse_netlog_text_fallback(text, addr)
+        summary["target_broken_alternative_service"] = "broken_alternative_services" in text and addr in text
+        summary["target_advertised_alternative_service"] = "alternative_service" in text and addr in text
     else:
         summary = {
             "parser_mode": "missing",
@@ -46,6 +72,8 @@ def summarize_netlog(path: Path, addr: str) -> dict[str, object]:
             "target_url_request_count": 0,
             "migration_event_counts": {},
             "network_event_counts": {},
+            "target_broken_alternative_service": False,
+            "target_advertised_alternative_service": False,
         }
     summary["path"] = str(path)
     return summary
@@ -122,12 +150,16 @@ def main() -> int:
     request_reached_server = server.get("ok") is True and len(requests) >= args.expected_requests
 
     qlog_has_certificate_error = bool(qlog_summary["has_certificate_error"])
+    h3_netlog_has_broken_alt_service = bool(h3_netlog.get("target_broken_alternative_service"))
 
     if request_reached_server and has_tcp_bootstrap and has_h3_request and h3_confirmed_by_netlog and qlog_has_h3:
         classification = "alt_svc_h3_upgrade_observed"
         status = "PASS"
     elif request_reached_server and has_tcp_bootstrap and not has_h3_request and qlog_has_certificate_error:
         classification = "alt_svc_quic_candidate_cert_rejected"
+        status = "PASS_NEGATIVE_CONTROL"
+    elif request_reached_server and has_tcp_bootstrap and not has_h3_request and h3_netlog_has_broken_alt_service:
+        classification = "alt_svc_marked_broken_without_h3_request"
         status = "PASS_NEGATIVE_CONTROL"
     elif request_reached_server and has_tcp_bootstrap and not has_h3_request and qlog_has_h3:
         classification = "alt_svc_quic_candidate_without_h3_request"

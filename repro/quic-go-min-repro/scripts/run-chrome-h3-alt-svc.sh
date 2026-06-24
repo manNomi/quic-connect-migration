@@ -17,9 +17,15 @@ TIMEOUT="${TIMEOUT:-60s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-20}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
 CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-5000}"
+CHROME_USE_SPKI_EXCEPTION="${CHROME_USE_SPKI_EXCEPTION:-1}"
 BOOTSTRAP_PATH="${BOOTSTRAP_PATH:-/download?bytes=128&label=alt-svc-bootstrap}"
 H3_PATH="${H3_PATH:-/download?bytes=128&label=alt-svc-h3}"
 ALT_SVC="${ALT_SVC:-h3=\":${ADDR##*:}\"; ma=60}"
+CERT_MODE="${CERT_MODE:-self-signed}"
+CERT_HOSTS="${CERT_HOSTS:-localhost 127.0.0.1 ::1 quic-cm-repro.local}"
+MKCERT_TRUST_STORES="${MKCERT_TRUST_STORES:-system}"
+PROVIDED_CERT_FILE="${PROVIDED_CERT_FILE:-}"
+PROVIDED_KEY_FILE="${PROVIDED_KEY_FILE:-}"
 
 mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/certs" "$ARTIFACT_DIR/logs" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/qlog" "$ARTIFACT_DIR/keylog"
 
@@ -32,13 +38,38 @@ if [[ ! -x "$CHROME_BIN" ]]; then
   exit 2
 fi
 
-openssl req -x509 -newkey rsa:2048 -nodes \
-  -keyout "$KEY_FILE" \
-  -out "$CERT_FILE" \
-  -days 1 \
-  -subj "/CN=quic-cm-repro.local" \
-  -addext "subjectAltName=DNS:localhost,DNS:quic-cm-repro.local,IP:127.0.0.1,IP:::1" \
-  >/dev/null 2>&1
+case "$CERT_MODE" in
+  self-signed)
+    openssl req -x509 -newkey rsa:2048 -nodes \
+      -keyout "$KEY_FILE" \
+      -out "$CERT_FILE" \
+      -days 1 \
+      -subj "/CN=quic-cm-repro.local" \
+      -addext "subjectAltName=DNS:localhost,DNS:quic-cm-repro.local,IP:127.0.0.1,IP:::1" \
+      >/dev/null 2>&1
+    ;;
+  mkcert)
+    if ! command -v mkcert >/dev/null 2>&1; then
+      echo "CERT_MODE=mkcert requested but mkcert was not found" >&2
+      exit 2
+    fi
+    read -r -a CERT_HOST_ARGS <<<"$CERT_HOSTS"
+    TRUST_STORES="$MKCERT_TRUST_STORES" mkcert -cert-file "$CERT_FILE" -key-file "$KEY_FILE" "${CERT_HOST_ARGS[@]}" >"$ARTIFACT_DIR/logs/mkcert.log" 2>&1
+    ;;
+  provided)
+    if [[ -z "$PROVIDED_CERT_FILE" || -z "$PROVIDED_KEY_FILE" ]]; then
+      echo "CERT_MODE=provided requires PROVIDED_CERT_FILE and PROVIDED_KEY_FILE" >&2
+      exit 2
+    fi
+    cp "$PROVIDED_CERT_FILE" "$CERT_FILE"
+    cp "$PROVIDED_KEY_FILE" "$KEY_FILE"
+    ;;
+  *)
+    echo "unsupported CERT_MODE=$CERT_MODE" >&2
+    exit 2
+    ;;
+esac
+printf '%s\n' "$CERT_MODE" >"$ARTIFACT_DIR/certs/cert-mode.txt"
 
 SPKI_HASH="$(
   openssl x509 -pubkey -noout -in "$CERT_FILE" |
@@ -73,14 +104,14 @@ run_chrome() {
   local path="$1"
   local netlog="$2"
   local dump="$3"
-  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$path" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" "$netlog" "$dump" <<'PY'
+  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$path" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" "$CHROME_USE_SPKI_EXCEPTION" "$netlog" "$dump" <<'PY'
 import os
 import pathlib
 import shlex
 import subprocess
 import sys
 
-chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode, virtual_time_budget_ms, netlog_name, dump_name = sys.argv[1:]
+chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode, virtual_time_budget_ms, use_spki_exception, netlog_name, dump_name = sys.argv[1:]
 artifact = pathlib.Path(artifact_dir)
 url = f"https://{addr}{request_path}"
 cmd = [
@@ -101,13 +132,14 @@ cmd = [
     "--safebrowsing-disable-auto-update",
     "--disable-features=AutofillServerCommunication,CertificateTransparencyComponentUpdater,InterestFeedContentSuggestions,MediaRouter,OptimizationGuideModelDownloading,OptimizationHints,OptimizationTargetPrediction,SafeBrowsingEnhancedProtection",
     "--enable-quic",
-    f"--ignore-certificate-errors-spki-list={spki_hash}",
     f"--user-data-dir={artifact / 'chrome' / 'profile'}",
     f"--log-net-log={artifact / 'chrome' / netlog_name}",
     f"--net-log-capture-mode={net_log_capture_mode}",
     "--dump-dom",
     url,
 ]
+if use_spki_exception == "1":
+    cmd.insert(-6, f"--ignore-certificate-errors-spki-list={spki_hash}")
 if int(virtual_time_budget_ms) > 0:
     cmd.insert(-2, f"--virtual-time-budget={virtual_time_budget_ms}")
 extra_args = os.environ.get("CHROME_EXTRA_ARGS", "")

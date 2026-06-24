@@ -192,14 +192,110 @@ H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html-ignore-cer
 3. local self-signed certificate control은 forced QUIC baseline에는 충분할 수 있지만 natural Alt-Svc browser experiment에는 충분하지 않을 수 있다.
 4. 실제 browser/mobile 연구는 public trusted certificate, Alt-Svc/DNS HTTPS/SVCB, active network change를 포함한 환경에서 다시 수행해야 한다.
 
-## 8. 후속 작업
+## 8. 실행 5: mkcert localhost diagnostic
+
+로컬 인증서 신뢰 문제가 natural Alt-Svc를 막는지 확인하기 위해 `mkcert` 인증서를 사용했다. `mkcert -install` 확인 과정에서 Java trust store 오류는 있었지만, system trust store에는 local CA가 이미 설치돼 있었다. 스크립트에서는 Java trust store 확인을 피하기 위해 `MKCERT_TRUST_STORES=system`을 기본값으로 사용한다.
+
+명령:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-html-mkcert-localhost-v2-20260624 \
+CERT_MODE=mkcert \
+CHROME_USE_SPKI_EXCEPTION=0 \
+ADDR=localhost:4443 \
+LISTEN_ADDR=127.0.0.1:4443 \
+TCP_ADDR=127.0.0.1:4443 \
+EXPECTED_REQUESTS=4 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+BOOTSTRAP_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-bootstrap-html-mkcert' \
+H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html-mkcert' \
+./scripts/run-chrome-h3-alt-svc.sh
+```
+
+결과:
+
+| 항목 | 값 |
+| --- | --- |
+| status | `PASS_NEGATIVE_CONTROL` |
+| classification | `alt_svc_marked_broken_without_h3_request` |
+| server request count | `4` |
+| server request protos | `HTTP/1.1`, `HTTP/1.1`, `HTTP/1.1`, `HTTP/1.1` |
+| qlog target packets | `0` |
+| NetLog target broken alternative service | `true` |
+
+관찰:
+
+- `mkcert` 인증서로 TCP HTTPS bootstrap은 성공했다.
+- Chrome NetLog는 `localhost:4443`의 QUIC alternative service를 저장했다.
+- 그러나 같은 NetLog에 `broken_alternative_services`로 `localhost:4443` QUIC가 기록됐다.
+- 두 번째 request와 subresource는 모두 TCP `HTTP/1.1`로 처리됐다.
+
+## 9. 실행 6: mkcert IP literal diagnostic
+
+`localhost`의 이름 해석 또는 local-host 특례를 피하기 위해 `127.0.0.1` origin으로도 같은 mkcert 실험을 수행했다.
+
+명령:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=chrome-h3-alt-svc-html-mkcert-ip-20260624 \
+CERT_MODE=mkcert \
+CHROME_USE_SPKI_EXCEPTION=0 \
+ADDR=127.0.0.1:4443 \
+LISTEN_ADDR=127.0.0.1:4443 \
+TCP_ADDR=127.0.0.1:4443 \
+EXPECTED_REQUESTS=4 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=3000 \
+BOOTSTRAP_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-bootstrap-html-mkcert-ip' \
+H3_PATH='/browser-sequence?resources=1&bytes=64&label=alt-svc-h3-html-mkcert-ip' \
+./scripts/run-chrome-h3-alt-svc.sh
+```
+
+결과:
+
+| 항목 | 값 |
+| --- | --- |
+| status | `PASS_NEGATIVE_CONTROL` |
+| classification | `alt_svc_quic_candidate_cert_rejected` |
+| server request count | `4` |
+| server request protos | `HTTP/1.1`, `HTTP/1.1`, `HTTP/1.1`, `HTTP/1.1` |
+| qlog `connection_started` | `1` |
+| qlog `http3_frame` | `1` |
+| qlog close reason | `certificate unknown`, `CERTIFICATE_VERIFY_FAILED` |
+
+관찰:
+
+- `127.0.0.1` origin에서는 QUIC/H3 후보 연결이 server qlog에 잡혔다.
+- 하지만 실제 application request는 모두 TCP `HTTP/1.1`였다.
+- QUIC 후보 연결은 여전히 certificate verification failure로 닫혔다.
+- 따라서 local mkcert trust도 natural Alt-Svc browser experiment를 public WebPKI 조건으로 대체하기에는 부족했다.
+
+## 10. 갱신된 해석
+
+현재 local control에서 보이는 계층별 결론은 다음이다.
+
+| 조건 | 관찰 | 해석 |
+| --- | --- | --- |
+| forced QUIC + SPKI exception | Chrome request가 HTTP/3로 server에 도달 | Chrome 자체 HTTP/3 capability baseline |
+| natural Alt-Svc + self-signed | H3 후보 없음 또는 cert failure | Alt-Svc discovery와 cert policy가 별도 관문 |
+| natural Alt-Svc + mkcert localhost | Alt-Svc가 broken으로 마킹됨 | local trusted cert만으로 충분하지 않음 |
+| natural Alt-Svc + mkcert 127.0.0.1 | H3 후보가 cert failure로 닫힘 | public WebPKI와 다른 동작 |
+
+따라서 다음 실험은 local trust 대신 public trusted certificate를 가진 origin에서 수행해야 한다.
+
+## 11. 후속 작업
 
 - public trusted origin 또는 AWS direct-origin HTTPS bootstrap에서 natural HTTP/3 upgrade를 재검증한다.
 - Chrome background traffic을 줄이기 위해 추가 flag 또는 isolated test profile 정책을 검토한다. HTML diagnostic에서는 artifact 크기를 약 3.6 MiB로 줄였다.
 - `localhost` 실험에서 UDP IPv6/IPv4 경로 차이를 분리하려면 `[::]:4443` listen 또는 explicit host mapping을 추가 대조한다.
 - natural HTTP/3가 안정적으로 확인된 뒤에만 active interface change 실험으로 넘어간다.
 
-## 9. 참고한 표준/구현 문서
+## 12. 참고한 표준/구현 문서
 
 - [RFC 9114 HTTP/3](https://datatracker.ietf.org/doc/html/rfc9114): HTTP/3 endpoint discovery와 QUIC 기반 HTTP mapping의 표준 근거.
 - [quic-go Serving HTTP/3](https://quic-go.net/docs/http3/server/): HTTP/1.1 또는 HTTP/2 response에서 Alt-Svc로 HTTP/3 지원을 광고하는 구현 패턴.

@@ -416,6 +416,15 @@ openssl로 local test cert/key 생성
   -> server JSON, Chrome NetLog, qlog 수집
 ```
 
+인증서 모드:
+
+| 변수 | 의미 |
+| --- | --- |
+| `CERT_MODE=self-signed` | openssl self-signed certificate 생성 |
+| `CERT_MODE=mkcert` | mkcert local CA로 certificate 생성 |
+| `CERT_MODE=provided` | `PROVIDED_CERT_FILE`, `PROVIDED_KEY_FILE` 사용 |
+| `CHROME_USE_SPKI_EXCEPTION=0` | Chrome SPKI exception flag를 넣지 않음 |
+
 성공 기준:
 
 - server request 중 TCP bootstrap `HTTP/1.1` request가 있어야 한다.
@@ -427,7 +436,7 @@ classifier:
 
 - `tools/classify_chrome_alt_svc_artifacts.py`
 
-현재 local self-signed control에서는 binary-response 실험이 `alt_svc_advertised_but_h3_not_observed`, HTML/subresource diagnostic이 `alt_svc_quic_candidate_cert_rejected`로 분류됐다.
+현재 local control에서는 binary-response 실험이 `alt_svc_advertised_but_h3_not_observed`, self-signed HTML diagnostic이 `alt_svc_quic_candidate_cert_rejected`, mkcert localhost diagnostic이 `alt_svc_marked_broken_without_h3_request`로 분류됐다.
 
 ## 10. 실행 예시
 

@@ -176,6 +176,7 @@ python3 tools/classify_chrome_alt_svc_artifacts.py \
 | --- | --- |
 | `alt_svc_h3_upgrade_observed` | Alt-Svc 이후 실제 HTTP/3 application request가 관찰됨 |
 | `alt_svc_quic_candidate_cert_rejected` | QUIC/H3 후보 연결은 열렸지만 certificate verification failure로 application request가 HTTP/3로 가지 않음 |
+| `alt_svc_marked_broken_without_h3_request` | NetLog가 target QUIC alternative service를 broken으로 기록했고 application request는 HTTP/3가 아님 |
 | `alt_svc_quic_candidate_without_h3_request` | QUIC/H3 후보 evidence는 있으나 application request는 HTTP/3가 아님 |
 | `alt_svc_advertised_but_h3_not_observed` | Alt-Svc 광고 후에도 HTTP/3 후보/요청 evidence가 부족함 |
 
