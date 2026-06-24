@@ -75,6 +75,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     paper_tables = "docs/results/paper-tables-20260624.md"
     application_recovery_tradeoff = "docs/results/application-recovery-tradeoff-20260624.md"
     application_recovery_tradeoff_csv = "data/application-recovery-tradeoff-20260624.csv"
+    workload_transition_zone = "docs/results/workload-transition-zone-synthesis-20260624.md"
+    workload_transition_zone_csv = "data/workload-transition-zone-synthesis-20260624.csv"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
     cm_operational_friction_matrix = "docs/results/cm-operational-friction-matrix-20260624.md"
@@ -108,6 +110,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         paper_tables = str(generated_dir / "paper-tables.md")
         application_recovery_tradeoff = str(generated_dir / "application-recovery-tradeoff.md")
         application_recovery_tradeoff_csv = str(generated_dir / "application-recovery-tradeoff.csv")
+        workload_transition_zone = str(generated_dir / "workload-transition-zone-synthesis.md")
+        workload_transition_zone_csv = str(generated_dir / "workload-transition-zone-synthesis.csv")
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
         cm_operational_friction_matrix = str(generated_dir / "cm-operational-friction-matrix.md")
@@ -155,6 +159,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_trial_acceptance_scorecard.py",
                 "tools/build_final_protocol_readiness_matrix.py",
                 "tools/build_research_status_dashboard.py",
+                "tools/build_workload_transition_zone_table.py",
                 "tools/build_cm_operational_friction_matrix.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
@@ -244,6 +249,19 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 application_recovery_tradeoff,
                 "--csv-output",
                 application_recovery_tradeoff_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "workload_transition_zone",
+            [
+                python_bin,
+                "tools/build_workload_transition_zone_table.py",
+                "--output",
+                workload_transition_zone,
+                "--csv-output",
+                workload_transition_zone_csv,
             ],
             {0},
             30,

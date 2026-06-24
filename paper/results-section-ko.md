@@ -50,6 +50,8 @@ Downlink-only fine boundary는 이 transition zone이 단조 threshold가 아님
 
 Upload workload의 transition을 더 좁히기 위해 4600ms, 4750ms, 4900ms, 5000ms window를 각각 3회 반복했다. 4600ms upload는 3/3 PASS였고, 4750ms는 1/3 PASS로 갈렸으며, 4900ms와 5000ms는 6/6 FAIL이었다. 이 결과는 local 1MiB upload workload에서 안정 완료 구간이 4600ms까지, 불안정 transition이 4750ms부터, 반복 실패 구간이 4900ms부터 나타난다는 것을 보여준다. 모든 실패 row가 qlog H3/path evidence를 남겼으므로, 이 fine boundary도 transport-level path evidence가 application-level upload continuity를 보장하지 않는다는 결론을 강화한다.
 
+두 fine-boundary control을 종합한 workload transition-zone table은 downlink가 5000ms/5500ms에서 혼재 후 6000ms에서 반복 실패하고, upload가 4750ms부터 혼재 후 4900ms에서 반복 실패한다는 차이를 보여준다. 따라서 본 연구의 continuity metric은 단일 outage-duration threshold가 아니라 workload direction별 transition zone으로 보고되어야 한다.
+
 마지막으로 같은 4900ms/5000ms upload 실패 구간에서 application-level retry control을 실행했다. 브라우저 upload page가 첫 `fetch()` 실패 후 1000ms 뒤 새 스트림으로 한 번 재시도하도록 설정하자 6개 row가 모두 PASS였고, 각 row에서 `/upload-sink` request가 2개씩 기록됐으며 최종 1MiB body가 수신됐다. 그러나 6개 row 모두 Chrome target QUIC session count가 2였고 classification은 `nat_rebinding_multiple_quic_sessions`였다. 따라서 이 결과는 "CM이 성공했다"가 아니라, "application-level retry가 사용자 작업 완료를 회복할 수 있지만 transport/browser session continuity와는 별도로 보고해야 한다"는 근거다.
 
 Retry control을 더 긴 6000ms/9000ms outage로 확장했을 때도 6개 row가 모두 PASS였다. 6000ms row의 DOM complete timing은 약 15.5초였고, 9000ms row는 약 19.7초였다. 다만 Chrome target QUIC session count는 2-3개로 관찰됐다. 이는 retry가 더 긴 outage에서도 task completion을 회복할 수 있지만, 그 대가는 증가한 completion latency와 replacement/multiple-session behavior라는 점을 보여준다. 따라서 application-level recovery는 CM 성숙도 평가의 보조 축이지, browser CM success의 대체 지표가 아니다.

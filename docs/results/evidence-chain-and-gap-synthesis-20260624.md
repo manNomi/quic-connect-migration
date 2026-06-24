@@ -304,6 +304,14 @@ Application recovery tradeoff의 핵심:
 - Chrome target QUIC session count도 1개, 3개, 4개로 증가했다.
 - 따라서 retry는 task completion을 개선하는 application strategy이지, browser single-session CM maturity의 대체 지표가 아니다.
 
+[Workload Transition-Zone Synthesis](./workload-transition-zone-synthesis-20260624.md)는 downlink/upload fine-boundary control을 한 표로 합친다.
+
+Workload transition-zone synthesis의 핵심:
+
+- downlink는 5000ms/5500ms가 각각 2/3 PASS였고 6000ms는 0/3 PASS였다.
+- upload는 4600ms가 3/3 PASS, 4750ms가 1/3 PASS, 4900ms/5000ms가 0/6 PASS였다.
+- 따라서 local browser continuity boundary는 workload direction에 따라 달라진다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

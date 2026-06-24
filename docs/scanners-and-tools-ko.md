@@ -2130,3 +2130,21 @@ python3 tools/build_application_recovery_tradeoff.py \
 - 1회 retry latest all-pass window: 12000ms
 - 2회 retry latest all-pass window: 18000ms
 - 성공 window가 길어질수록 DOM completion latency와 Chrome target QUIC session count가 증가한다.
+
+## 62. `tools/build_workload_transition_zone_table.py`
+
+Chrome local downlink/upload fine-boundary CSV들을 읽어 workload direction별 transition zone을 논문용 표로 묶는다.
+
+실행:
+
+```bash
+python3 tools/build_workload_transition_zone_table.py \
+  --output docs/results/workload-transition-zone-synthesis-20260624.md \
+  --csv-output data/workload-transition-zone-synthesis-20260624.csv
+```
+
+현재 결과:
+
+- downlink: 5000ms/5500ms mixed, 6000ms repeated FAIL
+- upload: 4600ms stable PASS, 4750ms mixed, 4900ms부터 repeated FAIL
+- 단일 outage-duration threshold 대신 workload-sensitive transition zone으로 보고해야 한다.

@@ -1516,7 +1516,23 @@ python3 tools/build_application_recovery_tradeoff.py \
 - 2회 retry 최신 all-pass window는 18000ms, first later all-fail window는 21000ms다.
 - retry budget 증가는 recovery boundary를 오른쪽으로 이동시키지만 completion latency와 Chrome QUIC session count도 함께 증가한다.
 
-## 33. Artifact 정책
+## 33. Workload transition-zone 표 재생성
+
+downlink/upload fine-boundary CSV를 workload-sensitive transition-zone 표로 합친다.
+
+```bash
+python3 tools/build_workload_transition_zone_table.py \
+  --output docs/results/workload-transition-zone-synthesis-20260624.md \
+  --csv-output data/workload-transition-zone-synthesis-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- downlink는 5000ms/5500ms에서 각각 2/3 PASS, 6000ms에서 0/3 PASS다.
+- upload는 4600ms에서 3/3 PASS, 4750ms에서 1/3 PASS, 4900ms/5000ms에서 0/6 PASS다.
+- workload direction에 따라 transition zone이 달라지므로 단일 threshold로 보고하지 않는다.
+
+## 34. Artifact 정책
 
 commit 가능한 것:
 
