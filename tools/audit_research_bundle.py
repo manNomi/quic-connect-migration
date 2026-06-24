@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "docs/reproducibility-guide-ko.md",
     "docs/scanners-and-tools-ko.md",
     "docs/results/evidence-chain-and-gap-synthesis-20260624.md",
+    "docs/results/final-browser-handover-experiment-protocol-20260624.md",
     "docs/results/paper-tables-20260624.md",
     "docs/results/research-completion-audit-20260624.md",
     "paper/results-section-ko.md",
