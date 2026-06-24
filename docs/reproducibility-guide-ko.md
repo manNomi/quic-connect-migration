@@ -497,6 +497,16 @@ CHROME_NET_LOG_CAPTURE_MODE=Default \
 - 목적은 browser가 target origin을 forced QUIC 없이 실제 HTTP/3로 선택했는지 확인하는 것이다.
 - public endpoint 결과는 시간, region, server policy에 따라 바뀔 수 있으므로 실행일과 target URL을 CSV에 함께 기록한다.
 
+public endpoint 후보를 먼저 줄이려면 다음을 실행한다.
+
+```bash
+python3 tools/scan_public_alt_svc.py \
+  --url-file data/public-alt-svc-targets.txt \
+  --format markdown
+```
+
+이 스캐너는 `Alt-Svc: h3` 광고 여부만 본다. Chrome이 실제 HTTP/3를 선택했는지는 `run-chrome-public-h3.sh` 결과와 NetLog classifier로 별도 확인해야 한다.
+
 ## 11. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.

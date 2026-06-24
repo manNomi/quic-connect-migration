@@ -213,7 +213,40 @@ classification:
 
 이 도구는 local Alt-Svc negative control과 public WebPKI positive control을 분리하기 위한 것이다. migration evidence는 판정하지 않는다.
 
-## 8. 실험 실행 코드
+## 8. `tools/scan_public_alt_svc.py`
+
+public HTTPS endpoint가 HTTP/3 discovery 후보인지 보기 위해 `Alt-Svc: h3` 광고 여부를 반복 가능하게 확인한다.
+
+실행:
+
+```bash
+python3 tools/scan_public_alt_svc.py \
+  --url-file data/public-alt-svc-targets.txt \
+  --format csv \
+  --output data/public-alt-svc-survey-20260624.csv
+```
+
+지원 format:
+
+| format | 용도 |
+| --- | --- |
+| `markdown` | 보고서에 붙일 표 |
+| `csv` | 논문/분석용 데이터 |
+| `json` | 후속 자동 분석 |
+
+출력 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| `final_status` | redirect follow 후 마지막 HTTP status line |
+| `has_h3_alt_svc` | response header에 `h3` Alt-Svc가 있었는지 |
+| `alt_svc_headers` | 관찰된 Alt-Svc header |
+| `server_headers` | 관찰된 server header |
+| `location_headers` | redirect chain |
+
+이 도구는 Chrome이 실제 HTTP/3를 사용했는지 판정하지 않는다. target 후보를 줄인 뒤 `run-chrome-public-h3.sh`와 `classify_chrome_public_h3_artifacts.py`로 browser evidence를 별도 확인한다.
+
+## 9. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -254,7 +287,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 9. 최소 검증 세트
+## 10. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -262,6 +295,7 @@ AWS wrapper:
 python3 tools/validate_publication_bundle.py
 python3 tools/summarize_experiment_results.py --format markdown
 python3 tools/scan_implementation_evidence.py repro/quic-go-min-repro --format markdown
+python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt --format markdown
 
 cd repro/quic-go-min-repro
 go test ./...

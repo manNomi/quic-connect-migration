@@ -1,0 +1,9 @@
+scan_date,url,curl_exit,final_status,has_h3_alt_svc,alt_svc_headers,server_headers,location_headers,error
+2026-06-24,https://www.google.com/generate_204,0,HTTP/2 204,True,"h3="":443""; ma=2592000,h3-29="":443""; ma=2592000",,,
+2026-06-24,https://cloudflare-quic.com/cdn-cgi/trace,0,HTTP/2 404,True,"h3="":443""; ma=86400",cloudflare,,
+2026-06-24,https://www.cloudflare.com/cdn-cgi/trace,0,HTTP/2 404,True,"h3="":443""; ma=86400",cloudflare,,
+2026-06-24,https://github.com/,0,HTTP/2 200,False,,github.com,,
+2026-06-24,https://www.amazon.com/,0,HTTP/2 503,True,"h3="":443""; ma=86400",Server,,
+2026-06-24,https://www.naver.com/,0,HTTP/2 200,False,,nfront,,
+2026-06-24,https://www.kakao.com/,0,HTTP/2 200,False,,,//www.kakaocorp.com | https://www.kakaocorp.com/page/,
+2026-06-24,https://www.youtube.com/generate_204,0,HTTP/2 204,True,"h3="":443""; ma=2592000,h3-29="":443""; ma=2592000",,,
