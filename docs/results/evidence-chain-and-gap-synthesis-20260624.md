@@ -217,6 +217,21 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - 5초 downlink는 3/3 PASS였으므로 “5초부터 항상 실패”라고 표현하면 안 된다.
 - 5초 upload 실패 row도 proxy switch와 qlog H3/path evidence를 남겼으므로, transport evidence와 application completion은 여전히 분리해야 한다.
 
+[Chrome H3 Local Rebinding Transient Upload Fine Boundary](./chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md)는 upload-only window를 4600ms/4750ms/4900ms/5000ms로 세분화했다.
+
+| upload-only window | rows | status | interpretation |
+| ---: | ---: | --- | --- |
+| 4600ms | 3 | 3/3 PASS | local 1MiB upload의 stable completion 구간으로 관찰됐다. |
+| 4750ms | 3 | 1/3 PASS | upload continuity가 이미 불안정해지는 transition 구간이다. |
+| 4900ms | 3 | 0/3 PASS | 반복 실패 구간으로 들어섰다. |
+| 5000ms | 3 | 0/3 PASS | broader boundary repetition의 upload 실패를 재현했다. |
+
+Upload fine boundary의 핵심:
+
+- upload 안정 완료 구간은 4600ms까지 관찰됐다.
+- 4750ms부터 실패가 섞였고 4900ms 이상은 반복 실패했다.
+- 실패 row의 DOM error timing은 6917-6922ms로 좁게 모였으며, 모든 실패 row에 qlog H3/path evidence가 남았다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

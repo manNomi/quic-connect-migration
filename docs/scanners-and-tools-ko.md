@@ -1902,3 +1902,31 @@ cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repe
 - 4500ms `6/6 PASS`
 - 5000ms downlink `3/3 PASS`, upload `0/3 PASS`
 - local workload-sensitive transition-zone control이며, public active handover 결과가 아니다.
+
+## 54. Chrome transient upload fine boundary
+
+`run-chrome-h3-rebinding-transient-boundary-repetition.sh`의 `DROP_WINDOWS_MS`와 `WORKLOADS`를 사용해 upload workload만 4600ms/4750ms/4900ms/5000ms에서 반복한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-fine-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624 \
+BASE_PORT=7500 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="4600 4750 4900 5000" \
+WORKLOADS="upload" \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+현재 결과:
+
+- 4600ms upload `3/3 PASS`
+- 4750ms upload `1/3 PASS`
+- 4900ms/5000ms upload `6/6 FAIL`
+- local upload-specific transition-zone control이며, public active handover 결과가 아니다.

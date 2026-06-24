@@ -1180,7 +1180,56 @@ cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repe
 - 5초 근처는 단일 threshold가 아니라 workload-sensitive transition zone으로 해석한다.
 - 이 결과도 local outage-tolerance control이며 실제 public handover evidence가 아니다.
 
-## 25. Artifact 정책
+## 25. Chrome local upload fine boundary 재현
+
+5000ms에서 upload만 반복 실패했으므로, upload workload만 더 촘촘하게 측정한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-fine-boundary-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624 \
+BASE_PORT=7500 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="4600 4750 4900 5000" \
+WORKLOADS="upload" \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep01-upload-1m-drop-ab-4600ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep01-upload-1m-drop-ab-4750ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep01-upload-1m-drop-ab-4900ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep01-upload-1m-drop-ab-5000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep02-upload-1m-drop-ab-4600ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep02-upload-1m-drop-ab-4750ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep02-upload-1m-drop-ab-4900ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep02-upload-1m-drop-ab-5000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep03-upload-1m-drop-ab-4600ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep03-upload-1m-drop-ab-4750ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep03-upload-1m-drop-ab-4900ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624/rep03-upload-1m-drop-ab-5000ms \
+  --output docs/results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 4600ms upload는 `3/3 PASS`
+- 4750ms upload는 `1/3 PASS`
+- 4900ms와 5000ms upload는 `6/6 FAIL`
+- 이 결과도 local upload-specific transition-zone control이며 public handover evidence가 아니다.
+
+## 26. Artifact 정책
 
 commit 가능한 것:
 

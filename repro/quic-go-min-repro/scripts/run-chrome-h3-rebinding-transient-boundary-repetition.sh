@@ -14,12 +14,15 @@ TIMEOUT="${TIMEOUT:-42s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-36}"
 CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-18}"
 REPETITIONS="${REPETITIONS:-3}"
+DROP_WINDOWS_MS="${DROP_WINDOWS_MS:-4000 4500 5000}"
+WORKLOADS="${WORKLOADS:-downlink upload}"
 
 mkdir -p "$ARTIFACT_ROOT/results"
 
 run_index=0
 run_specs=()
-drop_windows_ms=(4000 4500 5000)
+read -r -a drop_windows_ms <<<"$DROP_WINDOWS_MS"
+read -r -a workloads <<<"$WORKLOADS"
 
 write_spec() {
   local artifact_dir="$1"
@@ -112,8 +115,16 @@ for repetition in $(seq 1 "$REPETITIONS"); do
   rep_label="$(printf "rep%02d" "$repetition")"
   for drop_window_ms in "${drop_windows_ms[@]}"; do
     drop_window="${drop_window_ms}ms"
-    run_case "${rep_label}-downlink-1m-drop-ab-${drop_window}" "downlink" 1048576 16 8000 "$drop_window" "$drop_window_ms" "$repetition"
-    run_case "${rep_label}-upload-1m-drop-ab-${drop_window}" "upload" 1048576 16 8000 "$drop_window" "$drop_window_ms" "$repetition"
+    for workload in "${workloads[@]}"; do
+      case "$workload" in
+        downlink | upload) ;;
+        *)
+          echo "unsupported workload in WORKLOADS: $workload" >&2
+          exit 2
+          ;;
+      esac
+      run_case "${rep_label}-${workload}-1m-drop-ab-${drop_window}" "$workload" 1048576 16 8000 "$drop_window" "$drop_window_ms" "$repetition"
+    done
   done
 done
 
