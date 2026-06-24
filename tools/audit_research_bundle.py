@@ -33,6 +33,7 @@ REQUIRED_FILES = [
     "docs/results/artifact-cleanup-plan-20260624.md",
     "docs/results/evidence-chain-and-gap-synthesis-20260624.md",
     "docs/results/final-browser-handover-experiment-protocol-20260624.md",
+    "docs/results/final-browser-handover-result-registration-guide-20260624.md",
     "docs/results/final-browser-handover-trial-audit-20260624.md",
     "docs/results/paper-tables-20260624.md",
     "docs/results/research-completion-audit-20260624.md",
