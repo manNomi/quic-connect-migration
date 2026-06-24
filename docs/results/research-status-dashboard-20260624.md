@@ -1,6 +1,6 @@
 # Research Status Dashboard
 
-Generated: `2026-06-25`
+Generated: `2026-06-24`
 
 This dashboard is public-safe. It summarizes tracked, redacted research state without printing private domains, TLS paths, network-change commands, qlogs, NetLogs, pcaps, device IDs, or credentials.
 

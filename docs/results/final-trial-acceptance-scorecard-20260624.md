@@ -1,6 +1,6 @@
 # Final Trial Acceptance Scorecard
 
-Generated: `2026-06-25`
+Generated: `2026-06-24`
 
 This scorecard is public-safe. It states which final browser handover rows can be accepted into the paper protocol, what each row must prove, and what evidence excludes a CM success claim.
 

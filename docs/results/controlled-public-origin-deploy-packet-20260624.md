@@ -1,6 +1,6 @@
 # Controlled Public Origin Deploy Packet
 
-Generated: `2026-06-25`
+Generated: `2026-06-24`
 
 This packet is public-safe. It uses placeholders for hostnames, certificate paths, private key paths, and SSH targets.
 

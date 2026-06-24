@@ -1,6 +1,6 @@
 # Paper Evidence Gap Register
 
-Generated: `2026-06-25`
+Generated: `2026-06-24`
 
 This register is public-safe. It converts the evidence-chain rubric into paper-claim guidance and links unresolved claims to final browser handover trial requirements.
 

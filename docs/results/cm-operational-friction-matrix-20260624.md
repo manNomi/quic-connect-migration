@@ -1,6 +1,6 @@
 # CM Operational Friction Matrix
 
-Generated: `2026-06-25`
+Generated: `2026-06-24`
 
 This matrix turns the question "why is connection migration not widely used?" into layer-specific, evidence-linked friction points. It is public-safe and does not print private origin settings, commands, qlogs, pcaps, NetLogs, or credentials.
 

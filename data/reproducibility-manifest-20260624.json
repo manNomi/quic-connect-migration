@@ -1,9 +1,9 @@
 {
-  "generated": "2026-06-25",
+  "generated": "2026-06-24",
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "8f1af4c",
+    "commit": "6747109",
     "branch": "main"
   },
   "experiment_corpus": {

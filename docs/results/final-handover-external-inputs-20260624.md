@@ -1,6 +1,6 @@
 # Final Handover External Inputs Handoff
 
-Generated: `2026-06-25`
+Generated: `2026-06-24`
 
 This packet is public-safe. It lists required external inputs and validation commands without printing domains, TLS paths, private keys, AWS account IDs, device IDs, or network-change command bodies.
 
