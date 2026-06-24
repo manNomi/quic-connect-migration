@@ -10,9 +10,9 @@ Generated: `2026-06-24`
 | disk free | `47.5 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `1.2 GiB` |
-| extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
-| cleanup candidates | `57` |
-| CSV-referenced candidates | `35` |
+| extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
+| cleanup candidates | `59` |
+| CSV-referenced candidates | `37` |
 | planned final-trial candidates | `0` |
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
@@ -47,7 +47,9 @@ Generated: `2026-06-24`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-timing-early-20260624` | `17.2 MiB` | upload-r1, upload-r2 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-facebook-home-20260624` | `15.5 MiB` | chrome-public-h3-facebook-home-20260624 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-blog-20260624` | `13.0 MiB` | chrome-public-h3-cloudflare-blog-20260624 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-drop-oldpath-upload-20260624` | `8.7 MiB` | chrome-h3-rebinding-drop-oldpath-upload-20260624 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-heartbeat-smoke2-20260624` | `8.2 MiB` | chrome-h3-rebinding-heartbeat-local-001 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-drop-oldpath-downlink-20260624` | `8.1 MiB` | chrome-h3-rebinding-old-path-drop-local-001, chrome-h3-rebinding-drop-oldpath-downlink-20260624 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-noheartbeat-smoke-20260624` | `8.1 MiB` | chrome-h3-rebinding-noheartbeat-local-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-quic-20260624` | `7.4 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | chrome-public-h3-youtube-204-001 | artifact path is referenced by a tracked artifact reference CSV |

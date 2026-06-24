@@ -16,25 +16,28 @@ import (
 )
 
 type proxyResult struct {
-	Role              string `json:"role"`
-	OK                bool   `json:"ok"`
-	StartedAt         string `json:"started_at"`
-	CompletedAt       string `json:"completed_at"`
-	ListenAddr        string `json:"listen_addr"`
-	ServerAddr        string `json:"server_addr"`
-	UpstreamAAddr     string `json:"upstream_a_addr"`
-	UpstreamBAddr     string `json:"upstream_b_addr"`
-	SwitchAfterMillis int64  `json:"switch_after_ms"`
-	Switched          bool   `json:"switched"`
-	FirstClientAt     string `json:"first_client_at,omitempty"`
-	SwitchedAt        string `json:"switched_at,omitempty"`
-	LastClientAddr    string `json:"last_client_addr,omitempty"`
-	ClientPackets     int    `json:"client_packets"`
-	ServerPacketsA    int    `json:"server_packets_a"`
-	ServerPacketsB    int    `json:"server_packets_b"`
-	BytesClientToSrv  int    `json:"bytes_client_to_server"`
-	BytesServerToCli  int    `json:"bytes_server_to_client"`
-	Error             string `json:"error,omitempty"`
+	Role                   string `json:"role"`
+	OK                     bool   `json:"ok"`
+	StartedAt              string `json:"started_at"`
+	CompletedAt            string `json:"completed_at"`
+	ListenAddr             string `json:"listen_addr"`
+	ServerAddr             string `json:"server_addr"`
+	UpstreamAAddr          string `json:"upstream_a_addr"`
+	UpstreamBAddr          string `json:"upstream_b_addr"`
+	SwitchAfterMillis      int64  `json:"switch_after_ms"`
+	Switched               bool   `json:"switched"`
+	FirstClientAt          string `json:"first_client_at,omitempty"`
+	SwitchedAt             string `json:"switched_at,omitempty"`
+	LastClientAddr         string `json:"last_client_addr,omitempty"`
+	ClientPackets          int    `json:"client_packets"`
+	ServerPacketsA         int    `json:"server_packets_a"`
+	ServerPacketsB         int    `json:"server_packets_b"`
+	DropAServerAfterSwitch bool   `json:"drop_a_server_after_switch"`
+	DroppedServerPacketsA  int    `json:"dropped_server_packets_a"`
+	DroppedServerBytesA    int    `json:"dropped_server_bytes_a"`
+	BytesClientToSrv       int    `json:"bytes_client_to_server"`
+	BytesServerToCli       int    `json:"bytes_server_to_client"`
+	Error                  string `json:"error,omitempty"`
 }
 
 type jsonlLogger struct {
@@ -87,6 +90,7 @@ func main() {
 	listen := flag.String("listen", "127.0.0.1:4443", "client-facing UDP listen address")
 	server := flag.String("server", "127.0.0.1:4444", "upstream QUIC server UDP address")
 	switchAfter := flag.Duration("switch-after", 3*time.Second, "delay before forwarding new client packets via upstream socket B")
+	dropAServerAfterSwitch := flag.Bool("drop-a-server-after-switch", false, "drop server-to-client packets arriving on upstream A after client traffic has switched to upstream B")
 	timeout := flag.Duration("timeout", 45*time.Second, "maximum proxy runtime")
 	logPath := flag.String("log", "", "optional JSONL proxy log path")
 	resultPath := flag.String("result", "", "optional result JSON path")
@@ -97,7 +101,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(ctx, *timeout)
 	defer cancel()
 
-	result, err := run(ctx, *listen, *server, *switchAfter, *logPath)
+	result, err := run(ctx, *listen, *server, *switchAfter, *dropAServerAfterSwitch, *logPath)
 	if err != nil {
 		result.Error = err.Error()
 	}
@@ -113,14 +117,15 @@ func main() {
 	}
 }
 
-func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Duration, logPath string) (proxyResult, error) {
+func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Duration, dropAServerAfterSwitch bool, logPath string) (proxyResult, error) {
 	started := time.Now().UTC()
 	result := proxyResult{
-		Role:              "udprebindproxy",
-		StartedAt:         started.Format(time.RFC3339Nano),
-		ListenAddr:        listenAddr,
-		ServerAddr:        serverAddr,
-		SwitchAfterMillis: switchAfter.Milliseconds(),
+		Role:                   "udprebindproxy",
+		StartedAt:              started.Format(time.RFC3339Nano),
+		ListenAddr:             listenAddr,
+		ServerAddr:             serverAddr,
+		SwitchAfterMillis:      switchAfter.Milliseconds(),
+		DropAServerAfterSwitch: dropAServerAfterSwitch,
 	}
 
 	clientUDPAddr, err := net.ResolveUDPAddr("udp", listenAddr)
@@ -160,11 +165,12 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 	}
 	defer logger.close()
 	logger.log("proxy_started", map[string]any{
-		"listen":       listenAddr,
-		"server":       serverAddr,
-		"upstream_a":   result.UpstreamAAddr,
-		"upstream_b":   result.UpstreamBAddr,
-		"switch_after": switchAfter.String(),
+		"listen":                     listenAddr,
+		"server":                     serverAddr,
+		"upstream_a":                 result.UpstreamAAddr,
+		"upstream_b":                 result.UpstreamBAddr,
+		"switch_after":               switchAfter.String(),
+		"drop_a_server_after_switch": dropAServerAfterSwitch,
 	})
 
 	var mu sync.Mutex
@@ -192,6 +198,17 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 			}
 			mu.Lock()
 			dst := cloneUDPAddr(clientAddr)
+			if name == "A" && dropAServerAfterSwitch && result.Switched {
+				result.DroppedServerPacketsA++
+				result.DroppedServerBytesA += n
+				mu.Unlock()
+				logger.log("server_to_client_dropped", map[string]any{
+					"upstream": "A",
+					"bytes":    n,
+					"reason":   "drop_a_server_after_switch",
+				})
+				continue
+			}
 			if name == "A" {
 				result.ServerPacketsA++
 			} else {

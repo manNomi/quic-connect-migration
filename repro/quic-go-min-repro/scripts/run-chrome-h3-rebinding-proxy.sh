@@ -12,6 +12,7 @@ ARTIFACT_DIR="${ARTIFACT_DIR:-artifacts/${RUN_ID}}"
 PROXY_ADDR="${PROXY_ADDR:-127.0.0.1:4443}"
 SERVER_ADDR="${SERVER_ADDR:-127.0.0.1:4444}"
 REBIND_AFTER="${REBIND_AFTER:-3s}"
+DROP_A_SERVER_AFTER_SWITCH="${DROP_A_SERVER_AFTER_SWITCH:-0}"
 WORKLOAD="${WORKLOAD:-downlink}"
 TIMEOUT="${TIMEOUT:-45s}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-35}"
@@ -89,13 +90,19 @@ SERVER_PID=$!
 
 go build -o "$ARTIFACT_DIR/bin/udprebindproxy" ./cmd/udprebindproxy
 
-"$ARTIFACT_DIR/bin/udprebindproxy" \
-  --listen "$PROXY_ADDR" \
-  --server "$SERVER_ADDR" \
-  --switch-after "$REBIND_AFTER" \
-  --timeout "$TIMEOUT" \
-  --log "$ARTIFACT_DIR/logs/rebinding-proxy.jsonl" \
-  --result "$ARTIFACT_DIR/results/rebinding-proxy.json" \
+PROXY_ARGS=(
+  --listen "$PROXY_ADDR"
+  --server "$SERVER_ADDR"
+  --switch-after "$REBIND_AFTER"
+  --timeout "$TIMEOUT"
+  --log "$ARTIFACT_DIR/logs/rebinding-proxy.jsonl"
+  --result "$ARTIFACT_DIR/results/rebinding-proxy.json"
+)
+if [[ "$DROP_A_SERVER_AFTER_SWITCH" == "1" || "$DROP_A_SERVER_AFTER_SWITCH" == "true" ]]; then
+  PROXY_ARGS+=(--drop-a-server-after-switch)
+fi
+
+"$ARTIFACT_DIR/bin/udprebindproxy" "${PROXY_ARGS[@]}" \
   >"$ARTIFACT_DIR/logs/rebinding-proxy.stdout.log" 2>&1 &
 PROXY_PID=$!
 
@@ -158,6 +165,9 @@ summary["rebinding_proxy"] = {
     "client_packets": proxy.get("client_packets"),
     "server_packets_a": proxy.get("server_packets_a"),
     "server_packets_b": proxy.get("server_packets_b"),
+    "drop_a_server_after_switch": proxy.get("drop_a_server_after_switch"),
+    "dropped_server_packets_a": proxy.get("dropped_server_packets_a"),
+    "dropped_server_bytes_a": proxy.get("dropped_server_bytes_a"),
 }
 with open(summary_path, "w", encoding="utf-8") as fp:
     json.dump(summary, fp, indent=2)

@@ -129,6 +129,21 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - heartbeat downlink는 early 조건에서 `nat_rebinding_multiple_quic_sessions`, late 조건에서 `nat_rebinding_path_validation_without_observed_tuple_change`로 갈라졌다. 즉 heartbeat 자체의 유무뿐 아니라 heartbeat가 rebinding 전후 어느 시점에 발생하는지도 browser session interpretation을 바꾼다.
 - 이 결과는 application heartbeat/recovery 전략을 후속 연구로 다룰 때 timing-controlled protocol이 필요하다는 근거가 된다.
 
+### 4.6 Old-path-drop local control은 완료와 session continuity를 다시 분리한다
+
+[Chrome H3 Local Rebinding Old-Path Drop Summary](./chrome-h3-rebinding-old-path-drop-20260624.md)는 proxy switch 이후 upstream A의 server-to-client packet을 drop하는 조건을 추가했다.
+
+| workload | PASS | dropped A server packets | Chrome QUIC sessions | qlog path validation | Chrome target NetLog path validation |
+| --- | ---: | ---: | ---: | --- | --- |
+| downlink | 1/1 | 0 | 1 | 1/1 | 1/1 |
+| upload | 1/1 | 21 | 2 | 1/1 | 1/1 |
+
+해석:
+
+- old path가 실제로 일부 차단된 upload control에서도 application task는 완료될 수 있었다.
+- 그러나 upload에서 Chrome target QUIC session이 2개였으므로, task completion은 session continuity의 충분조건이 아니다.
+- 이 결과는 final active handover protocol에서 “task completion + path validation + browser session continuity”를 동시에 요구해야 하는 근거를 더 강화한다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

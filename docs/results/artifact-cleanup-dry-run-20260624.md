@@ -9,7 +9,7 @@ Generated: `2026-06-24`
 | target free GiB | `5.0` |
 | current free | `47.5 GiB` |
 | free space needed | `0 B` |
-| selected candidates | `0/57` |
+| selected candidates | `0/59` |
 | reclaimable from selected | `0 B` |
 | projected free after selected cleanup | `47.5 GiB` |
 | target met by selected cleanup | `yes` |

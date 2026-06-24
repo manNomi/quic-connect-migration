@@ -7,14 +7,14 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | disk free | `47.5 GiB` |
-| disk free GiB | `47.46` |
+| disk free GiB | `47.47` |
 | local artifact roots total | `1.2 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `1.2 GiB` | 13613 | 4341 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `1.2 GiB` | 14024 | 4485 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -34,13 +34,13 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-timing-early-20260624` | `17.2 MiB` | 412 | 145 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-facebook-home-20260624` | `15.5 MiB` | 268 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-blog-20260624` | `13.0 MiB` | 332 | 62 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-drop-oldpath-upload-20260624` | `8.7 MiB` | 206 | 71 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-heartbeat-smoke2-20260624` | `8.2 MiB` | 206 | 71 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-drop-oldpath-downlink-20260624` | `8.1 MiB` | 205 | 71 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-noheartbeat-smoke-20260624` | `8.1 MiB` | 205 | 71 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-quic-20260624` | `7.4 MiB` | 219 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | 213 | 62 |
 | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | `5.7 MiB` | 212 | 63 |
-| `repro/quic-go-min-repro/artifacts/chrome-public-h3-google-generate204-20260624` | `5.6 MiB` | 211 | 62 |
-| `repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624` | `5.3 MiB` | 68 | 34 |
 
 ## Cleanup Note
 
