@@ -298,7 +298,44 @@ python3 tools/scan_public_origin_readiness.py \
 | `browser_h3_candidate` | HTTPS OK이고 `Alt-Svc: h3`가 있음 |
 | `workload_candidate` | browser H3 candidate이고 final status가 2xx |
 
-## 11. `tools/check_handover_readiness.py`
+## 11. `tools/classify_controlled_public_h3_baseline.py`
+
+controlled public origin의 no-change application H3 baseline을 server request log, server qlog, Chrome public NetLog summary, readiness JSON으로 합쳐 판정한다.
+
+실행:
+
+```bash
+python3 tools/classify_controlled_public_h3_baseline.py \
+  repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001 \
+  --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
+  --output repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `server_requests.reached_expected_count` | server request log가 expected request count 이상을 기록했는지 |
+| `server_qlog_has_application_h3` | server qlog에 `chosen_alpn`과 `http3:frame` evidence가 있는지 |
+| `browser.application_using_quic_job_count` | Chrome NetLog에서 discovery가 아닌 application QUIC job 수 |
+| `browser.dns_alpn_h3_job_count` | Chrome NetLog의 H3 discovery job 수 |
+| `public_origin_readiness` | DNS/TLS/Alt-Svc/status readiness 요약 |
+
+classification:
+
+| classification | 의미 |
+| --- | --- |
+| `controlled_public_application_h3_confirmed` | server/qlog와 browser NetLog 모두 application H3를 지지 |
+| `controlled_public_server_qlog_h3_confirmed_browser_netlog_inconclusive` | server/qlog는 application H3를 직접 증명하지만 browser NetLog는 확정적이지 않음 |
+| `controlled_public_h3_discovery_without_server_application_h3` | browser discovery는 있으나 server/qlog application H3 evidence가 없음 |
+| `controlled_public_application_h3_not_confirmed` | application H3 baseline이 확인되지 않음 |
+
+local regression check:
+
+- forced local H3 artifact는 `PASS_FEASIBILITY / controlled_public_server_qlog_h3_confirmed_browser_summary_missing`
+- H1-only local Alt-Svc artifact는 `PASS_NEGATIVE_CONTROL / controlled_public_application_h3_not_confirmed`
+
+## 12. `tools/check_handover_readiness.py`
 
 Chrome/Cronet handover 실험을 실행해도 되는 로컬 상태인지 확인한다.
 
@@ -322,7 +359,7 @@ python3 tools/check_handover_readiness.py --format json --output data/handover-r
 
 기본 출력은 공개 repo에 넣을 수 있도록 raw command output을 저장하지 않는다. 로컬 디버깅이 필요할 때만 `--include-command-output`을 사용한다.
 
-## 12. 실험 실행 코드
+## 13. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -365,7 +402,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 13. 최소 검증 세트
+## 14. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -384,6 +421,9 @@ RUN_ID=local-h3-workload-check ./scripts/run-local-h3-workload.sh
 RUN_ID=local-h3-midflight-check ./scripts/run-local-h3-midflight.sh
 RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-local.sh
+cd ../..
+python3 tools/classify_controlled_public_h3_baseline.py repro/quic-go-min-repro/artifacts/chrome-h3-sequence-vtime-pass --allow-missing-browser-summary
+cd repro/quic-go-min-repro
 WORKLOAD=poll POLL_COUNT=5 POLL_INTERVAL_MS=300 RUN_ID=chrome-h3-poll-nochange-classifier-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=slow SLOW_DURATION_MS=8000 SLOW_CHUNKS=8 RUN_ID=chrome-h3-slow-inactive-if-toggle ./scripts/run-chrome-h3-local.sh
 LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=slow RUN_ID=chrome-h3-slow-wifi-ip-nochange ./scripts/run-chrome-h3-local.sh

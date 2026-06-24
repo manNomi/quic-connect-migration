@@ -533,6 +533,8 @@ Server side:
 
 ```bash
 cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-application-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
 PUBLIC_ORIGIN_HOST=h3.example.com \
 TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
 TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
@@ -545,10 +547,24 @@ Browser side:
 
 ```bash
 cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-application-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 \
 PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
 CHROME_TIMEOUT_SECONDS=20 \
 CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
 ./scripts/run-controlled-public-h3-browser-baseline.sh
+```
+
+Browser wrapper는 같은 artifact directory에 `results/server.json`이 있으면 다음 combined classifier를 자동 실행한다.
+
+```bash
+cd ../..
+python3 tools/classify_controlled_public_h3_baseline.py \
+  repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001 \
+  --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
+  --output repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json
 ```
 
 사전 readiness check:
@@ -567,6 +583,7 @@ python3 tools/check_public_origin_readiness.py \
 - response에 `Alt-Svc: h3`가 있다.
 - Chrome classifier가 `public_natural_h3_observed`를 반환하거나, server request log와 qlog가 workload request의 HTTP/3 처리를 직접 증명한다.
 - server request log와 qlog가 workload request를 기록한다.
+- combined classifier가 `controlled_public_application_h3_confirmed` 또는 `controlled_public_server_qlog_h3_confirmed_browser_netlog_inconclusive`를 반환한다.
 
 ## 12. AWS NLB 실험 설정
 

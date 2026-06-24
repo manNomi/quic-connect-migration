@@ -60,6 +60,7 @@
 │   ├── scan_implementation_evidence.py
 │   ├── check_public_origin_readiness.py
 │   ├── check_handover_readiness.py
+│   ├── classify_controlled_public_h3_baseline.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
 │   ├── scan_qlog_events.py
@@ -75,6 +76,7 @@
 - [코드/하네스 구조 설명](docs/code-architecture-ko.md)
 - [재현 가이드](docs/reproducibility-guide-ko.md)
 - [스캐너와 도구 설명](docs/scanners-and-tools-ko.md)
+- [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)

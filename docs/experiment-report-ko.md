@@ -606,6 +606,8 @@ workload:
 - controlled public WebPKI origin gate를 위해 DNS/TLS/Alt-Svc readiness checker, public H3 server wrapper, Chrome public browser baseline wrapper를 추가했음
 - controlled public browser baseline wrapper는 Google `generate_204` smoke test에서 실행 흐름은 검증됐지만, 새 classifier 기준으로는 `public_h3_discovery_without_application_h3` negative control로 재분류됨
 - public origin readiness survey에서는 Google/YouTube `generate_204`만 H3 discovery와 2xx lightweight workload 후보로 남았음
+- controlled public application H3 gate를 위해 server request log, server qlog, Chrome public NetLog summary, readiness JSON을 합치는 `classify_controlled_public_h3_baseline.py`를 추가했음
+- local regression에서 forced H3 artifact는 `PASS_FEASIBILITY`, H1-only Alt-Svc artifact는 `PASS_NEGATIVE_CONTROL`로 분리되어 gate가 application H3와 discovery-only/H1-only를 구분함을 확인했음
 
 이 baseline은 network path change를 포함하지 않는다. 따라서 다음 단계에서는 controlled public WebPKI origin에서 application HTTP/3 no-change baseline을 먼저 통과시킨 뒤, 같은 browser workload를 유지한 채 network-change trigger만 추가해야 한다.
 
@@ -677,3 +679,4 @@ network-change 판정 기준:
 - [Public origin readiness survey](results/public-origin-readiness-survey-20260624.md)
 - [Browser handover readiness and next experiment plan](results/browser-handover-readiness-plan-20260624.md)
 - [Controlled public WebPKI H3 origin plan](results/controlled-public-origin-h3-plan-20260624.md)
+- [Controlled public application H3 evidence gate](results/controlled-public-application-h3-gate-20260624.md)

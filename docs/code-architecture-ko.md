@@ -486,6 +486,7 @@ classifier:
 관련 파일:
 
 - `tools/check_public_origin_readiness.py`
+- `tools/classify_controlled_public_h3_baseline.py`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh`
 
@@ -500,8 +501,26 @@ DNS/TLS/Alt-Svc readiness check
   -> public h3server with WebPKI cert/key
   -> Chrome bootstrap/second navigation
   -> NetLog classification
-  -> server request log and qlog inspection
+  -> server request log + qlog + NetLog combined classification
 ```
+
+최종 application H3 gate:
+
+| evidence | 기준 |
+| --- | --- |
+| server request log | expected request count 이상 도달 |
+| server qlog | `chosen_alpn > 0` and `http3_frame > 0` |
+| Chrome NetLog | application `using_quic` job이 있으면 강한 browser-side evidence, 없으면 server qlog로 보완 |
+| readiness | DNS/TLS/HTTPS와 `Alt-Svc: h3` 확인 |
+
+주요 classification:
+
+| classification | 의미 |
+| --- | --- |
+| `controlled_public_application_h3_confirmed` | server/qlog와 browser NetLog가 모두 application H3를 지지 |
+| `controlled_public_server_qlog_h3_confirmed_browser_netlog_inconclusive` | server/qlog는 application H3를 직접 증명하지만 browser NetLog는 discovery 수준 |
+| `controlled_public_h3_discovery_without_server_application_h3` | browser discovery는 있으나 server/qlog application H3가 없음 |
+| `controlled_public_application_h3_not_confirmed` | application H3 evidence 부족 |
 
 ## 12. 실행 예시
 
@@ -558,9 +577,24 @@ RUN_ID=chrome-public-h3-google-generate204-20260624 TARGET_URL=https://www.googl
 
 ```bash
 cd repro/quic-go-min-repro
-PUBLIC_ORIGIN_HOST=h3.example.com TLS_CERT_FILE=/path/fullchain.pem TLS_KEY_FILE=/path/privkey.pem ./scripts/run-controlled-public-h3-server.sh
-PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' ./scripts/run-controlled-public-h3-browser-baseline.sh
+RUN_ID=controlled-public-h3-application-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+PUBLIC_ORIGIN_HOST=h3.example.com \
+TLS_CERT_FILE=/path/fullchain.pem \
+TLS_KEY_FILE=/path/privkey.pem \
+./scripts/run-controlled-public-h3-server.sh
+
+RUN_ID=controlled-public-h3-application-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
+./scripts/run-controlled-public-h3-browser-baseline.sh
 ```
+
+최종 판정 파일:
+
+- `artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json`
 
 ### 12.8 AWS NLB transport
 
