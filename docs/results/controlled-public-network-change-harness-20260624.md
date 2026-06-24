@@ -75,6 +75,25 @@ NETWORK_CHANGE_CMD='...' \
 ./scripts/run-controlled-public-h3-network-change.sh
 ```
 
+CDP/downlink heartbeat variant:
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-downlink-heartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-downlink-heartbeat-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-downlink-heartbeat-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=true&heartbeat_delay_ms=5000&label=public-downlink' \
+CONTROLLED_PUBLIC_EXPECTED_REQUESTS=3 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=18 \
+CHROME_TIMEOUT_SECONDS=30 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=3 \
+NETWORK_CHANGE_CMD='...' \
+./scripts/run-controlled-public-h3-network-change.sh
+```
+
 `NETWORK_CHANGE_CMD`에는 실제 active path를 바꾸는 명령을 넣는다. 예를 들어 macOS에서는 Wi-Fi/LTE tethering, route priority, 또는 특정 network service toggle을 별도로 설계해야 한다. inactive interface toggle은 이전 실험에서 migration evidence를 만들지 못했으므로 실제 active path change로 보지 않는다.
 
 ## 6. 판정 기준

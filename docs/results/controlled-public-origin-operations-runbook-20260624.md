@@ -146,6 +146,25 @@ NETWORK_CHANGE_CMD='...' \
 ./scripts/run-controlled-public-h3-network-change.sh
 ```
 
+downlink/heartbeat를 논문 본 실험으로 쓸 때는 CDP runner를 사용한다.
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=controlled-public-h3-downlink-heartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-h3-downlink-heartbeat-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-downlink-heartbeat-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=true&heartbeat_delay_ms=5000&label=public-downlink' \
+CONTROLLED_PUBLIC_EXPECTED_REQUESTS=3 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=18 \
+CHROME_TIMEOUT_SECONDS=30 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=3 \
+NETWORK_CHANGE_CMD='...' \
+./scripts/run-controlled-public-h3-network-change.sh
+```
+
 `NETWORK_CHANGE_CMD`는 실험자가 장비 상태를 확인한 뒤 직접 넣는다. 이 저장소는 임의의 interface down/up command를 자동 생성하지 않는다.
 
 ## 7. 판정 규칙

@@ -19,6 +19,9 @@ REQUIRE_H3_ALT_SVC="${REQUIRE_H3_ALT_SVC:-1}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-30}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
 CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-0}"
+CHROME_RUNNER="${CHROME_RUNNER:-dump-dom}"
+CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-15}"
+NODE_BIN="${NODE_BIN:-node}"
 SERVER_RESULT_WAIT_SECONDS="${SERVER_RESULT_WAIT_SECONDS:-15}"
 
 mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/logs"
@@ -90,7 +93,18 @@ PY
 NETWORK_CHANGE_PID=$!
 
 CHROME_EXIT=0
-python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$PUBLIC_ORIGIN_URL" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
+if [[ "$CHROME_RUNNER" == "cdp" ]]; then
+  "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
+    --chrome-bin "$CHROME_BIN" \
+    --artifact-dir "$ARTIFACT_DIR" \
+    --url "$PUBLIC_ORIGIN_URL" \
+    --netlog-name "network-change-netlog.json" \
+    --dump-name "network-change-dump-dom.txt" \
+    --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
+    --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
+    --hold-seconds "$CHROME_HOLD_SECONDS" || CHROME_EXIT=$?
+elif [[ "$CHROME_RUNNER" == "dump-dom" ]]; then
+  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$PUBLIC_ORIGIN_URL" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
 import os
 import pathlib
 import shlex
@@ -134,6 +148,10 @@ with (artifact / "chrome" / "network-change-dump-dom.txt").open("wb") as out, (a
     except subprocess.TimeoutExpired:
         raise SystemExit(124)
 PY
+else
+  echo "unsupported CHROME_RUNNER=$CHROME_RUNNER" >&2
+  CHROME_EXIT=2
+fi
 
 NETWORK_CHANGE_EXIT=0
 wait "$NETWORK_CHANGE_PID" || NETWORK_CHANGE_EXIT=$?
