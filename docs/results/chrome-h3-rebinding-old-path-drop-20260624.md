@@ -2,40 +2,40 @@
 
 Generated: `2026-06-24`
 
-This summary records local Chrome forced-H3 UDP rebinding runs where the proxy was configured to drop server-to-client packets arriving on upstream A after client traffic switched to upstream B. It is a local NAT-rebinding control, not a public Wi-Fi/LTE handover result.
+This summary aggregates local Chrome forced-H3 UDP rebinding runs where the proxy drops server-to-client packets arriving on upstream A after client traffic has switched to upstream B. It is a local NAT-rebinding control, not a public Wi-Fi/LTE handover result.
 
-## Purpose
+## Aggregate
 
-The earlier rebinding proxy tests changed the server-facing client UDP socket from A to B, but old upstream A remained deliverable. This run adds an old-path-unavailable variant:
+| field | value |
+| --- | --- |
+| runs | `11` |
+| status counts | `{'PASS': 11}` |
+| workload counts | `{'downlink': 7, 'upload': 4}` |
+| heartbeat counts | `{'heartbeat': 3, 'n/a': 4, 'noheartbeat': 4}` |
+| classification counts | `{'nat_rebinding_multiple_quic_sessions': 3, 'nat_rebinding_path_validation_without_observed_tuple_change': 8}` |
+| proxy switched | `11/11` |
+| old-path drop enabled | `11/11` |
+| qlog path validation | `11/11` |
+| NetLog target path validation | `11/11` |
+| total dropped A-side server packets | `60` |
+| total dropped A-side server bytes | `2814` |
 
-```bash
-DROP_A_SERVER_AFTER_SWITCH=1 ./scripts/run-chrome-h3-rebinding-proxy.sh
-```
+## Runs
 
-This does not create a real client route/interface change. It only checks whether the local proxy can remove old-path server delivery after the rebinding trigger.
+| workload | run | heartbeat | status | classification | remote tuples | Chrome QUIC sessions | qlog PATH C/R | NetLog target PATH C/R | client packets A/B | server packets A/B | dropped A server packets | upload bytes |
+| --- | --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | ---: | ---: |
+| downlink | chrome-h3-rebinding-drop-oldpath-downlink-20260624 | noheartbeat | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 17/27 | 26/35 | 0 | - |
+| upload | chrome-h3-rebinding-drop-oldpath-upload-20260624 | n/a | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 2 | 1/1 | 1/1 | 54/198 | 31/49 | 21 | 262144 |
+| downlink | noheartbeat-r1 | noheartbeat | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 17/26 | 27/35 | 0 | - |
+| downlink | noheartbeat-r2 | noheartbeat | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 16/23 | 27/30 | 0 | - |
+| downlink | noheartbeat-r3 | noheartbeat | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 19/28 | 29/38 | 0 | - |
+| downlink | heartbeat-r1 | heartbeat | PASS | `nat_rebinding_multiple_quic_sessions` | 2 | 2 | 1/1 | 1/1 | 16/23 | 27/57 | 0 | - |
+| downlink | heartbeat-r2 | heartbeat | PASS | `nat_rebinding_multiple_quic_sessions` | 2 | 2 | 1/1 | 1/1 | 16/20 | 27/55 | 0 | - |
+| downlink | heartbeat-r3 | heartbeat | PASS | `nat_rebinding_multiple_quic_sessions` | 2 | 2 | 1/1 | 1/1 | 16/24 | 27/58 | 0 | - |
+| upload | upload-r1 | n/a | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 49/198 | 20/80 | 9 | 262144 |
+| upload | upload-r2 | n/a | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 52/198 | 26/68 | 14 | 262144 |
+| upload | upload-r3 | n/a | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 49/198 | 25/66 | 16 | 262144 |
 
-## Results
+## Interpretation Boundary
 
-| workload | status | classification | remote tuples | Chrome QUIC sessions | qlog PATH C/R | NetLog target PATH C/R | client packets A/B | server packets A/B | dropped A server packets | upload bytes |
-| --- | --- | --- | ---: | ---: | --- | --- | --- | --- | ---: | ---: |
-| downlink | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 1 | 1/1 | 1/1 | 17/27 | 26/35 | 0 | - |
-| upload | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | 1 | 2 | 1/1 | 1/1 | 54/198 | 31/49 | 21 | 262144 |
-
-## Interpretation
-
-- Both downlink and upload completed with proxy packet rebinding, qlog path validation, and Chrome target NetLog path-validation frames.
-- In the downlink run, no A-side server packet arrived after the switch, so the drop option did not need to discard old-path packets.
-- In the upload run, the proxy dropped 21 A-side server packets after the switch and the upload still completed.
-- The upload run also reported two Chrome target QUIC sessions. Therefore task completion under old-path drop is not sufficient browser session-continuity evidence.
-
-## Claim Boundary
-
-Safe wording:
-
-> In a local forced-H3 old-path-drop proxy control, Chrome HTTP/3 downlink and upload workloads completed while the proxy forwarded client packets through upstream B and qlog/NetLog recorded path-validation frames; the upload run dropped 21 old-path A-side server packets after switch.
-
-Unsafe wording:
-
-> Chrome completed real Wi-Fi/LTE handover.
-
-The result remains a local proxy control and does not satisfy the final controlled-public active handover protocol.
+Use these rows as local old-path-unavailable controls. Application completion under old-path drop is stronger than tuple-only evidence, but it still does not prove browser handover success. Chrome target QUIC session counts, qlog path validation, proxy packet logs, and actual client path-change evidence remain separate requirements.

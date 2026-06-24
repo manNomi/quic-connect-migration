@@ -7,11 +7,11 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | target free GiB | `5.0` |
-| current free | `47.5 GiB` |
+| current free | `47.4 GiB` |
 | free space needed | `0 B` |
-| selected candidates | `0/59` |
+| selected candidates | `0/61` |
 | reclaimable from selected | `0 B` |
-| projected free after selected cleanup | `47.5 GiB` |
+| projected free after selected cleanup | `47.4 GiB` |
 | target met by selected cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |
 

@@ -43,7 +43,7 @@
 
 추가로 rebinding timing sensitivity 실험을 수행했다. rebinding 시점을 early `500ms`와 late `5s`로 바꿔 downlink 8회, upload 4회를 실행했고 12/12가 PASS였다. 모든 run에서 proxy packet rebinding, qlog path validation, Chrome target NetLog path-validation frame이 관찰됐다. 다만 early 조건은 B upstream packet share가 높고 late 조건은 낮았으며, heartbeat downlink의 session/tuple 해석도 timing에 따라 달라졌다. 따라서 heartbeat 기반 application recovery를 논문 novelty로 가져가려면 timing-controlled 실험 설계가 필요하다.
 
-또한 old-path-drop proxy control을 추가했다. switch 이후 upstream A의 server-to-client packet을 drop하는 조건에서 downlink 1회와 upload 1회를 실행했고 둘 다 PASS였다. upload에서는 A-side server packet 21개가 drop됐는데도 256KiB upload가 완료됐다. 하지만 해당 upload run은 Chrome target QUIC session이 2개였으므로, task completion과 session continuity를 별도로 검증해야 한다는 결론은 더 강해졌다.
+또한 old-path-drop proxy control을 반복했다. switch 이후 upstream A의 server-to-client packet을 drop하는 조건에서 downlink 7회와 upload 4회를 실행했고 11/11이 PASS였다. upload에서는 A-side server packet 총 60개가 drop됐는데도 매 run에서 256KiB upload가 완료됐다. 반복 upload 3회는 Chrome target QUIC session도 1개로 유지됐지만, heartbeat downlink 3회는 여전히 multiple session으로 갈라졌다. 따라서 task completion과 session continuity를 별도로 검증해야 한다는 결론은 더 강해졌다.
 
 ## 3. 실험 환경
 

@@ -134,14 +134,16 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 [Chrome H3 Local Rebinding Old-Path Drop Summary](./chrome-h3-rebinding-old-path-drop-20260624.md)는 proxy switch 이후 upstream A의 server-to-client packet을 drop하는 조건을 추가했다.
 
 | workload | PASS | dropped A server packets | Chrome QUIC sessions | qlog path validation | Chrome target NetLog path validation |
-| --- | ---: | ---: | ---: | --- | --- |
-| downlink | 1/1 | 0 | 1 | 1/1 | 1/1 |
-| upload | 1/1 | 21 | 2 | 1/1 | 1/1 |
+| --- | ---: | ---: | --- | --- | --- |
+| downlink no-heartbeat | 4/4 | 0 | 1 in every row | 4/4 | 4/4 |
+| downlink heartbeat | 3/3 | 0 | 2 in every row | 3/3 | 3/3 |
+| upload | 4/4 | 60 total | smoke row 2; repeated rows 1 each | 4/4 | 4/4 |
 
 해석:
 
-- old path가 실제로 일부 차단된 upload control에서도 application task는 완료될 수 있었다.
-- 그러나 upload에서 Chrome target QUIC session이 2개였으므로, task completion은 session continuity의 충분조건이 아니다.
+- old path가 실제로 일부 차단된 upload control에서도 application task는 반복적으로 완료될 수 있었다.
+- 반복 upload 3회는 Chrome target QUIC session 1개로 유지되어 local NAT rebinding evidence를 강화한다.
+- 그러나 heartbeat downlink는 old-path-drop 조건에서도 Chrome target QUIC session 2개로 갈라졌으므로, task completion은 여전히 session continuity의 충분조건이 아니다.
 - 이 결과는 final active handover protocol에서 “task completion + path validation + browser session continuity”를 동시에 요구해야 하는 근거를 더 강화한다.
 
 ## 5. 논문용 evidence chain
