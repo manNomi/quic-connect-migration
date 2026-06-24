@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+"""Regression tests for the reproducibility manifest builder."""
+
+from __future__ import annotations
+
+from build_reproducibility_manifest import build_manifest, emit_markdown
+
+
+def test_manifest_contains_core_public_safe_fields() -> None:
+    manifest = build_manifest(include_ci=False)
+    markdown = emit_markdown(manifest)
+    assert manifest["public_safe"] is True
+    assert manifest["experiment_corpus"]["total_trials"] >= 1
+    assert "verification" in manifest
+    assert "research_audit" in manifest
+    assert "final_browser_handover_trials" in manifest["research_audit"]
+    assert "PRIVATE KEY" not in markdown
+    assert "AWS_SECRET" not in markdown
+    assert "AKIA" not in markdown
+
+
+def test_manifest_points_to_authoritative_artifacts() -> None:
+    manifest = build_manifest(include_ci=False)
+    paths = manifest["key_paths"]
+    assert paths["audit"].endswith("research-bundle-audit-20260624.md")
+    assert paths["verification"].endswith("research-verification-report-20260624.md")
+    assert paths["trial_packet"].endswith("final-handover-trial-packet-20260624.md")
+
+
+def main() -> int:
+    test_manifest_contains_core_public_safe_fields()
+    test_manifest_points_to_authoritative_artifacts()
+    print("build_reproducibility_manifest=ok")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

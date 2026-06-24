@@ -1434,3 +1434,26 @@ python3 tools/build_controlled_public_origin_deploy_packet.py \
 ```bash
 python3 tools/test_build_controlled_public_origin_deploy_packet.py
 ```
+
+## 44. `tools/build_reproducibility_manifest.py`
+
+논문 재현성 bundle의 현재 상태를 public-safe manifest로 묶는다. commit, experiment corpus count, verification status, research audit status, 다음 final trial readiness, 주요 authoritative document path를 한 곳에 모은다.
+
+이 manifest는 qlog, keylog, pcap, NetLog, domain, private key path, AWS account, Android device id를 출력하지 않는다.
+
+실행:
+
+```bash
+python3 tools/build_reproducibility_manifest.py \
+  --include-ci \
+  --output docs/results/reproducibility-manifest-20260624.md \
+  --json-output data/reproducibility-manifest-20260624.json
+```
+
+CI나 scratch 검증에서는 `--include-ci` 없이 실행해도 된다.
+
+회귀 테스트:
+
+```bash
+python3 tools/test_build_reproducibility_manifest.py
+```

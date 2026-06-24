@@ -79,6 +79,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     final_trial_packet = "docs/results/final-handover-trial-packet-20260624.md"
     final_trial_artifact_bundle = "docs/results/final-handover-trial-artifact-bundle-check-20260624.md"
     controlled_public_origin_deploy_packet = "docs/results/controlled-public-origin-deploy-packet-20260624.md"
+    reproducibility_manifest = "docs/results/reproducibility-manifest-20260624.md"
+    reproducibility_manifest_json = "data/reproducibility-manifest-20260624.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
@@ -97,6 +99,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         final_trial_packet = str(generated_dir / "final-handover-trial-packet.md")
         final_trial_artifact_bundle = str(generated_dir / "final-handover-trial-artifact-bundle-check.md")
         controlled_public_origin_deploy_packet = str(generated_dir / "controlled-public-origin-deploy-packet.md")
+        reproducibility_manifest = str(generated_dir / "reproducibility-manifest.md")
+        reproducibility_manifest_json = str(generated_dir / "reproducibility-manifest.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
@@ -119,6 +123,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_controlled_public_config_worksheet.py",
                 "tools/build_controlled_public_origin_deploy_packet.py",
+                "tools/build_reproducibility_manifest.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
@@ -138,6 +143,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_trial_packet.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
+                "tools/test_build_reproducibility_manifest.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
@@ -289,6 +295,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_controlled_public_origin_deploy_packet.py",
                 "--output",
                 controlled_public_origin_deploy_packet,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "reproducibility_manifest_regression",
+            [python_bin, "tools/test_build_reproducibility_manifest.py"],
+            {0},
+            30,
+        ),
+        (
+            "reproducibility_manifest",
+            [
+                python_bin,
+                "tools/build_reproducibility_manifest.py",
+                "--output",
+                reproducibility_manifest,
+                "--json-output",
+                reproducibility_manifest_json,
             ],
             {0},
             30,

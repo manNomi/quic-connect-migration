@@ -74,6 +74,7 @@
 │   ├── public-alt-svc-expanded-survey-20260624.csv
 │   ├── public-origin-readiness-survey-20260624.csv
 │   ├── public-origin-readiness-expanded-survey-20260624.csv
+│   ├── reproducibility-manifest-20260624.json
 │   └── quiche-path-event-timeline.csv
 ├── docs/
 │   ├── experiment-report-ko.md
@@ -97,6 +98,7 @@
 │   ├── check_next_final_handover_trial_readiness.py
 │   ├── check_aws_identity_public_safe.py
 │   ├── build_controlled_public_origin_deploy_packet.py
+│   ├── build_reproducibility_manifest.py
 │   ├── plan_final_browser_handover_runs.py
 │   ├── check_browser_cm_observability.py
 │   ├── classify_controlled_public_h3_baseline.py
@@ -180,6 +182,7 @@
 - [Active path-change operator cookbook](docs/results/active-path-change-operator-cookbook-20260624.md)
 - [CI safe verification plan](docs/results/ci-safe-verification-plan-20260624.md)
 - [CI safe verification result](docs/results/ci-safe-verification-result-20260624.md)
+- [Reproducibility manifest](docs/results/reproducibility-manifest-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Public H3 and CM evidence boundary literature refresh](docs/results/literature-refresh-public-h3-and-cm-evidence-20260624.md)

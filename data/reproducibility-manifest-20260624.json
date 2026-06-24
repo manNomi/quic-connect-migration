@@ -1,0 +1,54 @@
+{
+  "generated": "2026-06-24",
+  "public_safe": true,
+  "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
+  "git": {
+    "commit": "b68e027",
+    "branch": "main"
+  },
+  "experiment_corpus": {
+    "total_trials": 43,
+    "status_counts": {
+      "PASS": 25,
+      "PASS_FEASIBILITY": 1,
+      "PASS_NEGATIVE_CONTROL": 17
+    },
+    "final_required_rows": 6
+  },
+  "verification": {
+    "checks": "46",
+    "passed": "46",
+    "ok": "yes"
+  },
+  "research_audit": {
+    "publication_bundle_ok": "yes",
+    "required_files_ok": "yes",
+    "paper_tables_current": "yes",
+    "final_browser_handover_trials": "0/6",
+    "goal_complete": "no"
+  },
+  "readiness": {
+    "next_trial": "controlled-public-chrome-h3-baseline-001",
+    "next_trial_ready": "no",
+    "codex_can_run_next_trial_now": "no",
+    "needed_now_inputs": "2"
+  },
+  "ci": {
+    "available": "yes",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow": "research-verify",
+    "branch": "main",
+    "event": "push",
+    "run_id": "28100867615",
+    "duration": "26s"
+  },
+  "key_paths": {
+    "audit": "docs/results/research-bundle-audit-20260624.md",
+    "verification": "docs/results/research-verification-report-20260624.md",
+    "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
+    "trial_packet": "docs/results/final-handover-trial-packet-20260624.md",
+    "deploy_packet": "docs/results/controlled-public-origin-deploy-packet-20260624.md",
+    "active_path_cookbook": "docs/results/active-path-change-operator-cookbook-20260624.md"
+  }
+}

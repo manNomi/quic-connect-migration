@@ -7,7 +7,7 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `49.3 GiB` |
+| disk free | `48.6 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `1.0 GiB` |
 | cleanup candidates | `47` |
@@ -16,7 +16,7 @@ Generated: `2026-06-24`
 | review-unreferenced candidates | `19` |
 | review-unreferenced size | `62.3 MiB` |
 | protected referenced/planned size | `957.6 MiB` |
-| projected free if review-unreferenced removed | `49.4 GiB` |
+| projected free if review-unreferenced removed | `48.7 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
