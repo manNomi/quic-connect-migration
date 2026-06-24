@@ -8,10 +8,10 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `631c79c` |
+| source commit at generation | `956d1a1` |
 | branch | `main` |
-| total trials | `51` |
-| status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 20}` |
+| total trials | `52` |
+| status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 21}` |
 | verification | `69/69 passed; ok=yes` |
 | final browser handover | `0/6` |
 | goal complete | `no` |

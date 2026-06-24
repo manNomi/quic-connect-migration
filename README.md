@@ -55,7 +55,8 @@
 43. Chrome forced-H3 local old-path-drop stress matrix에서 1MiB/4MiB downlink/upload 5회가 모두 완료됐고, A-side server packet 105개가 drop된 상태에서도 qlog/Chrome NetLog path validation이 관찰됐다.
 44. return-path drop control에서 B-only server packet drop은 2/2 PASS였지만 A+B return path loss는 2/2 FAIL이어서, transport evidence와 application completion을 분리해야 함을 확인했다.
 45. transient return-path outage sweep에서는 A+B return path를 250ms/1500ms/3000ms/4000ms 막은 1MiB downlink/upload가 8/8 PASS였지만, 5000ms/6000ms/9000ms는 6/6 FAIL이었다. 이 local workload의 outage-tolerance boundary는 4초와 5초 사이로 좁혀졌다.
-46. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+46. transient boundary repetition에서는 4000ms와 4500ms가 각각 6/6 PASS였고, 5000ms는 downlink 3/3 PASS와 upload 0/3 PASS로 갈려 outage tolerance가 workload-sensitive transition zone임을 확인했다.
+47. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -215,6 +216,8 @@
 - [Chrome H3 local UDP rebinding proxy results](docs/results/chrome-h3-rebinding-proxy-results-20260624.md)
 - [Chrome H3 local UDP rebinding repetition summary](docs/results/chrome-h3-rebinding-repetition-summary-20260624.md)
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
+- [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
+- [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
 - [quic-go local HTTP/3 migration replication results](docs/results/quic-go-local-h3-replication-results-20260624.md)
 - [quic-go local HTTP/3 mid-flight repetition summary](docs/results/quic-go-h3-midflight-repetition-summary-20260624.md)
 - [Evidence chain and gap synthesis](docs/results/evidence-chain-and-gap-synthesis-20260624.md)

@@ -1144,7 +1144,43 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
   --csv-output data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv
 ```
 
-## 24. Artifact 정책
+## 24. Chrome local transient boundary repetition 재현
+
+4초와 5초 사이의 단일 경계 주장만으로는 부족하므로, 4000ms/4500ms/5000ms window를 downlink/upload 각각 3회 반복한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-boundary-repetition-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624 \
+BASE_PORT=7100 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+REPETITIONS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+cd ../..
+cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624/results/transient-boundary-repetition-summary.md \
+  docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md
+cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624/results/transient-boundary-repetition-summary.csv \
+  data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 4000ms와 4500ms window는 각각 `6/6 PASS`
+- 5000ms window는 downlink `3/3 PASS`, upload `0/3 PASS`
+- 5초 근처는 단일 threshold가 아니라 workload-sensitive transition zone으로 해석한다.
+- 이 결과도 local outage-tolerance control이며 실제 public handover evidence가 아니다.
+
+## 25. Artifact 정책
 
 commit 가능한 것:
 

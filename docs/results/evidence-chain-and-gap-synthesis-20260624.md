@@ -199,9 +199,23 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 해석:
 
 - 이 sweep은 “CM이 된다/안 된다”가 아니라 outage duration과 application completion의 관계를 보여준다.
-- 4초와 5초 사이에 local browser workload continuity boundary가 관찰됐다.
+- 단일 sweep에서는 4초와 5초 사이에 local browser workload continuity boundary가 관찰됐다.
 - PASS row의 DOM complete timing은 7545-11309ms였고, FAIL row의 DOM error timing은 6918-11122ms였다.
 - public Wi-Fi/LTE handover claim으로 쓰려면 active client path change와 controlled public origin evidence가 추가로 필요하다.
+
+[Chrome H3 Local Rebinding Transient Boundary Repetition](./chrome-h3-rebinding-transient-boundary-repetition-20260624.md)는 이 경계를 4000ms/4500ms/5000ms에서 각각 3회 반복했다.
+
+| repeated window | downlink rows | upload rows | interpretation |
+| ---: | --- | --- | --- |
+| 4000ms | 3/3 PASS | 3/3 PASS | local 1MiB workload에서 stable PASS 영역으로 관찰됐다. |
+| 4500ms | 3/3 PASS | 3/3 PASS | 4.5초 outage도 반복 실행에서는 downlink/upload 모두 완료됐다. |
+| 5000ms | 3/3 PASS | 0/3 PASS | 5초는 단일 threshold가 아니라 workload-sensitive transition zone으로 갈렸다. |
+
+반복 결과의 핵심:
+
+- 전체 18개 row 중 15개가 완료됐고, 실패 3개는 모두 5000ms upload였다.
+- 5초 downlink는 3/3 PASS였으므로 “5초부터 항상 실패”라고 표현하면 안 된다.
+- 5초 upload 실패 row도 proxy switch와 qlog H3/path evidence를 남겼으므로, transport evidence와 application completion은 여전히 분리해야 한다.
 
 ## 5. 논문용 evidence chain
 

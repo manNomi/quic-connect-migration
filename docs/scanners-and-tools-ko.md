@@ -1866,3 +1866,39 @@ python3 tools/test_summarize_chrome_rebinding_transient_return_path_sweep.py
 - 250ms/1500ms/3000ms A+B outage PASS는 local workload가 짧은 outage를 견딜 수 있음을 보여준다.
 - 6000ms/9000ms A+B outage FAIL은 transport evidence가 있어도 DOM application completion이 실패할 수 있음을 보여준다.
 - 이 sweep은 local outage-tolerance control이며 실제 public active handover 결과는 아니다.
+
+## 53. `repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh`
+
+`tools/summarize_chrome_rebinding_transient_return_path_sweep.py`를 재사용해 4000ms/4500ms/5000ms boundary window를 반복 실행한다. 목적은 단일 run에서 보인 4-5초 경계가 안정적인지, workload별 transition zone인지 확인하는 것이다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-boundary-repetition-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624 \
+BASE_PORT=7100 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+REPETITIONS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+tracked summary 등록:
+
+```bash
+cd ../..
+cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624/results/transient-boundary-repetition-summary.md \
+  docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md
+cp repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624/results/transient-boundary-repetition-summary.csv \
+  data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv
+```
+
+현재 결과:
+
+- 4000ms `6/6 PASS`
+- 4500ms `6/6 PASS`
+- 5000ms downlink `3/3 PASS`, upload `0/3 PASS`
+- local workload-sensitive transition-zone control이며, public active handover 결과가 아니다.
