@@ -38,6 +38,18 @@ def write_summary(artifact_dir: Path, *, classification: str, sessions: int, upl
         ]
     }
     (result_dir / "server.json").write_text(json.dumps(server, indent=2) + "\n", encoding="utf-8")
+    log_dir = artifact_dir / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    (log_dir / "rebinding-proxy.jsonl").write_text(
+        "\n".join(
+            [
+                json.dumps({"event": "client_to_server", "upstream": "A", "bytes": 1200}),
+                json.dumps({"event": "client_to_server", "upstream": "B", "bytes": 800}),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def test_upload_rows_include_sink_bytes() -> None:
@@ -53,9 +65,13 @@ def test_upload_rows_include_sink_bytes() -> None:
         assert rows[0]["upload_sink_request_count"] == "1"
         assert rows[0]["upload_sink_request_bytes"] == "262144"
         assert rows[0]["proxy_switched"] == "true"
+        assert rows[0]["proxy_client_packets_a"] == "1"
+        assert rows[0]["proxy_client_packets_b"] == "1"
+        assert rows[0]["proxy_packet_rebind_observed"] == "true"
         markdown = emit_markdown(rows)
         assert "Chrome H3 Local UDP Rebinding Upload Summary" in markdown
         assert "262144" in markdown
+        assert "packet rebinding observed counts" in markdown
 
 
 def main() -> int:

@@ -83,14 +83,14 @@ inactive Thunderbolt Bridge toggle은 command exit 0이었다.
 
 Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local UDP rebinding proxy가 server-facing socket을 A에서 B로 전환했다.
 
-| condition | runs | upload completion | request-level remote tuple count | Chrome target QUIC sessions | qlog path validation |
-| --- | ---: | --- | ---: | ---: | --- |
-| streaming upload, local UDP rebinding | 3 | 3/3 PASS, each `/upload-sink` received 262144 bytes | 1 in every run | 1 in every run | true in every run |
+| condition | runs | upload completion | proxy packet rebinding | request-level remote tuple count | Chrome target QUIC sessions | qlog path validation |
+| --- | ---: | --- | --- | ---: | ---: | --- |
+| streaming upload, local UDP rebinding | 3 | 3/3 PASS, each `/upload-sink` received 262144 bytes | true in every run; A/B client packet counts 87/159, 89/161, 90/161 | 1 in every run | 1 in every run | true in every run |
 
 해석:
 
 - client-sending workload에서도 Chrome forced-H3 request는 local NAT rebinding 중 완료될 수 있었다.
-- 그러나 server request log의 `RemoteAddr`는 request handler 관점 값이라 packet-level rebinding을 항상 드러내지 않는다.
+- proxy packet log는 A/B upstream forwarding을 직접 보여줬지만, server request log의 `RemoteAddr`는 request handler 관점 값이라 packet-level rebinding을 항상 드러내지 않는다.
 - 따라서 browser-level CM 또는 NAT rebinding claim에는 request log, qlog path validation, Chrome NetLog session attribution, proxy/client path evidence를 함께 사용해야 한다.
 - 이 결과는 local NAT rebinding control이며, 실제 Wi-Fi/LTE active handover 성공을 의미하지 않는다.
 
@@ -135,4 +135,4 @@ machine-readable rubric은 [data/evidence-chain-rubric.csv](../../data/evidence-
 | secondary active path | `false`, active non-loopback IPv4는 `en0` 하나 |
 | Android device | ADB device 없음 |
 | AWS identity | caller identity unavailable |
-| disk | 2.44 GiB free, 대형 packet capture는 보류 권장 |
+| disk | 약 47.7 GiB free, 대형 packet capture 가능하지만 장시간 NetLog/qlog 반복 전 재확인 필요 |

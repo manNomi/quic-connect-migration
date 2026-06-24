@@ -38,6 +38,18 @@ def write_summary(artifact_dir: Path, *, heartbeat: bool, classification: str, s
         ),
         encoding="utf-8",
     )
+    logs = artifact_dir / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    (logs / "rebinding-proxy.jsonl").write_text(
+        "\n".join(
+            [
+                json.dumps({"event": "client_to_server", "upstream": "A", "bytes": 1200}),
+                json.dumps({"event": "client_to_server", "upstream": "B", "bytes": 900}),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def test_summary_rows_and_markdown() -> None:
@@ -61,8 +73,10 @@ def test_summary_rows_and_markdown() -> None:
         assert rows[0]["heartbeat"] == "noheartbeat"
         assert rows[1]["heartbeat"] == "heartbeat"
         assert rows[1]["netlog_target_quic_session_count"] == "2"
+        assert rows[0]["proxy_packet_rebind_observed"] == "true"
         markdown = emit_markdown(rows)
         assert "heartbeat::nat_rebinding_multiple_quic_sessions" in markdown
+        assert "proxy client packets A/B" in markdown
         assert "final controlled-public browser handover protocol" in markdown
 
 

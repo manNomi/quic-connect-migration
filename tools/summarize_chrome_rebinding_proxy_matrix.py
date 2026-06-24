@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 from collections import Counter
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -23,16 +23,53 @@ CSV_FIELDS = [
     "qlog_path_challenge",
     "qlog_path_response",
     "proxy_switched",
+    "proxy_client_packets_a",
+    "proxy_client_packets_b",
+    "proxy_client_bytes_a",
+    "proxy_client_bytes_b",
+    "proxy_packet_rebind_observed",
     "proxy_upstream_a_addr",
     "proxy_upstream_b_addr",
     "artifact_dir",
 ]
 
 
+def today_utc() -> str:
+    return datetime.now(timezone.utc).date().isoformat()
+
+
 def read_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+
+
+def proxy_forwarding_stats(artifact_dir: Path) -> dict[str, int]:
+    stats = {
+        "proxy_client_packets_a": 0,
+        "proxy_client_packets_b": 0,
+        "proxy_client_bytes_a": 0,
+        "proxy_client_bytes_b": 0,
+    }
+    path = artifact_dir / "logs" / "rebinding-proxy.jsonl"
+    if not path.exists():
+        return stats
+    for raw_line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        if not raw_line.strip():
+            continue
+        try:
+            item = json.loads(raw_line)
+        except json.JSONDecodeError:
+            continue
+        if item.get("event") != "client_to_server":
+            continue
+        upstream = str(item.get("upstream") or "").upper()
+        if upstream not in {"A", "B"}:
+            continue
+        bytes_value = int(item.get("bytes") or 0)
+        stats[f"proxy_client_packets_{upstream.lower()}"] += 1
+        stats[f"proxy_client_bytes_{upstream.lower()}"] += bytes_value
+    return stats
 
 
 def heartbeat_mode(summary: dict[str, Any]) -> str:
@@ -47,6 +84,8 @@ def row_from_artifact(artifact_dir: Path) -> dict[str, str]:
     summary = read_json(artifact_dir / "results" / "chrome-summary.json")
     proxy = summary.get("rebinding_proxy") if isinstance(summary.get("rebinding_proxy"), dict) else {}
     qlog_counts = summary.get("qlog_counts") if isinstance(summary.get("qlog_counts"), dict) else {}
+    forwarding = proxy_forwarding_stats(artifact_dir)
+    packet_rebind_observed = forwarding["proxy_client_packets_a"] > 0 and forwarding["proxy_client_packets_b"] > 0
     return {
         "run_id": artifact_dir.name,
         "heartbeat": heartbeat_mode(summary),
@@ -58,6 +97,11 @@ def row_from_artifact(artifact_dir: Path) -> dict[str, str]:
         "qlog_path_challenge": str(qlog_counts.get("path_challenge") or 0),
         "qlog_path_response": str(qlog_counts.get("path_response") or 0),
         "proxy_switched": str(proxy.get("switched") is True).lower(),
+        "proxy_client_packets_a": str(forwarding["proxy_client_packets_a"]),
+        "proxy_client_packets_b": str(forwarding["proxy_client_packets_b"]),
+        "proxy_client_bytes_a": str(forwarding["proxy_client_bytes_a"]),
+        "proxy_client_bytes_b": str(forwarding["proxy_client_bytes_b"]),
+        "proxy_packet_rebind_observed": str(packet_rebind_observed).lower(),
         "proxy_upstream_a_addr": str(proxy.get("upstream_a_addr") or ""),
         "proxy_upstream_b_addr": str(proxy.get("upstream_b_addr") or ""),
         "artifact_dir": artifact_dir.as_posix(),
@@ -80,7 +124,7 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
     lines = [
         "# Chrome H3 Local UDP Rebinding Repetition Summary",
         "",
-        f"Generated: `{date.today().isoformat()}`",
+        f"Generated: `{today_utc()}`",
         "",
         "This summary aggregates local Chrome forced-H3 UDP rebinding proxy repetitions. It is a local NAT-rebinding control, not a public Wi-Fi/LTE handover result.",
         "",
@@ -93,16 +137,18 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
         f"| heartbeat counts | `{count_by(rows, 'heartbeat')}` |",
         f"| classification counts | `{count_by(rows, 'classification')}` |",
         f"| heartbeat/classification counts | `{count_by_pair(rows, 'heartbeat', 'classification')}` |",
+        f"| packet rebinding observed counts | `{count_by(rows, 'proxy_packet_rebind_observed')}` |",
         "",
         "## Runs",
         "",
-        "| run | heartbeat | status | classification | remote tuples | Chrome QUIC sessions | qlog PATH_CHALLENGE/PATH_RESPONSE | proxy switched |",
-        "| --- | --- | --- | --- | ---: | ---: | --- | --- |",
+        "| run | heartbeat | status | classification | remote tuples | Chrome QUIC sessions | qlog PATH_CHALLENGE/PATH_RESPONSE | proxy client packets A/B | packet rebind |",
+        "| --- | --- | --- | --- | ---: | ---: | --- | --- | --- |",
     ]
     for row in rows:
         lines.append(
             "| {run_id} | {heartbeat} | {status} | `{classification}` | {server_remote_addr_count} | "
-            "{netlog_target_quic_session_count} | {qlog_path_challenge}/{qlog_path_response} | {proxy_switched} |".format(
+            "{netlog_target_quic_session_count} | {qlog_path_challenge}/{qlog_path_response} | "
+            "{proxy_client_packets_a}/{proxy_client_packets_b} | {proxy_packet_rebind_observed} |".format(
                 **row
             )
         )
@@ -111,7 +157,7 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
             "",
             "## Interpretation Boundary",
             "",
-            "Use these rows as repeated local controls for session-attribution risk. They strengthen the claim that server tuple/path-validation evidence must be paired with browser session-continuity evidence, but they do not complete the final controlled-public browser handover protocol.",
+            "Use these rows as repeated local controls for session-attribution risk. They confirm client packets were forwarded through both proxy upstream sockets and strengthen the claim that packet rebinding, server tuple/path-validation evidence, and browser session-continuity evidence must be interpreted separately. They do not complete the final controlled-public browser handover protocol.",
         ]
     )
     return "\n".join(lines).rstrip() + "\n"
