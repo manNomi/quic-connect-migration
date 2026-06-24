@@ -7,7 +7,7 @@ import argparse
 import csv
 from collections import Counter
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 
@@ -123,7 +123,7 @@ def build_matrix(args: argparse.Namespace) -> dict[str, object]:
         )
 
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "rubric": args.rubric,
         "experiments": args.experiments,
         "literature": args.literature,

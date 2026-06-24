@@ -7,9 +7,10 @@ import argparse
 import csv
 import json
 from collections import Counter
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from research_clock import utc_date_iso
 
 
 CSV_FIELDS = [
@@ -33,10 +34,6 @@ CSV_FIELDS = [
     "proxy_upstream_b_addr",
     "artifact_dir",
 ]
-
-
-def today_utc() -> str:
-    return datetime.now(timezone.utc).date().isoformat()
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -121,7 +118,7 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
     lines = [
         "# Chrome H3 Local UDP Rebinding Upload Summary",
         "",
-        f"Generated: `{today_utc()}`",
+        f"Generated: `{utc_date_iso()}`",
         "",
         "This summary aggregates local Chrome forced-H3 streaming upload repetitions through a UDP rebinding proxy. It is a local NAT-rebinding control, not a public Wi-Fi/LTE handover result.",
         "",

@@ -8,7 +8,7 @@ import hashlib
 import ipaddress
 import json
 import re
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -115,7 +115,7 @@ def build_comparison(args: argparse.Namespace) -> dict[str, Any]:
         classification = "no_client_path_change_observed"
 
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "classification": classification,
         "active_path_changed": active_path_changed,
         "default_route_changed": default_route_changed,

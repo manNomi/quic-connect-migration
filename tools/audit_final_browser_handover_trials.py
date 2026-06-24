@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 from dataclasses import dataclass, asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -115,7 +115,7 @@ def build_audit(requirements_path: Path, experiments_path: Path) -> dict[str, An
     results = evaluate(requirements, experiments)
     complete = all(result.complete for result in results)
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "requirements_path": str(requirements_path),
         "experiments_path": str(experiments_path),
         "requirement_count": len(results),

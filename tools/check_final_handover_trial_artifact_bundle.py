@@ -7,7 +7,7 @@ import argparse
 import glob
 import json
 from dataclasses import dataclass, asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -153,7 +153,7 @@ def check_path(path_pattern: str, role: str) -> ArtifactPresence:
 
 def validation_payload(trial_id: str, artifact_dir: Path, requirements: Path, require_final_countable: bool) -> dict[str, Any]:
     try:
-        validation = build_validation(trial_id, artifact_dir, requirements, date.today().isoformat())
+        validation = build_validation(trial_id, artifact_dir, requirements, utc_date_iso())
     except FileNotFoundError as exc:
         return {
             "available": False,
@@ -199,7 +199,7 @@ def build_trial_bundle_report(
         blockers.append("artifact validation does not count toward final protocol")
 
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "trial_selected": True,
         "trial": trial,
         "artifact_dir": artifact_dir.as_posix(),
@@ -216,7 +216,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     trial = trial_shape_from_id(args.trial_id) if args.trial_id and args.artifact_dir else select_trial(args)
     if trial is None:
         return {
-            "check_date": date.today().isoformat(),
+            "check_date": utc_date_iso(),
             "trial_selected": False,
             "trial": None,
             "artifact_bundle_complete": False,

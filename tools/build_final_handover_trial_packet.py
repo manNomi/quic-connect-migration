@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -185,7 +185,7 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
         state = "blocked_by_readiness"
 
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "state": state,
         "public_safe_default": not args.use_local_config,
         "option_flags": option_flags(args),

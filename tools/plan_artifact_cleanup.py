@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +34,7 @@ def build_plan(roots: list[str], target_free_gib: float) -> dict[str, Any]:
 
     projected_free = current_free + recovered
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "target_free_gib": target_free_gib,
         "target_free_bytes": target_free,
         "current_free_bytes": current_free,

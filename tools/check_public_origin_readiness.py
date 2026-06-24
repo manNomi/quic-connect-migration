@@ -10,7 +10,7 @@ import ssl
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from urllib.parse import urlparse
 
 
@@ -123,7 +123,7 @@ def build_result(url: str, timeout: int) -> PublicOriginReadiness:
     curl_https_ok = curl_exit == 0 and final_status.startswith("HTTP/")
     tcp_tls_ok = tls_ok or curl_https_ok
     return PublicOriginReadiness(
-        check_date=date.today().isoformat(),
+        check_date=utc_date_iso(),
         url=url,
         host=host,
         port=port,

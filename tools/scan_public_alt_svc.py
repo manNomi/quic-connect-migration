@@ -9,7 +9,7 @@ import json
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 
@@ -132,7 +132,7 @@ def main() -> int:
     if not urls:
         parser.error("at least one URL or --url-file is required")
 
-    scan_date = date.today().isoformat()
+    scan_date = utc_date_iso()
     results = [
         parse_headers(url, stdout, stderr, exit_code, scan_date)
         for url in urls

@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -174,7 +174,7 @@ def build_handoff(args: argparse.Namespace) -> dict[str, Any]:
     now_ready = checklist["next_trial_ready"]
     needed_now = [item for item in items if item.urgency == "now" and item.status != "ready"]
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "public_safe": True,
         "next_trial": checklist["next_trial"],
         "next_trial_ready": now_ready,

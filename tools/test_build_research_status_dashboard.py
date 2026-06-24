@@ -10,7 +10,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from build_research_status_dashboard import build_dashboard, emit_markdown, first_action_from_missing_gates, today_utc
+from build_research_status_dashboard import build_dashboard, emit_markdown, first_action_from_missing_gates
+from research_clock import utc_date_iso
 
 
 def write_fixture(path: Path, text: str) -> None:
@@ -93,7 +94,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
 
 
 def test_generated_date_uses_utc_day() -> None:
-    assert today_utc() == datetime.now(timezone.utc).date().isoformat()
+    assert utc_date_iso() == datetime.now(timezone.utc).date().isoformat()
 
 
 def main() -> int:

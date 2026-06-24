@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -135,7 +135,7 @@ def build_scorecard(
         )
 
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "public_safe": True,
         "requirements": requirements_path.as_posix(),
         "experiments": experiments_path.as_posix(),

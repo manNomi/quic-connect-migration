@@ -10,7 +10,7 @@ import re
 import shutil
 import subprocess
 from dataclasses import dataclass, asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 
@@ -77,7 +77,7 @@ def build_report(timeout: int) -> AwsIdentityCheck:
             sts_error = error_code(sts.stderr)
 
     return AwsIdentityCheck(
-        check_date=date.today().isoformat(),
+        check_date=utc_date_iso(),
         aws_cli_found=bool(aws_path),
         aws_cli_version_present=version_present,
         region_configured=region_configured,

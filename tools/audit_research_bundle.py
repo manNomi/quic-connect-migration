@@ -10,7 +10,7 @@ import subprocess
 import sys
 from collections import Counter
 from dataclasses import asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -265,7 +265,7 @@ def build_audit(root: Path) -> dict[str, Any]:
 
     goal_complete = not blockers
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "publication_bundle_ok": publication["exit_code"] == 0,
         "required_files_ok": required_files_ok,
         "experiment_trial_count": len(experiments),

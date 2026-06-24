@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -32,7 +32,7 @@ def build_unlock_report(trial_id: str, artifact_dir: Path, requirements_path: Pa
         require_final_countable=True,
     )
     try:
-        validation = build_validation(trial_id, artifact_dir, requirements_path, date.today().isoformat())
+        validation = build_validation(trial_id, artifact_dir, requirements_path, utc_date_iso())
     except FileNotFoundError as exc:
         validation = {
             "summary_path": "",
@@ -62,7 +62,7 @@ def build_unlock_report(trial_id: str, artifact_dir: Path, requirements_path: Pa
         blockers.extend(bundle.get("blockers") or ["baseline artifact bundle is incomplete"])
 
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "trial_id": trial_id,
         "artifact_dir": artifact_dir.as_posix(),
         "summary_path": validation.get("summary_path"),

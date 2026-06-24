@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 from dataclasses import dataclass, asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -164,7 +164,7 @@ def main() -> int:
     parser.add_argument("--summary")
     parser.add_argument("--experiments", default=DEFAULT_EXPERIMENTS)
     parser.add_argument("--requirements", default=DEFAULT_REQUIREMENTS)
-    parser.add_argument("--date", default=date.today().isoformat())
+    parser.add_argument("--date", default=utc_date_iso())
     parser.add_argument("--require-final-countable", action="store_true")
     parser.add_argument("--require-artifact-bundle", action="store_true")
     parser.add_argument("--apply", action="store_true", help="actually append the row; default is dry-run")

@@ -9,7 +9,7 @@ import json
 import shlex
 from collections import Counter
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -403,7 +403,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     plans = make_plan(values, args.repetitions, args.prefer_p1)
     cov = coverage(required, plans)
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "config_source": config_source,
         "public_safe_default": not args.use_local_config,
         "repetitions": args.repetitions,

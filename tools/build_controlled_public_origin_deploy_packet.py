@@ -7,7 +7,7 @@ import argparse
 import json
 import subprocess
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 
@@ -84,7 +84,7 @@ def build_packet(args: argparse.Namespace) -> DeployPacket:
         package_path = "harness/results/packages/<generated-quic-go-min-repro>.tar.gz"
 
     return DeployPacket(
-        generated=date.today().isoformat(),
+        generated=utc_date_iso(),
         package_script=args.package_script,
         package_path=package_path,
         package_built=package_built,

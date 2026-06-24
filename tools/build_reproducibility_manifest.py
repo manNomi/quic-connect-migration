@@ -9,17 +9,14 @@ import json
 import subprocess
 from collections import Counter
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from research_clock import utc_date_iso
 
 
 DEFAULT_OUTPUT = "docs/results/reproducibility-manifest-20260624.md"
 DEFAULT_JSON_OUTPUT = "data/reproducibility-manifest-20260624.json"
-
-
-def today_utc() -> str:
-    return datetime.now(timezone.utc).date().isoformat()
 
 
 @dataclass
@@ -103,7 +100,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
     ci = newest_ci_summary() if include_ci else {"available": "not-requested"}
 
     return {
-        "generated": today_utc(),
+        "generated": utc_date_iso(),
         "public_safe": True,
         "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
         "git": asdict(git),

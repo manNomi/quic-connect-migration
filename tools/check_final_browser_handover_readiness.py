@@ -7,7 +7,7 @@ import argparse
 import json
 import shlex
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -177,7 +177,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         blockers.append("controlled public origin readiness check failed")
 
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "config": asdict(config),
         "baseline": baseline,
         "disk": {

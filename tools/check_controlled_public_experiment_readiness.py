@@ -7,7 +7,7 @@ import argparse
 import json
 import shutil
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 from check_handover_readiness import HandoverReadiness, build_readiness
@@ -143,7 +143,7 @@ def build_experiment_readiness(
         blockers.append("server artifact directory does not contain results/server.json")
 
     return ControlledPublicExperimentReadiness(
-        check_date=date.today().isoformat(),
+        check_date=utc_date_iso(),
         public_origin_url=public_origin_url,
         controlled_public_origin_ready=controlled_origin_ready,
         application_h3_baseline_ready=baseline_ready,

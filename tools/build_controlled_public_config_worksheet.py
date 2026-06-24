@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -196,7 +196,7 @@ def build_worksheet(config_path: Path, check_files: bool) -> dict[str, Any]:
         next_step = "config_ready_for_all_declared_stages"
 
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "config_path": config_path.as_posix(),
         "check_files": check_files,
         "config_exists": report["config_exists"],

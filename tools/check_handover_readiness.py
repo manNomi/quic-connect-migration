@@ -11,7 +11,7 @@ import shutil
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 
@@ -160,7 +160,7 @@ def build_readiness(chrome_bin: str, include_command_output: bool = False) -> Ha
         blockers.append("AWS caller identity is not available for automated public-origin provisioning")
 
     return HandoverReadiness(
-        check_date=date.today().isoformat(),
+        check_date=utc_date_iso(),
         chrome_found=chrome_found,
         chrome_path=chrome_bin,
         adb_found=adb.found,

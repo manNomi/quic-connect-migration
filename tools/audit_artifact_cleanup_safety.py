@@ -8,7 +8,7 @@ import csv
 import json
 import shutil
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -173,7 +173,7 @@ def build_audit(
     projected_free = disk.free + review_unreferenced_bytes
     root_reports = [directory_size(Path(root)) for root in roots]
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "experiments": experiments_path.as_posix(),
         "artifact_reference_csvs": [path.as_posix() for path in extra_reference_csvs],
         "roots": roots,

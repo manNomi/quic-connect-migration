@@ -8,7 +8,7 @@ import csv
 import json
 import re
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -166,7 +166,7 @@ def build_register(rubric_path: Path, requirements_path: Path, experiments_path:
         )
 
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "public_safe": True,
         "rubric_path": str(rubric_path),
         "requirements_path": str(requirements_path),

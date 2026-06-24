@@ -7,9 +7,10 @@ import argparse
 import csv
 import json
 from collections import Counter
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from research_clock import utc_date_iso
 
 
 DEFAULT_OUTPUT = "docs/results/research-status-dashboard-20260624.md"
@@ -19,10 +20,6 @@ DEFAULT_MATRIX = "data/final-protocol-readiness-matrix-20260624.csv"
 DEFAULT_SCORECARD = "data/final-trial-acceptance-scorecard-20260624.csv"
 DEFAULT_MANIFEST = "data/reproducibility-manifest-20260624.json"
 DEFAULT_FRICTION = "data/cm-operational-friction-matrix-20260624.csv"
-
-
-def today_utc() -> str:
-    return datetime.now(timezone.utc).date().isoformat()
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -92,7 +89,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
     ci = manifest.get("ci") or {}
 
     return {
-        "generated": today_utc(),
+        "generated": utc_date_iso(),
         "public_safe": True,
         "experiment_trials": len(experiments),
         "experiment_status_counts": experiment_status_counts,

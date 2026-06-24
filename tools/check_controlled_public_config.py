@@ -7,7 +7,7 @@ import argparse
 import json
 import re
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -161,7 +161,7 @@ def build_report(config_path: Path, check_files: bool = False) -> dict[str, Any]
             blockers.append(f"active network-change config key not ready: {key} ({by_key[key].detail})")
 
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "config_path": config_path.as_posix(),
         "config_exists": config_path.exists(),
         "check_files": check_files,

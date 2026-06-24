@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -73,7 +73,7 @@ def build_selection(args: argparse.Namespace) -> dict[str, Any]:
     existing = existing_trial_ids(experiments_path)
     selected = select_next_plan(plans, incomplete, existing)
     selection = {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "experiments": experiments_path.as_posix(),
         "requirements": requirements_path.as_posix(),
         "config_source": args.config if args.use_local_config else "public template",

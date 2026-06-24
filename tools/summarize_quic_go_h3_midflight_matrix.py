@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 from collections import Counter
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -110,7 +110,7 @@ def emit_markdown(rows: list[dict[str, str]]) -> str:
     lines = [
         "# quic-go HTTP/3 Mid-Flight Migration Repetition Summary",
         "",
-        f"Generated: `{date.today().isoformat()}`",
+        f"Generated: `{utc_date_iso()}`",
         "",
         "This summary aggregates local quic-go HTTP/3 active-migration repetitions. It is a library-controlled positive control, not a browser handover result.",
         "",

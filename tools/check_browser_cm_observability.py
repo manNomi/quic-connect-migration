@@ -9,7 +9,7 @@ import os
 import shutil
 import subprocess
 from dataclasses import asdict, dataclass
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 
 
@@ -125,7 +125,7 @@ def build_readiness(
         blockers.append("rvictl not found; iOS remote virtual interface capture is not ready")
 
     return BrowserCMObservability(
-        check_date=date.today().isoformat(),
+        check_date=utc_date_iso(),
         chrome=chrome,
         safari=safari,
         safari_technology_preview=safari_tp,

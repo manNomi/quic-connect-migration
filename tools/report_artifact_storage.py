@@ -7,7 +7,7 @@ import argparse
 import json
 import shutil
 from dataclasses import dataclass, asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Iterable
 
@@ -82,7 +82,7 @@ def build_report(roots: list[str], max_entries: int) -> dict[str, object]:
     disk = shutil.disk_usage(".")
     total_artifact_bytes = sum(item.total_bytes for item in root_reports)
     return {
-        "check_date": date.today().isoformat(),
+        "check_date": utc_date_iso(),
         "disk": {
             "total_bytes": disk.total,
             "used_bytes": disk.used,

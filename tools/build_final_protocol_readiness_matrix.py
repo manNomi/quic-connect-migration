@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 from dataclasses import asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -136,7 +136,7 @@ def build_matrix(args: argparse.Namespace) -> dict[str, Any]:
         state_counts[row["state"]] = state_counts.get(row["state"], 0) + 1
 
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "public_safe": True,
         "config_path": args.config,
         "config_exists": Path(args.config).exists(),

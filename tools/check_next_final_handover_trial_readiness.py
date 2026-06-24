@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -136,7 +136,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     ready, missing = evaluate_required_gates(required, gates)
 
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "config_path": args.config,
         "config_exists": Path(args.config).exists(),
         "check_local_files": args.check_local_files,

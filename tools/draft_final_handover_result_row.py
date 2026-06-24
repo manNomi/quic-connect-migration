@@ -7,7 +7,7 @@ import argparse
 import csv
 import json
 import sys
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -251,7 +251,7 @@ def main() -> int:
     parser.add_argument("--trial-id", required=True)
     parser.add_argument("--artifact-dir", required=True)
     parser.add_argument("--summary")
-    parser.add_argument("--date", default=date.today().isoformat())
+    parser.add_argument("--date", default=utc_date_iso())
     parser.add_argument("--format", choices=["csv", "json", "markdown"], default="csv")
     parser.add_argument("--output")
     args = parser.parse_args()

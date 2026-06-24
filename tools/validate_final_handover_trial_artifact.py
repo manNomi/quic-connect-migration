@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -68,7 +68,7 @@ def build_validation(
     warnings = warnings_for(row, matched)
     registration_ready = all(field in row and row[field] != "" for field in CSV_FIELDS)
     return {
-        "validated_at": date.today().isoformat(),
+        "validated_at": utc_date_iso(),
         "trial_id": trial_id,
         "artifact_dir": artifact_dir.as_posix(),
         "summary_path": summary_file.as_posix(),
@@ -123,7 +123,7 @@ def main() -> int:
     parser.add_argument("--artifact-dir", required=True)
     parser.add_argument("--summary")
     parser.add_argument("--requirements", default=DEFAULT_REQUIREMENTS)
-    parser.add_argument("--date", default=date.today().isoformat())
+    parser.add_argument("--date", default=utc_date_iso())
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output")
     parser.add_argument("--require-final-countable", action="store_true")

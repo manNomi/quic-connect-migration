@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import dataclass, asdict
-from datetime import date
+from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
 
@@ -207,7 +207,7 @@ def build_checklist(args: argparse.Namespace) -> dict[str, Any]:
     final_audit = build_final_trial_audit(Path(args.requirements), Path(args.experiments))
     actions = build_actions(config, next_readiness, cleanup, final_audit)
     return {
-        "generated": date.today().isoformat(),
+        "generated": utc_date_iso(),
         "objective": "complete final controlled-public/browser handover evidence for the QUIC/HTTP/3 CM paper",
         "next_trial": next_readiness["next_trial"],
         "next_trial_ready": next_readiness["ready"],
