@@ -1455,7 +1455,24 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - PASS row의 DOM complete timing은 28196-28199ms였고, FAIL row의 DOM error timing은 20950-20955ms였다.
 - 모든 row의 Chrome target QUIC session count는 4개였으므로, 이 결과도 browser CM success가 아니라 application recovery boundary evidence다.
 
-## 31. Artifact 정책
+## 31. Application recovery tradeoff 표 재생성
+
+no-retry, 1회 retry, 2회 retry upload boundary CSV를 논문용 tradeoff 표로 합친다.
+
+```bash
+python3 tools/build_application_recovery_tradeoff.py \
+  --output docs/results/application-recovery-tradeoff-20260624.md \
+  --csv-output data/application-recovery-tradeoff-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- no-retry 최신 all-pass window는 4600ms, first later all-fail window는 4900ms다.
+- 1회 retry 최신 all-pass window는 12000ms, first later all-fail window는 15000ms다.
+- 2회 retry 최신 all-pass window는 18000ms, first later all-fail window는 21000ms다.
+- retry budget 증가는 recovery boundary를 오른쪽으로 이동시키지만 completion latency와 Chrome QUIC session count도 함께 증가한다.
+
+## 32. Artifact 정책
 
 commit 가능한 것:
 

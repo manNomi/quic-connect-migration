@@ -73,6 +73,8 @@ def run_check(name: str, command: list[str], expected_exit_codes: set[int], time
 
 def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[tuple[str, list[str], set[int], int]]:
     paper_tables = "docs/results/paper-tables-20260624.md"
+    application_recovery_tradeoff = "docs/results/application-recovery-tradeoff-20260624.md"
+    application_recovery_tradeoff_csv = "data/application-recovery-tradeoff-20260624.csv"
     paper_gap_register = "docs/results/paper-evidence-gap-register-20260624.md"
     paper_gap_register_csv = "data/paper-evidence-gap-register-20260624.csv"
     cm_operational_friction_matrix = "docs/results/cm-operational-friction-matrix-20260624.md"
@@ -104,6 +106,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
+        application_recovery_tradeoff = str(generated_dir / "application-recovery-tradeoff.md")
+        application_recovery_tradeoff_csv = str(generated_dir / "application-recovery-tradeoff.csv")
         paper_gap_register = str(generated_dir / "paper-evidence-gap-register.md")
         paper_gap_register_csv = str(generated_dir / "paper-evidence-gap-register.csv")
         cm_operational_friction_matrix = str(generated_dir / "cm-operational-friction-matrix.md")
@@ -145,6 +149,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_artifact_cleanup_safety.py",
                 "tools/audit_research_bundle.py",
                 "tools/append_final_handover_result_row.py",
+                "tools/build_application_recovery_tradeoff.py",
                 "tools/build_final_handover_operator_checklist.py",
                 "tools/build_final_handover_trial_packet.py",
                 "tools/build_final_trial_acceptance_scorecard.py",
@@ -227,6 +232,19 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "paper_tables_regeneration_check",
             [python_bin, "tools/build_paper_tables.py", "--output", paper_tables],
+            {0},
+            30,
+        ),
+        (
+            "application_recovery_tradeoff",
+            [
+                python_bin,
+                "tools/build_application_recovery_tradeoff.py",
+                "--output",
+                application_recovery_tradeoff,
+                "--csv-output",
+                application_recovery_tradeoff_csv,
+            ],
             {0},
             30,
         ),

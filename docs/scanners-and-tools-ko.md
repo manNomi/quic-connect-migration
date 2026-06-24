@@ -2084,3 +2084,22 @@ CHROME_HOLD_SECONDS=90 \
 - 18000ms PASS row의 DOM complete timing은 28196-28199ms였다.
 - 21000ms FAIL row의 DOM error timing은 20950-20955ms였고 upload bytes는 0이었다.
 - 모든 row가 qlog H3/path evidence와 Chrome target QUIC session count 4를 남겼으므로, browser/session evidence와 application task completion을 분리해서 해석해야 한다.
+
+## 60. `tools/build_application_recovery_tradeoff.py`
+
+Chrome local upload boundary CSV들을 읽어 retry budget별 recovery boundary, completion latency, Chrome QUIC session count를 논문용 표로 묶는다.
+
+실행:
+
+```bash
+python3 tools/build_application_recovery_tradeoff.py \
+  --output docs/results/application-recovery-tradeoff-20260624.md \
+  --csv-output data/application-recovery-tradeoff-20260624.csv
+```
+
+현재 결과:
+
+- no-retry latest all-pass window: 4600ms
+- 1회 retry latest all-pass window: 12000ms
+- 2회 retry latest all-pass window: 18000ms
+- 성공 window가 길어질수록 DOM completion latency와 Chrome target QUIC session count가 증가한다.

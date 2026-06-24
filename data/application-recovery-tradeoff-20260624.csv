@@ -1,0 +1,14 @@
+retry_attempts,retry_delay_ms,drop_window_ms,datasets,runs,pass_count,fail_count,application_complete_count,status_summary,classification_summary,complete_ms_min,complete_ms_median,complete_ms_max,error_ms_min,error_ms_median,error_ms_max,chrome_quic_sessions_min,chrome_quic_sessions_max,upload_sink_requests_min,upload_sink_requests_max,upload_bytes_min,upload_bytes_max
+0,0,4600,no-retry upload fine boundary,3,3,0,3,PASS=3,nat_rebinding_path_validation_without_observed_tuple_change=3,10215,10218,10230,,,,1,1,1,1,1048576,1048576
+0,0,4750,no-retry upload fine boundary,3,1,2,1,FAIL=2; PASS=1,browser_application_task_failed=2; nat_rebinding_path_validation_without_observed_tuple_change=1,11261,11261,11261,6917,6919,6921,1,2,1,1,0,1048576
+0,0,4900,no-retry upload fine boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,6919,6922,6922,2,2,1,1,0,0
+0,0,5000,no-retry upload fine boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,6917,6918,6920,2,2,1,1,0,0
+1,1000,4900,one-retry upload boundary,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,15470,15475,15476,,,,2,2,2,2,1048576,1048576
+1,1000,5000,one-retry upload boundary,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,15463,15466,15468,,,,2,2,2,2,1048576,1048576
+1,1000,6000,one-retry long outage,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,15465,15469,15469,,,,2,3,2,2,1048576,1048576
+1,1000,9000,one-retry long outage,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,19671,19674,19679,,,,2,3,2,2,1048576,1048576
+1,1000,12000,one-retry stress boundary,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,19978,19983,19984,,,,3,3,2,2,1048576,1048576
+1,1000,15000,one-retry stress boundary,3,0,3,0,FAIL=3,browser_h3_request_failed=3,,,,15936,15939,15943,3,3,1,1,0,0
+2,1000,15000,two-retry 15000ms recovery,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,24484,24492,24503,,,,4,4,2,2,1048576,1048576
+2,1000,18000,two-retry stress boundary,3,3,0,3,PASS=3,nat_rebinding_multiple_quic_sessions=3,28196,28197,28199,,,,4,4,2,2,1048576,1048576
+2,1000,21000,two-retry stress boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,20950,20950,20955,4,4,1,1,0,0

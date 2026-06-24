@@ -280,6 +280,15 @@ Retry2 stress boundary의 핵심:
 - FAIL row에도 qlog H3/path evidence와 Chrome target QUIC session count 4가 남았지만, upload bytes는 0이었다.
 - 2회 retry는 1회 retry보다 boundary를 오른쪽으로 밀지만, 이 local workload에서도 18-21초 사이에서 application continuity가 다시 깨진다.
 
+[Application Recovery Tradeoff](./application-recovery-tradeoff-20260624.md)는 no-retry, 1회 retry, 2회 retry upload boundary CSV를 한 표로 합친다.
+
+Application recovery tradeoff의 핵심:
+
+- 최신 all-pass window는 no-retry 4600ms, 1회 retry 12000ms, 2회 retry 18000ms로 이동했다.
+- 같은 지점의 DOM completion timing은 약 10.2초, 20.0초, 28.2초로 증가했다.
+- Chrome target QUIC session count도 1개, 3개, 4개로 증가했다.
+- 따라서 retry는 task completion을 개선하는 application strategy이지, browser single-session CM maturity의 대체 지표가 아니다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.
