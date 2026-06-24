@@ -36,8 +36,9 @@
 24. 단일 final handover artifact가 CSV 등록 가능하고 최종 protocol requirement에 실제로 카운트되는지 검증하는 validator를 추가했다.
 25. 검증된 final handover row만 dry-run/apply 방식으로 `data/experiment-results.csv`에 추가하는 append 도구를 추가했다.
 26. 현재 CSV 상태에서 다음에 실행해야 할 final handover trial과 등록 명령을 선택하는 next-trial selector를 추가했다.
-27. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
-28. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+27. 선택된 다음 trial 하나에 필요한 readiness gate를 별도로 점검하는 per-trial readiness checker를 추가했다.
+28. heavy browser handover capture 전 디스크 여유 공간을 계산하는 artifact cleanup dry-run planner를 추가했다.
+29. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -78,6 +79,7 @@
 │   ├── check_handover_readiness.py
 │   ├── check_controlled_public_experiment_readiness.py
 │   ├── check_final_browser_handover_readiness.py
+│   ├── check_next_final_handover_trial_readiness.py
 │   ├── plan_final_browser_handover_runs.py
 │   ├── check_browser_cm_observability.py
 │   ├── classify_controlled_public_h3_baseline.py
@@ -101,6 +103,7 @@
 │   ├── test_validate_final_handover_trial_artifact.py
 │   ├── test_append_final_handover_result_row.py
 │   ├── test_select_next_final_handover_trial.py
+│   ├── test_check_next_final_handover_trial_readiness.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py
 │   ├── scan_public_origin_readiness.py
@@ -132,6 +135,7 @@
 - [Final browser handover trial audit](docs/results/final-browser-handover-trial-audit-20260624.md)
 - [Final handover trial artifact validator](docs/results/final-handover-trial-artifact-validator-20260624.md)
 - [Final handover next trial](docs/results/final-handover-next-trial-20260624.md)
+- [Final handover next trial readiness](docs/results/final-handover-next-trial-readiness-20260624.md)
 - [Browser CM literature refresh](docs/results/literature-refresh-browser-cm-20260624.md)
 - [Client policy literature refresh](docs/results/literature-refresh-client-policy-20260624.md)
 - [Chrome H3 downlink-dominant workload](docs/results/chrome-h3-downlink-dominant-workload-results-20260624.md)

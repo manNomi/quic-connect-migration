@@ -76,6 +76,13 @@ python3 tools/select_next_final_handover_trial.py \
   --output docs/results/final-handover-next-trial-20260624.md
 ```
 
+선택된 trial 하나에 필요한 readiness만 별도로 확인한다.
+
+```bash
+python3 tools/check_next_final_handover_trial_readiness.py \
+  --output docs/results/final-handover-next-trial-readiness-20260624.md
+```
+
 실제 artifact가 있는 경우 CSV row 초안은 다음 도구로 먼저 생성한다.
 
 ```bash

@@ -1036,3 +1036,41 @@ python3 tools/select_next_final_handover_trial.py \
 ```bash
 python3 tools/test_select_next_final_handover_trial.py
 ```
+
+## 33. `tools/check_next_final_handover_trial_readiness.py`
+
+`select_next_final_handover_trial.py`가 고른 다음 trial 하나에 필요한 readiness만 점검한다. 전체 final protocol readiness와 달리, baseline trial에서는 `NETWORK_CHANGE_CMD`, secondary path, baseline summary를 요구하지 않는다. active network-change trial로 넘어가면 그때 해당 gate들이 required가 된다.
+
+실행:
+
+```bash
+python3 tools/check_next_final_handover_trial_readiness.py \
+  --output docs/results/final-handover-next-trial-readiness-20260624.md
+```
+
+public origin에 실제 네트워크 요청까지 보내려면 명시적으로 붙인다.
+
+```bash
+python3 tools/check_next_final_handover_trial_readiness.py \
+  --check-public-origin \
+  --output /tmp/final-handover-next-trial-readiness.md
+```
+
+현재 다음 trial이 baseline이면 required gate는 대략 다음과 같다.
+
+| gate | baseline에서 required |
+| --- | --- |
+| config present | yes |
+| public origin host/url | yes |
+| TLS cert/key config value | yes |
+| disk ready | yes |
+| Chrome ready | yes |
+| baseline summary | no |
+| network-change command | no |
+| secondary path | no |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_check_next_final_handover_trial_readiness.py
+```
