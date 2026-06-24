@@ -255,6 +255,44 @@ WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-l
 - qlog에 `chosen_alpn`, `http3:frame` evidence 존재
 - `path_challenge`, `path_response`는 없어야 정상이다. 이 실험은 migration을 시도하지 않는다.
 
+polling no-change baseline:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=poll POLL_COUNT=5 POLL_INTERVAL_MS=300 RUN_ID=chrome-h3-poll-nochange-classifier-pass ./scripts/run-chrome-h3-local.sh
+```
+
+성공 기준:
+
+- summary status `PASS`
+- `classification=no_path_change_baseline`
+- server request count 6
+- server remote addr count 1
+- Chrome NetLog에 target `QUIC_SESSION` 1개 이상 존재
+- target origin `HTTP_STREAM_JOB`에 `using_quic=true` 6개 이상 존재
+- qlog에 `chosen_alpn`, `http3:frame` evidence 존재
+- qlog에 `path_challenge`, `path_response`는 없어야 정상이다.
+
+network-change hook:
+
+```bash
+cd repro/quic-go-min-repro
+WORKLOAD=poll \
+POLL_COUNT=10 \
+POLL_INTERVAL_MS=1000 \
+NETWORK_CHANGE_AFTER_SECONDS=3 \
+NETWORK_CHANGE_CMD='your-network-change-command' \
+RUN_ID=chrome-h3-poll-network-change-manual \
+./scripts/run-chrome-h3-local.sh
+```
+
+주의:
+
+- `NETWORK_CHANGE_CMD`는 사용자가 명시적으로 넣은 command만 실행한다.
+- local loopback origin에서는 실제 Wi-Fi/LTE handover를 재현하지 않는다.
+- network-change 실험 결과는 `classification`을 기준으로 해석한다.
+- `QUIC_CONNECTION_MIGRATION_MODE` NetLog event만으로 migration 발생을 주장하면 안 된다.
+
 ## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.

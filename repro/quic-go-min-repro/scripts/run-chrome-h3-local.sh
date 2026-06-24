@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPRO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$(cd "$REPRO_DIR/../.." && pwd)"
 cd "$REPRO_DIR"
 
 CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
@@ -20,13 +21,20 @@ case "$WORKLOAD" in
     REQUEST_PATH="${REQUEST_PATH:-/browser-sequence?resources=${SEQUENCE_RESOURCES}&bytes=128&label=chrome-sequence}"
     EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-$((SEQUENCE_RESOURCES + 1))}"
     ;;
+  poll)
+    POLL_COUNT="${POLL_COUNT:-5}"
+    POLL_INTERVAL_MS="${POLL_INTERVAL_MS:-500}"
+    REQUEST_PATH="${REQUEST_PATH:-/browser-poll?count=${POLL_COUNT}&interval_ms=${POLL_INTERVAL_MS}&label=chrome-poll}"
+    EXPECTED_REQUESTS="${EXPECTED_REQUESTS:-$((POLL_COUNT + 1))}"
+    ;;
   *)
     echo "unsupported WORKLOAD=$WORKLOAD" >&2
     exit 2
     ;;
 esac
 TIMEOUT="${TIMEOUT:-60s}"
-CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-45}"
+CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-20}"
+CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
 
 mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/certs" "$ARTIFACT_DIR/logs" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/qlog" "$ARTIFACT_DIR/keylog"
 
@@ -74,13 +82,22 @@ trap cleanup EXIT
 
 sleep 2
 
+NETWORK_CHANGE_PID=""
+if [[ -n "${NETWORK_CHANGE_CMD:-}" ]]; then
+  (
+    sleep "${NETWORK_CHANGE_AFTER_SECONDS:-2}"
+    bash -lc "$NETWORK_CHANGE_CMD"
+  ) >"$ARTIFACT_DIR/logs/network-change.log" 2>&1 &
+  NETWORK_CHANGE_PID=$!
+fi
+
 CHROME_EXIT=0
-python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" <<'PY' || CHROME_EXIT=$?
+python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" <<'PY' || CHROME_EXIT=$?
 import pathlib
 import subprocess
 import sys
 
-chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s = sys.argv[1:]
+chrome_bin, artifact_dir, addr, request_path, spki_hash, timeout_s, net_log_capture_mode = sys.argv[1:]
 artifact = pathlib.Path(artifact_dir)
 url = f"https://{addr}{request_path}"
 cmd = [
@@ -97,7 +114,7 @@ cmd = [
     f"--ignore-certificate-errors-spki-list={spki_hash}",
     f"--user-data-dir={artifact / 'chrome' / 'profile'}",
     f"--log-net-log={artifact / 'chrome' / 'netlog.json'}",
-    "--net-log-capture-mode=Everything",
+    f"--net-log-capture-mode={net_log_capture_mode}",
     "--virtual-time-budget=5000",
     "--dump-dom",
     url,
@@ -109,83 +126,20 @@ with (artifact / "chrome" / "dump-dom.txt").open("wb") as out, (artifact / "chro
         raise SystemExit(124)
 PY
 
+NETWORK_CHANGE_EXIT=0
+if [[ -n "$NETWORK_CHANGE_PID" ]]; then
+  wait "$NETWORK_CHANGE_PID" || NETWORK_CHANGE_EXIT=$?
+  printf '{"exit":%s}\n' "$NETWORK_CHANGE_EXIT" >"$ARTIFACT_DIR/results/network-change.json"
+fi
+
 SERVER_EXIT=0
 wait "$SERVER_PID" || SERVER_EXIT=$?
 trap - EXIT
 
-python3 - "$ARTIFACT_DIR" "$CHROME_EXIT" "$SERVER_EXIT" "$ADDR" "$EXPECTED_REQUESTS" "$WORKLOAD" <<'PY'
-import json
-import pathlib
-import sys
-
-base = pathlib.Path(sys.argv[1])
-chrome_exit = int(sys.argv[2])
-server_exit = int(sys.argv[3])
-addr = sys.argv[4]
-expected_requests = int(sys.argv[5])
-workload = sys.argv[6]
-server_path = base / "results" / "server.json"
-server = json.loads(server_path.read_text()) if server_path.exists() else {}
-netlog_path = base / "chrome" / "netlog.json"
-netlog_text = netlog_path.read_text(errors="ignore") if netlog_path.exists() else ""
-dump_path = base / "chrome" / "dump-dom.txt"
-dump = dump_path.read_text(errors="ignore") if dump_path.exists() else ""
-qlog_text = ""
-for path in (base / "qlog").glob("*"):
-    if path.is_file():
-        qlog_text += path.read_text(errors="ignore")
-requests = server.get("requests") or []
-target_host, target_port = addr.rsplit(":", 1)
-netlog_target_quic_sessions = 0
-netlog_target_using_quic_jobs = 0
-netlog_target_url_requests = 0
-if netlog_text:
-    try:
-        netlog = json.loads(netlog_text)
-        event_types = netlog.get("constants", {}).get("logEventTypes", {})
-        reverse_types = {value: key for key, value in event_types.items()}
-        for event in netlog.get("events", []):
-            name = reverse_types.get(event.get("type"), str(event.get("type")))
-            params = event.get("params") or {}
-            if name == "QUIC_SESSION" and params.get("host") == target_host and str(params.get("port")) == target_port:
-                netlog_target_quic_sessions += 1
-            if name == "HTTP_STREAM_JOB" and params.get("destination") == f"https://{addr}" and params.get("using_quic") is True:
-                netlog_target_using_quic_jobs += 1
-            if name == "URL_REQUEST_START_JOB" and str(params.get("url", "")).startswith(f"https://{addr}/"):
-                netlog_target_url_requests += 1
-    except json.JSONDecodeError:
-        pass
-netlog_has_quic_session = netlog_target_quic_sessions > 0
-qlog_has_h3 = "http3:frame" in qlog_text
-request_reached_server = server.get("ok") is True and len(requests) >= expected_requests
-passed = request_reached_server and netlog_has_quic_session and netlog_target_using_quic_jobs > 0 and qlog_has_h3
-summary = {
-    "status": "PASS" if passed else "FAIL",
-    "artifact_dir": str(base),
-    "workload": workload,
-    "expected_requests": expected_requests,
-    "chrome_exit": chrome_exit,
-    "chrome_completed_cleanly": chrome_exit == 0,
-    "chrome_timed_out_after_request": chrome_exit == 124 and request_reached_server,
-    "server_exit": server_exit,
-    "server_ok": server.get("ok"),
-    "server_error": server.get("error"),
-    "server_request_count": len(requests),
-    "server_remote_addr": requests[0].get("remote_addr") if requests else None,
-    "server_remote_addrs": sorted({request.get("remote_addr") for request in requests if request.get("remote_addr")}),
-    "server_request_labels": [request.get("label") for request in requests],
-    "netlog_has_forced_origin": "origin-to-force-quic" in netlog_text or addr in netlog_text,
-    "netlog_has_quic_session": netlog_has_quic_session,
-    "netlog_target_quic_session_count": netlog_target_quic_sessions,
-    "netlog_target_using_quic_job_count": netlog_target_using_quic_jobs,
-    "netlog_target_url_request_count": netlog_target_url_requests,
-    "qlog_has_h3": qlog_has_h3,
-    "qlog_has_path_validation": "path_challenge" in qlog_text or "path_response" in qlog_text,
-    "dump_dom_bytes": len(dump),
-    "dump_has_chrome_error": "ERR_" in dump,
-}
-(base / "results" / "chrome-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-print(json.dumps(summary, indent=2))
-if summary["status"] != "PASS":
-    raise SystemExit(1)
-PY
+python3 "$PROJECT_ROOT/tools/classify_chrome_h3_artifacts.py" "$ARTIFACT_DIR" \
+  --addr "$ADDR" \
+  --expected-requests "$EXPECTED_REQUESTS" \
+  --workload "$WORKLOAD" \
+  --chrome-exit "$CHROME_EXIT" \
+  --server-exit "$SERVER_EXIT" \
+  --output "$ARTIFACT_DIR/results/chrome-summary.json"

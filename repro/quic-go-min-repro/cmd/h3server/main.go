@@ -324,6 +324,40 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-poll":
+		record.Workload = "browser-poll"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		count := queryInt(r, "count", 5)
+		if count > 100 {
+			count = 100
+		}
+		intervalMillis := queryInt(r, "interval_ms", 500)
+		if intervalMillis > 30000 {
+			intervalMillis = 30000
+		}
+		if label == "" {
+			label = "chrome-poll"
+		}
+		html := buildBrowserPollHTML(label, count, intervalMillis)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/poll":
+		record.Workload = "poll"
+		record.ResponseContentType = "application/json"
+		if label == "" {
+			label = "poll"
+		}
+		body, _ := json.Marshal(map[string]any{
+			"ok":         true,
+			"label":      label,
+			"index":      r.URL.Query().Get("i"),
+			"handled_at": record.HandledAt,
+		})
+		record.Label = label
+		record.ResponseBytes = len(body)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, body
 	case r.Method == http.MethodGet && r.URL.Path == "/pixel":
 		record.Workload = "pixel"
 		record.ResponseContentType = "image/svg+xml"
@@ -387,6 +421,22 @@ func buildBrowserSequenceHTML(label string, resources, size int) string {
 	}
 	body += "</ol>"
 	body += "<script>document.body.dataset.sequenceReady = 'true';</script>"
+	body += "</body></html>"
+	return body
+}
+
+func buildBrowserPollHTML(label string, count, intervalMillis int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 poll</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Chrome H3 poll</h1><div id=\"status\" data-label=\"%s\">pending</div><ol id=\"events\"></ol>", escapedLabel)
+	body += "<script>"
+	body += fmt.Sprintf("const count=%d, interval=%d, label=%q;", count, intervalMillis, queryLabel)
+	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
+	body += "const events=document.getElementById('events');"
+	body += "async function run(){for(let i=1;i<=count;i++){const res=await fetch(`/poll?label=${label}-${i}&i=${i}&ts=${Date.now()}`,{cache:'no-store'});const json=await res.json();const li=document.createElement('li');li.textContent=`${json.label}:${res.status}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.pollComplete='true';}"
+	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.pollError=String(error);});"
+	body += "</script>"
 	body += "</body></html>"
 	return body
 }
