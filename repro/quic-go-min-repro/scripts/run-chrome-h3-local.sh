@@ -10,6 +10,8 @@ CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google 
 RUN_ID="${RUN_ID:-chrome-h3-local-$(date -u +%Y%m%dT%H%M%SZ)}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-artifacts/${RUN_ID}}"
 ADDR="${ADDR:-127.0.0.1:4443}"
+LISTEN_ADDR="${LISTEN_ADDR:-$ADDR}"
+ORIGIN_ADDR="${ORIGIN_ADDR:-$ADDR}"
 WORKLOAD="${WORKLOAD:-single}"
 case "$WORKLOAD" in
   single)
@@ -74,7 +76,7 @@ QUIC_CM_CERT_FILE="$CERT_FILE" \
 QUIC_CM_KEY_FILE="$KEY_FILE" \
 EXPECTED_REQUESTS="$EXPECTED_REQUESTS" \
 ARTIFACT_DIR="$ARTIFACT_DIR" \
-LISTEN_ADDR="$ADDR" \
+LISTEN_ADDR="$LISTEN_ADDR" \
 TIMEOUT="$TIMEOUT" \
 ./scripts/run-h3-server.sh >"$ARTIFACT_DIR/logs/server-wrapper.log" 2>&1 &
 SERVER_PID=$!
@@ -99,7 +101,7 @@ if [[ -n "${NETWORK_CHANGE_CMD:-}" ]]; then
 fi
 
 CHROME_EXIT=0
-python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
+python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$ORIGIN_ADDR" "$REQUEST_PATH" "$SPKI_HASH" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
 import pathlib
 import subprocess
 import sys
@@ -145,7 +147,7 @@ wait "$SERVER_PID" || SERVER_EXIT=$?
 trap - EXIT
 
 python3 "$PROJECT_ROOT/tools/classify_chrome_h3_artifacts.py" "$ARTIFACT_DIR" \
-  --addr "$ADDR" \
+  --addr "$ORIGIN_ADDR" \
   --expected-requests "$EXPECTED_REQUESTS" \
   --workload "$WORKLOAD" \
   --chrome-exit "$CHROME_EXIT" \

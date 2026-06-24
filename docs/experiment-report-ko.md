@@ -502,6 +502,7 @@ mid-flight case에서는 `path.Switch()` 직후 `conn.LocalAddr()`가 socket A�
 8. controlled quic-go client 조건에서는 HTTP/3 upload/download body 전송 중 migration도 local과 AWS NLB에서 통과했다.
 9. Chrome 149 headless browser는 local quic-go H3 origin으로 단일 HTTP/3 request, page+subresource sequence request, sequential polling workload, slow streaming subresource workload를 보낼 수 있었다.
 10. inactive interface service toggle은 Chrome slow workload를 깨지 않았지만 실제 QUIC path migration evidence를 만들지는 못했다.
+11. Chrome slow workload는 local Wi-Fi IP origin에서도 HTTP/3로 성립했지만, inactive service toggle은 여전히 path migration evidence를 만들지 못했다.
 
 요약하면:
 
@@ -579,6 +580,8 @@ workload:
 - polling no-change baseline에서 classifier는 `no_path_change_baseline`을 반환함
 - `GET /browser-slow` HTML page + streaming `GET /slow-js` subresource limited control
 - inactive `Thunderbolt Bridge` off/on hook은 `exit=0`이었지만, server tuple change와 qlog path validation은 없었음
+- `LISTEN_ADDR=0.0.0.0:4443`, `ORIGIN_ADDR=<Wi-Fi IP>:4443` non-loopback local origin baseline
+- Wi-Fi IP origin에서도 inactive service toggle은 active path migration을 만들지 못함
 
 이 baseline은 network path change를 포함하지 않는다. 따라서 다음 단계에서는 같은 browser workload를 유지한 채 network-change trigger만 추가해야 한다.
 
@@ -608,6 +611,7 @@ network-change 판정 기준:
 
 - inactive service toggle은 active Wi-Fi path를 바꾸지 않는다.
 - loopback origin에서는 server remote tuple이 바뀌지 않는다.
+- local Wi-Fi IP origin은 loopback보다는 나은 browser baseline이지만, 같은 머신의 active route가 바뀌지 않으면 migration evidence가 나오지 않는다.
 - 따라서 실제 browser CM 검증에는 public/non-loopback origin과 active interface 전환이 필요하다.
 
 ## 19. 참고 데이터
@@ -633,3 +637,4 @@ network-change 판정 기준:
 - [Chrome local HTTP/3 sequence baseline 결과](results/chrome-h3-local-sequence-results-20260624.md)
 - [Chrome local HTTP/3 polling no-change baseline 결과](results/chrome-h3-poll-nochange-results-20260624.md)
 - [Chrome slow HTTP/3 inactive interface toggle 결과](results/chrome-h3-slow-inactive-if-toggle-results-20260624.md)
+- [Chrome Wi-Fi IP HTTP/3 limited control 결과](results/chrome-h3-wifi-ip-limited-control-results-20260624.md)

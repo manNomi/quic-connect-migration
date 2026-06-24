@@ -357,6 +357,16 @@ openssl로 local test cert/key 생성
   -> Chrome NetLog, server JSON, qlog 수집
 ```
 
+주소 설정:
+
+| 변수 | 의미 |
+| --- | --- |
+| `ADDR` | 기본 listen/origin 주소 |
+| `LISTEN_ADDR` | h3server가 bind할 주소. 기본값은 `ADDR` |
+| `ORIGIN_ADDR` | Chrome이 접속하고 forced QUIC를 적용할 origin 주소. 기본값은 `ADDR` |
+
+`LISTEN_ADDR=0.0.0.0:4443`, `ORIGIN_ADDR=<Wi-Fi IP>:4443` 조합으로 non-loopback local origin 실험을 수행할 수 있다.
+
 성공 기준:
 
 - Chrome NetLog에 `QUIC_SESSION`이 존재
@@ -416,6 +426,7 @@ RUN_ID=chrome-h3-local-spki-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=sequence RUN_ID=chrome-h3-sequence-vtime-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=poll POLL_COUNT=5 POLL_INTERVAL_MS=300 RUN_ID=chrome-h3-poll-nochange-classifier-pass ./scripts/run-chrome-h3-local.sh
 WORKLOAD=slow SLOW_DURATION_MS=8000 SLOW_CHUNKS=8 RUN_ID=chrome-h3-slow-nochange-check ./scripts/run-chrome-h3-local.sh
+LISTEN_ADDR=0.0.0.0:4443 ORIGIN_ADDR="$(ipconfig getifaddr en0):4443" WORKLOAD=slow RUN_ID=chrome-h3-slow-wifi-ip-nochange ./scripts/run-chrome-h3-local.sh
 WORKLOAD=poll NETWORK_CHANGE_AFTER_SECONDS=2 NETWORK_CHANGE_CMD='...' RUN_ID=chrome-h3-poll-network-change ./scripts/run-chrome-h3-local.sh
 ```
 

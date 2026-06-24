@@ -320,6 +320,44 @@ RUN_ID=chrome-h3-slow-inactive-if-toggle \
 
 이 실험은 inactive service toggle이므로 실제 active path migration을 만들지 못하는 것이 정상이다. Wi-Fi/LTE handover 근거로 사용하지 않는다.
 
+Wi-Fi IP origin baseline:
+
+```bash
+cd repro/quic-go-min-repro
+WIFI_IP="$(ipconfig getifaddr en0)"
+WORKLOAD=slow \
+LISTEN_ADDR=0.0.0.0:4443 \
+ORIGIN_ADDR="${WIFI_IP}:4443" \
+SLOW_DURATION_MS=6000 \
+SLOW_CHUNKS=6 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
+CHROME_TIMEOUT_SECONDS=15 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+RUN_ID=chrome-h3-slow-wifi-ip-nochange \
+./scripts/run-chrome-h3-local.sh
+```
+
+Wi-Fi IP inactive interface toggle control:
+
+```bash
+cd repro/quic-go-min-repro
+WIFI_IP="$(ipconfig getifaddr en0)"
+WORKLOAD=slow \
+LISTEN_ADDR=0.0.0.0:4443 \
+ORIGIN_ADDR="${WIFI_IP}:4443" \
+SLOW_DURATION_MS=8000 \
+SLOW_CHUNKS=8 \
+CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
+CHROME_TIMEOUT_SECONDS=18 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=2 \
+NETWORK_CHANGE_CMD='networksetup -setnetworkserviceenabled "Thunderbolt Bridge" off; sleep 1; networksetup -setnetworkserviceenabled "Thunderbolt Bridge" on' \
+RUN_ID=chrome-h3-slow-wifi-ip-inactive-if-toggle \
+./scripts/run-chrome-h3-local.sh
+```
+
+이 실험은 `127.0.0.1`이 아닌 local Wi-Fi IP를 origin으로 사용한다. 다만 inactive service toggle은 active Wi-Fi path를 바꾸지 않으므로 실제 handover 근거로 사용하지 않는다.
+
 ## 10. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
