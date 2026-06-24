@@ -1322,3 +1322,37 @@ python3 tools/build_controlled_public_config_worksheet.py \
 ```bash
 python3 tools/test_build_controlled_public_config_worksheet.py
 ```
+
+## 40. `repro/quic-go-min-repro/scripts/ensure-min-disk-free.sh`
+
+controlled-public wrapper가 heavy NetLog/qlog artifact를 만들기 전에 디스크 여유 공간 하한선을 확인한다. 삭제를 수행하지 않고, 기준 미달이면 exit 2로 중단한다.
+
+기본 동작:
+
+```bash
+repro/quic-go-min-repro/scripts/ensure-min-disk-free.sh 5 repro/quic-go-min-repro
+```
+
+wrapper에서 사용하는 환경 변수:
+
+| 변수 | 의미 |
+| --- | --- |
+| `MIN_ARTIFACT_FREE_GIB` | 최소 free space GiB. 기본값은 `5` |
+| `MIN_ARTIFACT_FREE_GIB=0` | 작은 smoke test에서만 명시적으로 guard 우회 |
+
+적용 wrapper:
+
+| script | 적용 목적 |
+| --- | --- |
+| `run-controlled-public-h3-server.sh` | server qlog/log artifact 보호 |
+| `run-controlled-public-h3-browser-baseline.sh` | Chrome baseline NetLog artifact 보호 |
+| `run-controlled-public-h3-network-change.sh` | Chrome active network-change NetLog/path snapshot 보호 |
+| `run-safari-controlled-public-baseline.sh` | Safari baseline navigation/path snapshot 보호 |
+| `run-safari-controlled-public-network-change.sh` | Safari active network-change artifact 보호 |
+| `run-android-chrome-controlled-public-network-change.sh` | Android snapshot/navigation artifact 보호 |
+
+회귀 테스트:
+
+```bash
+python3 tools/test_artifact_disk_guard.py
+```

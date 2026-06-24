@@ -53,6 +53,9 @@ server host에서 필요한 조건:
 | Certificate | Chrome이 신뢰하는 WebPKI certificate와 hostname match |
 | Server process | quic-go `h3server`가 UDP H3와 TCP HTTPS Alt-Svc bootstrap을 함께 제공 |
 | Alt-Svc | HTTPS response에 `Alt-Svc: h3=":443"; ma=60`류 header 포함 |
+| Disk | controlled-public wrapper 기본값 기준 최소 5GiB free space |
+
+server/client/Safari/Android controlled-public wrapper는 시작 시 `ensure-min-disk-free.sh`를 실행한다. 기본 기준은 `MIN_ARTIFACT_FREE_GIB=5`이며, 작은 smoke test에서만 명시적으로 `MIN_ARTIFACT_FREE_GIB=0`을 지정해 우회한다.
 
 server 실행:
 

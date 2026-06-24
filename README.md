@@ -48,7 +48,8 @@
 36. final handover append 도구가 `--require-artifact-bundle` 옵션으로 summary-only 결과의 CSV 등록을 차단하게 했다.
 37. 디스크 정리 전 raw artifact가 `data/experiment-results.csv`나 planned final trial에 연결되는지 확인하는 cleanup safety audit를 추가했다.
 38. controlled-public private config를 공개 값 없이 채울 수 있도록 stage/owner/privacy/next action worksheet를 추가했다.
-39. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+39. controlled-public wrapper들이 직접 실행되더라도 기본 5GiB disk guard를 통과해야 heavy NetLog/qlog artifact 생성을 시작하게 했다.
+40. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -119,6 +120,7 @@
 │   ├── test_draft_final_handover_result_row.py
 │   ├── test_validate_final_handover_trial_artifact.py
 │   ├── test_append_final_handover_result_row.py
+│   ├── test_artifact_disk_guard.py
 │   ├── test_audit_artifact_cleanup_safety.py
 │   ├── test_select_next_final_handover_trial.py
 │   ├── test_check_next_final_handover_trial_readiness.py
