@@ -1,0 +1,33 @@
+# Local/editor noise
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets and local AWS config
+.env
+*.env
+!*.env.example
+harness/config/aws.env
+harness/config/experiment.env
+
+# Experiment artifacts
+artifacts/
+results/
+**/artifacts/
+**/results/
+**/keylog/
+**/qlog/
+**/*.sqlog
+**/*.pcap
+**/*.pcapng
+**/*.keys
+**/*.pem
+**/*.tgz
+**/*.tar.gz
+
+# Build outputs
+bin/
+dist/
+tmp/
+*.test
+

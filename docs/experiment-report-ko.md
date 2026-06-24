@@ -1,0 +1,589 @@
+# QUIC / HTTP/3 Connection Migration 실험 결과 상세 보고서
+
+작성일: 2026-06-24  
+대상: QUIC Connection Migration 구현체 성숙도, 배포 경로 성숙도, HTTP/3 작업 연속성  
+원칙: 결과를 미리 정해놓고 해석하지 않고, 관찰된 증거를 기준으로 계층별로 정리한다.
+
+## 1. 연구 질문
+
+본 연구는 다음 질문에서 출발했다.
+
+> HTTP/3 Connection Migration은 실제 웹 애플리케이션 작업 연속성을 보존할 수 있는가?
+
+하지만 조사와 실험을 진행하면서 질문을 더 엄밀하게 나누었다.
+
+1. QUIC Connection Migration은 실제 구현체에 구현되어 있는가?
+2. 구현되어 있다면 연구자가 의도적으로 migration을 trigger하고 관찰할 수 있는가?
+3. direct-origin, reverse proxy, CDN, load balancer 같은 배포 경로에서 migration이 유지되는가?
+4. transport connection이 유지될 때 HTTP/3 request와 body transfer도 완료되는가?
+5. controlled client 결과를 실제 browser/mobile handover로 일반화할 수 있는가?
+
+현재까지의 실험은 1-4번을 상당 부분 검증했고, 5번은 후속 연구로 남아 있다.
+
+## 2. 전체 결과 요약
+
+현재까지의 증거 체인은 다음과 같다.
+
+```text
+구현체 primitive 존재 확인
+  -> local active migration 재현
+  -> EC2 direct-origin positive control
+  -> HAProxy HTTP/3 negative control
+  -> AWS NLB CID-aware routing positive/negative controls
+  -> HTTP/3 post-migration request continuity
+  -> HTTP/3 mid-flight upload/download continuity
+```
+
+중립적 결론:
+
+> QUIC Connection Migration은 여러 구현체에서 실제로 존재하고, controlled 환경에서는 HTTP/3 작업까지 이어질 수 있다. 그러나 실제 웹/모바일 배포로 일반화하려면 CDN/proxy/LB/browser/application 계층을 별도로 검증해야 한다.
+
+## 3. 실험 환경
+
+### 3.1 Local 개발 환경
+
+| 항목 | 내용 |
+| --- | --- |
+| OS | macOS local machine |
+| 주요 언어 | Go, Bash, Python helper |
+| 주요 구현체 | quic-go, Cloudflare quiche, picoquic, s2n-quic, ngtcp2, Quinn, Neqo, aioquic |
+| 주요 관찰 수단 | JSONL log, result JSON, qlog, implementation test log |
+| 로컬 재현 코드 | `repro/quic-go-min-repro/` |
+
+### 3.2 AWS 환경
+
+| 항목 | 내용 |
+| --- | --- |
+| Region | `ap-northeast-2` |
+| Direct-origin | EC2 public IP에 QUIC server 배치 |
+| Load balancer | AWS Network Load Balancer |
+| Target group protocols | `QUIC`, `TCP_QUIC` |
+| 주요 port | `4242`, `443` |
+| Target count | 2개 EC2 target |
+| Health check | TCP sidecar |
+| Cleanup | 각 실험 후 listener, NLB, target group, EC2, SG, key pair 삭제 확인 |
+
+AWS 실험에서 중요한 조건:
+
+```text
+AWS NLB QUIC-LB plaintext CID format:
+0x00 + 8-byte Server ID + 7-byte nonce
+```
+
+이 format과 target registration의 `QuicServerId`가 맞아야 migration 이후에도 같은 backend target으로 routing된다.
+
+## 4. 코드 구성 요약
+
+자세한 코드 설명은 [code-architecture-ko.md](code-architecture-ko.md)에 정리했다.
+
+핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
+
+### 4.1 QUIC transport stream 실험 코드
+
+| 파일 | 역할 |
+| --- | --- |
+| `cmd/server/main.go` | QUIC stream server |
+| `cmd/client/main.go` | active migration을 수행하는 QUIC stream client |
+| `internal/common/payload.go` | deterministic payload 생성과 checksum 검증 |
+| `internal/common/logging.go` | JSONL/result JSON 기록 |
+| `internal/common/tls.go` | self-signed TLS config |
+| `internal/common/aws_nlb_cid.go` | AWS NLB용 QUIC-LB plaintext CID 생성 |
+
+### 4.2 HTTP/3 workload 실험 코드
+
+| 파일 | 역할 |
+| --- | --- |
+| `cmd/h3server/main.go` | HTTP/3 upload/download server |
+| `cmd/h3client/main.go` | HTTP/3 workload client 및 migration trigger |
+| `scripts/run-local-h3-workload.sh` | local post-migration HTTP/3 request gate |
+| `scripts/run-local-h3-midflight.sh` | local mid-flight upload/download gate |
+| `scripts/run-h3-client.sh` | local/AWS 공통 HTTP/3 client wrapper |
+| `scripts/run-h3-server.sh` | local/AWS 공통 HTTP/3 server wrapper |
+
+HTTP/3 client mode:
+
+| mode | 의미 |
+| --- | --- |
+| `upload-download` | POST `/upload` 완료 후 migration, GET `/download` 수행 |
+| `midflight-upload` | POST body reader가 threshold 도달 시 migration trigger |
+| `midflight-download` | streaming GET response reader가 threshold 도달 시 migration trigger |
+
+### 4.3 AWS 하네스
+
+| 파일 | 역할 |
+| --- | --- |
+| `harness/scripts/run-aws-nlb-quic-data-plane.sh` | EC2 target A/B, NLB, target group, client 실행, artifact 수집, cleanup |
+| `harness/scripts/aws-preflight.sh` | AWS CLI/auth/region 확인 |
+| `harness/scripts/package-quic-go-ec2.sh` | EC2 업로드용 quic-go repro package 생성 |
+| `harness/manifests/experiment-matrix.csv` | 실험 큐와 상태 |
+
+## 5. 구현체 조사 결과
+
+### 5.1 목적
+
+교수님 피드백의 핵심은 다음이었다.
+
+> 구현도 안 된 기술을 왜 안 쓰냐고 말하면 안 된다. 먼저 구현체별로 Connection Migration 성숙도를 조사해야 한다.
+
+따라서 먼저 주요 QUIC 구현체의 Connection Migration 관련 source, API, test, observability를 조사했다.
+
+### 5.2 조사 대상
+
+| 분류 | 구현체/환경 |
+| --- | --- |
+| 직접 local test 실행 | quic-go, quiche, picoquic, s2n-quic, aioquic, ngtcp2, Quinn, Neqo |
+| source/docs 조사 | mvfst, MsQuic, lsquic, nginx QUIC, quicly, XQUIC, Chromium/Cronet, HAProxy |
+| 배포 환경 | AWS NLB, CloudFront, Cloudflare HTTP/3, reverse proxy |
+
+### 5.3 결과
+
+핵심 결과:
+
+> Connection Migration은 구현체에 아예 없는 기능이 아니었다.
+
+구현체별 역할:
+
+| 구현체 | 관찰 결과 | 연구상 의미 |
+| --- | --- | --- |
+| quic-go | `AddPath -> Probe -> Switch` 기반 active migration 가능 | controlled baseline |
+| quiche | PathEvent, qlog, active migration sample | migration lifecycle 관찰 |
+| picoquic | NAT rebinding, false migration, preferred address 등 edge-case test 풍부 | edge-case maturity |
+| s2n-quic | rebinding/migration policy test, CID provider 가능성 | AWS/NLB 연계 후보 |
+| ngtcp2 | RFC guardrail test | 표준 동작 기준선 |
+| Quinn/Neqo/aioquic | migration 관련 test evidence | 추가 구현체 근거 |
+| HAProxy | HTTP/3는 지원하지만 QUIC CM은 제한/미지원 | negative control |
+| Chromium/Cronet | migration policy hook 존재 | 후속 browser/client 실험 대상 |
+
+해석:
+
+> 현재까지는 "CM이 안 쓰이는 이유가 구현 부재 때문"이라고 단정하기 어렵다. 구현체 primitive는 존재하지만, API 노출, 관찰성, 배포 적합성은 구현체마다 다르다.
+
+## 6. Local active migration 실험
+
+### 6.1 목적
+
+AWS나 proxy를 보기 전에, local direct-origin에서 active migration이 재현 가능한지 확인한다.
+
+### 6.2 환경
+
+```text
+local client socket A
+  -> QUIC connection
+  -> local server
+
+client adds socket B
+  -> AddPath
+  -> Probe
+  -> Switch
+  -> same connection continues
+```
+
+### 6.3 코드
+
+주요 코드:
+
+- `repro/quic-go-min-repro/cmd/client/main.go`
+- `repro/quic-go-min-repro/cmd/server/main.go`
+
+client 동작:
+
+1. UDP socket A로 QUIC connection 생성.
+2. before payload stream 전송.
+3. UDP socket B 생성.
+4. `conn.AddPath(trB)` 호출.
+5. `path.Switch()`를 probe 전 호출해 `ErrPathNotValidated` 확인.
+6. `path.Probe(ctx)`로 PATH_CHALLENGE/PATH_RESPONSE 수행.
+7. `path.Switch()`로 active path 전환.
+8. after payload stream 전송.
+9. result JSON과 qlog 저장.
+
+### 6.4 결과
+
+결과: PASS
+
+의미:
+
+> controlled local direct-origin 환경에서 quic-go active migration을 재현할 수 있었다.
+
+## 7. EC2 direct-origin positive control
+
+### 7.1 목적
+
+local이 아니라 public cloud direct path에서도 active migration이 성공하는지 확인한다.
+
+### 7.2 환경
+
+```text
+local client
+  -> public Internet
+  -> EC2 QUIC server
+```
+
+중간에 NLB, CDN, proxy를 두지 않았다. 이 실험은 이후 복잡한 배포 경로 실험의 positive control이다.
+
+### 7.3 결과
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| implementation | quic-go |
+| deployment | EC2 direct origin |
+| source tuple change | `211.60.158.133:64273 -> 211.60.158.133:58085` |
+| workload | before/after 1MiB QUIC stream payload |
+| evidence | qlog PATH_CHALLENGE/PATH_RESPONSE, pcap, client/server JSON |
+| cleanup | EC2, SG, key pair 삭제 |
+
+### 7.4 해석
+
+> public cloud direct-origin에서도 active migration은 성공했다.
+
+따라서 이후 HAProxy, NLB, CDN에서 실패가 나오더라도 이를 곧바로 "QUIC CM 자체가 안 된다"로 해석하면 안 된다.
+
+## 8. quiche path-event timeline
+
+### 8.1 목적
+
+quic-go 외 구현체에서도 migration lifecycle을 관찰할 수 있는지 확인한다.
+
+### 8.2 결과
+
+quiche sample/client-server 기반으로 다음 lifecycle을 확인했다.
+
+```text
+new path observed
+  -> PATH_CHALLENGE
+  -> PATH_RESPONSE
+  -> path validated
+  -> connection migrated
+```
+
+### 8.3 해석
+
+quiche는 `PathEvent`와 qlog 관찰성이 좋아서 논문에서 migration lifecycle 그림을 만들기 좋다.
+
+## 9. HAProxy HTTP/3 negative control
+
+### 9.1 목적
+
+HTTP/3 endpoint availability와 Connection Migration support가 같은 것인지 확인한다.
+
+### 9.2 환경
+
+```text
+quiche client
+  -> HTTP/3
+  -> HAProxy HTTP/3 frontend
+  -> backend origin
+```
+
+### 9.3 결과
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS_NEGATIVE_CONTROL |
+| HAProxy | 3.4.0, QUIC enabled |
+| baseline HTTP/3 request | 성공 |
+| active migration attempt | 실패 |
+| PATH_CHALLENGE | 3회 |
+| PATH_RESPONSE | 0회 |
+| final state | migrated path `validation_state=Failed` |
+
+### 9.4 해석
+
+> HTTP/3 지원은 Connection Migration 지원을 의미하지 않는다.
+
+이 결과는 본 연구에서 매우 중요한 반례다. 실제 운영 환경에서 `h3`가 보인다고 해서 네트워크 전환 시 connection이 유지된다고 말할 수 없다.
+
+## 10. AWS NLB QUIC feasibility와 CID provider
+
+### 10.1 목적
+
+AWS NLB가 QUIC/TCP_QUIC target group과 `QuicServerId` 기반 routing을 실제로 지원하는지 확인한다.
+
+### 10.2 결과
+
+| 항목 | 결과 |
+| --- | --- |
+| `QUIC` target group create/delete | PASS |
+| `TCP_QUIC` target group create/delete | PASS |
+| `QuicServerId` target registration | 지원 확인 |
+| local CID provider proof | PASS |
+
+AWS NLB에 맞춘 CID format:
+
+```text
+0x00 + 8-byte Server ID + 7-byte nonce
+```
+
+### 10.3 해석
+
+AWS NLB 뒤에서 Connection Migration을 유지하려면 client source tuple 변화 자체보다 backend-generated CID의 Server ID encoding이 중요하다.
+
+## 11. AWS NLB QUIC data-plane positive control
+
+### 11.1 목적
+
+실제 AWS NLB `QUIC` listener와 EC2 target A/B를 두고, migration 후에도 같은 target에 packet이 도달하는지 확인한다.
+
+### 11.2 환경
+
+```text
+local quic-go client
+  -> AWS NLB QUIC :4242
+  -> EC2 target A / target B
+```
+
+target A/B는 각각 다른 8-byte Server ID를 갖는다.
+
+### 11.3 결과
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| NLB protocol | `QUIC` |
+| port | `4242` |
+| target count | 2 |
+| successful target | target-b |
+| source tuple change | `211.60.158.133:55957 -> 211.60.158.133:59355` |
+| workload | before/after 64KiB QUIC stream payload |
+| qlog | PATH_CHALLENGE/PATH_RESPONSE |
+
+### 11.4 해석
+
+> AWS NLB는 backend CID가 registered `QuicServerId`를 올바르게 encode하면 migration 후에도 same-target continuity를 유지할 수 있다.
+
+## 12. AWS NLB negative controls
+
+### 12.1 목적
+
+AWS NLB positive result가 우연이 아니라 CID 조건에 의존한다는 점을 확인한다.
+
+### 12.2 결과
+
+| negative control | 결과 | 의미 |
+| --- | --- | --- |
+| malformed CID layout | PASS_NEGATIVE_CONTROL | raw `8-byte Server ID + 8-byte nonce`는 payload continuity 실패 |
+| CloudWatch evidence | observed | `QUIC_Unknown_Server_ID_Packet_Drop_Count` 관찰 |
+| explicit Server ID mismatch | PASS_NEGATIVE_CONTROL | target health 2/2 healthy여도 handshake/application payload 실패 |
+
+### 12.3 해석
+
+> NLB QUIC migration은 단순히 QUIC/HTTP3를 켜면 되는 기능이 아니다. CID layout과 registered Server ID mapping이 정확히 맞아야 한다.
+
+## 13. AWS NLB `TCP_QUIC :443` repeat
+
+### 13.1 목적
+
+custom high port가 아니라 실제 HTTP/3 배포에 가까운 `443` port와 `TCP_QUIC` protocol에서도 결과가 반복되는지 확인한다.
+
+### 13.2 결과
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| NLB protocol | `TCP_QUIC` |
+| port | `443` |
+| source tuple change | `211.60.158.133:57897 -> 211.60.158.133:56632` |
+| successful target | target-b |
+| workload | before/after 64KiB QUIC stream payload |
+
+### 13.3 해석
+
+> AWS NLB CID-aware continuity는 `QUIC :4242`에만 묶이지 않고 `TCP_QUIC :443`에서도 재현되었다.
+
+## 14. HTTP/3 post-migration request continuity
+
+### 14.1 목적
+
+custom QUIC stream이 아니라 HTTP/3 request에서도 migration 이후 작업이 계속되는지 확인한다.
+
+### 14.2 Local HTTP/3 gate
+
+실험 순서:
+
+```text
+POST /upload before
+  -> AddPath -> Probe -> Switch
+  -> GET /download after
+```
+
+결과:
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| protocol | HTTP/3 over QUIC |
+| before task | POST `/upload`, 64KiB |
+| after task | GET `/download`, 64KiB |
+| source tuple change | `127.0.0.1:63819 -> 127.0.0.1:63361` |
+| qlog | ALPN `h3`, HTTP/3 HEADERS/DATA, PATH_CHALLENGE/PATH_RESPONSE |
+
+### 14.3 AWS NLB HTTP/3 gate
+
+환경:
+
+```text
+local h3client
+  -> AWS NLB TCP_QUIC :443
+  -> h3server target A/B
+```
+
+결과:
+
+| 항목 | 값 |
+| --- | --- |
+| status | PASS |
+| protocol | `TCP_QUIC :443` |
+| successful target | target-a |
+| source tuple change | `211.60.158.133:54110 -> 211.60.158.133:50930` |
+| workload | before POST `/upload`, after GET `/download` |
+| cleanup | EC2, SG, key pair, NLB, TG 삭제 확인 |
+
+### 14.4 해석
+
+> controlled 조건에서는 transport continuity를 HTTP/3 request continuity로 확장할 수 있었다.
+
+## 15. HTTP/3 mid-flight upload/download continuity
+
+### 15.1 목적
+
+request 사이가 아니라 HTTP/3 body 전송 중 migration이 발생해도 작업이 완료되는지 확인한다.
+
+이 실험은 지금까지 수행한 HTTP/3 workload 중 작업 연속성에 가장 가깝다.
+
+### 15.2 코드 방식
+
+`cmd/h3client/main.go`에 두 mode를 추가했다.
+
+| mode | 방식 |
+| --- | --- |
+| `midflight-upload` | request body reader가 threshold 이상 전송되면 migration trigger |
+| `midflight-download` | streaming response reader가 threshold 이상 수신하면 migration trigger |
+
+server는 `GET /download?stream=true` 요청에서 response body를 chunk 단위로 천천히 쓴다.
+
+### 15.3 Local 결과
+
+| workload | status | socket A | socket B | final addr | migration threshold | evidence |
+| --- | --- | --- | --- | --- | ---: | --- |
+| mid-flight upload | PASS | `[::]:53663` | `[::]:63569` | `[::]:63569` | 532480 bytes | server decoded 1MiB upload |
+| mid-flight download | PASS | `[::]:49959` | `[::]:52767` | `[::]:52767` | 524288 bytes | client decoded 1MiB response |
+
+### 15.4 AWS NLB 결과
+
+| workload | status | target | socket A | socket B | evidence |
+| --- | --- | --- | --- | --- | --- |
+| mid-flight upload | PASS | target-a | `[::]:56276` | `[::]:52824` | target decoded 1MiB upload |
+| mid-flight download | PASS | target-b | `[::]:61456` | `[::]:63381` | client decoded 1MiB streaming response |
+
+download 첫 실행은 client dial 단계에서 `timeout: no recent network activity`로 실패했다. socket B 생성 전 실패였으므로 mid-flight migration failure가 아니라 NLB readiness timing 또는 transient handshake failure로 분류했다. target health 2/2 이후 client start delay를 둔 재시도는 PASS였다.
+
+### 15.5 중요한 관찰
+
+mid-flight case에서는 `path.Switch()` 직후 `conn.LocalAddr()`가 socket A로 남아 있을 수 있었다. 그러나 후속 packet 송수신 이후 workload 완료 시 final address는 socket B였다.
+
+따라서 mid-flight migration 성공 기준은 다음 세 가지를 함께 봐야 한다.
+
+1. final connection address가 socket B인지
+2. qlog에 path validation evidence가 있는지
+3. payload checksum/integrity가 맞는지
+
+## 16. 현재까지 말할 수 있는 결론
+
+현재까지의 실험으로 말할 수 있는 것은 다음이다.
+
+1. QUIC Connection Migration은 여러 구현체에서 실제로 구현되고 테스트된다.
+2. quic-go는 active migration을 deterministic하게 재현할 수 있다.
+3. EC2 direct-origin에서는 active migration이 성공한다.
+4. HAProxy처럼 HTTP/3를 지원해도 active migration을 지원하지 않는 proxy가 있다.
+5. AWS NLB는 CID-aware routing 조건을 맞추면 active migration 후 same-target continuity를 유지할 수 있다.
+6. AWS NLB의 성공 조건은 CID format과 registered `QuicServerId` mapping에 민감하다.
+7. `TCP_QUIC :443`에서도 QUIC stream continuity와 HTTP/3 request continuity가 관찰됐다.
+8. controlled quic-go client 조건에서는 HTTP/3 upload/download body 전송 중 migration도 local과 AWS NLB에서 통과했다.
+
+요약하면:
+
+> Connection Migration은 controlled 조건에서는 동작하고 HTTP/3 작업까지 이어질 수 있다.
+
+## 17. 아직 말하면 안 되는 결론
+
+아직 다음은 말하면 안 된다.
+
+1. HTTP/3 Connection Migration이 웹 작업 연속성을 보장한다.
+2. Chrome/Android에서 Wi-Fi/LTE 전환 시 동일하게 동작한다.
+3. CloudFront/CDN 환경에서 origin end-to-end CM이 유지된다.
+4. 모든 upload/download/dashboard 작업이 migration 중 성공한다.
+5. 모든 QUIC 구현체가 deployable maturity를 갖췄다.
+
+현재 연구의 정직한 결론은 다음이다.
+
+> 특정 조건에서는 된다. 하지만 그 조건이 실제 웹/모바일 배포에서 얼마나 자주 충족되는지는 추가 검증이 필요하다.
+
+## 18. 다음 연구 방향
+
+### 18.1 CloudFront viewer-edge limited control
+
+목표:
+
+- CloudFront HTTP/3 Connection Migration이 viewer-edge continuity인지 origin end-to-end continuity인지 분리한다.
+
+검증할 것:
+
+- client가 CloudFront edge와 HTTP/3를 사용하는지
+- origin이 client QUIC connection을 직접 관찰할 수 없는지
+- network change 중 request/download continuity가 viewer-edge 수준에서 유지되는지
+
+### 18.2 Cronet/Android workload
+
+목표:
+
+- controlled quic-go 결과가 실제 client policy에서도 재현되는지 확인한다.
+
+workload:
+
+- large upload
+- streaming download
+- dashboard polling 또는 SSE-like update
+
+측정:
+
+- task success/failure
+- retry count
+- stall time
+- recovery time
+- Android network callback
+- Cronet NetLog
+- server qlog
+
+### 18.3 실제 Wi-Fi/LTE handover
+
+목표:
+
+- source-port migration이 아니라 실제 interface/network change에서 어떤 일이 발생하는지 확인한다.
+
+핵심 질문:
+
+- Chrome/Cronet이 migration을 trigger하는가?
+- migration timing은 path validation delay와 어떻게 연결되는가?
+- application workload는 transport migration과 별개로 실패하는가?
+
+## 19. 참고 데이터
+
+정량/상태 요약:
+
+- [실험 결과 CSV](../data/experiment-results.csv)
+- [구현체 조사 CSV](../data/implementation-survey.csv)
+- [문헌 조사 CSV](../data/literature-review-tracker.csv)
+- [quiche path-event timeline](../data/quiche-path-event-timeline.csv)
+
+개별 결과 문서:
+
+- [EC2 direct-origin 결과](results/aws-direct-origin-results-20260623.md)
+- [HAProxy negative control 결과](results/haproxy-http3-negative-control-results-20260623.md)
+- [AWS NLB QUIC data-plane 결과](results/aws-nlb-quic-data-plane-results-20260624.md)
+- [AWS NLB negative control 결과](results/aws-nlb-quic-negative-control-results-20260624.md)
+- [AWS NLB TCP_QUIC 443 결과](results/aws-nlb-tcp-quic-443-results-20260624.md)
+- [HTTP/3 local workload 결과](results/quic-go-h3-local-workload-results-20260624.md)
+- [AWS NLB HTTP/3 workload 결과](results/aws-nlb-http3-workload-results-20260624.md)
+- [HTTP/3 mid-flight 결과](results/aws-nlb-http3-midflight-results-20260624.md)
+

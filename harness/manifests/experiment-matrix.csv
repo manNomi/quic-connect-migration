@@ -1,0 +1,13 @@
+id,priority,type,status,implementation,environment,question,required_next_step
+direct-origin-quic-go,1,positive-control,done,quic-go,EC2 direct origin,Does active migration work over public cloud direct path?,Result: experiments/aws-direct-origin-results-20260623.md
+quiche-path-event,2,observability-control,done,Cloudflare quiche,local/direct origin,Can migration lifecycle be represented with PathEvent and qlog?,Result: experiments/quiche-path-event-timeline-20260623.md
+haproxy-http3-negative,3,negative-control,done,HAProxy,HTTP/3 reverse proxy,Does HTTP/3 support imply CM support?,Result: experiments/haproxy-http3-negative-control-results-20260623.md
+aws-nlb-s2n-quic,4,deployment-control,done,quic-go + s2n-quic proof,AWS NLB QUIC,Can CID-aware routing preserve backend affinity after tuple change?,Result: experiments/aws-nlb-quic-data-plane-results-20260624.md
+aws-nlb-cid-negative,5,negative-control,done,quic-go + AWS NLB,AWS NLB QUIC,Does malformed or mismatched CID break NLB QUIC continuity?,Result: experiments/aws-nlb-quic-negative-control-results-20260624.md
+aws-nlb-tcp-quic-443,6,deployment-repeat,done,quic-go + AWS NLB,AWS NLB TCP_QUIC :443,Does same-target continuity survive on TCP_QUIC port 443?,Result: experiments/aws-nlb-tcp-quic-443-results-20260624.md
+quic-go-local-h3-workload,7,application-deployment-bridge,done,quic-go + HTTP/3,local direct origin,Can the same HTTP/3 connection complete requests before and after active migration?,Result: experiments/quic-go-h3-local-workload-results-20260624.md
+aws-nlb-http3-workload,8,application-deployment-bridge,done,quic-go + AWS NLB,AWS NLB TCP_QUIC :443 + HTTP/3 workload,Does transport migration preserve HTTP/3 upload/download tasks?,Result: experiments/aws-nlb-http3-workload-results-20260624.md
+quic-go-local-h3-midflight,9,application-control,done,quic-go + HTTP/3,local direct origin + streaming HTTP/3 workload,Does migration preserve an upload/download while the body is in flight?,Result: experiments/aws-nlb-http3-midflight-results-20260624.md
+aws-nlb-http3-midflight,10,application-deployment-bridge,done,quic-go + AWS NLB,AWS NLB TCP_QUIC :443 + streaming HTTP/3 workload,Does migration preserve an upload/download while the body is in flight through CID-aware NLB?,Result: experiments/aws-nlb-http3-midflight-results-20260624.md
+cloudfront-viewer-edge,11,limited-control,planned,CloudFront,managed CDN,Is continuity only viewer-edge rather than origin end-to-end?,Configure H3 distribution and compare origin logs
+cronet-android-workload,12,application-control,planned,Cronet/Android,Android client + HTTP/3 origin,Does transport migration preserve upload/download/dashboard tasks?,Build Cronet workload app after direct-origin baseline
