@@ -39,6 +39,7 @@
 ├── README.md
 ├── data/
 │   ├── experiment-results.csv
+│   ├── browser-cm-observability-20260624.json
 │   ├── controlled-public-experiment-readiness-20260624.json
 │   ├── implementation-survey.csv
 │   ├── handover-readiness-20260624.json
@@ -63,6 +64,7 @@
 │   ├── check_public_origin_readiness.py
 │   ├── check_handover_readiness.py
 │   ├── check_controlled_public_experiment_readiness.py
+│   ├── check_browser_cm_observability.py
 │   ├── classify_controlled_public_h3_baseline.py
 │   ├── classify_controlled_public_h3_network_change.py
 │   ├── capture_network_path_snapshot.py
@@ -86,6 +88,7 @@
 - [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
 - [Controlled public experiment readiness](docs/results/controlled-public-experiment-readiness-20260624.md)
 - [Controlled public origin operations runbook](docs/results/controlled-public-origin-operations-runbook-20260624.md)
+- [Browser CM observability readiness](docs/results/browser-cm-observability-readiness-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [실험 결과 CSV](data/experiment-results.csv)

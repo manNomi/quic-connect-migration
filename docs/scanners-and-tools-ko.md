@@ -386,7 +386,30 @@ python3 tools/check_controlled_public_experiment_readiness.py \
 
 현재 2026-06-24 점검에서는 Chrome과 harness는 준비됐지만 controlled public URL, baseline PASS summary, secondary active path, `NETWORK_CHANGE_CMD`가 없어 `can_run_network_change=false`다.
 
-## 14. `tools/classify_controlled_public_h3_network_change.py`
+## 14. `tools/check_browser_cm_observability.py`
+
+Chrome/Safari browser-level CM 실험을 실행하기 전에 browser, driver, packet-capture 관찰성이 충분한지 확인한다.
+
+실행:
+
+```bash
+python3 tools/check_browser_cm_observability.py --format markdown
+python3 tools/check_browser_cm_observability.py --format json --output data/browser-cm-observability-20260624.json
+```
+
+확인 항목:
+
+| 항목 | 의미 |
+| --- | --- |
+| `chrome_netlog_ready` | Chrome NetLog 기반 artifact 수집 가능 여부 |
+| `safari_webdriver_ready` | Safari + safaridriver 실행 가능 여부 |
+| `packet_capture_tooling_ready` | `tcpdump`, route, ifconfig 기반 packet/route 관찰 가능 여부 |
+| `ios_remote_capture_candidate` | `rvictl` 기반 iOS remote capture 후보 여부 |
+| `blockers` | browser별 관찰성 제한 |
+
+기본 출력은 raw command stdout/stderr를 비운다. 공개 repo에 넣지 않는 로컬 디버깅 때만 `--include-command-output`을 사용한다.
+
+## 15. `tools/classify_controlled_public_h3_network_change.py`
 
 controlled public origin에서 Chrome workload 중 network-change trigger를 넣은 결과를 분류한다.
 
@@ -421,7 +444,7 @@ classification:
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
-## 15. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`
+## 16. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`
 
 browser network-change 실험에서 client 측 route/interface 변화가 실제로 있었는지 기록한다.
 
@@ -452,7 +475,7 @@ python3 tools/compare_network_path_snapshots.py \
 
 이 도구는 server tuple/qlog evidence를 대체하지 않는다. inactive interface toggle 같은 no-op control을 분리하기 위한 보조 evidence다.
 
-## 16. `harness/scripts/controlled-public-preflight.sh`
+## 17. `harness/scripts/controlled-public-preflight.sh`
 
 controlled public Chrome H3 network-change 실험의 local-only 설정을 읽어서 통합 readiness를 실행하는 wrapper다.
 
@@ -475,7 +498,7 @@ bash harness/scripts/controlled-public-preflight.sh
 
 이 wrapper가 `controlled_public_preflight=ready`를 출력해야 `run-controlled-public-h3-network-change.sh`를 본 실험으로 실행할 수 있다. `blocked`이면 출력된 blockers를 실험 전제 미충족으로 기록한다.
 
-## 17. 실험 실행 코드
+## 18. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -519,7 +542,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 18. 최소 검증 세트
+## 19. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -531,6 +554,7 @@ python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt 
 python3 tools/scan_public_origin_readiness.py --url-file data/public-alt-svc-targets.txt --format markdown
 python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
 python3 tools/check_handover_readiness.py --format markdown
+python3 tools/check_browser_cm_observability.py --format markdown
 # readiness가 false이면 exit code 1을 반환한다. 출력의 blockers를 확인한다.
 python3 tools/check_controlled_public_experiment_readiness.py --format markdown || true
 bash harness/scripts/controlled-public-preflight.sh || true

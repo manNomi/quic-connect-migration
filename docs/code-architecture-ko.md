@@ -501,6 +501,7 @@ classifier:
 
 - `tools/check_public_origin_readiness.py`
 - `tools/check_controlled_public_experiment_readiness.py`
+- `tools/check_browser_cm_observability.py`
 - `tools/classify_controlled_public_h3_baseline.py`
 - `tools/classify_controlled_public_h3_network_change.py`
 - `tools/capture_network_path_snapshot.py`
