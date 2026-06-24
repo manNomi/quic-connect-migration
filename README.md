@@ -77,6 +77,7 @@
 65. P0 baseline execution packet은 private config 작성, preflight, origin server, Chrome client, artifact validation, CSV append 순서를 stage별 stop condition과 함께 고정한다.
 66. P0 baseline preflight check는 `--require-go` guard로, server/client capture를 시작해도 되는 상태인지 판정하고 현재처럼 config gate가 남아 있으면 실패하도록 한다.
 67. P0 baseline preflight control report는 synthetic fixture 3개로 guard가 missing config/stale needed-now에서는 닫히고, modeled-ready baseline에서만 열리는지 검증한다.
+68. P0 baseline execution packet의 stage 1 preflight 명령은 이제 `check_p0_baseline_preflight.py --require-go`를 포함해 guard 통과 전 stage 2 capture를 열지 않는다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 

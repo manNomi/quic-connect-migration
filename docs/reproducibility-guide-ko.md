@@ -1843,6 +1843,7 @@ python3 tools/build_p0_baseline_execution_packet.py \
 
 - P0 baseline은 아직 `blocked_by_readiness`다.
 - server/client capture는 private config와 public origin baseline preflight가 통과한 뒤에만 실행해야 한다.
+- stage 1 preflight command는 `check_p0_baseline_preflight.py --require-go`를 포함하므로 guard가 닫혀 있으면 stage 2 origin server로 넘어가지 않는다.
 
 ## 42. P0 baseline preflight guard 재생성
 
