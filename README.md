@@ -95,6 +95,7 @@
 │   ├── check_controlled_public_config.py
 │   ├── check_final_browser_handover_readiness.py
 │   ├── check_next_final_handover_trial_readiness.py
+│   ├── check_aws_identity_public_safe.py
 │   ├── plan_final_browser_handover_runs.py
 │   ├── check_browser_cm_observability.py
 │   ├── classify_controlled_public_h3_baseline.py
@@ -185,6 +186,7 @@
 - [Research completion audit](docs/results/research-completion-audit-20260624.md)
 - [Generated research bundle audit](docs/results/research-bundle-audit-20260624.md)
 - [Research verification report](docs/results/research-verification-report-20260624.md)
+- [AWS identity public-safe check](docs/results/aws-identity-public-safe-check-20260624.md)
 - [Local artifact storage audit](docs/results/artifact-storage-report-20260624.md)
 - [Local artifact cleanup plan](docs/results/artifact-cleanup-plan-20260624.md)
 - [Local artifact cleanup safety audit](docs/results/artifact-cleanup-safety-audit-20260624.md)

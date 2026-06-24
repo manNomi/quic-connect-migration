@@ -1385,3 +1385,25 @@ python3 tools/build_final_handover_external_inputs.py \
 ```bash
 python3 tools/test_build_final_handover_external_inputs.py
 ```
+
+## 42. `tools/check_aws_identity_public_safe.py`
+
+AWS 자동 provisioning을 진행할 수 있는지 public-safe하게 확인한다. AWS account ID, ARN, access key, profile 이름, credential file path는 출력하지 않고 다음만 기록한다.
+
+| 항목 | 의미 |
+| --- | --- |
+| `aws_cli_found` | AWS CLI 실행 파일 존재 여부 |
+| `aws_cli_version_present` | AWS CLI가 정상 응답하는지 |
+| `region_configured` | env 또는 AWS config에서 region이 확인되는지 |
+| `credential_source_present` | credential source가 존재하는지 여부만 확인 |
+| `sts_identity_ok` | `aws sts get-caller-identity` 성공 여부 |
+| `sts_error_code` | 실패 시 `InvalidClientTokenId`, `ExpiredToken`, `NoCredentials` 같은 오류 코드 |
+
+실행:
+
+```bash
+python3 tools/check_aws_identity_public_safe.py \
+  --output docs/results/aws-identity-public-safe-check-20260624.md
+```
+
+현재 이 도구는 회귀 테스트 없이 lightweight preflight로 사용한다.
