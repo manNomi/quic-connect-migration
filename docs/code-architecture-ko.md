@@ -506,9 +506,11 @@ classifier:
 - `tools/classify_controlled_public_h3_network_change.py`
 - `tools/capture_network_path_snapshot.py`
 - `tools/compare_network_path_snapshots.py`
+- `tools/run_safari_webdriver_navigation.py`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-server.sh`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-browser-baseline.sh`
 - `repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh`
+- `repro/quic-go-min-repro/scripts/run-safari-controlled-public-baseline.sh`
 
 목적:
 

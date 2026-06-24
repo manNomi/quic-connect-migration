@@ -409,7 +409,31 @@ python3 tools/check_browser_cm_observability.py --format json --output data/brow
 
 기본 출력은 raw command stdout/stderr를 비운다. 공개 repo에 넣지 않는 로컬 디버깅 때만 `--include-command-output`을 사용한다.
 
-## 15. `tools/classify_controlled_public_h3_network_change.py`
+## 15. `tools/run_safari_webdriver_navigation.py`
+
+Safari를 WebDriver HTTP protocol로 controlled public URL에 navigate하고 결과 JSON을 남긴다.
+
+실행:
+
+```bash
+python3 tools/run_safari_webdriver_navigation.py \
+  --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=safari-public-slow' \
+  --output /tmp/safari-navigation.json
+```
+
+이 도구는 Safari GUI를 실제로 열 수 있으므로 controlled public origin과 server artifact가 준비된 뒤 실행한다.
+
+wrapper:
+
+```bash
+cd repro/quic-go-min-repro
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=safari-public-slow' \
+./scripts/run-safari-controlled-public-baseline.sh
+```
+
+Safari baseline은 Chrome NetLog가 없으므로 `classify_controlled_public_h3_baseline.py --allow-missing-browser-summary` 경로를 사용한다.
+
+## 16. `tools/classify_controlled_public_h3_network_change.py`
 
 controlled public origin에서 Chrome workload 중 network-change trigger를 넣은 결과를 분류한다.
 
@@ -444,7 +468,7 @@ classification:
 | `no_path_change_after_trigger` | network-change command 후에도 tuple 변화 없음 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
-## 16. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`
+## 17. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`
 
 browser network-change 실험에서 client 측 route/interface 변화가 실제로 있었는지 기록한다.
 
@@ -475,7 +499,7 @@ python3 tools/compare_network_path_snapshots.py \
 
 이 도구는 server tuple/qlog evidence를 대체하지 않는다. inactive interface toggle 같은 no-op control을 분리하기 위한 보조 evidence다.
 
-## 17. `harness/scripts/controlled-public-preflight.sh`
+## 18. `harness/scripts/controlled-public-preflight.sh`
 
 controlled public Chrome H3 network-change 실험의 local-only 설정을 읽어서 통합 readiness를 실행하는 wrapper다.
 
@@ -498,7 +522,7 @@ bash harness/scripts/controlled-public-preflight.sh
 
 이 wrapper가 `controlled_public_preflight=ready`를 출력해야 `run-controlled-public-h3-network-change.sh`를 본 실험으로 실행할 수 있다. `blocked`이면 출력된 blockers를 실험 전제 미충족으로 기록한다.
 
-## 18. 실험 실행 코드
+## 19. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
 
@@ -526,6 +550,7 @@ bash harness/scripts/controlled-public-preflight.sh
 | `scripts/run-controlled-public-h3-server.sh` | WebPKI cert/key를 사용하는 controlled public H3 origin server wrapper |
 | `scripts/run-controlled-public-h3-browser-baseline.sh` | controlled public origin readiness + Chrome application H3 baseline wrapper |
 | `scripts/run-controlled-public-h3-network-change.sh` | baseline PASS 이후 Chrome controlled public network-change 실험 wrapper |
+| `scripts/run-safari-controlled-public-baseline.sh` | Safari WebDriver navigation + server/qlog 기반 controlled public H3 baseline wrapper |
 | `scripts/run-ec2-client.sh` | AWS/NLB transport client runner |
 | `scripts/run-h3-client.sh` | AWS/NLB HTTP/3 client runner |
 | `scripts/run-h3-server.sh` | AWS/NLB HTTP/3 target server runner |
@@ -542,7 +567,7 @@ AWS wrapper:
 | `harness/scripts/validate-quic-go-artifacts.sh` | local transport artifact 검증 |
 | `harness/scripts/run-local-s2n-nlb-cid-proof.sh` | NLB CID provider local proof wrapper |
 
-## 19. 최소 검증 세트
+## 20. 최소 검증 세트
 
 논문용 결과를 갱신하기 전 최소한 다음은 통과시킨다.
 
@@ -555,6 +580,7 @@ python3 tools/scan_public_origin_readiness.py --url-file data/public-alt-svc-tar
 python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
 python3 tools/check_handover_readiness.py --format markdown
 python3 tools/check_browser_cm_observability.py --format markdown
+python3 -m py_compile tools/run_safari_webdriver_navigation.py
 # readiness가 false이면 exit code 1을 반환한다. 출력의 blockers를 확인한다.
 python3 tools/check_controlled_public_experiment_readiness.py --format markdown || true
 bash harness/scripts/controlled-public-preflight.sh || true

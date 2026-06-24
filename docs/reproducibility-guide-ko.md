@@ -660,7 +660,30 @@ artifacts/controlled-public-h3-network-change-001/results/client-path-change-sum
 - `no_path_change_after_trigger`: network-change command는 실행됐지만 active path 변화가 관찰되지 않음
 - `client-path-change-summary.json`의 `client_active_path_changed`: client route/interface 관점에서 command가 실제 path 변화를 만들었는지 확인
 
-## 13. AWS NLB 실험 설정
+## 13. Safari controlled public H3 baseline
+
+Safari는 Chrome NetLog와 같은 browser-internal QUIC artifact가 없으므로 별도 baseline wrapper를 사용한다.
+
+```bash
+cd repro/quic-go-min-repro
+RUN_ID=safari-controlled-public-h3-baseline-001 \
+ARTIFACT_DIR=artifacts/safari-controlled-public-h3-baseline-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/safari-controlled-public-h3-baseline-001 \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=safari-public-slow' \
+SAFARI_WAIT_SECONDS=8 \
+./scripts/run-safari-controlled-public-baseline.sh
+```
+
+성공 기준:
+
+- `results/safari-navigation.json`에서 `navigation_ok=true`
+- server artifact의 expected request count 충족
+- server qlog에 `chosen_alpn=h3`와 HTTP/3 frame evidence
+- `results/safari-controlled-public-h3-baseline-summary.json`이 `PASS` 또는 `PASS_FEASIBILITY`
+
+이 실험은 Safari handover가 아니다. Safari real interface-change 실험은 이 baseline과 packet-capture 계획이 준비된 뒤 실행한다.
+
+## 14. AWS NLB 실험 설정
 
 로컬 설정 파일을 만든다.
 
@@ -696,7 +719,7 @@ preflight:
 - region opt-in 상태 확인
 - default VPC/subnet 조회 가능
 
-## 14. AWS NLB transport 재현
+## 15. AWS NLB transport 재현
 
 ```bash
 WORKLOAD=transport \
@@ -715,7 +738,7 @@ PAYLOAD_BYTES=65536 \
 - summary status `PASS`
 - cleanup status `deleted-listener-lb-tg-instances-sg-keypair`
 
-## 15. AWS NLB HTTP/3 post-migration 재현
+## 16. AWS NLB HTTP/3 post-migration 재현
 
 ```bash
 WORKLOAD=h3 \
@@ -733,7 +756,7 @@ PAYLOAD_BYTES=65536 \
 - 같은 target이 두 request를 모두 수신
 - summary status `PASS`
 
-## 16. AWS NLB HTTP/3 mid-flight 재현
+## 17. AWS NLB HTTP/3 mid-flight 재현
 
 Upload:
 
@@ -764,7 +787,7 @@ CLIENT_START_DELAY_SECONDS=8 \
 - qlog에 path validation evidence가 있음
 - summary status `PASS`
 
-## 17. Negative control 재현
+## 18. Negative control 재현
 
 잘못된 Server ID를 의도적으로 넣는다.
 
@@ -788,7 +811,7 @@ EXPECTED_OUTCOME=client-failure \
 
 이 negative control은 “HTTP/3가 켜져 있다”와 “migration continuity가 된다”가 같은 말이 아님을 보여주는 배포 계층 근거다.
 
-## 18. AWS cleanup 확인
+## 19. AWS cleanup 확인
 
 하네스는 정상 종료와 실패 종료 모두에서 cleanup trap을 실행한다. 실행 후 다음을 확인한다.
 
@@ -815,7 +838,7 @@ aws ec2 describe-security-groups \
 - 실험 tag가 붙은 security group 없음
 - key pair 없음
 
-## 19. Artifact 정책
+## 20. Artifact 정책
 
 commit 가능한 것:
 
