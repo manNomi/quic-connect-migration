@@ -7,6 +7,7 @@ import tempfile
 from pathlib import Path
 
 from check_controlled_public_config import build_report
+from check_final_browser_handover_readiness import parse_env_file
 
 
 BASELINE_CONFIG = """
@@ -83,11 +84,24 @@ CHROME_BIN=/bin/sh
     assert host["valid"] is False
 
 
+def test_tracked_example_matches_final_baseline_trial_id() -> None:
+    values = parse_env_file(Path("harness/config/controlled-public-origin.env.example"))
+    assert values["CONTROLLED_PUBLIC_BASELINE_RUN_ID"] == "controlled-public-chrome-h3-baseline-001"
+    assert values["CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR"] == "artifacts/controlled-public-chrome-h3-baseline-001"
+    assert values["CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR"] == "artifacts/controlled-public-chrome-h3-baseline-001"
+    assert (
+        values["CONTROLLED_PUBLIC_BASELINE_SUMMARY"]
+        == "artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json"
+    )
+    assert values["CONTROLLED_PUBLIC_EXPECTED_REQUESTS"] == "4"
+
+
 def main() -> int:
     test_missing_config_is_not_ready()
     test_baseline_ready_does_not_require_active_keys()
     test_active_ready_when_all_keys_present()
     test_example_placeholders_are_not_ready()
+    test_tracked_example_matches_final_baseline_trial_id()
     print("check_controlled_public_config=ok")
     return 0
 

@@ -8,7 +8,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `3d629c2` |
+| source commit at generation | `69ee7a3` |
 | branch | `main` |
 | total trials | `43` |
 | status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 1, 'PASS_NEGATIVE_CONTROL': 17}` |
