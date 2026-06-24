@@ -1,0 +1,98 @@
+# Paper Tables
+
+Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv`.
+
+## Table 1. Experiment Corpus Summary
+
+| metric | value |
+| --- | --- |
+| total trials | 35 |
+| status counts | PASS=18; PASS_FEASIBILITY=1; PASS_NEGATIVE_CONTROL=16 |
+| application success counts | false=3; true=32 |
+| experiment groups | browser / public web=20; cloud deployment=10; implementation control=4; proxy / intermediary=1 |
+| non-none failure layers | browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=3; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
+
+## Table 2. Evidence Chain Rubric
+
+| claim | evidence item | minimum required | current status | notes |
+| --- | --- | --- | --- | --- |
+| Browser used HTTP/3 for the application request | server request protocol | Server request log records HTTP/3.0 and TLS ALPN h3 | observed | Forced Chrome local H3 baselines pass; natural/public third-party baselines remain gated |
+| Browser used HTTP/3 for the application request | server qlog H3 evidence | qlog has chosen_alpn and http3 frame evidence | observed | Used with server request log because browser NetLog alone can be ambiguous |
+| Network-change trigger actually changed the client path | client route/interface snapshot | Before/after route or public IP changes to target path | partially_observed | Inactive interface toggle produced no_client_path_change_observed |
+| Connection migration occurred | server tuple change | Same server-side connection observes peer address/port change | observed_in_controls | Tuple change alone is not enough because Chrome heartbeat can create multiple QUIC sessions |
+| Connection migration occurred | qlog path validation | PATH_CHALLENGE or PATH_RESPONSE observed after path change | observed_in_quic_go_controls | Not observed in Chrome local inactive-toggle controls |
+| Connection migration occurred | browser session continuity | Target browser QUIC evidence should not show a new replacement session for the migrated workload | partially_observed | CDP heartbeat no-change produced two QUIC sessions; classifier separates this from CM |
+| Application continuity held | task completion | Page/upload/download/dashboard workload completes without manual refresh | observed_in_controls | Downlink heartbeat/no-heartbeat complete locally; public active path-change still pending |
+| Deployment path supports CM | routing continuity | Changed tuple maps to same logical QUIC backend or CID-aware route | observed | AWS NLB TCP_QUIC with correct CID/server ID passed; malformed CID and wrong Server ID failed |
+| Claim is publishable as browser CM evidence | combined evidence chain | Application H3 baseline + active client path change + tuple change + qlog path validation + session continuity + task success | pending | Blocked by lack of second active path/public controlled origin in current local state |
+
+## Table 3. Representative Positive / Feasibility Controls
+
+| trial | implementation | environment | trigger | path validation | tuple change | app success | note |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| quic-go-local-h3-workload-001 | quic-go + HTTP/3 | local direct origin | HTTP/3 POST upload before; AddPath -> Probe -> Switch; HTTP/3 GET download after | yes | yes | yes | client source port changed 63819 -> 63361; server observed before remote 127.0.0.1:63819 and after remote 127.0.0.1:63361; h3 ALP... |
+| quiche-local-path-event-timeline-001 | Cloudflare quiche | local direct origin | sample client --perform-migration; source port 53238 -> 61867 | yes | yes | yes | server observed new path, validation, and migration; qlog PATH_CHALLENGE/PATH_RESPONSE evidence; timeline in data/quiche-path-eve... |
+| quic-go-ec2-direct-origin-001 | quic-go | EC2 direct origin | client socket A -> socket B; AddPath -> Probe -> Switch | yes | yes | yes | server observed client source port change 64273 -> 58085; qlog and pcap collected; AWS resources cleaned up |
+| aws-nlb-h3-tcp-quic-443-001 | quic-go + AWS NLB | AWS NLB TCP_QUIC :443 passthrough | HTTP/3 POST upload before; AddPath -> Probe -> Switch through NLB; HTTP/3 GET download af... | yes | yes | yes | workload=h3; target-a received before/after HTTP/3 requests; client source port changed 54110 -> 50930; server observed remote ad... |
+| aws-nlb-quic-data-plane-001 | quic-go + AWS NLB | AWS NLB QUIC passthrough | client socket A -> socket B through NLB; AddPath -> Probe -> Switch | yes | yes | yes | QUIC listener and two EC2 targets; QUIC-LB plaintext CID format 0x00 + 8-byte Server ID + 7-byte nonce; target-b received before... |
+| aws-nlb-quic-feasibility-001 | AWS NLB + s2n-quic | AWS control plane + local provider proof | no packet migration; target group create/delete and CID provider proof | no | no | yes | ap-northeast-2 accepted QUIC and TCP_QUIC target groups; resources deleted; s2n-quic provider proof passed 2 tests |
+| aws-nlb-tcp-quic-443-001 | quic-go + AWS NLB | AWS NLB TCP_QUIC passthrough | client socket A -> socket B through TCP_QUIC :443 NLB; AddPath -> Probe -> Switch | yes | yes | yes | TCP_QUIC listener and target group on port 443; QUIC-LB plaintext CID format; target-b received before and after streams; client... |
+| s2n-quic-nlb-local-data-plane-001 | s2n-quic | AWS NLB local prerequisite proof | no network path migration; local CID-aware routing simulation plus s2n-quic echo | no | no | yes | generated target A/B CIDs use 0x00 + 8-byte Server ID + 7-byte nonce; simulated router selects target-a/target-b and rejects wron... |
+| quic-go-local-h3-midflight-download-001 | quic-go + HTTP/3 | local direct origin | HTTP/3 streaming GET /download response in flight; migration triggered after threshold | yes | yes | yes | client final addr changed 49959 -> 52767; migration threshold 524288 bytes; client decoded full 1MiB response; qlog ALPN h3 and P... |
+| quic-go-local-h3-midflight-upload-001 | quic-go + HTTP/3 | local direct origin | HTTP/3 POST /upload body in flight; migration triggered after threshold | yes | yes | yes | client final addr changed 53663 -> 63569; migration threshold 532480 bytes; server decoded full 1MiB upload; qlog ALPN h3 and PAT... |
+| chrome-h3-local-baseline-001 | Chrome 149 + quic-go H3 | local browser baseline | Chrome --origin-to-force-quic-on local H3 origin; fixed test cert with SPKI exception | no | no | yes | Chrome NetLog shows QUIC_SESSION and HTTP_STREAM_JOB using_quic=true; server received GET /download from 127.0.0.1:65402; qlog ch... |
+| chrome-h3-local-poll-nochange-001 | Chrome 149 + quic-go H3 | local browser no-change baseline | Chrome forced QUIC local H3 origin; browser polling page with no network-change command | no | no | yes | Classifier result no_path_change_baseline; server received 6 requests from same remote addr 127.0.0.1:60133; NetLog JSON parsed w... |
+| chrome-h3-local-sequence-001 | Chrome 149 + quic-go H3 | local browser baseline | Chrome --origin-to-force-quic-on local H3 origin; browser page loads two SVG subresources | no | no | yes | Chrome NetLog shows one target QUIC_SESSION and 3 HTTP_STREAM_JOB using_quic=true; server received 3 requests from same remote ad... |
+| chrome-h3-slow-wifi-ip-nochange-001 | Chrome 149 + quic-go H3 | local Wi-Fi IP browser baseline | server listens on 0.0.0.0:4443; Chrome origin is local Wi-Fi IP 192.168.32.190:4443; no n... | no | no | yes | classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190:61509; NetLog JSON par... |
+
+## Table 4. Negative Controls and Failure-Layer Evidence
+
+| trial | environment | failure layer | path validation | tuple change | app success | interpretation |
+| --- | --- | --- | --- | --- | --- | --- |
+| haproxy-local-h3-negative-control-001 | local proxy | proxy-path-validation | no | yes | no | curl and quiche no-migration H3 baselines passed; migration attempt sent 3 PATH_CHALLENGE frames and received 0 PATH_RESPONSE fra... |
+| aws-nlb-quic-malformed-cid-001 | AWS NLB QUIC passthrough | nlb-cid-format | no | no | no | client dial_success and server target-b accepted connection, but client sent 51 STREAM frames while server received 0; CloudWatch... |
+| aws-nlb-quic-wrong-server-id-001 | AWS NLB QUIC passthrough | nlb-cid-server-id-mismatch | no | no | no | target health was 2/2 healthy; client sent Initial CRYPTO packets and received 0 packets; server accepted no connection; AWS reso... |
+| chrome-h3-slow-inactive-if-toggle-001 | local browser limited network-change control | trigger-no-active-path-change | no | no | yes | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 127.0.0.1:5320... |
+| chrome-h3-slow-wifi-ip-inactive-if-toggle-001 | local Wi-Fi IP limited network-change control | trigger-no-active-path-change | no | no | yes | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190... |
+| chrome-public-h3-cloudflare-trace-001 | public WebPKI browser H3 discovery control | browser-public-application-h3-not-confirmed | no | no | yes | bootstrap NetLog JSON shows target QUIC_SESSION=1 and dns_alpn_h3 discovery job=1, but target application_using_quic=0 and main_n... |
+| chrome-public-h3-google-204-001 | public WebPKI browser H3 discovery control | browser-public-application-h3-not-confirmed | no | no | yes | bootstrap/second NetLog JSON shows target QUIC_SESSION and dns_alpn_h3 discovery jobs, but target application_using_quic=0 and ma... |
+| chrome-public-h3-youtube-204-001 | public WebPKI browser H3 discovery control | browser-public-application-h3-not-confirmed | no | no | yes | Alt-Svc and dns_alpn_h3 discovery jobs observed, but target QUIC_SESSION=0 and application/main HTTP_STREAM_JOB using_quic=false;... |
+| chrome-h3-alt-svc-html-ignore-cert-001 | local browser natural Alt-Svc HTML diagnostic | browser-alt-svc-quic-candidate-cert-rejected | no | no | yes | server handled all 4 requests as HTTP/1.1; qlog still shows QUIC candidate closed with certificate unknown / CERTIFICATE_VERIFY_F... |
+| chrome-h3-alt-svc-html-ip-literal-001 | local browser natural Alt-Svc HTML control | browser-alt-svc-quic-candidate-cert-rejected | no | no | yes | server handled all 4 requests as HTTP/1.1; qlog shows QUIC connection_started and one HTTP/3 settings frame but connection closed... |
+| chrome-h3-alt-svc-html-mkcert-ip-001 | local browser natural Alt-Svc mkcert control | browser-alt-svc-quic-candidate-cert-rejected | no | no | yes | server handled all 4 requests as HTTP/1.1; qlog shows QUIC candidate connection but it closes with certificate unknown / CERTIFIC... |
+| chrome-h3-alt-svc-html-mkcert-localhost-001 | local browser natural Alt-Svc mkcert control | browser-alt-svc-marked-broken | no | no | yes | server handled all 4 requests as HTTP/1.1; qlog has no target packets; NetLog records localhost:4443 quic alternative_service and... |
+| chrome-h3-alt-svc-ip-literal-001 | local browser natural Alt-Svc control | browser-alt-svc-h3-not-observed | no | no | yes | Alt-Svc header observed and h3 candidate job appears in NetLog; both server requests proto HTTP/1.1; no target QUIC_SESSION and q... |
+| chrome-h3-alt-svc-localhost-001 | local browser natural Alt-Svc control | browser-alt-svc-h3-not-observed | no | no | yes | Alt-Svc advertised and target QUIC session hint appears only in incomplete text-fallback NetLog; both server requests proto HTTP/... |
+
+## Table 5. Browser / Public Web Evidence
+
+| trial | status | environment | trigger | path validation | tuple change | classification / note |
+| --- | --- | --- | --- | --- | --- | --- |
+| chrome-h3-local-baseline-001 | PASS | local browser baseline | Chrome --origin-to-force-quic-on local H3 origin; fixed test cert with SPKI exception | no | no | Chrome NetLog shows QUIC_SESSION and HTTP_STREAM_JOB using_quic=true; server received GET /download from 127.0.0.1:65402; qlog ch... |
+| chrome-h3-local-sequence-001 | PASS | local browser baseline | Chrome --origin-to-force-quic-on local H3 origin; browser page loads two SVG subresources | no | no | Chrome NetLog shows one target QUIC_SESSION and 3 HTTP_STREAM_JOB using_quic=true; server received 3 requests from same remote ad... |
+| chrome-h3-local-poll-nochange-001 | PASS | local browser no-change baseline | Chrome forced QUIC local H3 origin; browser polling page with no network-change command | no | no | Classifier result no_path_change_baseline; server received 6 requests from same remote addr 127.0.0.1:60133; NetLog JSON parsed w... |
+| chrome-h3-slow-inactive-if-toggle-001 | PASS_NEGATIVE_CONTROL | local browser limited network-change control | inactive Thunderbolt Bridge off/on during in-flight slow HTTP/3 subresource | no | no | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 127.0.0.1:5320... |
+| chrome-h3-slow-wifi-ip-nochange-001 | PASS | local Wi-Fi IP browser baseline | server listens on 0.0.0.0:4443; Chrome origin is local Wi-Fi IP 192.168.32.190:4443; no n... | no | no | classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190:61509; NetLog JSON par... |
+| chrome-h3-slow-wifi-ip-inactive-if-toggle-001 | PASS_NEGATIVE_CONTROL | local Wi-Fi IP limited network-change control | server listens on 0.0.0.0:4443; Chrome origin is local Wi-Fi IP 192.168.32.190:4443; inac... | no | no | network_change_exit=0; classifier result no_path_change_baseline; server received 2 requests from same remote addr 192.168.32.190... |
+| chrome-h3-alt-svc-ip-literal-001 | PASS_NEGATIVE_CONTROL | local browser natural Alt-Svc control | TCP HTTPS response advertises Alt-Svc h3 on 127.0.0.1; second request reuses same Chrome... | no | no | Alt-Svc header observed and h3 candidate job appears in NetLog; both server requests proto HTTP/1.1; no target QUIC_SESSION and q... |
+| chrome-h3-alt-svc-localhost-001 | PASS_NEGATIVE_CONTROL | local browser natural Alt-Svc control | TCP HTTPS response advertises Alt-Svc h3 on localhost; second request reuses same Chrome... | no | no | Alt-Svc advertised and target QUIC session hint appears only in incomplete text-fallback NetLog; both server requests proto HTTP/... |
+| chrome-h3-alt-svc-html-ip-literal-001 | PASS_NEGATIVE_CONTROL | local browser natural Alt-Svc HTML control | HTML page and subresource workload on 127.0.0.1; Alt-Svc h3 advertised; no --origin-to-fo... | no | no | server handled all 4 requests as HTTP/1.1; qlog shows QUIC connection_started and one HTTP/3 settings frame but connection closed... |
+| chrome-h3-alt-svc-html-ignore-cert-001 | PASS_NEGATIVE_CONTROL | local browser natural Alt-Svc HTML diagnostic | HTML page/subresource workload with CHROME_EXTRA_ARGS=--ignore-certificate-errors; no --o... | no | no | server handled all 4 requests as HTTP/1.1; qlog still shows QUIC candidate closed with certificate unknown / CERTIFICATE_VERIFY_F... |
+| chrome-h3-alt-svc-html-mkcert-localhost-001 | PASS_NEGATIVE_CONTROL | local browser natural Alt-Svc mkcert control | HTML page/subresource workload on localhost with CERT_MODE=mkcert and CHROME_USE_SPKI_EXC... | no | no | server handled all 4 requests as HTTP/1.1; qlog has no target packets; NetLog records localhost:4443 quic alternative_service and... |
+| chrome-h3-alt-svc-html-mkcert-ip-001 | PASS_NEGATIVE_CONTROL | local browser natural Alt-Svc mkcert control | HTML page/subresource workload on 127.0.0.1 with CERT_MODE=mkcert and CHROME_USE_SPKI_EXC... | no | no | server handled all 4 requests as HTTP/1.1; qlog shows QUIC candidate connection but it closes with certificate unknown / CERTIFIC... |
+| chrome-public-h3-cloudflare-trace-001 | PASS_NEGATIVE_CONTROL | public WebPKI browser H3 discovery control | Chrome headless visits https://cloudflare-quic.com/cdn-cgi/trace twice with no forced QUIC | no | no | bootstrap NetLog JSON shows target QUIC_SESSION=1 and dns_alpn_h3 discovery job=1, but target application_using_quic=0 and main_n... |
+| chrome-public-h3-google-204-001 | PASS_NEGATIVE_CONTROL | public WebPKI browser H3 discovery control | Chrome headless visits https://www.google.com/generate_204 twice with no forced QUIC | no | no | bootstrap/second NetLog JSON shows target QUIC_SESSION and dns_alpn_h3 discovery jobs, but target application_using_quic=0 and ma... |
+| chrome-public-h3-youtube-204-001 | PASS_NEGATIVE_CONTROL | public WebPKI browser H3 discovery control | Chrome headless visits https://www.youtube.com/generate_204 twice with no forced QUIC | no | no | Alt-Svc and dns_alpn_h3 discovery jobs observed, but target QUIC_SESSION=0 and application/main HTTP_STREAM_JOB using_quic=false;... |
+| chrome-h3-downlink-noheartbeat-001 | PASS | local browser forced QUIC origin | No network change; downlink-dominant streaming fetch without heartbeat | no | no | server request count 2; target using_quic jobs=2; qlog http3_frame observed; no path validation expected |
+| chrome-h3-downlink-heartbeat-001 | PASS | local browser forced QUIC origin | No network change; downlink-dominant streaming fetch with application heartbeat | no | no | server request count 3; target using_quic jobs=3; qlog http3_frame observed; no path validation expected |
+| chrome-h3-downlink-noheartbeat-cdp-001 | PASS | local browser forced QUIC origin with CDP runner | No network change; CDP real-time hold; downlink-dominant streaming fetch without heartbeat | no | no | classification no_path_change_baseline; server remote addr count 1; target QUIC sessions=1; qlog path validation=false |
+| chrome-h3-downlink-heartbeat-cdp-001 | PASS_NEGATIVE_CONTROL | local browser forced QUIC origin with CDP runner | No network change; CDP real-time hold; downlink streaming plus heartbeat | no | yes | classification multiple_quic_sessions_without_network_change; server remote addr count 2; target QUIC sessions=2; qlog path valid... |
+| chrome-h3-downlink-heartbeat-cdp-inactive-toggle-001 | PASS_NEGATIVE_CONTROL | local browser forced QUIC origin with CDP runner | Inactive Thunderbolt Bridge toggle during downlink streaming; heartbeat after trigger; cl... | no | yes | classification multiple_quic_sessions_without_client_path_change; network_change_exit=0; client_path_change=no_client_path_change... |
+
+## Table 6. Remaining Evidence Gaps
+
+| claim | missing or weak evidence | current status | next proof needed |
+| --- | --- | --- | --- |
+| Network-change trigger actually changed the client path | client route/interface snapshot | partially_observed | Before/after route or public IP changes to target path |
+| Connection migration occurred | browser session continuity | partially_observed | Target browser QUIC evidence should not show a new replacement session for the migrated workload |
+| Claim is publishable as browser CM evidence | combined evidence chain | pending | Application H3 baseline + active client path change + tuple change + qlog path validation + session continuity + task success |

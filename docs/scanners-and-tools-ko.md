@@ -653,3 +653,26 @@ RUN_ID=chrome-public-h3-google-generate204-20260624 TARGET_URL=https://www.googl
 ```
 
 AWS 결과를 갱신할 때는 [재현 가이드](reproducibility-guide-ko.md)의 cleanup 확인까지 포함한다.
+
+## 21. `tools/build_paper_tables.py`
+
+논문 본문에 붙일 수 있는 Markdown 표를 `data/experiment-results.csv`와 `data/evidence-chain-rubric.csv`에서 생성한다.
+
+실행:
+
+```bash
+python3 tools/build_paper_tables.py --output docs/results/paper-tables-20260624.md
+```
+
+생성 표:
+
+| 표 | 내용 |
+| --- | --- |
+| Table 1 | 전체 실험 corpus 요약 |
+| Table 2 | browser CM claim을 위한 evidence chain rubric |
+| Table 3 | positive/feasibility control 대표 결과 |
+| Table 4 | negative control과 failure-layer evidence |
+| Table 5 | browser/public web evidence |
+| Table 6 | remaining evidence gaps |
+
+이 파일은 raw qlog/NetLog artifact를 포함하지 않고 공개 CSV의 요약만 사용한다.
