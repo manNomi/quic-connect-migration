@@ -80,6 +80,13 @@ def build_selection(args: argparse.Namespace) -> dict[str, Any]:
         artifact_dir = f"repro/quic-go-min-repro/{selected.artifact_dir}"
         selection["post_trial_commands"] = [
             (
+                "python3 tools/check_final_handover_trial_artifact_bundle.py "
+                f"--trial-id {selected.trial_id} "
+                f"--artifact-dir {artifact_dir} "
+                "--require-final-countable "
+                "--require-complete"
+            ),
+            (
                 "python3 tools/validate_final_handover_trial_artifact.py "
                 f"--trial-id {selected.trial_id} "
                 f"--artifact-dir {artifact_dir} "
@@ -90,6 +97,7 @@ def build_selection(args: argparse.Namespace) -> dict[str, Any]:
                 f"--trial-id {selected.trial_id} "
                 f"--artifact-dir {artifact_dir} "
                 "--require-final-countable "
+                "--require-artifact-bundle "
                 "--output /tmp/final-handover-append-dry-run.md"
             ),
             (
@@ -97,6 +105,7 @@ def build_selection(args: argparse.Namespace) -> dict[str, Any]:
                 f"--trial-id {selected.trial_id} "
                 f"--artifact-dir {artifact_dir} "
                 "--require-final-countable "
+                "--require-artifact-bundle "
                 "--apply"
             ),
             "python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md",

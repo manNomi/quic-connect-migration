@@ -58,6 +58,50 @@ def select_trial(args: argparse.Namespace) -> dict[str, Any] | None:
     return build_selection(selection_args)["next_trial"]
 
 
+def trial_shape_from_id(trial_id: str) -> dict[str, Any]:
+    lowered = trial_id.lower()
+    if "android" in lowered:
+        browser = "Android Chrome"
+    elif "safari" in lowered:
+        browser = "Safari"
+    else:
+        browser = "Chrome"
+
+    if "nochange" in lowered:
+        phase = "no-change-baseline"
+    elif "network-change" in lowered:
+        phase = "active-network-change"
+    else:
+        phase = "baseline"
+
+    return {
+        "trial_id": trial_id,
+        "phase": phase,
+        "browser": browser,
+        "artifact_dir": f"artifacts/{trial_id}",
+    }
+
+
+def default_artifact_dir(trial: dict[str, Any]) -> Path:
+    return Path(f"repro/quic-go-min-repro/{trial['artifact_dir']}")
+
+
+def expected_artifact_specs(trial: dict[str, Any], artifact_dir: Path | None = None) -> list[dict[str, str]]:
+    specs = expected_artifacts(trial)
+    if artifact_dir is None:
+        return specs
+
+    original_root = default_artifact_dir(trial).as_posix()
+    replacement_root = artifact_dir.as_posix()
+    updated = []
+    for spec in specs:
+        path = spec["path"]
+        if path.startswith(original_root):
+            path = replacement_root + path[len(original_root) :]
+        updated.append({**spec, "path": path})
+    return updated
+
+
 def check_path(path_pattern: str, role: str) -> ArtifactPresence:
     has_glob = any(char in path_pattern for char in "*?[")
     if has_glob:
@@ -132,8 +176,44 @@ def validation_payload(trial_id: str, artifact_dir: Path, requirements: Path, re
     return payload
 
 
+def build_trial_bundle_report(
+    trial: dict[str, Any],
+    artifact_dir: Path,
+    requirements_path: Path,
+    require_final_countable: bool,
+) -> dict[str, Any]:
+    checks = [check_path(item["path"], item["role"]) for item in expected_artifact_specs(trial, artifact_dir)]
+    artifact_complete = all(check.exists for check in checks)
+    validation = validation_payload(
+        trial["trial_id"],
+        artifact_dir,
+        requirements_path,
+        require_final_countable,
+    )
+    registration_ready = artifact_complete and bool(validation.get("counts_toward_final_protocol"))
+    blockers = []
+    blockers.extend(f"missing artifact: {check.role} ({check.path})" for check in checks if not check.exists)
+    if not validation.get("available"):
+        blockers.append(f"validation unavailable: {validation.get('error')}")
+    elif require_final_countable and not validation.get("counts_toward_final_protocol"):
+        blockers.append("artifact validation does not count toward final protocol")
+
+    return {
+        "check_date": date.today().isoformat(),
+        "trial_selected": True,
+        "trial": trial,
+        "artifact_dir": artifact_dir.as_posix(),
+        "artifact_bundle_complete": artifact_complete,
+        "registration_ready": registration_ready,
+        "require_final_countable": require_final_countable,
+        "artifact_checks": [asdict(check) for check in checks],
+        "validation": validation,
+        "blockers": blockers,
+    }
+
+
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
-    trial = select_trial(args)
+    trial = trial_shape_from_id(args.trial_id) if args.trial_id and args.artifact_dir else select_trial(args)
     if trial is None:
         return {
             "check_date": date.today().isoformat(),
@@ -146,35 +226,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "blockers": ["no next trial selected"],
         }
 
-    checks = [check_path(item["path"], item["role"]) for item in expected_artifacts(trial)]
-    artifact_complete = all(check.exists for check in checks)
-    artifact_dir = Path(f"repro/quic-go-min-repro/{trial['artifact_dir']}")
-    validation = validation_payload(
-        trial["trial_id"],
-        artifact_dir,
-        Path(args.requirements),
-        args.require_final_countable,
-    )
-    registration_ready = artifact_complete and bool(validation.get("counts_toward_final_protocol"))
-    blockers = []
-    blockers.extend(f"missing artifact: {check.role} ({check.path})" for check in checks if not check.exists)
-    if not validation.get("available"):
-        blockers.append(f"validation unavailable: {validation.get('error')}")
-    elif args.require_final_countable and not validation.get("counts_toward_final_protocol"):
-        blockers.append("artifact validation does not count toward final protocol")
-
-    return {
-        "check_date": date.today().isoformat(),
-        "trial_selected": True,
-        "trial": trial,
-        "artifact_dir": artifact_dir.as_posix(),
-        "artifact_bundle_complete": artifact_complete,
-        "registration_ready": registration_ready,
-        "require_final_countable": args.require_final_countable,
-        "artifact_checks": [asdict(check) for check in checks],
-        "validation": validation,
-        "blockers": blockers,
-    }
+    artifact_dir = Path(args.artifact_dir) if args.artifact_dir else default_artifact_dir(trial)
+    return build_trial_bundle_report(trial, artifact_dir, Path(args.requirements), args.require_final_countable)
 
 
 def emit_markdown(report: dict[str, Any]) -> str:
@@ -229,6 +282,7 @@ def emit_markdown(report: dict[str, Any]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trial-id")
+    parser.add_argument("--artifact-dir")
     parser.add_argument("--experiments", default=DEFAULT_EXPERIMENTS)
     parser.add_argument("--requirements", default=DEFAULT_REQUIRED_TRIALS)
     parser.add_argument("--config", default=DEFAULT_CONFIG)

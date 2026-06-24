@@ -139,11 +139,13 @@ CSV에 붙이기 전에 단일 artifact validation을 실행한다.
 ```bash
 python3 tools/check_final_handover_trial_artifact_bundle.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
+  --require-complete \
   --output /tmp/final-handover-artifact-bundle-check.md
 ```
 
-이 gate는 server result, qlog, public-origin readiness, classifier summary, NetLog, client path summary 같은 trial별 raw artifact 존재를 확인한다. `--require-complete`를 붙이면 bundle 또는 registration readiness가 부족할 때 exit 1을 반환한다.
+이 gate는 server result, qlog, public-origin readiness, classifier summary, NetLog, client path summary 같은 trial별 raw artifact 존재를 확인한다. `--require-complete`를 붙이면 bundle 또는 registration readiness가 부족할 때 exit 1을 반환한다. CSV append 단계에서도 같은 기준을 강제하려면 `--require-artifact-bundle`을 함께 사용한다.
 
 ```bash
 python3 tools/validate_final_handover_trial_artifact.py \
@@ -161,16 +163,18 @@ python3 tools/append_final_handover_result_row.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
+  --require-artifact-bundle \
   --output /tmp/final-handover-append-dry-run.md
 ```
 
-dry-run 결과에서 `duplicate trial_id=no`, `counts toward final protocol=yes`를 확인한 뒤에만 `--apply`를 붙인다.
+dry-run 결과에서 `duplicate trial_id=no`, `counts toward final protocol=yes`, `artifact bundle complete=yes`를 확인한 뒤에만 `--apply`를 붙인다.
 
 ```bash
 python3 tools/append_final_handover_result_row.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
+  --require-artifact-bundle \
   --apply
 ```
 

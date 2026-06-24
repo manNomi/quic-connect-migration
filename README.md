@@ -45,7 +45,8 @@
 33. Android Chrome wrapper가 ADB route/address/connectivity snapshot을 `client-path-change-summary.json`으로 요약해 P1 feasibility도 client active path gate를 통과할 수 있게 했다.
 34. 다음 final handover trial의 readiness, 실행 명령, expected artifacts, 등록 명령을 한 장으로 묶는 trial packet 생성기를 추가했다.
 35. trial 실행 후 summary뿐 아니라 qlog/NetLog/path snapshot 등 expected raw artifact bundle이 모두 있는지 확인하는 gate를 추가했다.
-36. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+36. final handover append 도구가 `--require-artifact-bundle` 옵션으로 summary-only 결과의 CSV 등록을 차단하게 했다.
+37. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 

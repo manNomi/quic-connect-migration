@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from audit_final_browser_handover_trials import load_rows
+from check_final_handover_trial_artifact_bundle import build_trial_bundle_report, trial_shape_from_id
 from draft_final_handover_result_row import CSV_FIELDS, emit_csv
 from validate_final_handover_trial_artifact import build_validation
 
@@ -31,6 +32,9 @@ class AppendResult:
     counts_toward_final_protocol: bool
     claim_strength: str
     matched_final_requirements: list[str]
+    require_artifact_bundle: bool
+    artifact_bundle_complete: bool
+    artifact_bundle_blockers: list[str]
     warnings: list[str]
     row: dict[str, str]
 
@@ -64,6 +68,7 @@ def build_append_result(
     run_date: str,
     summary_path: Path | None,
     require_final_countable: bool,
+    require_artifact_bundle: bool,
     apply: bool,
 ) -> AppendResult:
     ensure_schema(experiments_path)
@@ -71,6 +76,19 @@ def build_append_result(
     row = validation["draft_row"]
     duplicate = duplicate_trial_id(experiments_path, trial_id)
     warnings = list(validation["warnings"])
+    artifact_bundle_complete = True
+    artifact_bundle_blockers: list[str] = []
+    if require_artifact_bundle:
+        bundle = build_trial_bundle_report(
+            trial_shape_from_id(trial_id),
+            artifact_dir,
+            requirements_path,
+            require_final_countable,
+        )
+        artifact_bundle_complete = bool(bundle["artifact_bundle_complete"])
+        artifact_bundle_blockers = list(bundle["blockers"])
+        if not artifact_bundle_complete:
+            warnings.append("required artifact bundle is incomplete")
     if duplicate:
         warnings.append("trial_id already exists in experiment-results CSV")
     if require_final_countable and not validation["counts_toward_final_protocol"]:
@@ -80,6 +98,7 @@ def build_append_result(
         validation["appendable_to_experiment_results"]
         and not duplicate
         and (validation["counts_toward_final_protocol"] or not require_final_countable)
+        and (artifact_bundle_complete or not require_artifact_bundle)
     )
     appended = False
     if apply and can_append:
@@ -96,6 +115,9 @@ def build_append_result(
         counts_toward_final_protocol=validation["counts_toward_final_protocol"],
         claim_strength=validation["claim_strength"],
         matched_final_requirements=validation["matched_final_requirements"],
+        require_artifact_bundle=require_artifact_bundle,
+        artifact_bundle_complete=artifact_bundle_complete,
+        artifact_bundle_blockers=artifact_bundle_blockers,
         warnings=warnings,
         row=row,
     )
@@ -119,11 +141,16 @@ def emit_markdown(result: AppendResult) -> str:
         f"| appendable | `{'yes' if result.appendable_to_experiment_results else 'no'}` |",
         f"| counts toward final protocol | `{'yes' if result.counts_toward_final_protocol else 'no'}` |",
         f"| claim strength | `{result.claim_strength}` |",
+        f"| require artifact bundle | `{'yes' if result.require_artifact_bundle else 'no'}` |",
+        f"| artifact bundle complete | `{'yes' if result.artifact_bundle_complete else 'no'}` |",
         "",
         "## Matched Requirements",
         "",
     ]
     lines.extend(f"- {item}" for item in matched)
+    if result.artifact_bundle_blockers:
+        lines.extend(["", "## Artifact Bundle Blockers", ""])
+        lines.extend(f"- {item}" for item in result.artifact_bundle_blockers)
     lines.extend(["", "## Warnings", ""])
     lines.extend(f"- {item}" for item in warnings)
     lines.extend(["", "## CSV Row", "", "```csv", emit_csv(result.row).rstrip(), "```"])
@@ -139,6 +166,7 @@ def main() -> int:
     parser.add_argument("--requirements", default=DEFAULT_REQUIREMENTS)
     parser.add_argument("--date", default=date.today().isoformat())
     parser.add_argument("--require-final-countable", action="store_true")
+    parser.add_argument("--require-artifact-bundle", action="store_true")
     parser.add_argument("--apply", action="store_true", help="actually append the row; default is dry-run")
     parser.add_argument("--format", choices=["json", "markdown", "csv"], default="markdown")
     parser.add_argument("--output")
@@ -153,6 +181,7 @@ def main() -> int:
             run_date=args.date,
             summary_path=Path(args.summary) if args.summary else None,
             require_final_countable=args.require_final_countable,
+            require_artifact_bundle=args.require_artifact_bundle,
             apply=args.apply,
         )
     except (FileNotFoundError, ValueError) as exc:
@@ -174,6 +203,8 @@ def main() -> int:
         print(text, end="")
 
     if args.apply and not result.appended:
+        return 1
+    if args.require_artifact_bundle and not result.artifact_bundle_complete:
         return 1
     if args.require_final_countable and not result.counts_toward_final_protocol:
         return 1

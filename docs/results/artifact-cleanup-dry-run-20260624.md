@@ -7,13 +7,13 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | target free GiB | `5.0` |
-| current free | `4.1 GiB` |
-| free space needed | `904.9 MiB` |
-| selected candidates | `35/40` |
-| reclaimable from selected | `905.3 MiB` |
-| projected free after selected cleanup | `5.0 GiB` |
-| target met by selected cleanup | `yes` |
-| remaining external cleanup gap | `0 B` |
+| current free | `3.3 GiB` |
+| free space needed | `1.7 GiB` |
+| selected candidates | `40/40` |
+| reclaimable from selected | `908.3 MiB` |
+| projected free after selected cleanup | `4.2 GiB` |
+| target met by selected cleanup | `no` |
+| remaining external cleanup gap | `826.2 MiB` |
 
 ## Selected Candidates
 
@@ -54,6 +54,11 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-noheartbeat-inactive-if-toggle-20260624` | `3.5 MiB` | 170 | 59 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-heartbeat-inactive-if-toggle-20260624` | `3.5 MiB` | 170 | 59 |
 | `repro/quic-go-min-repro/artifacts/verify-local-h3-midflight` | `1.8 MiB` | 22 | 10 |
+| `repro/quic-go-min-repro/artifacts/local-20260624T045440Z` | `1.4 MiB` | 11 | 4 |
+| `repro/quic-go-min-repro/artifacts/verify-local-happy-named` | `1.4 MiB` | 11 | 4 |
+| `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | 10 | 4 |
+| `repro/quic-go-min-repro/artifacts/controlled-public-preflight-20260624T094137Z` | `1.8 KiB` | 2 | 1 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | 1 | 6 |
 
 ## Note
 

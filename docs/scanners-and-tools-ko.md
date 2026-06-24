@@ -983,7 +983,7 @@ python3 tools/test_validate_final_handover_trial_artifact.py
 
 ## 31. `tools/append_final_handover_result_row.py`
 
-검증된 final handover artifact row를 `data/experiment-results.csv`에 추가한다. 기본은 dry-run이며, 실제 CSV를 수정하려면 `--apply`를 명시해야 한다. duplicate `trial_id`는 append하지 않는다.
+검증된 final handover artifact row를 `data/experiment-results.csv`에 추가한다. 기본은 dry-run이며, 실제 CSV를 수정하려면 `--apply`를 명시해야 한다. duplicate `trial_id`는 append하지 않는다. `--require-artifact-bundle`을 붙이면 classifier summary뿐 아니라 qlog, NetLog, client path summary 등 expected raw artifact bundle이 모두 있을 때만 append한다.
 
 dry-run:
 
@@ -992,6 +992,7 @@ python3 tools/append_final_handover_result_row.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
+  --require-artifact-bundle \
   --output /tmp/final-handover-append-dry-run.md
 ```
 
@@ -1002,6 +1003,7 @@ python3 tools/append_final_handover_result_row.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
+  --require-artifact-bundle \
   --apply
 ```
 
@@ -1012,6 +1014,7 @@ python3 tools/append_final_handover_result_row.py \
 | 기본 dry-run | `data/experiment-results.csv`를 수정하지 않음 |
 | duplicate trial id | append 차단 |
 | `--require-final-countable` | final requirement에 매칭되지 않는 negative/control row append 차단 |
+| `--require-artifact-bundle` | summary-only 결과 append 차단 |
 | regression | 임시 CSV에서만 append 동작을 테스트 |
 
 회귀 테스트:
@@ -1220,6 +1223,7 @@ python3 tools/check_final_handover_trial_artifact_bundle.py \
 ```bash
 python3 tools/check_final_handover_trial_artifact_bundle.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
   --output /tmp/final-handover-artifact-bundle-check.md
 ```
@@ -1229,9 +1233,12 @@ python3 tools/check_final_handover_trial_artifact_bundle.py \
 ```bash
 python3 tools/check_final_handover_trial_artifact_bundle.py \
   --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --require-final-countable \
   --require-complete
 ```
+
+CSV 등록 단계에서 같은 gate를 강제하려면 `append_final_handover_result_row.py`에 `--require-artifact-bundle`을 붙인다.
 
 확인 항목:
 

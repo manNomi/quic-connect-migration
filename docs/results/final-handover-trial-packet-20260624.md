@@ -101,9 +101,10 @@ Expected artifacts:
 ## Post-Trial Registration
 
 ```bash
+python3 tools/check_final_handover_trial_artifact_bundle.py --trial-id controlled-public-chrome-h3-baseline-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 --require-final-countable --require-complete
 python3 tools/validate_final_handover_trial_artifact.py --trial-id controlled-public-chrome-h3-baseline-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 --require-final-countable
-python3 tools/append_final_handover_result_row.py --trial-id controlled-public-chrome-h3-baseline-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 --require-final-countable --output /tmp/final-handover-append-dry-run.md
-python3 tools/append_final_handover_result_row.py --trial-id controlled-public-chrome-h3-baseline-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 --require-final-countable --apply
+python3 tools/append_final_handover_result_row.py --trial-id controlled-public-chrome-h3-baseline-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 --require-final-countable --require-artifact-bundle --output /tmp/final-handover-append-dry-run.md
+python3 tools/append_final_handover_result_row.py --trial-id controlled-public-chrome-h3-baseline-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 --require-final-countable --require-artifact-bundle --apply
 python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md
 python3 tools/build_paper_tables.py --output docs/results/paper-tables-20260624.md
 python3 tools/audit_research_bundle.py --output docs/results/research-bundle-audit-20260624.md
