@@ -17,7 +17,7 @@
 | 재현 가능한 local QUIC/HTTP/3 migration harness | 구현됨 | `repro/quic-go-min-repro`, local transport/H3/mid-flight scripts, `go test ./...` 통과 | 충족 |
 | 구현체 성숙도 조사 | 구현/문서화됨 | `data/implementation-survey.csv`, `tools/scan_implementation_evidence.py`, 관련 docs | 충족 |
 | AWS/NLB deployment-path 검증 | 수행됨 | AWS NLB positive/negative control rows in `data/experiment-results.csv`, NLB result docs | 충족 |
-| Browser HTTP/3 baseline | local forced-QUIC 기준 수행됨 | Chrome local baseline, sequence, polling, slow, downlink rows | 부분 충족 |
+| Browser HTTP/3 baseline | local forced-QUIC 기준 수행됨 | Chrome local baseline, sequence, polling, slow, downlink, upload rebinding rows | 부분 충족 |
 | Browser natural/public H3 baseline | third-party public endpoint는 negative/control 수준 | public discovery controls show application H3 not confirmed | 부분 충족 |
 | Controlled public origin readiness gate | 구현됨 | `check_controlled_public_experiment_readiness.py`, `controlled-public-preflight.sh`, runbooks | 충족 |
 | Controlled public active network-change result | 아직 없음 | public controlled origin, baseline PASS summary, active secondary path 필요 | 미충족 |
@@ -40,7 +40,7 @@
 | active IPv4 interfaces | `en0(192.168.0.212)` |
 | secondary path ready | `false` |
 | AWS identity OK | `false` |
-| disk available GiB | `2.44` |
+| disk available GiB | `47.76` |
 | desktop handover ready | `false` |
 | Android handover ready | `false` |
 
@@ -49,7 +49,6 @@ blockers:
 1. Desktop active path-change 실험에는 최소 2개의 active non-loopback IPv4 interface가 필요하다.
 2. Android handover 실험에는 ADB로 연결된 Android device가 필요하다.
 3. controlled public origin 자동 구축에는 AWS identity가 필요하다.
-4. disk free space가 2.44 GiB라 대형 pcap/NetLog artifact를 장시간 수집하기 어렵다.
 
 ## 4. 논문에서 현재 claim 가능한 범위
 
@@ -60,6 +59,7 @@ blockers:
 3. AWS NLB에서는 QUIC-LB plaintext CID와 `QuicServerId`가 맞아야 continuity가 유지된다.
 4. Chrome forced-QUIC local origin은 HTTP/3 browser workload baseline을 만들 수 있다.
 5. Chrome heartbeat/downlink 대조군은 tuple change 단독 주장이 위험함을 보여준다.
+6. Chrome streaming upload rebinding 대조군은 request-level tuple 변화 부재가 packet-level rebinding/path validation 부재를 의미하지 않음을 보여준다.
 
 현재 claim 불가:
 

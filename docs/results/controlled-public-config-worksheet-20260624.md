@@ -1,6 +1,6 @@
 # Controlled Public Config Worksheet
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This worksheet is public-safe. It reports presence, validity, ownership, and next actions without printing actual domains, TLS paths, private keys, or network-change commands.
 

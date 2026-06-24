@@ -41,6 +41,7 @@
 | Chrome에서 실제 Wi-Fi/LTE handover 중 CM이 성공했다 | 현재 장비에는 active secondary path가 없고, Android device도 연결되어 있지 않다 |
 | Safari에서 HTTP/3 CM이 성공했다 | Safari WebDriver readiness는 있지만 NetLog equivalent가 없고, controlled public origin baseline이 아직 없다 |
 | tuple/source port 변화는 곧 CM이다 | Chrome CDP heartbeat no-change에서 network-change 없이도 server remote addr count 2, QUIC session count 2가 관찰됐다 |
+| request-level tuple 변화가 없으면 rebinding/path validation도 없다 | Chrome streaming upload rebinding 3회에서 upload는 완료되고 qlog path validation은 있었지만 request-level remote tuple은 하나로 남았다 |
 | inactive interface toggle은 handover 실험이다 | client path snapshot이 `no_client_path_change_observed`로 분류했다 |
 | public third-party endpoint NetLog만으로 application H3를 확정할 수 있다 | Cloudflare/Google/YouTube public controls에서 discovery와 application H3를 분리해야 했다 |
 
@@ -77,6 +78,21 @@ inactive Thunderbolt Bridge toggle은 command exit 0이었다.
 | classification | `no_client_path_change_observed` | `no_client_path_change_observed` |
 
 따라서 이 실험은 handover가 아니라 no-op trigger 대조군이다.
+
+### 4.3 Streaming upload rebinding은 request log 한계를 보여준다
+
+Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local UDP rebinding proxy가 server-facing socket을 A에서 B로 전환했다.
+
+| condition | runs | upload completion | request-level remote tuple count | Chrome target QUIC sessions | qlog path validation |
+| --- | ---: | --- | ---: | ---: | --- |
+| streaming upload, local UDP rebinding | 3 | 3/3 PASS, each `/upload-sink` received 262144 bytes | 1 in every run | 1 in every run | true in every run |
+
+해석:
+
+- client-sending workload에서도 Chrome forced-H3 request는 local NAT rebinding 중 완료될 수 있었다.
+- 그러나 server request log의 `RemoteAddr`는 request handler 관점 값이라 packet-level rebinding을 항상 드러내지 않는다.
+- 따라서 browser-level CM 또는 NAT rebinding claim에는 request log, qlog path validation, Chrome NetLog session attribution, proxy/client path evidence를 함께 사용해야 한다.
+- 이 결과는 local NAT rebinding control이며, 실제 Wi-Fi/LTE active handover 성공을 의미하지 않는다.
 
 ## 5. 논문용 evidence chain
 

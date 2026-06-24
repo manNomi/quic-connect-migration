@@ -1,6 +1,6 @@
 # Final Browser Handover Readiness
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 ## Summary
 
@@ -27,7 +27,7 @@ Generated: `2026-06-24`
 | Android ready | `no` |
 | Safari WebDriver ready | `yes` |
 | disk ready | `yes` |
-| disk free GiB | `47.75` |
+| disk free GiB | `47.76` |
 
 ## Blockers
 

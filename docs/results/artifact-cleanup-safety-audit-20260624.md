@@ -1,13 +1,13 @@
 # Artifact Cleanup Safety Audit
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 ## Summary
 
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `47.7 GiB` |
+| disk free | `47.8 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `1.1 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |

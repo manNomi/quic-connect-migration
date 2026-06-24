@@ -32,7 +32,9 @@ Chrome CDP downlink/heartbeat 대조군은 browser-level CM 판정에서 가장 
 
 추가로 local UDP rebinding proxy 실험에서는 Chrome forced-H3 traffic의 server-facing UDP socket을 A에서 B로 바꿨다. no-heartbeat 반복 3회는 모두 qlog PATH_CHALLENGE/PATH_RESPONSE를 만들었지만 request-level remote tuple은 하나로 남았다. heartbeat 반복 3회는 모두 server remote tuple 2개와 qlog path validation을 만들었지만 Chrome NetLog의 target QUIC session도 2개였다.
 
-즉, server가 본 source tuple 변화와 qlog path validation은 browser CM success의 충분조건이 아니다. heartbeat나 browser connection management만으로도 multiple QUIC sessions가 생길 수 있다. 본 연구의 classifier는 이를 `multiple_quic_sessions_without_network_change`, `multiple_quic_sessions_without_client_path_change`, `nat_rebinding_path_validation_without_observed_tuple_change`, `nat_rebinding_multiple_quic_sessions`처럼 분리한다.
+client-sending 방향의 streaming upload 대조군도 같은 경계를 보여준다. Chrome page가 streaming `fetch()`로 256KiB upload를 수행하는 동안 proxy rebinding을 3회 반복했고, 세 run 모두 upload는 완료됐으며 Chrome target QUIC session은 1개로 유지됐고 qlog path validation도 관찰됐다. 그러나 request-level server remote tuple은 여전히 하나로 남았다.
+
+즉, server가 본 source tuple 변화와 qlog path validation은 browser CM success의 충분조건이 아니며, 반대로 request-level tuple 변화가 없다고 해서 packet-level rebinding이나 path validation이 없었다고 단정할 수도 없다. heartbeat나 browser connection management만으로도 multiple QUIC sessions가 생길 수 있다. 본 연구의 classifier는 이를 `multiple_quic_sessions_without_network_change`, `multiple_quic_sessions_without_client_path_change`, `nat_rebinding_path_validation_without_observed_tuple_change`, `nat_rebinding_multiple_quic_sessions`처럼 분리한다.
 
 후속 본 실험을 위해 Chrome, Safari, Android Chrome controlled public network-change harness를 각각 준비했다. 다만 browser observability matrix 기준으로 Chrome desktop만 NetLog 기반 session attribution을 제공한다. Safari와 Android Chrome은 현재 harness에서 browser-internal QUIC session log가 없으므로, 해당 결과는 server/qlog 중심의 `PASS_FEASIBILITY` 수준으로만 해석한다. 이 하네스 준비는 실제 handover 성공 결과가 아니다.
 
