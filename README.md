@@ -239,6 +239,7 @@
 - [Downlink recovery comparison](docs/results/downlink-recovery-comparison-20260624.md)
 - [Chrome H3 local transient polling/dashboard boundary](docs/results/chrome-h3-rebinding-transient-poll-boundary-20260624.md)
 - [Chrome H3 local transient polling/dashboard long boundary](docs/results/chrome-h3-rebinding-transient-poll-long-boundary-20260624.md)
+- [Polling transition-zone synthesis](docs/results/polling-transition-zone-synthesis-20260624.md)
 - [Chrome H3 local transient upload retry boundary](docs/results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md)
 - [Chrome H3 local transient upload retry long outage](docs/results/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.md)
 - [Chrome H3 local transient upload retry stress boundary](docs/results/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.md)

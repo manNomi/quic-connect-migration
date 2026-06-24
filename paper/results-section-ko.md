@@ -60,6 +60,8 @@ Dashboard/polling형 workload를 보기 위해 250ms/1500ms/3000ms outage에서 
 
 같은 polling workload의 실패 쪽을 찾기 위해 4000ms/6000ms/9000ms outage도 반복했다. 4000ms는 1/3 PASS로 혼재했고, 6000ms와 9000ms는 6/6 FAIL이었다. 실패 row는 `/browser-poll`과 첫 `/poll`까지만 서버에 도달했고 DOM `pollComplete`는 false였다. 유일한 4000ms PASS row도 Chrome target QUIC session count가 2였으므로, polling/dashboard continuity는 3초까지 all-pass, 4초 transition, 6초부터 repeated-fail로 보고하되 이것을 browser single-session CM 성공으로 표현해서는 안 된다.
 
+Polling transition-zone synthesis는 이 결과를 3000ms까지 9/9 PASS, 4000ms 1/3 PASS, 6000ms/9000ms 0/6 PASS로 압축한다. 따라서 dashboard 복구 지표는 downlink/upload와 별도의 workload category로 보고할 수 있지만, 성공률 표에는 Chrome session count와 qlog path evidence 범위를 함께 표시해야 한다.
+
 마지막으로 같은 4900ms/5000ms upload 실패 구간에서 application-level retry control을 실행했다. 브라우저 upload page가 첫 `fetch()` 실패 후 1000ms 뒤 새 스트림으로 한 번 재시도하도록 설정하자 6개 row가 모두 PASS였고, 각 row에서 `/upload-sink` request가 2개씩 기록됐으며 최종 1MiB body가 수신됐다. 그러나 6개 row 모두 Chrome target QUIC session count가 2였고 classification은 `nat_rebinding_multiple_quic_sessions`였다. 따라서 이 결과는 "CM이 성공했다"가 아니라, "application-level retry가 사용자 작업 완료를 회복할 수 있지만 transport/browser session continuity와는 별도로 보고해야 한다"는 근거다.
 
 Retry control을 더 긴 6000ms/9000ms outage로 확장했을 때도 6개 row가 모두 PASS였다. 6000ms row의 DOM complete timing은 약 15.5초였고, 9000ms row는 약 19.7초였다. 다만 Chrome target QUIC session count는 2-3개로 관찰됐다. 이는 retry가 더 긴 outage에서도 task completion을 회복할 수 있지만, 그 대가는 증가한 completion latency와 replacement/multiple-session behavior라는 점을 보여준다. 따라서 application-level recovery는 CM 성숙도 평가의 보조 축이지, browser CM success의 대체 지표가 아니다.

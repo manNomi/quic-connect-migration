@@ -334,7 +334,7 @@ Downlink wait/retry comparison의 핵심:
 
 ### 4.10 Polling/dashboard control은 UI-level continuity와 session continuity를 분리한다
 
-[Chrome H3 Local Rebinding Transient Polling Boundary](./chrome-h3-rebinding-transient-poll-boundary-20260624.md)는 dashboard-like repeated fetch workload를 250ms/1500ms/3000ms outage window에서 반복했다.
+[Chrome H3 Local Rebinding Transient Polling Boundary](./chrome-h3-rebinding-transient-poll-boundary-20260624.md), [Chrome H3 Local Rebinding Transient Polling Long Boundary](./chrome-h3-rebinding-transient-poll-long-boundary-20260624.md), [Polling Transition-Zone Synthesis](./polling-transition-zone-synthesis-20260624.md)는 dashboard-like repeated fetch workload를 250ms부터 9000ms outage window까지 반복했다.
 
 | polling window | rows | status | server requests | Chrome target sessions | qlog PATH C/R | interpretation |
 | ---: | ---: | --- | ---: | ---: | --- | --- |

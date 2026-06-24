@@ -1715,6 +1715,21 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 실패 row는 `/browser-poll`과 첫 `/poll`까지만 서버에 도달했고 DOM `pollComplete`가 false였다.
 - 유일한 4000ms PASS row도 Chrome target QUIC session count가 2였으므로 single-session browser CM success가 아니다.
 
+polling transition-zone synthesis 재생성:
+
+```bash
+python3 tools/build_polling_transition_zone_table.py \
+  --output docs/results/polling-transition-zone-synthesis-20260624.md \
+  --csv-output data/polling-transition-zone-synthesis-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- polling workload는 3000ms까지 9/9 PASS였다.
+- 4000ms는 1/3 PASS로 transition zone이다.
+- 6000ms/9000ms는 0/6 PASS로 반복 실패 구간이다.
+- 모든 PASS row가 Chrome target QUIC session 2개였으므로, dashboard continuity는 session attribution과 함께 보고해야 한다.
+
 ## 37. Artifact 정책
 
 commit 가능한 것:
