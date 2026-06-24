@@ -1096,7 +1096,51 @@ python3 tools/summarize_chrome_rebinding_return_path_drop_controls.py \
   --csv-output data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv
 ```
 
-## 23. Artifact 정책
+## 23. Chrome local transient return-path outage sweep 재현
+
+A+B return path를 영구적으로 차단하는 대신 일정 시간 뒤 복구시켜, local browser workload가 어느 outage window까지 버티는지 측정한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-return-path-sweep-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624 \
+BASE_PORT=6800 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+./scripts/run-chrome-h3-rebinding-transient-return-path-sweep.sh
+```
+
+성공/실패 기준:
+
+- 250ms, 1500ms, 3000ms window의 downlink/upload row는 `PASS`
+- 6000ms, 9000ms window의 downlink/upload row는 `FAIL`
+- 실패 row의 classification은 `browser_application_task_failed`
+- 이 결과는 local outage-tolerance control이며 실제 public handover evidence가 아니다.
+
+논문용 summary 재생성:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-250ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-250ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-1500ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-1500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-3000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-3000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-6000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-9000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-9000ms \
+  --output docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv
+```
+
+## 24. Artifact 정책
 
 commit 가능한 것:
 

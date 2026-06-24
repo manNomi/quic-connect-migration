@@ -14,6 +14,8 @@ SERVER_ADDR="${SERVER_ADDR:-127.0.0.1:4444}"
 REBIND_AFTER="${REBIND_AFTER:-3s}"
 DROP_A_SERVER_AFTER_SWITCH="${DROP_A_SERVER_AFTER_SWITCH:-0}"
 DROP_B_SERVER_AFTER_SWITCH="${DROP_B_SERVER_AFTER_SWITCH:-0}"
+DROP_A_SERVER_AFTER_SWITCH_FOR="${DROP_A_SERVER_AFTER_SWITCH_FOR:-0}"
+DROP_B_SERVER_AFTER_SWITCH_FOR="${DROP_B_SERVER_AFTER_SWITCH_FOR:-0}"
 ALLOW_CLASSIFIER_FAIL="${ALLOW_CLASSIFIER_FAIL:-0}"
 WORKLOAD="${WORKLOAD:-downlink}"
 TIMEOUT="${TIMEOUT:-45s}"
@@ -106,6 +108,12 @@ fi
 if [[ "$DROP_B_SERVER_AFTER_SWITCH" == "1" || "$DROP_B_SERVER_AFTER_SWITCH" == "true" ]]; then
   PROXY_ARGS+=(--drop-b-server-after-switch)
 fi
+if [[ "$DROP_A_SERVER_AFTER_SWITCH_FOR" != "0" ]]; then
+  PROXY_ARGS+=(--drop-a-server-after-switch-for "$DROP_A_SERVER_AFTER_SWITCH_FOR")
+fi
+if [[ "$DROP_B_SERVER_AFTER_SWITCH_FOR" != "0" ]]; then
+  PROXY_ARGS+=(--drop-b-server-after-switch-for "$DROP_B_SERVER_AFTER_SWITCH_FOR")
+fi
 
 "$ARTIFACT_DIR/bin/udprebindproxy" "${PROXY_ARGS[@]}" \
   >"$ARTIFACT_DIR/logs/rebinding-proxy.stdout.log" 2>&1 &
@@ -173,6 +181,8 @@ summary["rebinding_proxy"] = {
     "server_packets_b": proxy.get("server_packets_b"),
     "drop_a_server_after_switch": proxy.get("drop_a_server_after_switch"),
     "drop_b_server_after_switch": proxy.get("drop_b_server_after_switch"),
+    "drop_a_server_after_switch_for_ms": proxy.get("drop_a_server_after_switch_for_ms"),
+    "drop_b_server_after_switch_for_ms": proxy.get("drop_b_server_after_switch_for_ms"),
     "dropped_server_packets_a": proxy.get("dropped_server_packets_a"),
     "dropped_server_packets_b": proxy.get("dropped_server_packets_b"),
     "dropped_server_bytes_a": proxy.get("dropped_server_bytes_a"),

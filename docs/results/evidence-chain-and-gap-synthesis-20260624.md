@@ -182,6 +182,24 @@ Chrome forced-H3 page가 streaming `fetch()` upload를 수행하는 동안 local
 - A+B return path를 모두 차단하면 server request와 transport evidence가 있어도 browser application completion은 실패했다.
 - 따라서 final protocol에서 qlog path validation, browser session evidence, application completion을 별도 기준으로 두는 것이 타당하다.
 
+### 4.9 Transient return-path outage sweep은 local tolerance boundary를 제공한다
+
+[Chrome H3 Local Rebinding Transient Return-Path Sweep](./chrome-h3-rebinding-transient-return-path-sweep-20260624.md)는 A+B server-to-client packet drop을 bounded window로 제한했다.
+
+| drop window | workload rows | status | interpretation |
+| ---: | ---: | --- | --- |
+| 250ms | 2 | 2/2 PASS | 짧은 return-path outage는 1MiB downlink/upload 작업을 깨지 않았다. |
+| 1500ms | 2 | 2/2 PASS | qlog path validation과 단일 Chrome target session이 유지된 채 완료됐다. |
+| 3000ms | 2 | 2/2 PASS | 현재 local workload에서는 3초 outage까지 task completion이 유지됐다. |
+| 6000ms | 2 | 2/2 FAIL | qlog H3/path evidence가 남아도 DOM application completion은 false였다. |
+| 9000ms | 2 | 2/2 FAIL | long outage는 permanent A+B loss와 같은 failure boundary를 보였다. |
+
+해석:
+
+- 이 sweep은 “CM이 된다/안 된다”가 아니라 outage duration과 application completion의 관계를 보여준다.
+- 3초와 6초 사이에 local browser workload continuity boundary가 관찰됐다.
+- public Wi-Fi/LTE handover claim으로 쓰려면 active client path change와 controlled public origin evidence가 추가로 필요하다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

@@ -16,31 +16,33 @@ import (
 )
 
 type proxyResult struct {
-	Role                   string `json:"role"`
-	OK                     bool   `json:"ok"`
-	StartedAt              string `json:"started_at"`
-	CompletedAt            string `json:"completed_at"`
-	ListenAddr             string `json:"listen_addr"`
-	ServerAddr             string `json:"server_addr"`
-	UpstreamAAddr          string `json:"upstream_a_addr"`
-	UpstreamBAddr          string `json:"upstream_b_addr"`
-	SwitchAfterMillis      int64  `json:"switch_after_ms"`
-	Switched               bool   `json:"switched"`
-	FirstClientAt          string `json:"first_client_at,omitempty"`
-	SwitchedAt             string `json:"switched_at,omitempty"`
-	LastClientAddr         string `json:"last_client_addr,omitempty"`
-	ClientPackets          int    `json:"client_packets"`
-	ServerPacketsA         int    `json:"server_packets_a"`
-	ServerPacketsB         int    `json:"server_packets_b"`
-	DropAServerAfterSwitch bool   `json:"drop_a_server_after_switch"`
-	DropBServerAfterSwitch bool   `json:"drop_b_server_after_switch"`
-	DroppedServerPacketsA  int    `json:"dropped_server_packets_a"`
-	DroppedServerPacketsB  int    `json:"dropped_server_packets_b"`
-	DroppedServerBytesA    int    `json:"dropped_server_bytes_a"`
-	DroppedServerBytesB    int    `json:"dropped_server_bytes_b"`
-	BytesClientToSrv       int    `json:"bytes_client_to_server"`
-	BytesServerToCli       int    `json:"bytes_server_to_client"`
-	Error                  string `json:"error,omitempty"`
+	Role                            string `json:"role"`
+	OK                              bool   `json:"ok"`
+	StartedAt                       string `json:"started_at"`
+	CompletedAt                     string `json:"completed_at"`
+	ListenAddr                      string `json:"listen_addr"`
+	ServerAddr                      string `json:"server_addr"`
+	UpstreamAAddr                   string `json:"upstream_a_addr"`
+	UpstreamBAddr                   string `json:"upstream_b_addr"`
+	SwitchAfterMillis               int64  `json:"switch_after_ms"`
+	Switched                        bool   `json:"switched"`
+	FirstClientAt                   string `json:"first_client_at,omitempty"`
+	SwitchedAt                      string `json:"switched_at,omitempty"`
+	LastClientAddr                  string `json:"last_client_addr,omitempty"`
+	ClientPackets                   int    `json:"client_packets"`
+	ServerPacketsA                  int    `json:"server_packets_a"`
+	ServerPacketsB                  int    `json:"server_packets_b"`
+	DropAServerAfterSwitch          bool   `json:"drop_a_server_after_switch"`
+	DropBServerAfterSwitch          bool   `json:"drop_b_server_after_switch"`
+	DropAServerAfterSwitchForMillis int64  `json:"drop_a_server_after_switch_for_ms"`
+	DropBServerAfterSwitchForMillis int64  `json:"drop_b_server_after_switch_for_ms"`
+	DroppedServerPacketsA           int    `json:"dropped_server_packets_a"`
+	DroppedServerPacketsB           int    `json:"dropped_server_packets_b"`
+	DroppedServerBytesA             int    `json:"dropped_server_bytes_a"`
+	DroppedServerBytesB             int    `json:"dropped_server_bytes_b"`
+	BytesClientToSrv                int    `json:"bytes_client_to_server"`
+	BytesServerToCli                int    `json:"bytes_server_to_client"`
+	Error                           string `json:"error,omitempty"`
 }
 
 type jsonlLogger struct {
@@ -95,6 +97,8 @@ func main() {
 	switchAfter := flag.Duration("switch-after", 3*time.Second, "delay before forwarding new client packets via upstream socket B")
 	dropAServerAfterSwitch := flag.Bool("drop-a-server-after-switch", false, "drop server-to-client packets arriving on upstream A after client traffic has switched to upstream B")
 	dropBServerAfterSwitch := flag.Bool("drop-b-server-after-switch", false, "drop server-to-client packets arriving on upstream B after client traffic has switched to upstream B")
+	dropAServerAfterSwitchFor := flag.Duration("drop-a-server-after-switch-for", 0, "duration to drop A-side server-to-client packets after switch; 0 means indefinitely")
+	dropBServerAfterSwitchFor := flag.Duration("drop-b-server-after-switch-for", 0, "duration to drop B-side server-to-client packets after switch; 0 means indefinitely")
 	timeout := flag.Duration("timeout", 45*time.Second, "maximum proxy runtime")
 	logPath := flag.String("log", "", "optional JSONL proxy log path")
 	resultPath := flag.String("result", "", "optional result JSON path")
@@ -105,7 +109,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(ctx, *timeout)
 	defer cancel()
 
-	result, err := run(ctx, *listen, *server, *switchAfter, *dropAServerAfterSwitch, *dropBServerAfterSwitch, *logPath)
+	result, err := run(ctx, *listen, *server, *switchAfter, *dropAServerAfterSwitch, *dropBServerAfterSwitch, *dropAServerAfterSwitchFor, *dropBServerAfterSwitchFor, *logPath)
 	if err != nil {
 		result.Error = err.Error()
 	}
@@ -121,16 +125,18 @@ func main() {
 	}
 }
 
-func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Duration, dropAServerAfterSwitch, dropBServerAfterSwitch bool, logPath string) (proxyResult, error) {
+func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Duration, dropAServerAfterSwitch, dropBServerAfterSwitch bool, dropAServerAfterSwitchFor, dropBServerAfterSwitchFor time.Duration, logPath string) (proxyResult, error) {
 	started := time.Now().UTC()
 	result := proxyResult{
-		Role:                   "udprebindproxy",
-		StartedAt:              started.Format(time.RFC3339Nano),
-		ListenAddr:             listenAddr,
-		ServerAddr:             serverAddr,
-		SwitchAfterMillis:      switchAfter.Milliseconds(),
-		DropAServerAfterSwitch: dropAServerAfterSwitch,
-		DropBServerAfterSwitch: dropBServerAfterSwitch,
+		Role:                            "udprebindproxy",
+		StartedAt:                       started.Format(time.RFC3339Nano),
+		ListenAddr:                      listenAddr,
+		ServerAddr:                      serverAddr,
+		SwitchAfterMillis:               switchAfter.Milliseconds(),
+		DropAServerAfterSwitch:          dropAServerAfterSwitch,
+		DropBServerAfterSwitch:          dropBServerAfterSwitch,
+		DropAServerAfterSwitchForMillis: dropAServerAfterSwitchFor.Milliseconds(),
+		DropBServerAfterSwitchForMillis: dropBServerAfterSwitchFor.Milliseconds(),
 	}
 
 	clientUDPAddr, err := net.ResolveUDPAddr("udp", listenAddr)
@@ -170,18 +176,21 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 	}
 	defer logger.close()
 	logger.log("proxy_started", map[string]any{
-		"listen":                     listenAddr,
-		"server":                     serverAddr,
-		"upstream_a":                 result.UpstreamAAddr,
-		"upstream_b":                 result.UpstreamBAddr,
-		"switch_after":               switchAfter.String(),
-		"drop_a_server_after_switch": dropAServerAfterSwitch,
-		"drop_b_server_after_switch": dropBServerAfterSwitch,
+		"listen":                            listenAddr,
+		"server":                            serverAddr,
+		"upstream_a":                        result.UpstreamAAddr,
+		"upstream_b":                        result.UpstreamBAddr,
+		"switch_after":                      switchAfter.String(),
+		"drop_a_server_after_switch":        dropAServerAfterSwitch,
+		"drop_b_server_after_switch":        dropBServerAfterSwitch,
+		"drop_a_server_after_switch_for_ms": dropAServerAfterSwitchFor.Milliseconds(),
+		"drop_b_server_after_switch_for_ms": dropBServerAfterSwitchFor.Milliseconds(),
 	})
 
 	var mu sync.Mutex
 	var clientAddr *net.UDPAddr
 	var firstClientAt time.Time
+	var switchedAt time.Time
 	var wg sync.WaitGroup
 
 	closeAll := func() {
@@ -202,27 +211,38 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 			if err != nil {
 				return
 			}
+			now := time.Now().UTC()
 			mu.Lock()
 			dst := cloneUDPAddr(clientAddr)
-			if name == "A" && dropAServerAfterSwitch && result.Switched {
+			sinceSwitch := time.Duration(0)
+			if !switchedAt.IsZero() {
+				sinceSwitch = now.Sub(switchedAt)
+			}
+			dropAActive := dropAServerAfterSwitch && result.Switched && (dropAServerAfterSwitchFor <= 0 || sinceSwitch <= dropAServerAfterSwitchFor)
+			dropBActive := dropBServerAfterSwitch && result.Switched && (dropBServerAfterSwitchFor <= 0 || sinceSwitch <= dropBServerAfterSwitchFor)
+			if name == "A" && dropAActive {
 				result.DroppedServerPacketsA++
 				result.DroppedServerBytesA += n
 				mu.Unlock()
 				logger.log("server_to_client_dropped", map[string]any{
-					"upstream": "A",
-					"bytes":    n,
-					"reason":   "drop_a_server_after_switch",
+					"upstream":        "A",
+					"bytes":           n,
+					"reason":          "drop_a_server_after_switch",
+					"since_switch_ms": sinceSwitch.Milliseconds(),
+					"drop_window_ms":  dropAServerAfterSwitchFor.Milliseconds(),
 				})
 				continue
 			}
-			if name == "B" && dropBServerAfterSwitch && result.Switched {
+			if name == "B" && dropBActive {
 				result.DroppedServerPacketsB++
 				result.DroppedServerBytesB += n
 				mu.Unlock()
 				logger.log("server_to_client_dropped", map[string]any{
-					"upstream": "B",
-					"bytes":    n,
-					"reason":   "drop_b_server_after_switch",
+					"upstream":        "B",
+					"bytes":           n,
+					"reason":          "drop_b_server_after_switch",
+					"since_switch_ms": sinceSwitch.Milliseconds(),
+					"drop_window_ms":  dropBServerAfterSwitchFor.Milliseconds(),
 				})
 				continue
 			}
@@ -275,6 +295,7 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 			result.BytesClientToSrv += n
 			if useB && !result.Switched {
 				result.Switched = true
+				switchedAt = now
 				result.SwitchedAt = now.Format(time.RFC3339Nano)
 			}
 			mu.Unlock()

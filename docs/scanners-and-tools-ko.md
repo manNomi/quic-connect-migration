@@ -1814,3 +1814,51 @@ python3 tools/test_summarize_chrome_rebinding_return_path_drop_controls.py
 - B-only drop PASS는 “새 경로 packet 일부 손실이 곧 작업 실패”가 아님을 보여준다.
 - A+B drop FAIL은 server request/qlog/NetLog evidence가 있어도 application completion이 실패할 수 있음을 보여준다.
 - 이 실험도 local control이며 실제 public active handover 결과는 아니다.
+
+## 52. `tools/summarize_chrome_rebinding_transient_return_path_sweep.py`
+
+Chrome forced-H3 local UDP rebinding에서 A+B server-to-client return path를 bounded window 동안만 drop한 artifact를 요약한다. permanent failure가 아니라 transient outage tolerance boundary를 찾기 위한 도구다.
+
+실행 스크립트:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-return-path-sweep-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624 \
+BASE_PORT=6800 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+./scripts/run-chrome-h3-rebinding-transient-return-path-sweep.sh
+```
+
+논문용 summary 재생성:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-250ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-250ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-1500ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-1500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-3000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-3000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-6000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-6000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/downlink-1m-drop-ab-9000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624/upload-1m-drop-ab-9000ms \
+  --output docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv
+```
+
+회귀 테스트:
+
+```bash
+python3 tools/test_summarize_chrome_rebinding_transient_return_path_sweep.py
+```
+
+해석 경계:
+
+- 250ms/1500ms/3000ms A+B outage PASS는 local workload가 짧은 outage를 견딜 수 있음을 보여준다.
+- 6000ms/9000ms A+B outage FAIL은 transport evidence가 있어도 DOM application completion이 실패할 수 있음을 보여준다.
+- 이 sweep은 local outage-tolerance control이며 실제 public active handover 결과는 아니다.
