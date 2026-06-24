@@ -1307,6 +1307,45 @@ CSV 등록 단계에서 같은 gate를 강제하려면 `append_final_handover_re
 python3 tools/test_check_final_handover_trial_artifact_bundle.py
 ```
 
+## 37a. `tools/check_controlled_public_baseline_unlock.py`
+
+controlled public Chrome H3 baseline이 active browser network-change trial로 넘어갈 만큼 충분한지 확인한다. 단순히 baseline summary가 `PASS`인지만 보지 않고, final protocol에 카운트 가능한 row인지와 raw artifact bundle이 완전한지도 함께 검사한다.
+
+실행:
+
+```bash
+python3 tools/check_controlled_public_baseline_unlock.py \
+  --require-unlocked \
+  --output docs/results/controlled-public-baseline-unlock-check-20260624.md
+```
+
+특정 baseline artifact를 검사:
+
+```bash
+python3 tools/check_controlled_public_baseline_unlock.py \
+  --trial-id controlled-public-chrome-h3-baseline-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 \
+  --require-unlocked \
+  --output /tmp/controlled-public-baseline-unlock-check.md
+```
+
+unlock 조건:
+
+| 항목 | 기준 |
+| --- | --- |
+| summary status | `PASS` |
+| allowed classification | `controlled_public_application_h3_confirmed` 또는 `controlled_public_server_qlog_h3_confirmed_browser_netlog_inconclusive` |
+| final protocol count | `validate_final_handover_trial_artifact.py` 기준 카운트 가능 |
+| raw artifact bundle | `check_final_handover_trial_artifact_bundle.py` 기준 complete |
+
+현재처럼 controlled public baseline artifact가 아직 없으면 `--require-unlocked` 실행은 exit 1을 반환한다. 이 실패는 본 실험을 막는 정상적인 readiness 결과이며, active network-change 실험을 시작하면 안 된다는 뜻이다.
+
+회귀 테스트:
+
+```bash
+python3 tools/test_check_controlled_public_baseline_unlock.py
+```
+
 ## 38. `tools/audit_artifact_cleanup_safety.py`
 
 디스크 확보 전에 local artifact directory가 `data/experiment-results.csv`의 근거 row나 planned final handover trial id에 연결되는지 확인한다. 삭제를 수행하지 않는 감사 도구이며, raw artifact를 보존해야 하는지 먼저 분류한다.

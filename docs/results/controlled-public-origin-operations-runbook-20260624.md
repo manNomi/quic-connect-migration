@@ -126,9 +126,20 @@ CHROME_VIRTUAL_TIME_BUDGET_MS=0 \
 
 이 baseline이 실패하면 network-change 실험으로 넘어가지 않는다.
 
+baseline wrapper 실행 후에는 active network-change 실험으로 넘어가기 전에 unlock gate를 통과시킨다. 이 gate는 baseline summary뿐 아니라 final protocol count 가능 여부와 raw artifact bundle completeness를 함께 확인한다.
+
+```bash
+cd ../..
+python3 tools/check_controlled_public_baseline_unlock.py \
+  --trial-id controlled-public-chrome-h3-baseline-001 \
+  --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 \
+  --require-unlocked \
+  --output docs/results/controlled-public-baseline-unlock-check-20260624.md
+```
+
 ## 6. Controlled network-change run
 
-baseline summary가 `PASS`이고 preflight의 `can_run_network_change=true`가 된 뒤 실행한다.
+baseline unlock gate가 통과하고 preflight의 `can_run_network_change=true`가 된 뒤 실행한다.
 
 server side:
 

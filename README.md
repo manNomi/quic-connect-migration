@@ -50,7 +50,8 @@
 38. controlled-public private config를 공개 값 없이 채울 수 있도록 stage/owner/privacy/next action worksheet를 추가했다.
 39. controlled-public wrapper들이 직접 실행되더라도 기본 5GiB disk guard를 통과해야 heavy NetLog/qlog artifact 생성을 시작하게 했다.
 40. 최종 handover 본 실험을 재개하기 전 사용자가 제공해야 할 외부 입력을 public-safe handoff packet으로 생성하게 했다.
-41. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+41. controlled public Chrome H3 baseline이 active network-change trial을 열 수 있는지, PASS summary와 raw artifact bundle complete를 함께 확인하는 unlock gate를 추가했다.
+42. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -170,6 +171,7 @@
 - [Controlled public application H3 evidence gate](docs/results/controlled-public-application-h3-gate-20260624.md)
 - [Controlled public config check](docs/results/controlled-public-config-check-20260624.md)
 - [Controlled public config worksheet](docs/results/controlled-public-config-worksheet-20260624.md)
+- [Controlled public baseline unlock check](docs/results/controlled-public-baseline-unlock-check-20260624.md)
 - [Controlled public origin deploy packet](docs/results/controlled-public-origin-deploy-packet-20260624.md)
 - [Controlled public Chrome H3 network-change harness](docs/results/controlled-public-network-change-harness-20260624.md)
 - [Controlled public experiment readiness](docs/results/controlled-public-experiment-readiness-20260624.md)

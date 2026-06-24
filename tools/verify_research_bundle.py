@@ -93,6 +93,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     reproducibility_manifest_json = "data/reproducibility-manifest-20260624.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
+    controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
     cleanup_safety = "docs/results/artifact-cleanup-safety-audit-20260624.md"
@@ -123,6 +124,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         reproducibility_manifest_json = str(generated_dir / "reproducibility-manifest.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
+        controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
         cleanup_safety = str(generated_dir / "artifact-cleanup-safety-audit.md")
@@ -154,6 +156,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_final_handover_trial_artifact_bundle.py",
                 "tools/check_next_final_handover_trial_readiness.py",
+                "tools/check_controlled_public_baseline_unlock.py",
                 "tools/classify_chrome_h3_artifacts.py",
                 "tools/classify_controlled_public_h3_network_change.py",
                 "tools/compare_android_path_snapshots.py",
@@ -179,6 +182,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_reproducibility_manifest.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_controlled_public_config.py",
+                "tools/test_check_controlled_public_baseline_unlock.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
                 "tools/test_classify_chrome_h3_artifacts.py",
@@ -408,6 +412,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "controlled_public_baseline_unlock_regression",
+            [python_bin, "tools/test_check_controlled_public_baseline_unlock.py"],
+            {0},
+            30,
+        ),
+        (
             "controlled_public_config_regression",
             [python_bin, "tools/test_check_controlled_public_config.py"],
             {0},
@@ -422,6 +432,18 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "controlled_public_config_expected_incomplete",
             [python_bin, "tools/check_controlled_public_config.py", "--output", controlled_public_config],
+            {1},
+            30,
+        ),
+        (
+            "controlled_public_baseline_unlock_expected_incomplete",
+            [
+                python_bin,
+                "tools/check_controlled_public_baseline_unlock.py",
+                "--require-unlocked",
+                "--output",
+                controlled_public_baseline_unlock,
+            ],
             {1},
             30,
         ),

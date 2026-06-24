@@ -8,15 +8,15 @@
     "PASS_NEGATIVE_CONTROL": 18
   },
   "verification": {
-    "checks": "59",
-    "passed": "59",
+    "checks": "61",
+    "passed": "61",
     "ok": "yes"
   },
   "ci": {
-    "available": "yes",
-    "status": "completed",
-    "conclusion": "success",
-    "run_id": "28106548984"
+    "available": "not-requested",
+    "status": "-",
+    "conclusion": "-",
+    "run_id": "-"
   },
   "final_browser_handover": "0/6",
   "planned_execution_state_counts": {
