@@ -11,6 +11,7 @@ Android Chrome에서 controlled public WebPKI origin의 long-running HTTP/3 work
 ## 2. 추가한 파일
 
 - `tools/run_android_chrome_navigation.py`
+- `tools/compare_android_path_snapshots.py`
 - `repro/quic-go-min-repro/scripts/run-android-chrome-controlled-public-network-change.sh`
 - `tools/classify_controlled_public_h3_network_change.py`의 `--browser-kind android-chrome` mode
 
@@ -73,6 +74,7 @@ ANDROID_CHROME_WAIT_SECONDS=18 \
 results/public-origin-readiness.json
 results/android-chrome-navigation.json
 results/network-change.json
+results/client-path-change-summary.json
 results/android-chrome-controlled-public-h3-network-change-summary.json
 android/connectivity-before.txt
 android/connectivity-command-before.txt
@@ -91,9 +93,11 @@ Android Chrome network-change summary에서 사용하는 핵심 classification:
 
 | classification | status | 의미 |
 | --- | --- | --- |
-| `possible_connection_migration_server_qlog_only` | `PASS_FEASIBILITY` | server remote tuple change와 qlog path validation은 있지만 browser-internal QUIC session evidence가 없음 |
+| `possible_connection_migration_server_qlog_only` | `PASS_FEASIBILITY` | Android active path change, server remote tuple change, qlog path validation은 있지만 browser-internal QUIC session evidence가 없음 |
 | `tuple_changed_without_path_validation` | `PASS_NEGATIVE_CONTROL` | network change 후 tuple은 바뀌었지만 QUIC path validation evidence 없음 |
 | `no_path_change_after_trigger` | `PASS_NEGATIVE_CONTROL` | trigger 이후 server tuple 변화 없음 |
+| `no_client_active_path_change_observed` | `PASS_NEGATIVE_CONTROL` | Android route/address snapshot에서 active path 변화가 관찰되지 않음 |
+| `path_snapshot_missing` | `PASS_NEGATIVE_CONTROL` | Android route/address snapshot이 부족해 active path change를 검증할 수 없음 |
 | `controlled_public_network_change_workload_failed` | `FAIL` | Android Chrome navigation 후 expected request count 미달 |
 
 ## 7. 논문상 의미
@@ -111,5 +115,6 @@ claim strength = feasibility unless stronger client-side QUIC logs are added
 1. ADB device 연결
 2. controlled public application H3 baseline PASS
 3. 실제 Wi-Fi/LTE 또는 active default network change command
-4. server qlog의 PATH_CHALLENGE/PATH_RESPONSE
-5. workload success/failure와 재시도 여부 기록
+4. `results/client-path-change-summary.json`의 `client_active_path_changed`
+5. server qlog의 PATH_CHALLENGE/PATH_RESPONSE
+6. workload success/failure와 재시도 여부 기록

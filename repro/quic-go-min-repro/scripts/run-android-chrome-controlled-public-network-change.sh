@@ -79,6 +79,14 @@ capture_android_snapshot "before"
   bash -lc "$NETWORK_CHANGE_CMD" || EXIT_CODE=$?
   COMPLETED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   capture_android_snapshot "command-after"
+  python3 "$PROJECT_ROOT/tools/compare_android_path_snapshots.py" \
+    --before-route "$ARTIFACT_DIR/android/ip-route-command-before.txt" \
+    --after-route "$ARTIFACT_DIR/android/ip-route-command-after.txt" \
+    --before-addr "$ARTIFACT_DIR/android/ip-addr-command-before.txt" \
+    --after-addr "$ARTIFACT_DIR/android/ip-addr-command-after.txt" \
+    --before-connectivity "$ARTIFACT_DIR/android/connectivity-command-before.txt" \
+    --after-connectivity "$ARTIFACT_DIR/android/connectivity-command-after.txt" \
+    --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
   python3 - "$ARTIFACT_DIR/results/network-change.json" "$EXIT_CODE" "$STARTED_AT" "$COMPLETED_AT" <<'PY'
 import json
 import sys
@@ -129,6 +137,17 @@ PY
 fi
 
 capture_android_snapshot "final"
+
+if [[ -f "$ARTIFACT_DIR/android/ip-route-command-before.txt" && -f "$ARTIFACT_DIR/android/ip-route-command-after.txt" && ! -f "$ARTIFACT_DIR/results/client-path-change-summary.json" ]]; then
+  python3 "$PROJECT_ROOT/tools/compare_android_path_snapshots.py" \
+    --before-route "$ARTIFACT_DIR/android/ip-route-command-before.txt" \
+    --after-route "$ARTIFACT_DIR/android/ip-route-command-after.txt" \
+    --before-addr "$ARTIFACT_DIR/android/ip-addr-command-before.txt" \
+    --after-addr "$ARTIFACT_DIR/android/ip-addr-command-after.txt" \
+    --before-connectivity "$ARTIFACT_DIR/android/connectivity-command-before.txt" \
+    --after-connectivity "$ARTIFACT_DIR/android/connectivity-command-after.txt" \
+    --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
+fi
 
 for _ in $(seq 1 "$SERVER_RESULT_WAIT_SECONDS"); do
   if [[ -f "$CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR/results/server.json" ]]; then

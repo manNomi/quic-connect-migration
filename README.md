@@ -42,7 +42,8 @@
 30. 최종 handover trial을 시작하기 전 필요한 config, storage, next-trial, active path, Android action을 우선순위별 checklist로 생성한다.
 31. next-trial readiness는 local client check와 public-origin-host TLS file check를 구분해 remote TLS path를 잘못 blocker로 보지 않게 했다.
 32. controlled-public network-change classifier는 client active path change evidence가 없으면 server tuple/qlog 단서만으로 `possible_connection_migration`를 주지 않도록 보수화했다.
-33. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
+33. Android Chrome wrapper가 ADB route/address/connectivity snapshot을 `client-path-change-summary.json`으로 요약해 P1 feasibility도 client active path gate를 통과할 수 있게 했다.
+34. 아직 Chrome/Android 실제 Wi-Fi/LTE handover나 CloudFront origin end-to-end continuity를 검증한 것은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -91,6 +92,7 @@
 │   ├── classify_controlled_public_h3_network_change.py
 │   ├── capture_network_path_snapshot.py
 │   ├── compare_network_path_snapshots.py
+│   ├── compare_android_path_snapshots.py
 │   ├── audit_final_browser_handover_trials.py
 │   ├── draft_final_handover_result_row.py
 │   ├── validate_final_handover_trial_artifact.py
@@ -112,6 +114,7 @@
 │   ├── test_check_next_final_handover_trial_readiness.py
 │   ├── test_build_final_handover_operator_checklist.py
 │   ├── test_classify_controlled_public_h3_network_change.py
+│   ├── test_compare_android_path_snapshots.py
 │   ├── test_check_controlled_public_config.py
 │   ├── verify_research_bundle.py
 │   ├── scan_public_alt_svc.py

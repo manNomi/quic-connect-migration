@@ -545,7 +545,7 @@ classification:
 | `path_snapshot_missing` | client path snapshot이 없어 active handover evidence 부족 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
-## 17. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`
+## 17. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`, `tools/compare_android_path_snapshots.py`
 
 browser network-change 실험에서 client 측 route/interface 변화가 실제로 있었는지 기록한다.
 
@@ -575,6 +575,21 @@ python3 tools/compare_network_path_snapshots.py \
 | `path_snapshot_missing` | before/after snapshot 부족 |
 
 이 도구는 server tuple/qlog evidence를 대체하지 않는다. inactive interface toggle 같은 no-op control을 분리하기 위한 보조 evidence다.
+
+Android Chrome 실험은 macOS route snapshot 대신 ADB로 수집한 `ip route`, `ip addr show`, `dumpsys connectivity` 결과를 비교한다.
+
+```bash
+python3 tools/compare_android_path_snapshots.py \
+  --before-route artifacts/RUN_ID/android/ip-route-command-before.txt \
+  --after-route artifacts/RUN_ID/android/ip-route-command-after.txt \
+  --before-addr artifacts/RUN_ID/android/ip-addr-command-before.txt \
+  --after-addr artifacts/RUN_ID/android/ip-addr-command-after.txt \
+  --before-connectivity artifacts/RUN_ID/android/connectivity-command-before.txt \
+  --after-connectivity artifacts/RUN_ID/android/connectivity-command-after.txt \
+  --output artifacts/RUN_ID/results/client-path-change-summary.json
+```
+
+`run-android-chrome-controlled-public-network-change.sh`는 이 summary를 자동 생성한다. 이 파일이 없거나 `client_active_path_changed`가 아니면 server tuple/qlog evidence만으로 Android P1 feasibility를 세지 않는다.
 
 ## 18. `harness/scripts/controlled-public-preflight.sh`
 

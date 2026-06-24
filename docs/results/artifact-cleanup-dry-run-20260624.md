@@ -7,13 +7,13 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | target free GiB | `5.0` |
-| current free | `2.5 GiB` |
-| free space needed | `2.5 GiB` |
-| selected candidates | `40/40` |
-| reclaimable from selected | `908.3 MiB` |
-| projected free after selected cleanup | `3.4 GiB` |
-| target met by selected cleanup | `no` |
-| remaining external cleanup gap | `1.6 GiB` |
+| current free | `4.1 GiB` |
+| free space needed | `888.0 MiB` |
+| selected candidates | `30/40` |
+| reclaimable from selected | `889.3 MiB` |
+| projected free after selected cleanup | `5.0 GiB` |
+| target met by selected cleanup | `yes` |
+| remaining external cleanup gap | `0 B` |
 
 ## Selected Candidates
 
@@ -49,16 +49,6 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-sequence-check` | `3.7 MiB` | 172 | 59 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-poll-realtime-nochange-check` | `3.7 MiB` | 166 | 59 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-sequence-classifier-regression-2` | `3.6 MiB` | 170 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-noheartbeat-20260624` | `3.6 MiB` | 168 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-heartbeat-20260624-rerun` | `3.6 MiB` | 165 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-noheartbeat-inactive-if-toggle-20260624` | `3.5 MiB` | 170 | 59 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-downlink-heartbeat-inactive-if-toggle-20260624` | `3.5 MiB` | 170 | 59 |
-| `repro/quic-go-min-repro/artifacts/verify-local-h3-midflight` | `1.8 MiB` | 22 | 10 |
-| `repro/quic-go-min-repro/artifacts/local-20260624T045440Z` | `1.4 MiB` | 11 | 4 |
-| `repro/quic-go-min-repro/artifacts/verify-local-happy-named` | `1.4 MiB` | 11 | 4 |
-| `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | 10 | 4 |
-| `repro/quic-go-min-repro/artifacts/controlled-public-preflight-20260624T094137Z` | `1.8 KiB` | 2 | 1 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | 1 | 6 |
 
 ## Note
 
