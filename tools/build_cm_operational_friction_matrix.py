@@ -206,7 +206,7 @@ def write_csv(matrix: dict[str, object], output: Path) -> None:
     assert isinstance(rows, list)
     fieldnames = list(rows[0].keys()) if rows else []
     with output.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=fieldnames)
+        writer = csv.DictWriter(fp, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
