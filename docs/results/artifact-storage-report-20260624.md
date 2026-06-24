@@ -6,15 +6,15 @@ Generated: `2026-06-24`
 
 | metric | value |
 | --- | --- |
-| disk free | `26.4 GiB` |
-| disk free GiB | `26.37` |
-| local artifact roots total | `11.6 GiB` |
+| disk free | `25.3 GiB` |
+| disk free GiB | `25.29` |
+| local artifact roots total | `12.7 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `11.6 GiB` | 29284 | 10860 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `12.7 GiB` | 30651 | 11444 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -24,6 +24,7 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-boundary-repetition-20260624` | `3.3 GiB` | 4083 | 1747 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-return-path-sweep-20260624` | `2.5 GiB` | 3175 | 1359 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-fine-boundary-20260624` | `2.1 GiB` | 2725 | 1165 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624` | `1.1 GiB` | 1367 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624` | `1.1 GiB` | 1364 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624` | `812.7 MiB` | 1160 | 486 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | 897 | 377 |
@@ -40,7 +41,6 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-instagram-home-20260624` | `20.4 MiB` | 283 | 62 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-timing-late-20260624` | `17.2 MiB` | 412 | 145 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-upload-timing-early-20260624` | `17.2 MiB` | 412 | 145 |
-| `repro/quic-go-min-repro/artifacts/chrome-public-h3-facebook-home-20260624` | `15.5 MiB` | 268 | 62 |
 
 ## Cleanup Note
 

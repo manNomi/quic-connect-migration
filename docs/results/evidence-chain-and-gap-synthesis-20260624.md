@@ -245,6 +245,14 @@ Retry boundary의 핵심:
 - 그러나 모든 retry PASS row가 `nat_rebinding_multiple_quic_sessions`였으므로, 이는 single-session browser CM success가 아니다.
 - 논문에서는 "transport continuity", "browser session continuity", "application task recovery"를 별도 outcome으로 보고해야 한다.
 
+[Chrome H3 Local Rebinding Transient Upload Retry Long Outage](./chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.md)는 같은 retry strategy를 6000ms/9000ms로 확장했다.
+
+Long-outage retry control의 핵심:
+
+- 6000ms와 9000ms upload retry는 각각 3/3 PASS였다.
+- 6000ms row는 약 15.5초, 9000ms row는 약 19.7초에 완료되어 recovery latency가 outage window와 함께 커졌다.
+- Chrome target QUIC session count는 2-3개였으므로, long-outage retry도 browser CM success가 아니라 application-level recovery evidence다.
+
 ## 5. 논문용 evidence chain
 
 논문에서 browser-level HTTP/3 CM success를 주장하려면 최소 다음이 필요하다.

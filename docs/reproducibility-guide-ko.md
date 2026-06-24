@@ -1276,7 +1276,53 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 모든 row가 `nat_rebinding_multiple_quic_sessions`였으므로, 이는 application retry/reconnect recovery control이며 single-session browser CM success가 아니다.
 - 이 결과도 local recovery control이며 public active handover evidence가 아니다.
 
-## 27. Artifact 정책
+## 27. Chrome local upload retry long outage 재현
+
+동일한 retry strategy가 6000ms/9000ms처럼 더 긴 outage에서도 작업 완료를 회복하는지 확인한다. 9000ms row는 완료 시간이 길어지므로 Chrome hold/timeout과 server timeout을 더 길게 둔다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry-long-outage-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624 \
+BASE_PORT=8100 \
+REBIND_AFTER=500ms \
+TIMEOUT=75s \
+CHROME_TIMEOUT_SECONDS=65 \
+CHROME_HOLD_SECONDS=34 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="6000 9000" \
+WORKLOADS="upload" \
+UPLOAD_RETRY_ATTEMPTS=1 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+논문용 summary 등록:
+
+```bash
+cd ../..
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624/rep01-upload-1m-drop-ab-6000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624/rep01-upload-1m-drop-ab-9000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624/rep02-upload-1m-drop-ab-6000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624/rep02-upload-1m-drop-ab-9000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624/rep03-upload-1m-drop-ab-6000ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624/rep03-upload-1m-drop-ab-9000ms \
+  --output docs/results/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.md \
+  --csv-output data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv
+```
+
+현재 관찰된 기준:
+
+- 6000ms retry upload는 `3/3 PASS`
+- 9000ms retry upload는 `3/3 PASS`
+- 6000ms row는 약 15.5초, 9000ms row는 약 19.7초에 완료됐다.
+- Chrome target QUIC session count는 2-3개였으므로, 이 결과도 application retry/reconnect recovery control이며 single-session browser CM success가 아니다.
+
+## 28. Artifact 정책
 
 commit 가능한 것:
 

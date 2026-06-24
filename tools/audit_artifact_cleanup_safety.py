@@ -28,6 +28,7 @@ DEFAULT_ARTIFACT_REFERENCE_CSVS = [
     "data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv",
     "data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv",
     "data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv",
+    "data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv",
     "data/quic-go-h3-midflight-repetition-summary-20260624.csv",
 ]
 DEFAULT_OUTPUT = "docs/results/artifact-cleanup-safety-audit-20260624.md"

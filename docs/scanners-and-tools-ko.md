@@ -1961,3 +1961,34 @@ EXPECTED_REQUESTS=3 \
 - 5000ms retry upload `3/3 PASS`
 - 모든 row가 `/upload-sink` 2회와 최종 1MiB 수신을 기록했다.
 - 모든 row의 Chrome target QUIC session count는 2였으므로, 이 결과는 application task recovery control이지 single-session browser CM evidence가 아니다.
+
+## 56. Chrome transient upload retry long outage
+
+같은 retry strategy를 6000ms/9000ms outage window로 확장한다. no-retry transient sweep에서는 6000ms/9000ms가 실패했으므로, retry가 longer outage에서 task completion을 회복하는지와 latency/session-count cost가 어떻게 나타나는지 확인한다.
+
+실행:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-retry-long-outage-20260624 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624 \
+BASE_PORT=8100 \
+REBIND_AFTER=500ms \
+TIMEOUT=75s \
+CHROME_TIMEOUT_SECONDS=65 \
+CHROME_HOLD_SECONDS=34 \
+REPETITIONS=3 \
+DROP_WINDOWS_MS="6000 9000" \
+WORKLOADS="upload" \
+UPLOAD_RETRY_ATTEMPTS=1 \
+UPLOAD_RETRY_DELAY_MS=1000 \
+EXPECTED_REQUESTS=3 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+현재 결과:
+
+- 6000ms retry upload `3/3 PASS`
+- 9000ms retry upload `3/3 PASS`
+- DOM complete timing은 6000ms row 약 15.5초, 9000ms row 약 19.7초였다.
+- Chrome target QUIC session count는 2-3개였으므로, longer outage retry도 single-session browser CM evidence가 아니다.
