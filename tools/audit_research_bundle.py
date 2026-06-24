@@ -28,6 +28,7 @@ REQUIRED_FILES = [
     "data/implementation-survey.csv",
     "docs/reproducibility-guide-ko.md",
     "docs/scanners-and-tools-ko.md",
+    "docs/results/artifact-cleanup-plan-20260624.md",
     "docs/results/evidence-chain-and-gap-synthesis-20260624.md",
     "docs/results/final-browser-handover-experiment-protocol-20260624.md",
     "docs/results/paper-tables-20260624.md",

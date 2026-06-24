@@ -112,6 +112,7 @@
 - [Research completion audit](docs/results/research-completion-audit-20260624.md)
 - [Generated research bundle audit](docs/results/research-bundle-audit-20260624.md)
 - [Local artifact storage audit](docs/results/artifact-storage-report-20260624.md)
+- [Local artifact cleanup plan](docs/results/artifact-cleanup-plan-20260624.md)
 - [논문 상세안 한국어](paper/detailed-paper-plan-ko.md)
 - [논문 상세안 영어](paper/detailed-paper-plan-en.md)
 - [논문 Results 섹션 한국어](paper/results-section-ko.md)
