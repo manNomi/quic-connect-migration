@@ -145,6 +145,11 @@ def test_preflight_defaults_match_final_baseline_trial_id() -> None:
     text = Path("harness/scripts/controlled-public-preflight.sh").read_text(encoding="utf-8")
     assert "controlled-public-h3-application-baseline-001" not in text
     assert "controlled-public-h3-network-change-001" not in text
+    assert 'REDACT_SENSITIVE="${REDACT_SENSITIVE:-1}"' in text
+    assert "READINESS_ARGS+=(--redact-sensitive)" in text
+    assert "<redacted-public-origin-host>" in text
+    assert "<redacted-tls-cert-file>" in text
+    assert "<redacted-network-change-cmd>" in text
     assert "CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-chrome-h3-baseline-001" in text
     assert "controlled-public-chrome-downlink-noheartbeat-network-change-001" in text
     assert "CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-4" in text

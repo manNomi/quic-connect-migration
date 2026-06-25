@@ -12,6 +12,7 @@ from pathlib import Path
 
 from check_handover_readiness import HandoverReadiness, build_readiness
 from check_public_origin_readiness import PublicOriginReadiness, build_result
+from check_public_origin_readiness import payload as public_origin_readiness_payload
 
 
 @dataclass
@@ -82,12 +83,10 @@ def server_artifact_check(path: str | None) -> ArtifactCheck:
     )
 
 
-def public_origin_payload(result: PublicOriginReadiness | None) -> dict[str, object] | None:
+def public_origin_payload(result: PublicOriginReadiness | None, redact_sensitive: bool = False) -> dict[str, object] | None:
     if result is None:
         return None
-    payload = asdict(result)
-    payload["ok"] = result.ok
-    return payload
+    return public_origin_readiness_payload(result, redact_sensitive)
 
 
 def command_preview(command: str) -> str:
@@ -95,6 +94,106 @@ def command_preview(command: str) -> str:
     if len(stripped) <= 120:
         return stripped
     return stripped[:117] + "..."
+
+
+def redacted_configured(value: str) -> str:
+    return "<configured>" if value else ""
+
+
+def redact_public_origin_dict(public_origin: dict[str, object]) -> dict[str, object]:
+    redacted = dict(public_origin)
+    tokens: list[str] = []
+    for key in ("url", "host", "tls_subject", "tls_issuer"):
+        value = public_origin.get(key)
+        if isinstance(value, str) and value:
+            tokens.append(value)
+    dns_addresses = public_origin.get("dns_addresses")
+    if isinstance(dns_addresses, list):
+        tokens.extend(str(address) for address in dns_addresses if address)
+
+    def scrub(value: str) -> str:
+        clean = value
+        for token in tokens:
+            clean = clean.replace(token, "<redacted>")
+        return clean
+
+    if public_origin.get("url"):
+        redacted["url"] = "<redacted-url>"
+    if public_origin.get("host"):
+        redacted["host"] = "<redacted-host>"
+    if isinstance(dns_addresses, list):
+        redacted["dns_addresses"] = ["<redacted-address>"] if dns_addresses else []
+    if public_origin.get("tls_subject"):
+        redacted["tls_subject"] = "<redacted-tls-subject>"
+    if public_origin.get("tls_issuer"):
+        redacted["tls_issuer"] = "<redacted-tls-issuer>"
+    alt_svc_headers = public_origin.get("alt_svc_headers")
+    if isinstance(alt_svc_headers, str):
+        redacted["alt_svc_headers"] = scrub(alt_svc_headers)
+    errors = public_origin.get("errors")
+    if isinstance(errors, list):
+        redacted["errors"] = [scrub(str(error)) for error in errors]
+    redacted["redacted"] = True
+    return redacted
+
+
+def redact_readiness_text(value: str, readiness: ControlledPublicExperimentReadiness) -> str:
+    tokens = [
+        readiness.public_origin_url,
+        readiness.network_change_command_preview,
+        readiness.baseline_summary.path,
+        readiness.server_artifact.path,
+    ]
+    if readiness.public_origin:
+        for key in ("url", "host", "tls_subject", "tls_issuer"):
+            item = readiness.public_origin.get(key)
+            if isinstance(item, str):
+                tokens.append(item)
+        dns_addresses = readiness.public_origin.get("dns_addresses")
+        if isinstance(dns_addresses, list):
+            tokens.extend(str(address) for address in dns_addresses if address)
+    clean = value
+    for token in tokens:
+        if token:
+            clean = clean.replace(token, "<redacted>")
+    return clean
+
+
+def redact_active_interfaces(items: list[dict[str, object]]) -> list[dict[str, object]]:
+    redacted: list[dict[str, object]] = []
+    for item in items:
+        next_item = dict(item)
+        ipv4 = next_item.get("ipv4")
+        if isinstance(ipv4, list):
+            next_item["ipv4"] = ["<redacted-address>"] if ipv4 else []
+        redacted.append(next_item)
+    return redacted
+
+
+def active_interface_summary(items: list[dict[str, object]], redact_sensitive: bool) -> str:
+    summaries: list[str] = []
+    for item in items:
+        name = str(item.get("name") or "-")
+        ipv4 = item.get("ipv4")
+        addresses = [str(address) for address in ipv4] if isinstance(ipv4, list) else []
+        if redact_sensitive:
+            count = len(addresses)
+            suffix = "es" if count != 1 else ""
+            address_text = f"<redacted:{count} address{suffix}>" if count else "-"
+        else:
+            address_text = ",".join(addresses)
+        summaries.append(f"{name}({address_text})")
+    return ", ".join(summaries) or "-"
+
+
+def artifact_summary(check: ArtifactCheck, redact_sensitive: bool) -> str:
+    if check.status:
+        return check.status
+    if check.error:
+        return check.error
+    if redact_sensitive and check.path:
+        return "<configured>"
+    return "-"
 
 
 def build_experiment_readiness(
@@ -163,17 +262,42 @@ def build_experiment_readiness(
     )
 
 
-def emit_markdown(readiness: ControlledPublicExperimentReadiness) -> str:
-    active = ", ".join(
-        f"{item['name']}({','.join(item['ipv4'])})"
-        for item in readiness.active_ipv4_interfaces
-    ) or "-"
-    blockers = "; ".join(readiness.blockers) or "-"
+def payload(readiness: ControlledPublicExperimentReadiness, redact_sensitive: bool = False) -> dict[str, object]:
+    data = asdict(readiness)
+    data["redacted"] = redact_sensitive
+    if redact_sensitive:
+        data["public_origin_url"] = redacted_configured(readiness.public_origin_url)
+        data["network_change_command_preview"] = redacted_configured(readiness.network_change_command_preview)
+        data["baseline_summary"]["path"] = redacted_configured(readiness.baseline_summary.path)
+        data["server_artifact"]["path"] = redacted_configured(readiness.server_artifact.path)
+        data["active_ipv4_interfaces"] = redact_active_interfaces(readiness.active_ipv4_interfaces)
+        data["blockers"] = [redact_readiness_text(str(blocker), readiness) for blocker in readiness.blockers]
+        if readiness.public_origin:
+            data["public_origin"] = redact_public_origin_dict(readiness.public_origin)
+    return data
+
+
+def emit_markdown(readiness: ControlledPublicExperimentReadiness, redact_sensitive: bool = False) -> str:
+    active = active_interface_summary(readiness.active_ipv4_interfaces, redact_sensitive)
+    blocker_items = (
+        [redact_readiness_text(blocker, readiness) for blocker in readiness.blockers]
+        if redact_sensitive
+        else readiness.blockers
+    )
+    blockers = "; ".join(blocker_items) or "-"
     public_origin = readiness.public_origin or {}
+    public_origin_url = redacted_configured(readiness.public_origin_url) if redact_sensitive else readiness.public_origin_url
+    network_change_preview = (
+        redacted_configured(readiness.network_change_command_preview)
+        if redact_sensitive
+        else readiness.network_change_command_preview
+    )
+    baseline_summary = artifact_summary(readiness.baseline_summary, redact_sensitive)
+    server_artifact = artifact_summary(readiness.server_artifact, redact_sensitive)
     lines = [
         "| check | value |",
         "| --- | --- |",
-        f"| public origin URL | `{readiness.public_origin_url or '-'}` |",
+        f"| public origin URL | `{public_origin_url or '-'}` |",
         f"| controlled public origin ready | `{str(readiness.controlled_public_origin_ready).lower()}` |",
         f"| h3 Alt-Svc | `{str(public_origin.get('has_h3_alt_svc', False)).lower()}` |",
         f"| final status | `{public_origin.get('final_status') or '-'}` |",
@@ -183,10 +307,11 @@ def emit_markdown(readiness: ControlledPublicExperimentReadiness) -> str:
         f"| active IPv4 interfaces | `{active}` |",
         f"| secondary path ready | `{str(readiness.secondary_path_ready).lower()}` |",
         f"| NETWORK_CHANGE_CMD present | `{str(readiness.network_change_command_present).lower()}` |",
+        f"| NETWORK_CHANGE_CMD preview | `{network_change_preview or '-'}` |",
         f"| can run application H3 baseline | `{str(readiness.can_run_application_h3_baseline).lower()}` |",
         f"| can run network-change | `{str(readiness.can_run_network_change).lower()}` |",
-        f"| baseline summary | `{readiness.baseline_summary.status or readiness.baseline_summary.error or '-'}` |",
-        f"| server artifact | `{readiness.server_artifact.status or readiness.server_artifact.error or '-'}` |",
+        f"| baseline summary | `{baseline_summary}` |",
+        f"| server artifact | `{server_artifact}` |",
         f"| blockers | `{blockers}` |",
     ]
     return "\n".join(lines) + "\n"
@@ -200,6 +325,7 @@ def main() -> int:
     parser.add_argument("--network-change-cmd", default="")
     parser.add_argument("--chrome-bin", default="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
     parser.add_argument("--timeout", type=int, default=8)
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output")
     args = parser.parse_args()
@@ -213,9 +339,9 @@ def main() -> int:
         args.timeout,
     )
     if args.format == "json":
-        text = json.dumps(asdict(readiness), indent=2, ensure_ascii=False) + "\n"
+        text = json.dumps(payload(readiness, args.redact_sensitive), indent=2, ensure_ascii=False) + "\n"
     else:
-        text = emit_markdown(readiness)
+        text = emit_markdown(readiness, redact_sensitive=args.redact_sensitive)
     if args.output:
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)

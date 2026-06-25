@@ -342,8 +342,9 @@ controlled public origin preflight:
 
 1. local-only public origin config를 로드한다.
 2. public URL, baseline summary, server artifact, secondary path, `NETWORK_CHANGE_CMD`를 통합 점검한다.
-3. ignored artifact directory에 readiness JSON/Markdown을 남긴다.
-4. server, baseline, network-change 실행 command template을 출력한다.
+3. 기본 `REDACT_SENSITIVE=1`로 private origin, TLS path, command preview, active IPv4를 public-safe placeholder로 치환한다.
+4. ignored artifact directory에 readiness JSON/Markdown을 남긴다.
+5. server, baseline, network-change 실행 command template을 출력한다.
 
 ## 8. Chrome 브라우저 baseline
 

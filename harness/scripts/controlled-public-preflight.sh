@@ -31,6 +31,26 @@ CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR="${CONTROLLED_PUBLIC_NETWOR
 NETWORK_CHANGE_CMD="${NETWORK_CHANGE_CMD:-}"
 CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 CONTROLLED_PUBLIC_READINESS_TIMEOUT="${CONTROLLED_PUBLIC_READINESS_TIMEOUT:-8}"
+REDACT_SENSITIVE="${REDACT_SENSITIVE:-1}"
+
+preview_value() {
+  local value="${1:-}"
+  if [[ "$REDACT_SENSITIVE" == "1" && -n "$value" ]]; then
+    printf '<configured>'
+  else
+    printf '%s' "$value"
+  fi
+}
+
+redacted_arg() {
+  local value="${1:-}"
+  local placeholder="${2:-<configured>}"
+  if [[ "$REDACT_SENSITIVE" == "1" && -n "$value" ]]; then
+    printf '%s' "$placeholder"
+  else
+    printf '%s' "$value"
+  fi
+}
 
 READINESS_JSON="$RESULT_DIR/controlled-public-experiment-readiness.json"
 READINESS_MD="$RESULT_DIR/controlled-public-experiment-readiness.md"
@@ -44,15 +64,20 @@ READINESS_ARGS=(
   --timeout "$CONTROLLED_PUBLIC_READINESS_TIMEOUT"
 )
 
+if [[ "$REDACT_SENSITIVE" == "1" ]]; then
+  READINESS_ARGS+=(--redact-sensitive)
+fi
+
 echo "== Controlled public origin preflight =="
 print_kv "config_file" "$CONFIG_FILE"
 print_kv "config_present" "$CONFIG_PRESENT"
+print_kv "redact_sensitive" "$REDACT_SENSITIVE"
 print_kv "run_id" "$RUN_ID"
 print_kv "artifact_dir" "$ARTIFACT_DIR"
-print_kv "public_origin_url" "${PUBLIC_ORIGIN_URL:-}"
-print_kv "network_change_url" "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-}"
-print_kv "baseline_summary" "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-}"
-print_kv "server_artifact_dir" "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-}"
+print_kv "public_origin_url" "$(preview_value "${PUBLIC_ORIGIN_URL:-}")"
+print_kv "network_change_url" "$(preview_value "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-}")"
+print_kv "baseline_summary" "$(preview_value "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-}")"
+print_kv "server_artifact_dir" "$(preview_value "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-}")"
 print_kv "network_change_cmd_present" "$([[ -n "$NETWORK_CHANGE_CMD" ]] && echo true || echo false)"
 echo
 
@@ -84,9 +109,9 @@ else
   printf '  RUN_ID=%q ARTIFACT_DIR=%q PUBLIC_ORIGIN_HOST=%q TLS_CERT_FILE=%q TLS_KEY_FILE=%q PUBLIC_ORIGIN_PORT=%q EXPECTED_REQUESTS=%q ./scripts/run-controlled-public-h3-server.sh\n' \
     "${CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-chrome-h3-baseline-001}" \
     "${CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" \
-    "${PUBLIC_ORIGIN_HOST:-h3.example.com}" \
-    "${TLS_CERT_FILE:-/etc/letsencrypt/live/h3.example.com/fullchain.pem}" \
-    "${TLS_KEY_FILE:-/etc/letsencrypt/live/h3.example.com/privkey.pem}" \
+    "$(redacted_arg "${PUBLIC_ORIGIN_HOST:-h3.example.com}" "<redacted-public-origin-host>")" \
+    "$(redacted_arg "${TLS_CERT_FILE:-/etc/letsencrypt/live/h3.example.com/fullchain.pem}" "<redacted-tls-cert-file>")" \
+    "$(redacted_arg "${TLS_KEY_FILE:-/etc/letsencrypt/live/h3.example.com/privkey.pem}" "<redacted-tls-key-file>")" \
     "${PUBLIC_ORIGIN_PORT:-443}" \
     "${CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-4}"
   echo "baseline:"
@@ -94,8 +119,8 @@ else
   printf '  RUN_ID=%q ARTIFACT_DIR=%q CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=%q REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 PUBLIC_ORIGIN_URL=%q CHROME_TIMEOUT_SECONDS=%q CHROME_VIRTUAL_TIME_BUDGET_MS=%q ./scripts/run-controlled-public-h3-browser-baseline.sh\n' \
     "${CONTROLLED_PUBLIC_BASELINE_RUN_ID:-controlled-public-chrome-h3-baseline-001}" \
     "${CONTROLLED_PUBLIC_BASELINE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" \
-    "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" \
-    "${PUBLIC_ORIGIN_URL:-https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow}" \
+    "$(redacted_arg "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-artifacts/controlled-public-chrome-h3-baseline-001}" "<redacted-server-artifact-dir>")" \
+    "$(redacted_arg "${PUBLIC_ORIGIN_URL:-https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow}" "<redacted-public-origin-url>")" \
     "${CHROME_TIMEOUT_SECONDS:-30}" \
     "${CHROME_VIRTUAL_TIME_BUDGET_MS:-0}"
   echo "network-change:"
@@ -103,11 +128,11 @@ else
   printf '  RUN_ID=%q ARTIFACT_DIR=%q CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=%q CONTROLLED_PUBLIC_BASELINE_SUMMARY=%q PUBLIC_ORIGIN_URL=%q NETWORK_CHANGE_AFTER_SECONDS=%q NETWORK_CHANGE_CMD=%q ./scripts/run-controlled-public-h3-network-change.sh\n' \
     "${CONTROLLED_PUBLIC_NETWORK_CHANGE_RUN_ID:-controlled-public-chrome-downlink-noheartbeat-network-change-001}" \
     "${CONTROLLED_PUBLIC_NETWORK_CHANGE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001}" \
-    "$CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR" \
-    "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json}" \
-    "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat}" \
+    "$(redacted_arg "$CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR" "<redacted-network-change-server-artifact-dir>")" \
+    "$(redacted_arg "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json}" "<redacted-baseline-summary>")" \
+    "$(redacted_arg "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat}" "<redacted-public-origin-network-change-url>")" \
     "${NETWORK_CHANGE_AFTER_SECONDS:-3}" \
-    "${NETWORK_CHANGE_CMD:-}"
+    "$(redacted_arg "${NETWORK_CHANGE_CMD:-}" "<redacted-network-change-cmd>")"
 fi
 
 echo

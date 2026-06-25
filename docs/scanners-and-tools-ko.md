@@ -524,8 +524,11 @@ python3 tools/check_controlled_public_experiment_readiness.py \
   --public-origin-url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
   --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
   --network-change-cmd '...' \
+  --redact-sensitive \
   --format markdown
 ```
+
+`--redact-sensitive`를 사용하면 controlled public URL, DNS address, active IPv4, TLS subject/issuer, artifact path, network-change command preview를 공개 가능한 placeholder로 치환한다.
 
 주요 output:
 
@@ -716,6 +719,7 @@ bash harness/scripts/controlled-public-preflight.sh
 | readiness JSON | ignored artifact directory에 `controlled-public-experiment-readiness.json` 생성 |
 | readiness Markdown | 같은 directory에 사람이 읽을 summary 생성 |
 | next commands | server, baseline, network-change command template 출력 |
+| redaction | 기본값 `REDACT_SENSITIVE=1`로 private origin, TLS path, command 값을 placeholder로 출력 |
 | safety | 실제 `NETWORK_CHANGE_CMD`는 실행하지 않음 |
 
 이 wrapper가 `controlled_public_preflight=ready`를 출력해야 `run-controlled-public-h3-network-change.sh`를 본 실험으로 실행할 수 있다. `blocked`이면 출력된 blockers를 실험 전제 미충족으로 기록한다.
