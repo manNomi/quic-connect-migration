@@ -26,7 +26,7 @@ This audit is public-safe. It does not create new experiment results; it checks 
 | workload_transition | `upload-4900ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | workload_transition | `upload-5000ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | upload_recovery | `upload-retry0-4600ms` | 3/3 | 0.438-1.000 | stable_candidate | directional local evidence; avoid reliability probability wording | 13 |
-| upload_recovery | `upload-retry0-4750ms` | 1/3 | 0.061-0.792 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
+| upload_recovery | `upload-retry0-4750ms` | 3/6 | 0.188-0.812 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
 | upload_recovery | `upload-retry0-4900ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | upload_recovery | `upload-retry0-5000ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | upload_recovery | `upload-retry1-4900ms` | 3/3 | 0.438-1.000 | stable_candidate | directional local evidence; avoid reliability probability wording | 13 |

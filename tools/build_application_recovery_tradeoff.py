@@ -19,6 +19,10 @@ DATASETS = [
         "data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv",
     ),
     (
+        "no-retry upload 4750ms replication",
+        "data/chrome-h3-rebinding-transient-upload-4750-replication-20260625.csv",
+    ),
+    (
         "one-retry upload boundary",
         "data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv",
     ),
@@ -95,6 +99,12 @@ def int_value(value: str | None, default: int = 0) -> int:
     return int(value)
 
 
+def canonical_retry_delay_ms(retry_attempts: int, retry_delay_ms: int) -> int:
+    if retry_attempts == 0:
+        return 0
+    return retry_delay_ms
+
+
 def int_values(rows: list[dict[str, str]], key: str) -> list[int]:
     values: list[int] = []
     for row in rows:
@@ -123,9 +133,13 @@ def fmt_counter(counter: Counter[str]) -> str:
 def group_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     grouped: dict[GroupKey, list[dict[str, str]]] = defaultdict(list)
     for row in rows:
+        retry_attempts = int_value(row.get("upload_retry_attempts"))
         key = GroupKey(
-            retry_attempts=int_value(row.get("upload_retry_attempts")),
-            retry_delay_ms=int_value(row.get("upload_retry_delay_ms")),
+            retry_attempts=retry_attempts,
+            retry_delay_ms=canonical_retry_delay_ms(
+                retry_attempts,
+                int_value(row.get("upload_retry_delay_ms")),
+            ),
             drop_window_ms=int_value(row.get("drop_window_ms")),
         )
         grouped[key].append(row)

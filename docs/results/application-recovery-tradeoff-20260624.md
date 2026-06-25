@@ -7,6 +7,7 @@ This synthesis combines the Chrome forced-H3 local UDP rebinding upload-only bou
 ## Source CSVs
 
 - `data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv` (no-retry upload fine boundary)
+- `data/chrome-h3-rebinding-transient-upload-4750-replication-20260625.csv` (no-retry upload 4750ms replication)
 - `data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv` (one-retry upload boundary)
 - `data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv` (one-retry long outage)
 - `data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv` (one-retry stress boundary)
@@ -26,7 +27,7 @@ This synthesis combines the Chrome forced-H3 local UDP rebinding upload-only bou
 | retry | drop window | PASS/runs | app complete | complete ms | error ms | Chrome sessions | upload attempts | upload bytes | classification |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0x/0ms | 4600ms | 3/3 | 3 | 10215-10230ms | - | 1-1 | 1-1 | 1048576-1048576 | nat_rebinding_path_validation_without_observed_tuple_change=3 |
-| 0x/0ms | 4750ms | 1/3 | 1 | 11261-11261ms | 6917-6921ms | 1-2 | 1-1 | 0-1048576 | browser_application_task_failed=2; nat_rebinding_path_validation_without_observed_tuple_change=1 |
+| 0x/0ms | 4750ms | 3/6 | 3 | 10466-11261ms | 6917-6921ms | 1-2 | 1-1 | 0-1048576 | browser_application_task_failed=3; nat_rebinding_path_validation_without_observed_tuple_change=3 |
 | 0x/0ms | 4900ms | 0/3 | 0 | - | 6919-6922ms | 2-2 | 1-1 | 0-0 | browser_application_task_failed=3 |
 | 0x/0ms | 5000ms | 0/3 | 0 | - | 6917-6920ms | 2-2 | 1-1 | 0-0 | browser_application_task_failed=3 |
 | 1x/1000ms | 4900ms | 3/3 | 3 | 15470-15476ms | - | 2-2 | 2-2 | 1048576-1048576 | nat_rebinding_multiple_quic_sessions=3 |
