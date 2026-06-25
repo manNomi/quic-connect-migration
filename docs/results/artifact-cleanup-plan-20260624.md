@@ -4,7 +4,7 @@
 
 ## 1. 목적
 
-현재 browser handover 본 실험을 막는 blocker 중 하나는 낮은 디스크 여유 공간이다. 2026-06-24 기준 local artifact root는 약 908.3 MiB이고, 전체 볼륨 여유 공간은 약 2.44 GiB다. 장시간 Chrome NetLog, qlog, packet capture를 수집하려면 최소 5 GiB 이상을 확보하는 것이 안전하다.
+현재 browser handover 본 실험을 막는 blocker 중 하나는 낮은 디스크 여유 공간이다. 2026-06-24 기준 local artifact root는 약 908.3 MiB이고, 전체 볼륨 여유 공간은 약 2.44 GiB다. 장시간 Chrome NetLog, qlog, packet capture를 수집하려면 최소 floor 5 GiB에 다음 capture reserve 2 GiB를 더한 7 GiB 이상을 확보하는 것이 안전하다.
 
 이 문서는 삭제를 실행하지 않는다. 어떤 artifact가 cleanup 후보인지와 삭제 전 확인할 조건만 정리한다.
 
@@ -22,7 +22,7 @@
 | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | 5.9 MiB | public H3 discovery/control artifact |
 | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | 5.7 MiB | wrapper smoke/control artifact |
 
-상위 두 directory만 정리해도 약 766 MiB를 회수할 수 있다. 다만 전체 볼륨 여유 공간을 5 GiB 이상으로 만들려면 repository 외부의 다른 파일 정리도 필요할 가능성이 높다.
+상위 두 directory만 정리해도 약 766 MiB를 회수할 수 있다. 다만 전체 볼륨 여유 공간을 7 GiB 이상으로 만들려면 repository 외부의 다른 파일 정리도 필요할 가능성이 높다.
 
 ## 3. 삭제 전 확인 조건
 
@@ -53,5 +53,5 @@ python3 tools/audit_research_bundle.py --output docs/results/research-bundle-aud
 디스크 상태는 실험 결과 자체가 아니라 실험 가능성 조건이다. 논문에는 raw artifact를 포함하지 않지만, 재현성 부록에서는 다음처럼 기록할 수 있다.
 
 ```text
-Large browser NetLog/qlog artifacts were kept outside the public repository. Storage readiness was tracked separately, and heavy capture experiments were deferred when free disk space fell below the 5 GiB safety threshold.
+Large browser NetLog/qlog artifacts were kept outside the public repository. Storage readiness was tracked separately, and heavy capture experiments were deferred when free disk space fell below the 7 GiB final-capture threshold.
 ```

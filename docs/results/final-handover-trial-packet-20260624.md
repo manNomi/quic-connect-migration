@@ -20,6 +20,7 @@ Generated: `2026-06-25`
 - public_origin_host_configured
 - public_origin_url_configured
 - tls_config_present
+- disk_ready
 
 ## Final Protocol Blockers
 

@@ -128,7 +128,7 @@ def build_actions(
             [
                 "bash harness/scripts/final-handover-run-next.sh",
                 "python3 tools/select_next_final_handover_trial.py --output docs/results/final-handover-next-trial-20260624.md",
-                "python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md",
+                "python3 tools/check_next_final_handover_trial_readiness.py --min-disk-gib 7 --output docs/results/final-handover-next-trial-readiness-20260624.md",
             ],
         )
     else:
@@ -141,7 +141,7 @@ def build_actions(
             "Missing required gates: " + ", ".join(next_readiness["missing_required_gates"] or ["none"]),
             [
                 "bash harness/scripts/final-handover-run-next.sh",
-                "python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md",
+                "python3 tools/check_next_final_handover_trial_readiness.py --min-disk-gib 7 --output docs/results/final-handover-next-trial-readiness-20260624.md",
             ],
         )
 
@@ -304,7 +304,7 @@ def main() -> int:
     parser.add_argument("--chrome-bin", default=DEFAULT_CHROME)
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
-    parser.add_argument("--min-disk-gib", type=float, default=5.0)
+    parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--target-free-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)

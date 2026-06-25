@@ -31,7 +31,7 @@ Origin host requirements:
 - TCP 443 and UDP 443 are open from the browser client.
 - A WebPKI certificate chain and matching private key are installed locally on the origin host.
 - The operator can SSH to the host.
-- At least 5 GiB free disk is available for qlog/NetLog-related artifacts.
+- At least 7 GiB free disk is available for qlog/NetLog-related artifacts.
 
 Upload package and bootstrap script:
 
@@ -65,7 +65,7 @@ ssh ec2-user@<origin-host-or-ip> 'cd /home/ec2-user/quic-go-min-repro && sudo en
   EXPECTED_REQUESTS=4 \
   TIMEOUT=300s \
   COMPLETION_GRACE=2s \
-  MIN_ARTIFACT_FREE_GIB=5 \
+  MIN_ARTIFACT_FREE_GIB=7 \
   ./scripts/run-controlled-public-h3-server.sh'
 ```
 

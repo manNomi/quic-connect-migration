@@ -338,8 +338,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         blockers.append("Android device is not connected over ADB")
     if not handover.aws_identity_ok:
         blockers.append("AWS identity is not available")
-    if handover.disk_available_gib < 5:
-        blockers.append("disk free space is below 5 GiB; large NetLog/pcap experiments should wait")
+    if handover.disk_available_gib < 7:
+        blockers.append("disk free space is below 7 GiB; large NetLog/pcap experiments should wait")
     if not public_browser_network_change_done:
         blockers.append("browser active network-change result is not done")
     if not controlled_public_result_done:

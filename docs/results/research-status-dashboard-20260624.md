@@ -39,6 +39,7 @@ Clear needed-now external inputs first: `disk-free-space`, `controlled-public-ba
 | `baseline_summary_ready` | 7 |
 | `controlled_public_config_present` | 10 |
 | `desktop_secondary_path_ready` | 7 |
+| `disk_ready` | 10 |
 | `network_change_command_present` | 7 |
 | `public_origin_host_configured` | 10 |
 | `public_origin_url_configured` | 10 |

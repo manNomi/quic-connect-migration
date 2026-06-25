@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-MIN_GIB="${1:-${MIN_ARTIFACT_FREE_GIB:-5}}"
+MIN_GIB="${1:-${MIN_ARTIFACT_FREE_GIB:-7}}"
 CHECK_DIR="${2:-.}"
 
 if [[ "$MIN_GIB" == "0" || "$MIN_GIB" == "0.0" ]]; then

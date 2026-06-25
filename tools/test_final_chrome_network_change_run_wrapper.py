@@ -90,6 +90,7 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
             "set -euo pipefail\n"
             "mkdir -p \"$ARTIFACT_DIR/results\"\n"
             "printf '%s\\n' \"$RUN_ID\" > \"$ARTIFACT_DIR/results/run-id.txt\"\n"
+            "printf '%s\\n' \"$MIN_ARTIFACT_FREE_GIB\" > \"$ARTIFACT_DIR/results/min-free.txt\"\n"
             f"touch {marker.as_posix()!r}\n",
             encoding="utf-8",
         )
@@ -117,6 +118,7 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
         assert (artifact_dir / "results" / "run-id.txt").read_text(encoding="utf-8").strip() == (
             "controlled-public-chrome-downlink-noheartbeat-network-change-001"
         )
+        assert (artifact_dir / "results" / "min-free.txt").read_text(encoding="utf-8").strip() == "7"
         assert "AKIA" not in combined
         assert "PRIVATE_KEY" not in combined
 

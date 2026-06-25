@@ -12,11 +12,11 @@ This report is public-safe. It never prints qlog, NetLog, pcap, keylog, credenti
 | executed | `no` |
 | target free GiB | `7.0` |
 | candidate policy | `review-unreferenced` |
-| selected candidates | `24` |
+| selected candidates | `25` |
 | selected reclaimable | `66.8 MiB` |
-| remaining gap before cleanup | `1.0 GiB` |
-| disk free before | `5.9 GiB` |
-| disk free after | `5.9 GiB` |
+| remaining gap before cleanup | `31.5 MiB` |
+| disk free before | `6.9 GiB` |
+| disk free after | `6.9 GiB` |
 | deleted count | `0` |
 | confirm required | `DELETE-REVIEW-UNREFERENCED` |
 | confirm ok | `no` |
@@ -50,6 +50,7 @@ This report is public-safe. It never prints qlog, NetLog, pcap, keylog, credenti
 | `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | validated review-unreferenced directory |
 | `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044030Z` | `7.8 KiB` | validated review-unreferenced directory |
 | `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044223Z` | `6.9 KiB` | validated review-unreferenced directory |
+| `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T052907Z` | `6.8 KiB` | validated review-unreferenced directory |
 | `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041952Z` | `6.7 KiB` | validated review-unreferenced directory |
 | `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041915Z` | `4.2 KiB` | validated review-unreferenced directory |
 | `would-delete` | `yes` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | validated review-unreferenced directory |

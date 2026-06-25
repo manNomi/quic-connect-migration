@@ -86,6 +86,7 @@ def test_wrapper_runs_nochange_runner_after_baseline_config_ready() -> None:
             "mkdir -p \"$ARTIFACT_DIR/results\"\n"
             "printf '%s\\n' \"$RUN_ID\" > \"$ARTIFACT_DIR/results/run-id.txt\"\n"
             "printf '%s\\n' \"$CONTROLLED_PUBLIC_EXPECTED_REQUESTS\" > \"$ARTIFACT_DIR/results/expected-requests.txt\"\n"
+            "printf '%s\\n' \"$MIN_ARTIFACT_FREE_GIB\" > \"$ARTIFACT_DIR/results/min-free.txt\"\n"
             f"touch {marker.as_posix()!r}\n",
             encoding="utf-8",
         )
@@ -112,6 +113,7 @@ def test_wrapper_runs_nochange_runner_after_baseline_config_ready() -> None:
             "controlled-public-chrome-downlink-noheartbeat-nochange-001"
         )
         assert (artifact_dir / "results" / "expected-requests.txt").read_text(encoding="utf-8").strip() == "4"
+        assert (artifact_dir / "results" / "min-free.txt").read_text(encoding="utf-8").strip() == "7"
         assert "AKIA" not in combined
         assert "PRIVATE_KEY" not in combined
 

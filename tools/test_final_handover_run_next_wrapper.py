@@ -39,7 +39,7 @@ def stub_wrapper(path: Path, marker: Path) -> Path:
     path.write_text(
         "#!/usr/bin/env bash\n"
         "set -euo pipefail\n"
-        f"printf 'trial=%s\\nphase_expected=%s\\n' \"$TRIAL_ID\" \"${{CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-}}\" > {marker.as_posix()!r}\n",
+        f"printf 'trial=%s\\nphase_expected=%s\\nmin_free=%s\\n' \"$TRIAL_ID\" \"${{CONTROLLED_PUBLIC_EXPECTED_REQUESTS:-}}\" \"${{MIN_ARTIFACT_FREE_GIB:-}}\" > {marker.as_posix()!r}\n",
         encoding="utf-8",
     )
     path.chmod(0o755)
@@ -85,6 +85,12 @@ def test_blocked_readiness_does_not_dispatch() -> None:
         assert not marker.exists()
 
 
+def test_dispatcher_uses_seven_gib_readiness_gate_by_default() -> None:
+    text = WRAPPER.read_text(encoding="utf-8")
+    assert 'FINAL_HANDOVER_MIN_DISK_GIB="${FINAL_HANDOVER_MIN_DISK_GIB:-7}"' in text
+    assert '--min-disk-gib "$FINAL_HANDOVER_MIN_DISK_GIB"' in text
+
+
 def test_baseline_trial_dispatches_p0_wrapper() -> None:
     with TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
@@ -103,7 +109,9 @@ def test_baseline_trial_dispatches_p0_wrapper() -> None:
         proc = run_dispatcher(env)
         assert proc.returncode == 0
         assert "dispatch=final-p0-baseline-run" in proc.stdout
-        assert "trial=controlled-public-chrome-h3-baseline-001" in marker.read_text(encoding="utf-8")
+        marker_text = marker.read_text(encoding="utf-8")
+        assert "trial=controlled-public-chrome-h3-baseline-001" in marker_text
+        assert "min_free=7" in marker_text
 
 
 def test_nochange_trial_dispatches_nochange_wrapper() -> None:
@@ -127,6 +135,7 @@ def test_nochange_trial_dispatches_nochange_wrapper() -> None:
         assert "dispatch=final-chrome-nochange-run" in proc.stdout
         assert "trial=controlled-public-chrome-downlink-heartbeat-nochange-001" in marker_text
         assert "phase_expected=6" in marker_text
+        assert "min_free=7" in marker_text
 
 
 def test_active_trial_dispatches_network_change_wrapper() -> None:
@@ -150,10 +159,12 @@ def test_active_trial_dispatches_network_change_wrapper() -> None:
         assert "dispatch=final-chrome-network-change-run" in proc.stdout
         assert "trial=controlled-public-chrome-downlink-noheartbeat-network-change-001" in marker_text
         assert "phase_expected=2" in marker_text
+        assert "min_free=7" in marker_text
 
 
 def main() -> int:
     test_blocked_readiness_does_not_dispatch()
+    test_dispatcher_uses_seven_gib_readiness_gate_by_default()
     test_baseline_trial_dispatches_p0_wrapper()
     test_nochange_trial_dispatches_nochange_wrapper()
     test_active_trial_dispatches_network_change_wrapper()

@@ -15,7 +15,7 @@
 | gate | 통과 기준 |
 | --- | --- |
 | publication bundle | `python3 tools/validate_publication_bundle.py` 통과 |
-| storage | `python3 tools/report_artifact_storage.py` 기준 disk free 5 GiB 이상 권장 |
+| storage | `python3 tools/report_artifact_storage.py` 기준 disk free 7 GiB 이상 권장 |
 | controlled public origin | DNS, WebPKI TLS, TCP/UDP 443, Alt-Svc 준비 |
 | baseline | controlled public application H3 baseline summary가 `PASS` 또는 browser별 허용 `PASS_FEASIBILITY` |
 | active path-change | command 전후 실제 default/target path 또는 Android active network가 바뀜 |

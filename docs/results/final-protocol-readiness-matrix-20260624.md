@@ -25,7 +25,7 @@ This matrix is public-safe. It evaluates every planned final browser handover ex
 | `tls_config_present` | `no` |
 | `tls_cert_file_exists` | `no` |
 | `tls_key_file_exists` | `no` |
-| `disk_ready` | `yes` |
+| `disk_ready` | `no` |
 | `chrome_ready` | `yes` |
 | `safari_webdriver_ready` | `yes` |
 | `android_adb_ready` | `no` |
@@ -38,13 +38,13 @@ This matrix is public-safe. It evaluates every planned final browser handover ex
 
 | order | trial | phase | browser | state | missing gates |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | `controlled-public-chrome-h3-baseline-001` | baseline | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present` |
-| 2 | `controlled-public-chrome-downlink-noheartbeat-nochange-001` | no-change-baseline | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present` |
-| 3 | `controlled-public-chrome-downlink-heartbeat-nochange-001` | no-change-baseline | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present` |
-| 4 | `controlled-public-chrome-downlink-noheartbeat-network-change-001` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
-| 5 | `controlled-public-chrome-downlink-noheartbeat-network-change-002` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
-| 6 | `controlled-public-chrome-downlink-noheartbeat-network-change-003` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
-| 7 | `controlled-public-chrome-downlink-heartbeat-network-change-001` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
-| 8 | `controlled-public-chrome-downlink-heartbeat-network-change-002` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
-| 9 | `controlled-public-chrome-downlink-heartbeat-network-change-003` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
-| 10 | `controlled-public-safari-downlink-network-change-001` | p1-feasibility | Safari | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, desktop_secondary_path_ready, baseline_summary_ready, network_change_command_present` |
+| 1 | `controlled-public-chrome-h3-baseline-001` | baseline | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready` |
+| 2 | `controlled-public-chrome-downlink-noheartbeat-nochange-001` | no-change-baseline | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready` |
+| 3 | `controlled-public-chrome-downlink-heartbeat-nochange-001` | no-change-baseline | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready` |
+| 4 | `controlled-public-chrome-downlink-noheartbeat-network-change-001` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
+| 5 | `controlled-public-chrome-downlink-noheartbeat-network-change-002` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
+| 6 | `controlled-public-chrome-downlink-noheartbeat-network-change-003` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
+| 7 | `controlled-public-chrome-downlink-heartbeat-network-change-001` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
+| 8 | `controlled-public-chrome-downlink-heartbeat-network-change-002` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
+| 9 | `controlled-public-chrome-downlink-heartbeat-network-change-003` | active-network-change | Chrome | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, baseline_summary_ready, network_change_command_present, desktop_secondary_path_ready` |
+| 10 | `controlled-public-safari-downlink-network-change-001` | p1-feasibility | Safari | `blocked` | `controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present, disk_ready, desktop_secondary_path_ready, baseline_summary_ready, network_change_command_present` |

@@ -788,7 +788,7 @@ python3 tools/build_final_handover_trial_packet.py \
   --output docs/results/final-handover-trial-packet-20260624.md
 ```
 
-`final-handover-trial-packet`의 server/client 명령만 실행한다. controlled-public wrapper는 기본적으로 `MIN_ARTIFACT_FREE_GIB=5`를 요구하며, 디스크가 부족하면 artifact를 만들기 전에 중단한다. 작은 smoke test가 아닌 본 실험에서 `MIN_ARTIFACT_FREE_GIB=0`으로 우회하지 않는다.
+`final-handover-trial-packet`의 server/client 명령만 실행한다. controlled-public wrapper는 기본적으로 `MIN_ARTIFACT_FREE_GIB=7`을 요구하며, 디스크가 부족하면 artifact를 만들기 전에 중단한다. 작은 smoke test가 아닌 본 실험에서 `MIN_ARTIFACT_FREE_GIB=0`으로 우회하지 않는다.
 
 trial 실행 후에는 registration wrapper를 먼저 dry-run으로 실행한다. 이 wrapper는 raw artifact bundle check, 단일 artifact validation, CSV append dry-run을 순서대로 실행하고, 기본값으로는 CSV를 수정하지 않는다.
 

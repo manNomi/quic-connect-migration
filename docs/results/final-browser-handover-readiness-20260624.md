@@ -26,8 +26,8 @@ Generated: `2026-06-25`
 | secondary path ready | `no` |
 | Android ready | `no` |
 | Safari WebDriver ready | `yes` |
-| disk ready | `yes` |
-| disk free GiB | `5.92` |
+| disk ready | `no` |
+| disk free GiB | `6.9` |
 
 ## Blockers
 
@@ -38,6 +38,7 @@ Generated: `2026-06-25`
 - NETWORK_CHANGE_CMD is not configured
 - desktop active secondary path is not ready
 - Android device is not connected over ADB
+- disk free space is below 7.0 GiB
 - final browser handover trial protocol is not complete
 
 ## Final Trial Blockers

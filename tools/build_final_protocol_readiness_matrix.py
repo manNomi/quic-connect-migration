@@ -211,7 +211,7 @@ def write_csv(matrix: dict[str, Any], output: Path) -> None:
         "missing_gates",
     ]
     with output.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=fieldnames)
+        writer = csv.DictWriter(fp, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in matrix["rows"]:
             writer.writerow({**row, "required_gates": ";".join(row["required_gates"]), "missing_gates": ";".join(row["missing_gates"])})
@@ -228,7 +228,7 @@ def main() -> int:
     parser.add_argument("--chrome-bin", default=DEFAULT_CHROME)
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
-    parser.add_argument("--min-disk-gib", type=float, default=5.0)
+    parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--csv-output", default=DEFAULT_CSV_OUTPUT)

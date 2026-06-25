@@ -8,13 +8,13 @@ Generated: `2026-06-25`
 | --- | --- |
 | target free GiB | `7.0` |
 | candidate policy | `review-unreferenced` |
-| current free | `5.9 GiB` |
-| free space needed | `1.1 GiB` |
-| selected candidates | `24/24` |
+| current free | `6.9 GiB` |
+| free space needed | `98.2 MiB` |
+| selected candidates | `25/25` |
 | reclaimable from selected | `66.8 MiB` |
-| projected free after selected cleanup | `6.0 GiB` |
+| projected free after selected cleanup | `7.0 GiB` |
 | target met by selected cleanup | `no` |
-| remaining external cleanup gap | `1.0 GiB` |
+| remaining external cleanup gap | `31.4 MiB` |
 
 ## Selected Candidates
 
@@ -41,6 +41,7 @@ Generated: `2026-06-25`
 | `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | 10 | 4 | `review-unreferenced` |
 | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044030Z` | `7.8 KiB` | 3 | 1 | `review-unreferenced` |
 | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044223Z` | `6.9 KiB` | 2 | 1 | `review-unreferenced` |
+| `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T052907Z` | `6.8 KiB` | 2 | 1 | `review-unreferenced` |
 | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041952Z` | `6.7 KiB` | 2 | 1 | `review-unreferenced` |
 | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041915Z` | `4.2 KiB` | 1 | 1 | `review-unreferenced` |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | 1 | 6 | `review-unreferenced` |

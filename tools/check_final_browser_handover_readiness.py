@@ -282,7 +282,7 @@ def main() -> int:
     parser.add_argument("--chrome-bin", default=DEFAULT_CHROME)
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
-    parser.add_argument("--min-disk-gib", type=float, default=5.0)
+    parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--check-public-origin", action="store_true")
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
