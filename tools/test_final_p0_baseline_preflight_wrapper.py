@@ -52,8 +52,21 @@ def test_wrapper_fails_closed_without_private_config() -> None:
         assert "PRIVATE_KEY" not in combined
 
 
+def test_wrapper_redacts_local_config_plans_by_default() -> None:
+    text = WRAPPER.read_text(encoding="utf-8")
+    assert 'USE_LOCAL_CONFIG_FOR_PLAN="${USE_LOCAL_CONFIG_FOR_PLAN:-1}"' in text
+    assert 'REDACT_SENSITIVE="${REDACT_SENSITIVE:-1}"' in text
+    assert "SELECTION_FLAGS+=(--use-local-config)" in text
+    assert "READINESS_FLAGS+=(--use-local-config-for-plan)" in text
+    assert "CHECKLIST_FLAGS+=(--use-local-config-for-plan)" in text
+    assert "SELECTION_FLAGS+=(--redact-sensitive)" in text
+    assert "READINESS_FLAGS+=(--redact-sensitive)" in text
+    assert "CHECKLIST_FLAGS+=(--redact-sensitive)" in text
+
+
 def main() -> int:
     test_wrapper_fails_closed_without_private_config()
+    test_wrapper_redacts_local_config_plans_by_default()
     print("final_p0_baseline_preflight_wrapper=ok")
     return 0
 

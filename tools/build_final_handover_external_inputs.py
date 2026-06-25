@@ -158,6 +158,7 @@ def handover_payload(handover: Any, aws_identity: Any) -> dict[str, Any]:
 
 
 def build_handoff(args: argparse.Namespace) -> dict[str, Any]:
+    redact_sensitive = bool(getattr(args, "redact_sensitive", False))
     worksheet = build_worksheet(Path(args.config), check_files=args.check_local_files)
     checklist_args = argparse.Namespace(
         config=args.config,
@@ -173,6 +174,7 @@ def build_handoff(args: argparse.Namespace) -> dict[str, Any]:
         target_free_gib=args.target_free_gib,
         check_local_files=args.check_local_files,
         timeout=args.timeout,
+        redact_sensitive=redact_sensitive,
     )
     checklist = build_checklist(checklist_args)
     aws_identity = build_aws_identity_readiness(timeout=args.timeout)
@@ -183,6 +185,7 @@ def build_handoff(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "check_date": utc_date_iso(),
         "public_safe": True,
+        "redact_sensitive": redact_sensitive,
         "next_trial": checklist["next_trial"],
         "next_trial_ready": now_ready,
         "can_codex_run_next_trial_now": now_ready and not needed_now,
@@ -209,6 +212,7 @@ def emit_markdown(handoff: dict[str, Any]) -> str:
         f"| Codex can run next trial now | `{'yes' if handoff['can_codex_run_next_trial_now'] else 'no'}` |",
         f"| needed-now inputs | `{handoff['needed_now_count']}` |",
         f"| public safe | `{'yes' if handoff['public_safe'] else 'no'}` |",
+        f"| sensitive values redacted | `{'yes' if handoff.get('redact_sensitive') else 'no'}` |",
         "",
         "## Inputs",
         "",
@@ -239,6 +243,7 @@ def main() -> int:
     parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--target-free-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--timeout", type=float, default=5.0)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)

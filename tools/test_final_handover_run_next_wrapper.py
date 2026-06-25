@@ -91,6 +91,14 @@ def test_dispatcher_uses_seven_gib_readiness_gate_by_default() -> None:
     assert '--min-disk-gib "$FINAL_HANDOVER_MIN_DISK_GIB"' in text
 
 
+def test_dispatcher_redacts_local_config_plans_by_default() -> None:
+    text = WRAPPER.read_text(encoding="utf-8")
+    assert 'USE_LOCAL_CONFIG_FOR_PLAN="${USE_LOCAL_CONFIG_FOR_PLAN:-1}"' in text
+    assert 'REDACT_SENSITIVE="${REDACT_SENSITIVE:-1}"' in text
+    assert "READINESS_COMMON_ARGS+=(--use-local-config-for-plan)" in text
+    assert "READINESS_COMMON_ARGS+=(--redact-sensitive)" in text
+
+
 def test_baseline_trial_dispatches_p0_wrapper() -> None:
     with TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
@@ -165,6 +173,7 @@ def test_active_trial_dispatches_network_change_wrapper() -> None:
 def main() -> int:
     test_blocked_readiness_does_not_dispatch()
     test_dispatcher_uses_seven_gib_readiness_gate_by_default()
+    test_dispatcher_redacts_local_config_plans_by_default()
     test_baseline_trial_dispatches_p0_wrapper()
     test_nochange_trial_dispatches_nochange_wrapper()
     test_active_trial_dispatches_network_change_wrapper()

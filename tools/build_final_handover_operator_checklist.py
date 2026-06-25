@@ -192,6 +192,7 @@ def build_actions(
 
 
 def build_checklist(args: argparse.Namespace) -> dict[str, Any]:
+    redact_sensitive = bool(getattr(args, "redact_sensitive", False))
     config = build_config_report(Path(args.config), check_files=False)
     next_args = argparse.Namespace(
         experiments=args.experiments,
@@ -207,6 +208,7 @@ def build_checklist(args: argparse.Namespace) -> dict[str, Any]:
         check_local_files=args.check_local_files,
         check_public_origin=False,
         timeout=args.timeout,
+        redact_sensitive=redact_sensitive,
     )
     next_readiness = build_next_readiness(next_args)
     cleanup = build_cleanup_plan(
@@ -222,6 +224,7 @@ def build_checklist(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "generated": utc_date_iso(),
         "objective": "complete final controlled-public/browser handover evidence for the QUIC/HTTP/3 CM paper",
+        "redact_sensitive": redact_sensitive,
         "next_trial": next_readiness["next_trial"],
         "next_trial_ready": next_readiness["ready"],
         "config": {
@@ -258,6 +261,7 @@ def emit_markdown(checklist: dict[str, Any]) -> str:
         "| --- | --- |",
         f"| next trial | `{next_trial['trial_id'] if next_trial else '-'}` |",
         f"| next trial ready | `{'yes' if checklist['next_trial_ready'] else 'no'}` |",
+        f"| sensitive values redacted | `{'yes' if checklist.get('redact_sensitive') else 'no'}` |",
         f"| baseline config ready | `{'yes' if checklist['config']['baseline_config_ready'] else 'no'}` |",
         f"| active config ready | `{'yes' if checklist['config']['active_network_change_config_ready'] else 'no'}` |",
         f"| Android config ready | `{'yes' if checklist['config']['android_network_change_config_ready'] else 'no'}` |",
@@ -307,6 +311,7 @@ def main() -> int:
     parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--target-free-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)

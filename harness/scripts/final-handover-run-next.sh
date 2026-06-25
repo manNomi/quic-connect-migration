@@ -20,6 +20,7 @@ READINESS_MD="${FINAL_HANDOVER_RUN_NEXT_READINESS_MD:-$OUTPUT_DIR/next-trial-rea
 RUNNER_LOG="${FINAL_HANDOVER_RUN_NEXT_RUNNER_LOG:-$OUTPUT_DIR/runner.log}"
 RUN_POSTCHECKS="${RUN_POSTCHECKS:-1}"
 USE_LOCAL_CONFIG_FOR_PLAN="${USE_LOCAL_CONFIG_FOR_PLAN:-1}"
+REDACT_SENSITIVE="${REDACT_SENSITIVE:-1}"
 FINAL_HANDOVER_MIN_DISK_GIB="${FINAL_HANDOVER_MIN_DISK_GIB:-7}"
 MIN_ARTIFACT_FREE_GIB="${MIN_ARTIFACT_FREE_GIB:-$FINAL_HANDOVER_MIN_DISK_GIB}"
 
@@ -60,21 +61,30 @@ print_kv "config_file" "$CONFIG_FILE"
 print_kv "output_dir" "$OUTPUT_DIR"
 print_kv "readiness_json" "$READINESS_JSON"
 print_kv "run_postchecks" "$RUN_POSTCHECKS"
+print_kv "use_local_config_for_plan" "$USE_LOCAL_CONFIG_FOR_PLAN"
+print_kv "redact_sensitive" "$REDACT_SENSITIVE"
 print_kv "final_handover_min_disk_gib" "$FINAL_HANDOVER_MIN_DISK_GIB"
 print_kv "min_artifact_free_gib" "$MIN_ARTIFACT_FREE_GIB"
+
+READINESS_COMMON_ARGS=(
+  --config "$CONFIG_FILE"
+  --min-disk-gib "$FINAL_HANDOVER_MIN_DISK_GIB"
+)
+if [[ "$USE_LOCAL_CONFIG_FOR_PLAN" == "1" ]]; then
+  READINESS_COMMON_ARGS+=(--use-local-config-for-plan)
+fi
+if [[ "$REDACT_SENSITIVE" == "1" ]]; then
+  READINESS_COMMON_ARGS+=(--redact-sensitive)
+fi
 
 if [[ -n "${FINAL_HANDOVER_RUN_NEXT_READINESS_FIXTURE:-}" ]]; then
   cp "$FINAL_HANDOVER_RUN_NEXT_READINESS_FIXTURE" "$READINESS_JSON"
 else
   READINESS_ARGS=(
-    --config "$CONFIG_FILE"
-    --min-disk-gib "$FINAL_HANDOVER_MIN_DISK_GIB"
+    "${READINESS_COMMON_ARGS[@]}"
     --format json
     --output "$READINESS_JSON"
   )
-  if [[ "$USE_LOCAL_CONFIG_FOR_PLAN" == "1" ]]; then
-    READINESS_ARGS+=(--use-local-config-for-plan)
-  fi
   set +e
   python3 tools/check_next_final_handover_trial_readiness.py "${READINESS_ARGS[@]}"
   READINESS_STATUS="$?"
@@ -83,8 +93,7 @@ else
 fi
 
 python3 tools/check_next_final_handover_trial_readiness.py \
-  --config "$CONFIG_FILE" \
-  --min-disk-gib "$FINAL_HANDOVER_MIN_DISK_GIB" \
+  "${READINESS_COMMON_ARGS[@]}" \
   --format markdown \
   --output "$READINESS_MD" >/dev/null || true
 

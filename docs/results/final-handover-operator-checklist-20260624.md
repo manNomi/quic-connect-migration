@@ -8,6 +8,7 @@ Generated: `2026-06-25`
 | --- | --- |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
 | next trial ready | `no` |
+| sensitive values redacted | `no` |
 | baseline config ready | `no` |
 | active config ready | `no` |
 | Android config ready | `no` |
