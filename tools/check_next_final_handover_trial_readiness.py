@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from check_browser_cm_observability import build_readiness as build_observability_readiness
+from check_controlled_public_config import check_key
 from check_final_browser_handover_readiness import baseline_ready, command_preview, parse_env_file
 from check_handover_readiness import build_readiness as build_handover_readiness
 from check_public_origin_readiness import build_result as build_public_origin_readiness
@@ -73,6 +74,10 @@ def evaluate_required_gates(required: list[str], gates: dict[str, bool]) -> tupl
     return not blockers, blockers
 
 
+def valid_config_key(values: dict[str, str], key: str) -> bool:
+    return check_key(key, values).valid
+
+
 def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     selection_args = argparse.Namespace(
         experiments=args.experiments,
@@ -112,9 +117,9 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     gates = {
         "next_trial_selected": next_trial is not None,
         "controlled_public_config_present": Path(args.config).exists(),
-        "public_origin_host_configured": bool(values.get("PUBLIC_ORIGIN_HOST")),
-        "public_origin_url_configured": bool(values.get("PUBLIC_ORIGIN_URL")),
-        "tls_config_present": bool(tls_cert) and bool(tls_key),
+        "public_origin_host_configured": valid_config_key(values, "PUBLIC_ORIGIN_HOST"),
+        "public_origin_url_configured": valid_config_key(values, "PUBLIC_ORIGIN_URL"),
+        "tls_config_present": valid_config_key(values, "TLS_CERT_FILE") and valid_config_key(values, "TLS_KEY_FILE"),
         "tls_cert_file_exists": bool(tls_cert) and Path(tls_cert).exists(),
         "tls_key_file_exists": bool(tls_key) and Path(tls_key).exists(),
         "disk_ready": disk_ready,
@@ -123,9 +128,8 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         "android_adb_ready": handover.android_ready,
         "desktop_secondary_path_ready": handover.secondary_path_ready,
         "baseline_summary_ready": baseline["ready"],
-        "network_change_command_present": bool(network_change_cmd.strip()) and network_change_cmd.strip() != "...",
-        "android_network_change_command_present": bool(android_network_change_cmd.strip())
-        and android_network_change_cmd.strip() != "...",
+        "network_change_command_present": valid_config_key(values, "NETWORK_CHANGE_CMD"),
+        "android_network_change_command_present": valid_config_key(values, "ANDROID_NETWORK_CHANGE_CMD"),
     }
     if args.check_public_origin:
         gates["public_origin_live_ready"] = bool(public_origin and public_origin.get("ok"))

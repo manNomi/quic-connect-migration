@@ -7,14 +7,14 @@ Generated: `2026-06-25`
 | metric | value |
 | --- | --- |
 | disk free | `6.9 GiB` |
-| disk free GiB | `6.9` |
+| disk free GiB | `6.91` |
 | local artifact roots total | `24.6 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `24.6 GiB` | 45681 | 17872 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `24.6 GiB` | 45689 | 17881 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories

@@ -71,6 +71,8 @@ def parse_env_file(path: Path) -> dict[str, str]:
 
 
 def config_readiness(config_path: Path, overrides: dict[str, str]) -> tuple[ConfigReadiness, dict[str, str]]:
+    from check_controlled_public_config import check_key
+
     values = parse_env_file(config_path)
     values.update({key: value for key, value in overrides.items() if value})
     network_change_cmd = values.get("NETWORK_CHANGE_CMD", "")
@@ -79,11 +81,11 @@ def config_readiness(config_path: Path, overrides: dict[str, str]) -> tuple[Conf
     readiness = ConfigReadiness(
         path=config_path.as_posix(),
         exists=config_path.exists(),
-        public_origin_url_present=bool(values.get("PUBLIC_ORIGIN_URL")),
-        public_origin_network_change_url_present=bool(values.get("PUBLIC_ORIGIN_NETWORK_CHANGE_URL")),
-        baseline_summary_present=bool(values.get("CONTROLLED_PUBLIC_BASELINE_SUMMARY")),
-        network_change_command_present=bool(network_change_cmd.strip()) and network_change_cmd.strip() != "...",
-        android_network_change_command_present=bool(android_network_change_cmd.strip()) and android_network_change_cmd.strip() != "...",
+        public_origin_url_present=check_key("PUBLIC_ORIGIN_URL", values).valid,
+        public_origin_network_change_url_present=check_key("PUBLIC_ORIGIN_NETWORK_CHANGE_URL", values).valid,
+        baseline_summary_present=check_key("CONTROLLED_PUBLIC_BASELINE_SUMMARY", values).valid,
+        network_change_command_present=check_key("NETWORK_CHANGE_CMD", values).valid,
+        android_network_change_command_present=check_key("ANDROID_NETWORK_CHANGE_CMD", values).valid,
         public_origin_url_preview=command_preview(public_origin_url),
         network_change_command_preview=command_preview(network_change_cmd),
         android_network_change_command_preview=command_preview(android_network_change_cmd),

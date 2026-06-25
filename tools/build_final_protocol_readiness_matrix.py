@@ -13,6 +13,7 @@ from typing import Any
 
 from audit_final_browser_handover_trials import build_audit, load_rows
 from check_browser_cm_observability import build_readiness as build_observability_readiness
+from check_controlled_public_config import check_key
 from check_final_browser_handover_readiness import baseline_ready, command_preview, parse_env_file
 from check_handover_readiness import build_readiness as build_handover_readiness
 from check_next_final_handover_trial_readiness import DEFAULT_CHROME, DEFAULT_SAFARI, DEFAULT_SAFARI_TP
@@ -71,9 +72,9 @@ def build_global_gates(args: argparse.Namespace) -> dict[str, bool]:
     android_network_change_cmd = values.get("ANDROID_NETWORK_CHANGE_CMD", "")
     return {
         "controlled_public_config_present": Path(args.config).exists(),
-        "public_origin_host_configured": bool(values.get("PUBLIC_ORIGIN_HOST")),
-        "public_origin_url_configured": bool(values.get("PUBLIC_ORIGIN_URL")),
-        "tls_config_present": bool(tls_cert) and bool(tls_key),
+        "public_origin_host_configured": check_key("PUBLIC_ORIGIN_HOST", values).valid,
+        "public_origin_url_configured": check_key("PUBLIC_ORIGIN_URL", values).valid,
+        "tls_config_present": check_key("TLS_CERT_FILE", values).valid and check_key("TLS_KEY_FILE", values).valid,
         "tls_cert_file_exists": bool(tls_cert) and Path(tls_cert).exists(),
         "tls_key_file_exists": bool(tls_key) and Path(tls_key).exists(),
         "disk_ready": float(storage["disk"]["free_gib"]) >= args.min_disk_gib,
@@ -82,9 +83,8 @@ def build_global_gates(args: argparse.Namespace) -> dict[str, bool]:
         "android_adb_ready": handover.android_ready,
         "desktop_secondary_path_ready": handover.secondary_path_ready,
         "baseline_summary_ready": baseline_ready(values.get("CONTROLLED_PUBLIC_BASELINE_SUMMARY", ""))["ready"],
-        "network_change_command_present": bool(network_change_cmd.strip()) and network_change_cmd.strip() != "...",
-        "android_network_change_command_present": bool(android_network_change_cmd.strip())
-        and android_network_change_cmd.strip() != "...",
+        "network_change_command_present": check_key("NETWORK_CHANGE_CMD", values).valid,
+        "android_network_change_command_present": check_key("ANDROID_NETWORK_CHANGE_CMD", values).valid,
     }
 
 

@@ -11,10 +11,10 @@ Generated: `2026-06-25`
 | target free GiB | `5.0` |
 | artifact roots total | `24.6 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
-| cleanup candidates | `81` |
+| cleanup candidates | `85` |
 | CSV-referenced candidates | `57` |
-| planned final-trial candidates | `0` |
-| review-unreferenced candidates | `22` |
+| planned final-trial candidates | `1` |
+| review-unreferenced candidates | `24` |
 | review-unreferenced size | `66.8 MiB` |
 | protected referenced/planned size | `24.5 GiB` |
 | projected free if review-unreferenced removed | `7.0 GiB` |
@@ -111,8 +111,12 @@ Generated: `2026-06-25`
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-happy-named` | `1.4 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/local-h3-workload-rerun-20260624` | `150.4 KiB` | quic-go-local-h3-workload-rerun-20260624-001 | artifact path is referenced by a tracked artifact reference CSV |
+| `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044030Z` | `7.8 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044223Z` | `6.9 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041952Z` | `6.7 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-config-init-20260625T044018Z` | `5.9 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041915Z` | `4.2 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `keep-planned-final-trial` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001` | `2.0 KiB` | - | artifact path matches a planned final browser handover trial id |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-preflight-20260624T094137Z` | `1.8 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 

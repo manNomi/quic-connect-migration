@@ -6,10 +6,20 @@ from __future__ import annotations
 import contextlib
 import io
 import os
+import argparse
 import tempfile
 from pathlib import Path
 
-from check_next_final_handover_trial_readiness import evaluate_required_gates, required_gate_names, write_output
+from check_next_final_handover_trial_readiness import (
+    DEFAULT_CHROME,
+    DEFAULT_REQUIREMENTS,
+    DEFAULT_SAFARI,
+    DEFAULT_SAFARI_TP,
+    build_readiness,
+    evaluate_required_gates,
+    required_gate_names,
+    write_output,
+)
 
 
 def trial(phase: str, browser: str) -> dict:
@@ -79,6 +89,49 @@ def test_dash_output_prints_stdout_without_dash_file() -> None:
             os.chdir(original_cwd)
 
 
+def test_placeholder_config_does_not_open_baseline_readiness() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        config = Path(tmp) / "controlled-public-origin.env"
+        config.write_text(
+            "\n".join(
+                [
+                    "PUBLIC_ORIGIN_HOST=h3.example.com",
+                    "PUBLIC_ORIGIN_PORT=443",
+                    "PUBLIC_ORIGIN_URL=https://h3.example.com/browser-slow",
+                    "TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem",
+                    "TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem",
+                    "LISTEN_ADDR=0.0.0.0:443",
+                    "TCP_ADDR=0.0.0.0:443",
+                    "ALT_SVC='h3=\":443\"; ma=60'",
+                    "CHROME_BIN=/bin/sh",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        readiness = build_readiness(
+            argparse.Namespace(
+                experiments="data/experiment-results.csv",
+                requirements=DEFAULT_REQUIREMENTS,
+                config=config.as_posix(),
+                use_local_config_for_plan=False,
+                repetitions=3,
+                prefer_p1="safari",
+                chrome_bin=DEFAULT_CHROME,
+                safari_bin=DEFAULT_SAFARI,
+                safari_tp_bin=DEFAULT_SAFARI_TP,
+                min_disk_gib=0.0,
+                check_local_files=False,
+                check_public_origin=False,
+                timeout=1,
+            )
+        )
+        assert readiness["ready"] is False
+        assert "public_origin_host_configured" in readiness["missing_required_gates"]
+        assert "public_origin_url_configured" in readiness["missing_required_gates"]
+        assert "tls_config_present" in readiness["missing_required_gates"]
+
+
 def main() -> int:
     test_baseline_does_not_require_network_change()
     test_local_file_check_requires_tls_paths_on_origin_host()
@@ -87,6 +140,7 @@ def main() -> int:
     test_android_p1_requires_android_command_and_adb()
     test_evaluate_required_gates_reports_missing()
     test_dash_output_prints_stdout_without_dash_file()
+    test_placeholder_config_does_not_open_baseline_readiness()
     print("check_next_final_handover_trial_readiness=ok")
     return 0
 
