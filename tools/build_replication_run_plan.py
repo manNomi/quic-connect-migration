@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import re
+import shutil
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -15,6 +16,7 @@ from research_clock import utc_date_iso
 DEFAULT_INPUT = "data/replication-sufficiency-audit-20260624.csv"
 DEFAULT_OUTPUT = "docs/results/replication-run-plan-20260624.md"
 DEFAULT_CSV_OUTPUT = "data/replication-run-plan-20260624.csv"
+DEFAULT_MIN_OPTIONAL_LOCAL_FREE_GIB = 10.0
 
 
 TRANSITION_REPS = 6
@@ -181,6 +183,19 @@ def build_plan(input_path: Path) -> dict[str, object]:
     }
 
 
+def add_disk_guard(plan: dict[str, object], root: Path, min_optional_local_free_gib: float) -> dict[str, object]:
+    free_gib = round(shutil.disk_usage(root).free / (1024**3), 2)
+    ready = free_gib >= min_optional_local_free_gib
+    enriched = dict(plan)
+    enriched["local_optional_replication_disk"] = {
+        "free_gib": free_gib,
+        "min_optional_local_free_gib": min_optional_local_free_gib,
+        "ready": ready,
+        "recommendation": "hold-local-optional-replication" if not ready else "optional-local-replication-disk-ready",
+    }
+    return enriched
+
+
 def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
     lines = [
         "| " + " | ".join(headers) + " |",
@@ -225,6 +240,8 @@ def emit_markdown(plan: dict[str, object]) -> str:
         f"| L1 transition-zone reviewed rows | `{len(transition_reviewed_rows)}` |",
         f"| L2 anchor rows | `{len(anchor_rows)}` |",
         f"| transition repetitions per condition | `{plan['transition_repetitions_per_condition']}` |",
+        f"| optional local replication disk | `{(plan.get('local_optional_replication_disk') or {}).get('recommendation', '-')}` |",
+        f"| optional local free GiB | `{(plan.get('local_optional_replication_disk') or {}).get('free_gib', '-')}` |",
         "",
         "## Staged Plan",
         "",
@@ -251,6 +268,7 @@ def emit_markdown(plan: dict[str, object]) -> str:
         "## Interpretation",
         "",
         "- Do not spend the remaining disk budget on broad local replication before the controlled-public final protocol is unblocked.",
+        "- If `optional local replication disk` is `hold-local-optional-replication`, keep the next disk budget for controlled-public/browser artifacts.",
         "- If public/browser handover remains externally blocked, L1 transition-zone rows are the highest-value local repetitions.",
         "- Transition-zone rows that have reached the planned repetition count should be used to refine wording, not rerun blindly.",
         "- L2 anchor repetitions are optional unless the paper needs stronger local reliability wording.",
@@ -271,9 +289,10 @@ def main() -> int:
     parser.add_argument("--input", default=DEFAULT_INPUT)
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--csv-output", default=DEFAULT_CSV_OUTPUT)
+    parser.add_argument("--min-optional-local-free-gib", type=float, default=DEFAULT_MIN_OPTIONAL_LOCAL_FREE_GIB)
     args = parser.parse_args()
 
-    plan = build_plan(Path(args.input))
+    plan = add_disk_guard(build_plan(Path(args.input)), Path("."), args.min_optional_local_free_gib)
     write_csv(plan, Path(args.csv_output))
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

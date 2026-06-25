@@ -14,6 +14,8 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | L1 transition-zone reviewed rows | `5` |
 | L2 anchor rows | `11` |
 | transition repetitions per condition | `6` |
+| optional local replication disk | `hold-local-optional-replication` |
+| optional local free GiB | `7.84` |
 
 ## Staged Plan
 
@@ -62,6 +64,7 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 ## Interpretation
 
 - Do not spend the remaining disk budget on broad local replication before the controlled-public final protocol is unblocked.
+- If `optional local replication disk` is `hold-local-optional-replication`, keep the next disk budget for controlled-public/browser artifacts.
 - If public/browser handover remains externally blocked, L1 transition-zone rows are the highest-value local repetitions.
 - Transition-zone rows that have reached the planned repetition count should be used to refine wording, not rerun blindly.
 - L2 anchor repetitions are optional unless the paper needs stronger local reliability wording.

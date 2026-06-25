@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "929b82e",
+    "commit": "c2fa07b",
     "branch": "main"
   },
   "experiment_corpus": {

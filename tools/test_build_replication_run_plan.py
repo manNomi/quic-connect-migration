@@ -7,7 +7,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from build_replication_run_plan import build_plan, emit_markdown, write_csv
+from build_replication_run_plan import add_disk_guard, build_plan, emit_markdown, write_csv
 
 
 def write_fixture(path: Path, text: str) -> None:
@@ -78,10 +78,31 @@ def test_transition_rows_with_target_repetitions_are_marked_reviewed() -> None:
         assert "L1 transition-zone reviewed rows" in markdown
 
 
+def test_disk_guard_can_hold_optional_local_replication() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        audit = root / "audit.csv"
+        write_fixture(
+            audit,
+            """
+            source,condition_id,condition_label,pass_count,runs,pass_rate,wilson_low_95,wilson_high_95,evidence_role,paper_use,additional_same_outcome_runs_for_rule_of_thumb,next_action
+            polling_transition,poll-4000ms,poll mixed,1,6,0.167,0.030,0.564,transition_zone,transition-zone evidence,-,refine
+            """,
+        )
+        plan = add_disk_guard(build_plan(audit), root, min_optional_local_free_gib=999999.0)
+        disk = plan["local_optional_replication_disk"]
+        assert disk["ready"] is False
+        assert disk["recommendation"] == "hold-local-optional-replication"
+        markdown = emit_markdown(plan)
+        assert "optional local replication disk" in markdown
+        assert "hold-local-optional-replication" in markdown
+
+
 def main() -> int:
     test_plan_keeps_public_handover_first_and_selects_transition_rows()
     test_plan_is_public_safe_and_writable()
     test_transition_rows_with_target_repetitions_are_marked_reviewed()
+    test_disk_guard_can_hold_optional_local_replication()
     print("build_replication_run_plan=ok")
     return 0
 
