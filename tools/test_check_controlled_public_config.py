@@ -105,6 +105,22 @@ def test_baseline_rejects_invalid_listener_alt_svc_and_negative_network_change_t
     assert checks["NETWORK_CHANGE_AFTER_SECONDS"]["detail"] == "invalid_non_negative_integer"
 
 
+def test_public_origin_url_port_must_match_configured_port() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "controlled-public-origin.env"
+        path.write_text(
+            BASELINE_CONFIG.replace(
+                "PUBLIC_ORIGIN_URL='https://h3.test.local/browser-slow?duration_ms=6000&chunks=6&label=public-slow'",
+                "PUBLIC_ORIGIN_URL='https://h3.test.local:8443/browser-slow?duration_ms=6000&chunks=6&label=public-slow'",
+            ),
+            encoding="utf-8",
+        )
+        report = build_report(path)
+    assert report["baseline_config_ready"] is False
+    checks = {item["key"]: item for item in report["key_checks"]}
+    assert checks["PUBLIC_ORIGIN_URL"]["detail"] == "invalid_https_url_host_or_port_mismatch"
+
+
 def test_tracked_example_matches_final_baseline_trial_id() -> None:
     values = parse_env_file(Path("harness/config/controlled-public-origin.env.example"))
     assert values["CONTROLLED_PUBLIC_BASELINE_RUN_ID"] == "controlled-public-chrome-h3-baseline-001"
@@ -155,6 +171,7 @@ def main() -> int:
     test_active_ready_when_all_keys_present()
     test_example_placeholders_are_not_ready()
     test_baseline_rejects_invalid_listener_alt_svc_and_negative_network_change_time()
+    test_public_origin_url_port_must_match_configured_port()
     test_tracked_example_matches_final_baseline_trial_id()
     test_preflight_defaults_match_final_baseline_trial_id()
     test_dash_output_prints_stdout_without_dash_file()

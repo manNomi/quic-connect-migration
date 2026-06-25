@@ -100,12 +100,21 @@ def valid_addr_port(value: str) -> bool:
     return bool(host.strip()) and valid_port(port)
 
 
-def valid_url(value: str, host: str | None = None) -> bool:
-    parsed = urlparse(value)
+def valid_url(value: str, host: str | None = None, port: str | None = None) -> bool:
+    try:
+        parsed = urlparse(value)
+        parsed_port = parsed.port
+    except ValueError:
+        return False
     if parsed.scheme != "https" or not parsed.netloc:
         return False
-    if host and parsed.hostname and parsed.hostname != host:
+    if host and parsed.hostname and parsed.hostname.lower() != host.lower():
         return False
+    if port and valid_port(port):
+        expected_port = int(port)
+        actual_port = parsed_port if parsed_port is not None else 443
+        if actual_port != expected_port:
+            return False
     return True
 
 
@@ -134,8 +143,8 @@ def check_key(key: str, values: dict[str, str]) -> KeyCheck:
         valid = valid_port(value)
         detail = "valid_port" if valid else "invalid_port"
     elif valid and key in {"PUBLIC_ORIGIN_URL", "PUBLIC_ORIGIN_NETWORK_CHANGE_URL"}:
-        valid = valid_url(value, host)
-        detail = "valid_https_url" if valid else "invalid_https_url_or_host_mismatch"
+        valid = valid_url(value, host, values.get("PUBLIC_ORIGIN_PORT"))
+        detail = "valid_https_url" if valid else "invalid_https_url_host_or_port_mismatch"
     elif valid and key == "PUBLIC_ORIGIN_HOST":
         valid = valid_host(value)
         detail = "valid_host" if valid else "invalid_host"
