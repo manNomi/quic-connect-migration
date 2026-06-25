@@ -640,8 +640,8 @@ Server side:
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-h3-application-baseline-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+RUN_ID=controlled-public-chrome-h3-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-h3-baseline-001 \
 PUBLIC_ORIGIN_HOST=h3.example.com \
 TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
 TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
@@ -654,9 +654,9 @@ Browser side:
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-h3-application-baseline-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
-CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+RUN_ID=controlled-public-chrome-h3-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-h3-baseline-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-h3-baseline-001 \
 REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 \
 PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
 CHROME_TIMEOUT_SECONDS=20 \
@@ -669,9 +669,9 @@ Browser wrapper는 같은 artifact directory에 `results/server.json`이 있으�
 ```bash
 cd ../..
 python3 tools/classify_controlled_public_h3_baseline.py \
-  repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001 \
+  repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 \
   --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
-  --output repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json
+  --output repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json
 ```
 
 사전 readiness check:
@@ -707,7 +707,7 @@ bash harness/scripts/controlled-public-preflight.sh
 ```bash
 python3 tools/check_controlled_public_experiment_readiness.py \
   --public-origin-url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
-  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
   --network-change-cmd '...' \
   --format markdown
 ```
@@ -716,8 +716,8 @@ Server side:
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-h3-network-change-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
+RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 PUBLIC_ORIGIN_HOST=h3.example.com \
 TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
 TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
@@ -730,21 +730,27 @@ Browser/network side:
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-h3-network-change-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
-CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
-CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
 PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
 NETWORK_CHANGE_AFTER_SECONDS=3 \
 NETWORK_CHANGE_CMD='...' \
 ./scripts/run-controlled-public-h3-network-change.sh
 ```
 
+권장 client-side wrapper:
+
+```bash
+bash harness/scripts/final-chrome-network-change-run.sh
+```
+
 결과 파일:
 
 ```text
-artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
-artifacts/controlled-public-h3-network-change-001/results/client-path-change-summary.json
+artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/controlled-public-h3-network-change-summary.json
+artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/client-path-change-summary.json
 ```
 
 주요 판정:

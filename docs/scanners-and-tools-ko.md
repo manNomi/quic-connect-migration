@@ -459,9 +459,9 @@ controlled public origin의 no-change application H3 baseline을 server request 
 
 ```bash
 python3 tools/classify_controlled_public_h3_baseline.py \
-  repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001 \
+  repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001 \
   --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
-  --output repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json
+  --output repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json
 ```
 
 주요 output:
@@ -521,7 +521,7 @@ controlled public Chrome HTTP/3 network-change 실험을 실행해도 되는지 
 ```bash
 python3 tools/check_controlled_public_experiment_readiness.py \
   --public-origin-url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
-  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
   --network-change-cmd '...' \
   --format markdown
 ```
@@ -596,10 +596,10 @@ controlled public origin에서 browser workload 중 network-change trigger를 �
 
 ```bash
 python3 tools/classify_controlled_public_h3_network_change.py \
-  repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001 \
-  --server-artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001 \
+  repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+  --server-artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
   --url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
-  --output repro/quic-go-min-repro/artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json
+  --output repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/controlled-public-h3-network-change-summary.json
 ```
 
 Safari mode:
@@ -763,6 +763,7 @@ AWS wrapper:
 | 파일 | 역할 |
 | --- | --- |
 | `harness/scripts/aws-preflight.sh` | AWS CLI, region, VPC/subnet 사전 확인 |
+| `harness/scripts/final-chrome-network-change-run.sh` | baseline unlock 이후 Chrome active network-change 실행, artifact bundle check, final-countable validation wrapper |
 | `harness/scripts/final-p0-baseline-preflight.sh` | controlled public P0 baseline 실행 직전 readiness gate wrapper |
 | `harness/scripts/final-p0-baseline-run.sh` | P0 Chrome baseline client 실행, artifact bundle check, final-countable validation wrapper |
 | `harness/scripts/final-handover-register-trial.sh` | final handover artifact 검증 후 `experiment-results.csv` append wrapper |

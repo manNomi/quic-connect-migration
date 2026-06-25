@@ -639,16 +639,16 @@ RUN_ID=chrome-public-h3-google-generate204-20260624 TARGET_URL=https://www.googl
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-h3-application-baseline-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+RUN_ID=controlled-public-chrome-h3-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-h3-baseline-001 \
 PUBLIC_ORIGIN_HOST=h3.example.com \
 TLS_CERT_FILE=/path/fullchain.pem \
 TLS_KEY_FILE=/path/privkey.pem \
 ./scripts/run-controlled-public-h3-server.sh
 
-RUN_ID=controlled-public-h3-application-baseline-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
-CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-application-baseline-001 \
+RUN_ID=controlled-public-chrome-h3-baseline-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-h3-baseline-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-h3-baseline-001 \
 REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 \
 PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
 ./scripts/run-controlled-public-h3-browser-baseline.sh
@@ -656,16 +656,16 @@ PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=6000&chunks=6
 
 최종 판정 파일:
 
-- `artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json`
+- `artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json`
 
 ### 12.8 Controlled public H3 network-change
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-h3-network-change-001 \
-ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
-CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-h3-network-change-001 \
-CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-h3-application-baseline-001/results/controlled-public-h3-baseline-summary.json \
+RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
 PUBLIC_ORIGIN_URL='https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
 NETWORK_CHANGE_AFTER_SECONDS=3 \
 NETWORK_CHANGE_CMD='...' \
@@ -674,7 +674,7 @@ NETWORK_CHANGE_CMD='...' \
 
 최종 판정 파일:
 
-- `artifacts/controlled-public-h3-network-change-001/results/controlled-public-h3-network-change-summary.json`
+- `artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/controlled-public-h3-network-change-summary.json`
 
 ### 12.9 AWS NLB transport
 

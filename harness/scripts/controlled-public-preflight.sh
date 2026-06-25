@@ -27,7 +27,7 @@ PUBLIC_ORIGIN_URL="${PUBLIC_ORIGIN_URL:-}"
 PUBLIC_ORIGIN_NETWORK_CHANGE_URL="${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-$PUBLIC_ORIGIN_URL}"
 CONTROLLED_PUBLIC_BASELINE_SUMMARY="${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-}"
 CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR="${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-}"
-CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR="${CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR:-${CONTROLLED_PUBLIC_NETWORK_CHANGE_ARTIFACT_DIR:-artifacts/controlled-public-h3-network-change-001}}"
+CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR="${CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR:-${CONTROLLED_PUBLIC_NETWORK_CHANGE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001}}"
 NETWORK_CHANGE_CMD="${NETWORK_CHANGE_CMD:-}"
 CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 CONTROLLED_PUBLIC_READINESS_TIMEOUT="${CONTROLLED_PUBLIC_READINESS_TIMEOUT:-8}"
@@ -101,8 +101,8 @@ else
   echo "network-change:"
   printf '  cd %q\n' "$REPRO_DIR"
   printf '  RUN_ID=%q ARTIFACT_DIR=%q CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=%q CONTROLLED_PUBLIC_BASELINE_SUMMARY=%q PUBLIC_ORIGIN_URL=%q NETWORK_CHANGE_AFTER_SECONDS=%q NETWORK_CHANGE_CMD=%q ./scripts/run-controlled-public-h3-network-change.sh\n' \
-    "${CONTROLLED_PUBLIC_NETWORK_CHANGE_RUN_ID:-controlled-public-h3-network-change-001}" \
-    "${CONTROLLED_PUBLIC_NETWORK_CHANGE_ARTIFACT_DIR:-artifacts/controlled-public-h3-network-change-001}" \
+    "${CONTROLLED_PUBLIC_NETWORK_CHANGE_RUN_ID:-controlled-public-chrome-downlink-noheartbeat-network-change-001}" \
+    "${CONTROLLED_PUBLIC_NETWORK_CHANGE_ARTIFACT_DIR:-artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001}" \
     "$CONTROLLED_PUBLIC_NETWORK_CHANGE_SERVER_ARTIFACT_DIR" \
     "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json}" \
     "${PUBLIC_ORIGIN_NETWORK_CHANGE_URL:-https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat}" \
