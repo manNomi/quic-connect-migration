@@ -14,7 +14,7 @@ Generated: `2026-06-25`
 | next phase | `baseline` |
 | next browser | `Chrome` |
 | final completion | `0/6` |
-| disk free GiB | `6.9` |
+| disk free GiB | `8.31` |
 | active IPv4 interfaces | `en0(192.168.32.190)` |
 | public origin URL | `-` |
 
@@ -29,7 +29,7 @@ Generated: `2026-06-25`
 | `tls_config_present` | `no` | `yes` |
 | `tls_cert_file_exists` | `no` | `no` |
 | `tls_key_file_exists` | `no` | `no` |
-| `disk_ready` | `no` | `yes` |
+| `disk_ready` | `yes` | `yes` |
 | `chrome_ready` | `yes` | `yes` |
 | `safari_webdriver_ready` | `yes` | `no` |
 | `android_adb_ready` | `no` | `no` |
@@ -44,7 +44,6 @@ Generated: `2026-06-25`
 - public_origin_host_configured
 - public_origin_url_configured
 - tls_config_present
-- disk_ready
 
 ## Next Trial Commands
 

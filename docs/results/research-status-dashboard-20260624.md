@@ -13,7 +13,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | verification | `107/107 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `0/6` |
-| needed-now external inputs | `['disk-free-space', 'controlled-public-baseline-config', 'public-origin-host']` |
+| needed-now external inputs | `['controlled-public-baseline-config', 'public-origin-host']` |
 | planned execution states | `{'blocked': 10}` |
 | claim support | `{'negative_control_supported': 1, 'not_supported_yet': 2, 'supported_local_control': 4, 'supported_scoped': 2}` |
 | replication roles | `{'failure_candidate': 11, 'stable_candidate': 14, 'transition_zone': 5}` |
@@ -22,13 +22,12 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 ## Next Operator Action
 
-Clear needed-now external inputs first: `disk-free-space`, `controlled-public-baseline-config`, `public-origin-host`. See `docs/results/final-handover-external-inputs-20260624.md`.
+Clear needed-now external inputs first: `controlled-public-baseline-config`, `public-origin-host`. See `docs/results/final-handover-external-inputs-20260624.md`.
 
 ## Needed-Now External Inputs
 
 | input id |
 | --- |
-| `disk-free-space` |
 | `controlled-public-baseline-config` |
 | `public-origin-host` |
 
@@ -39,7 +38,6 @@ Clear needed-now external inputs first: `disk-free-space`, `controlled-public-ba
 | `baseline_summary_ready` | 7 |
 | `controlled_public_config_present` | 10 |
 | `desktop_secondary_path_ready` | 7 |
-| `disk_ready` | 10 |
 | `network_change_command_present` | 7 |
 | `public_origin_host_configured` | 10 |
 | `public_origin_url_configured` | 10 |

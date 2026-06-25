@@ -28,6 +28,7 @@ def test_manifest_points_to_authoritative_artifacts() -> None:
     assert paths["audit"].endswith("research-bundle-audit-20260624.md")
     assert paths["verification"].endswith("research-verification-report-20260624.md")
     assert paths["trial_packet"].endswith("final-handover-trial-packet-20260624.md")
+    assert paths["artifact_cleanup_execution_log"].endswith("artifact-cleanup-execution-log-20260625.md")
 
 
 def test_generated_date_uses_utc_day() -> None:

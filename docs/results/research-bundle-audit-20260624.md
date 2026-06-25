@@ -26,8 +26,8 @@ Generated: `2026-06-25`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `6.9` |
-| local artifact roots total | `24.6 GiB` |
+| disk available GiB | `8.31` |
+| local artifact roots total | `24.5 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |
 | packet capture tooling ready | `yes` |
@@ -53,7 +53,6 @@ Incomplete final trial requirements:
 - desktop active secondary path is not ready
 - Android device is not connected over ADB
 - AWS identity is not available
-- disk free space is below 7 GiB; large NetLog/pcap experiments should wait
 - browser active network-change result is not done
 - controlled-public network-change result is not done
 - final browser handover trial protocol is not complete

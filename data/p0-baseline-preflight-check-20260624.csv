@@ -3,6 +3,6 @@ next_trial_selected,True,True,trial_id=controlled-public-chrome-h3-baseline-001,
 next_trial_is_p0_baseline,True,True,trial_id=controlled-public-chrome-h3-baseline-001,do not use this guard for non-P0 trials
 baseline_config_ready,True,False,config_exists=False; baseline_config_ready=False,fill harness/config/controlled-public-origin.env and rerun check_controlled_public_config.py
 needed_now_gates_cleared,True,False,needed_now=controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present,clear all needed-now gates in p0-unblock-status
-next_trial_ready,True,False,missing_required=controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present;disk_ready,run check_next_final_handover_trial_readiness.py and fix missing gates
-disk_ready,True,False,disk_ready=no,free disk before heavy NetLog/qlog capture
+next_trial_ready,True,False,missing_required=controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present,run check_next_final_handover_trial_readiness.py and fix missing gates
+disk_ready,True,True,disk_ready=yes,free disk before heavy NetLog/qlog capture
 chrome_ready,True,True,chrome_ready=yes,install or configure Chrome binary
