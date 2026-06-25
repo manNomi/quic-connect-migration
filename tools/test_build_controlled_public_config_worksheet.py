@@ -54,6 +54,7 @@ def test_valid_config_is_public_safe_without_printing_values() -> None:
         assert "h3.private-lab.test" not in markdown
         assert "/private/lab/privkey.pem" not in markdown
         assert "printf path-change" not in markdown
+        assert "port equals PUBLIC_ORIGIN_PORT" in markdown
 
 
 def main() -> int:

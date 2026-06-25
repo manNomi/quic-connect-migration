@@ -54,7 +54,7 @@ FIELD_INFO = {
         "baseline",
         "client",
         "private lab URL",
-        "https URL whose host equals PUBLIC_ORIGIN_HOST",
+        "https URL whose host equals PUBLIC_ORIGIN_HOST and whose port equals PUBLIC_ORIGIN_PORT",
         "Chrome no-change application H3 baseline",
     ),
     "TLS_CERT_FILE": FieldInfo(
@@ -110,7 +110,7 @@ FIELD_INFO = {
         "active",
         "client",
         "private lab URL",
-        "long-running https workload URL whose host equals PUBLIC_ORIGIN_HOST",
+        "long-running https workload URL whose host equals PUBLIC_ORIGIN_HOST and whose port equals PUBLIC_ORIGIN_PORT",
         "active network-change workload",
     ),
     "CONTROLLED_PUBLIC_BASELINE_SUMMARY": FieldInfo(

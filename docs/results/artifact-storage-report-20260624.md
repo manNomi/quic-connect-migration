@@ -14,7 +14,7 @@ Generated: `2026-06-25`
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `24.5 GiB` | 43482 | 17125 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `24.5 GiB` | 43484 | 17127 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
