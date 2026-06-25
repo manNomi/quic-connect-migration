@@ -10,7 +10,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | --- | --- |
 | experiment trials | `66` |
 | experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
-| verification | `101/101 passed; ok=yes` |
+| verification | `102/102 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `0/6` |
 | planned execution states | `{'blocked': 10}` |
@@ -21,7 +21,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 ## Next Operator Action
 
-Create and fill the ignored controlled-public origin env file, then validate baseline config.
+Run `bash harness/scripts/init-controlled-public-config.sh`, fill the ignored controlled-public origin env file, then validate baseline config.
 
 ## Missing Gate Counts
 

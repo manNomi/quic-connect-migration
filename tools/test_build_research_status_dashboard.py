@@ -26,6 +26,7 @@ def test_first_action_prioritizes_config_before_later_gates() -> None:
             "desktop_secondary_path_ready": 7,
         }
     )
+    assert "init-controlled-public-config.sh" in action
     assert "controlled-public origin env file" in action
 
 

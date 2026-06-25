@@ -1,5 +1,5 @@
 stage,order,status,owner,action,command,stop_condition
-0-private-config,1,blocked,operator,Create and fill the ignored controlled-public origin config.,cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env && $EDITOR harness/config/controlled-public-origin.env,stop until needed-now gates are cleared
+0-private-config,1,blocked,operator,Create and fill the ignored controlled-public origin config.,bash harness/scripts/init-controlled-public-config.sh && $EDITOR harness/config/controlled-public-origin.env,stop until needed-now gates are cleared
 1-preflight,2,blocked,operator,Run the final P0 baseline preflight wrapper before starting server/client artifacts.,bash harness/scripts/final-p0-baseline-preflight.sh,stop if any required gate remains missing
 2-origin-server,3,blocked,origin-host,Start the controlled public H3 origin server for the selected baseline trial.,"cd repro/quic-go-min-repro
 RUN_ID=controlled-public-chrome-h3-baseline-001 \

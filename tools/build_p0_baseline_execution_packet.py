@@ -76,7 +76,7 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object]) ->
             owner="operator",
             action="Create and fill the ignored controlled-public origin config.",
             command=(
-                "cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env && "
+                "bash harness/scripts/init-controlled-public-config.sh && "
                 "$EDITOR harness/config/controlled-public-origin.env"
             ),
             stop_condition="stop until needed-now gates are cleared",

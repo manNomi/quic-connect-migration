@@ -74,7 +74,7 @@ ssh ec2-user@<origin-host-or-ip> 'cd /home/ec2-user/quic-go-min-repro && sudo en
 Fill the ignored local config and run the readiness gates:
 
 ```bash
-cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/init-controlled-public-config.sh
 $EDITOR harness/config/controlled-public-origin.env
 set -a
 source harness/config/controlled-public-origin.env

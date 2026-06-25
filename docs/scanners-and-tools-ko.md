@@ -703,7 +703,7 @@ controlled public Chrome H3 network-change 실험의 local-only 설정을 읽어
 실행:
 
 ```bash
-cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/init-controlled-public-config.sh
 bash harness/scripts/controlled-public-preflight.sh
 ```
 
@@ -785,6 +785,7 @@ AWS wrapper:
 | 파일 | 역할 |
 | --- | --- |
 | `harness/scripts/aws-preflight.sh` | AWS CLI, region, VPC/subnet 사전 확인 |
+| `harness/scripts/init-controlled-public-config.sh` | ignored controlled-public origin env를 안전하게 생성하고 worksheet/config check 산출 |
 | `harness/scripts/final-handover-run-next.sh` | 다음 final handover trial readiness를 확인하고 phase/browser별 안전 래퍼로 dispatch |
 | `harness/scripts/final-chrome-nochange-run.sh` | Chrome downlink no-change baseline 실행, artifact bundle check, final-countable validation wrapper |
 | `harness/scripts/final-chrome-network-change-run.sh` | baseline unlock 이후 Chrome active network-change 실행, artifact bundle check, final-countable validation wrapper |

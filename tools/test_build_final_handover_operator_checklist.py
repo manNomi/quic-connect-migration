@@ -57,6 +57,8 @@ def test_blocked_state_prioritizes_config_storage_and_next_trial() -> None:
     assert statuses[(2, "storage")] == "todo-now"
     assert statuses[(3, "next trial")] == "blocked-now"
     assert statuses[(7, "final protocol")] == "incomplete"
+    baseline_action = next(item for item in actions if item.scope == "controlled public baseline")
+    assert baseline_action.commands[0] == "bash harness/scripts/init-controlled-public-config.sh"
     next_trial_action = next(item for item in actions if item.scope == "next trial")
     assert next_trial_action.commands[0] == "bash harness/scripts/final-handover-run-next.sh"
     assert actions == sorted(actions, key=lambda item: item.priority)

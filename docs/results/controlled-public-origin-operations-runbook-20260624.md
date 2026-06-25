@@ -17,7 +17,7 @@ controlled public Chrome HTTP/3 connection migration 실험은 세 조건을 먼
 먼저 local-only 설정 파일을 만든다.
 
 ```bash
-cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/init-controlled-public-config.sh
 python3 tools/build_controlled_public_config_worksheet.py \
   --output docs/results/controlled-public-config-worksheet-20260624.md
 ```

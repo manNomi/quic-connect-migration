@@ -65,7 +65,7 @@ def build_actions(
             "Create and fill the private controlled public origin config.",
             "The next selected trial is a controlled-public Chrome baseline and config baseline readiness is false.",
             [
-                "cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env",
+                "bash harness/scripts/init-controlled-public-config.sh",
                 "python3 tools/build_controlled_public_config_worksheet.py --output docs/results/controlled-public-config-worksheet-20260624.md",
                 "$EDITOR harness/config/controlled-public-origin.env",
                 "python3 tools/check_controlled_public_config.py --require-baseline-ready",

@@ -8,8 +8,8 @@
     "PASS_NEGATIVE_CONTROL": 35
   },
   "verification": {
-    "checks": "101",
-    "passed": "101",
+    "checks": "102",
+    "passed": "102",
     "ok": "yes"
   },
   "ci": {
@@ -51,7 +51,7 @@
     "public_origin_url_configured": 10,
     "tls_config_present": 10
   },
-  "next_operator_action": "Create and fill the ignored controlled-public origin env file, then validate baseline config.",
+  "next_operator_action": "Run `bash harness/scripts/init-controlled-public-config.sh`, fill the ignored controlled-public origin env file, then validate baseline config.",
   "safe_claim_boundary": "Do not claim Chrome/Safari/Android browser handover CM success until the final browser handover protocol has countable rows.",
   "key_paths": {
     "manifest": "data/reproducibility-manifest-20260624.json",

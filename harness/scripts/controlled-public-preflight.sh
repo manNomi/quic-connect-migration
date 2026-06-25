@@ -76,7 +76,7 @@ fi
 echo
 echo "== Next commands =="
 if [[ "$CONFIG_PRESENT" != "1" ]]; then
-  echo "1. cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env"
+  echo "1. bash harness/scripts/init-controlled-public-config.sh"
   echo "2. Edit harness/config/controlled-public-origin.env with the public host, cert paths, baseline summary path, and network-change command."
 else
   echo "server:"

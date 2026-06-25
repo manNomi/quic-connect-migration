@@ -72,7 +72,7 @@ python3 tools/check_controlled_public_experiment_readiness.py \
 반복 실행용 local preflight wrapper:
 
 ```bash
-cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/init-controlled-public-config.sh
 bash harness/scripts/controlled-public-preflight.sh
 ```
 

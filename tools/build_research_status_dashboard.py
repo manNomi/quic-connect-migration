@@ -59,7 +59,7 @@ def first_action_from_missing_gates(counts: dict[str, int]) -> str:
     ordered_actions = [
         (
             ["controlled_public_config_present", "public_origin_host_configured", "public_origin_url_configured", "tls_config_present"],
-            "Create and fill the ignored controlled-public origin env file, then validate baseline config.",
+            "Run `bash harness/scripts/init-controlled-public-config.sh`, fill the ignored controlled-public origin env file, then validate baseline config.",
         ),
         (
             ["baseline_summary_ready"],

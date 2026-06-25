@@ -627,7 +627,7 @@ third-party public endpoint는 browser discovery control에는 유용하지만, 
 local-only config:
 
 ```bash
-cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/init-controlled-public-config.sh
 ```
 
 먼저 안전한 preflight를 실행한다. 이 command는 실제 network-change를 수행하지 않고 ignored artifact directory에 readiness JSON/Markdown만 만든다.
@@ -1986,6 +1986,12 @@ bash harness/scripts/final-chrome-nochange-run.sh
 
 ```bash
 bash harness/scripts/final-handover-run-next.sh
+```
+
+private controlled-public config를 처음 만들 때는 overwrite 방지 wrapper를 사용한다.
+
+```bash
+bash harness/scripts/init-controlled-public-config.sh
 ```
 
 ## 42. P0 baseline preflight guard 재생성

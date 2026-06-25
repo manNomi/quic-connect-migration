@@ -11,7 +11,7 @@ Generated: `2026-06-25`
 | baseline config ready | `no` |
 | active config ready | `no` |
 | Android config ready | `no` |
-| current disk free | `7.4 GiB` |
+| current disk free | `6.9 GiB` |
 | target free GiB | `5.0` |
 | storage target met by artifact cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |
@@ -34,7 +34,7 @@ Generated: `2026-06-25`
 ### 1. controlled public baseline
 
 ```bash
-cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env
+bash harness/scripts/init-controlled-public-config.sh
 python3 tools/build_controlled_public_config_worksheet.py --output docs/results/controlled-public-config-worksheet-20260624.md
 $EDITOR harness/config/controlled-public-origin.env
 python3 tools/check_controlled_public_config.py --require-baseline-ready

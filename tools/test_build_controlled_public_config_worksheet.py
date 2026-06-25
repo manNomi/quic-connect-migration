@@ -17,6 +17,7 @@ def test_missing_config_reports_baseline_next_step() -> None:
         assert worksheet["baseline_config_ready"] is False
         assert worksheet["next_step"] == "fill_baseline_config"
         assert "PUBLIC_ORIGIN_HOST" in worksheet["baseline_missing"]
+        assert "init-controlled-public-config.sh" in emit_markdown(worksheet)
 
 
 def test_valid_config_is_public_safe_without_printing_values() -> None:

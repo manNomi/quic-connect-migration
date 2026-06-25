@@ -45,7 +45,7 @@ This worksheet is public-safe. It reports presence, validity, ownership, and nex
 
 ## Run Order
 
-1. Copy `harness/config/controlled-public-origin.env.example` to the ignored local config path.
+1. Run `bash harness/scripts/init-controlled-public-config.sh` to create the ignored local config path without overwriting an existing file.
 2. Fill baseline fields on the public origin host and client machine.
 3. Run `python3 tools/check_controlled_public_config.py --require-baseline-ready`.
 4. Run the controlled-public H3 baseline and keep the `status=PASS` summary.

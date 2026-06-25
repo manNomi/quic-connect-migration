@@ -183,7 +183,7 @@ def emit_markdown(packet: DeployPacket) -> str:
         "Fill the ignored local config and run the readiness gates:",
         "",
         "```bash",
-        "cp harness/config/controlled-public-origin.env.example harness/config/controlled-public-origin.env",
+        "bash harness/scripts/init-controlled-public-config.sh",
         "$EDITOR harness/config/controlled-public-origin.env",
         "set -a",
         "source harness/config/controlled-public-origin.env",

@@ -9,6 +9,7 @@
 !*.env.example
 harness/config/aws.env
 harness/config/experiment.env
+harness/config/controlled-public-origin.env
 
 # Experiment artifacts
 artifacts/
