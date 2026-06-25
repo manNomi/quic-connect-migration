@@ -16,6 +16,7 @@ from check_next_final_handover_trial_readiness import (
     DEFAULT_SAFARI,
     DEFAULT_SAFARI_TP,
     build_readiness,
+    emit_markdown,
     evaluate_required_gates,
     required_gate_names,
     write_output,
@@ -132,6 +133,52 @@ def test_placeholder_config_does_not_open_baseline_readiness() -> None:
         assert "tls_config_present" in readiness["missing_required_gates"]
 
 
+def test_private_config_values_are_redacted_from_next_readiness() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        config = Path(tmp) / "controlled-public-origin.env"
+        config.write_text(
+            "\n".join(
+                [
+                    "PUBLIC_ORIGIN_HOST=h3.private-lab.test",
+                    "PUBLIC_ORIGIN_PORT=443",
+                    "PUBLIC_ORIGIN_URL=https://h3.private-lab.test/browser-slow",
+                    "TLS_CERT_FILE=/private/lab/fullchain.pem",
+                    "TLS_KEY_FILE=/private/lab/privkey.pem",
+                    "LISTEN_ADDR=0.0.0.0:443",
+                    "TCP_ADDR=0.0.0.0:443",
+                    "ALT_SVC='h3=\":443\"; ma=60'",
+                    "CHROME_BIN=/bin/sh",
+                    "NETWORK_CHANGE_CMD='printf path-change'",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        readiness = build_readiness(
+            argparse.Namespace(
+                experiments="data/experiment-results.csv",
+                requirements=DEFAULT_REQUIREMENTS,
+                config=config.as_posix(),
+                use_local_config_for_plan=False,
+                repetitions=3,
+                prefer_p1="safari",
+                chrome_bin=DEFAULT_CHROME,
+                safari_bin=DEFAULT_SAFARI,
+                safari_tp_bin=DEFAULT_SAFARI_TP,
+                min_disk_gib=0.0,
+                check_local_files=False,
+                check_public_origin=False,
+                timeout=1,
+            )
+        )
+    markdown = emit_markdown(readiness)
+    assert readiness["public_origin_url_preview"] == "<configured>"
+    assert readiness["network_change_command_preview"] == "<configured>"
+    assert "h3.private-lab.test" not in markdown
+    assert "/private/lab" not in markdown
+    assert "printf path-change" not in markdown
+
+
 def main() -> int:
     test_baseline_does_not_require_network_change()
     test_local_file_check_requires_tls_paths_on_origin_host()
@@ -141,6 +188,7 @@ def main() -> int:
     test_evaluate_required_gates_reports_missing()
     test_dash_output_prints_stdout_without_dash_file()
     test_placeholder_config_does_not_open_baseline_readiness()
+    test_private_config_values_are_redacted_from_next_readiness()
     print("check_next_final_handover_trial_readiness=ok")
     return 0
 

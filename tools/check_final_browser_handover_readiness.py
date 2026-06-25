@@ -44,9 +44,7 @@ def command_preview(value: str) -> str:
     stripped = value.strip()
     if not stripped:
         return ""
-    if len(stripped) <= 120:
-        return stripped
-    return stripped[:117] + "..."
+    return "<configured>"
 
 
 def parse_env_file(path: Path) -> dict[str, str]:
