@@ -139,9 +139,24 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object]) ->
     return rows
 
 
+def local_readiness_from_packet(args: argparse.Namespace, packet: dict[str, object]) -> dict[str, object]:
+    return {
+        "ready": bool(packet.get("next_trial_ready")),
+        "config_path": args.config,
+        "config_exists": Path(args.config).exists(),
+        "next_trial": packet.get("next_trial") or {},
+        "required_gates": list(packet.get("required_gates") or []),  # type: ignore[arg-type]
+        "missing_required_gates": list(packet.get("missing_required_gates") or []),  # type: ignore[arg-type]
+    }
+
+
 def build_execution_packet(args: argparse.Namespace) -> dict[str, object]:
     packet = build_packet(packet_args(args))
-    p0_status = build_p0_status(Path(args.matrix), Path(args.scorecard))
+    p0_status = build_p0_status(
+        Path(args.matrix),
+        Path(args.scorecard),
+        local_readiness=local_readiness_from_packet(args, packet),
+    )
     rows = build_stage_rows(packet, p0_status)
     needed_now = [row for row in p0_status["rows"] if row["status"] == "needed-now"]  # type: ignore[index]
     return {

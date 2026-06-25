@@ -12,7 +12,7 @@ This packet is public-safe. It orders the next controlled-public Chrome baseline
 | next phase | `baseline` |
 | next trial ready | `no` |
 | packet state | `blocked_by_readiness` |
-| needed-now gates | `controlled_public_config_present; public_origin_host_configured; public_origin_url_configured; tls_config_present` |
+| needed-now gates | `public_origin_host_configured; public_origin_url_configured; tls_config_present` |
 
 ## Ordered Stages
 

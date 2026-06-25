@@ -18,6 +18,23 @@ def write_fixture(path: Path, text: str) -> None:
     path.write_text(dedent(text).lstrip(), encoding="utf-8")
 
 
+def write_placeholder_config(path: Path) -> None:
+    write_fixture(
+        path,
+        """
+        PUBLIC_ORIGIN_HOST=example.com
+        PUBLIC_ORIGIN_PORT=443
+        PUBLIC_ORIGIN_URL=https://example.com/
+        TLS_CERT_FILE=example
+        TLS_KEY_FILE=example
+        LISTEN_ADDR=0.0.0.0:443
+        TCP_ADDR=0.0.0.0:443
+        ALT_SVC='h3=":443"; ma=60'
+        CHROME_BIN=/bin/sh
+        """,
+    )
+
+
 def make_args(root: Path) -> argparse.Namespace:
     matrix = root / "matrix.csv"
     scorecard = root / "scorecard.csv"
@@ -28,7 +45,7 @@ def make_args(root: Path) -> argparse.Namespace:
         matrix,
         """
         order,trial_id,requirement_id,phase,browser,heartbeat,ready,state,required_gates,missing_gates
-        1,controlled-public-chrome-h3-baseline-001,chrome-controlled-public-application-h3-baseline,baseline,Chrome,n/a,False,blocked,controlled_public_config_present;public_origin_url_configured;disk_ready,controlled_public_config_present;public_origin_url_configured
+        1,controlled-public-chrome-h3-baseline-001,chrome-controlled-public-application-h3-baseline,baseline,Chrome,n/a,False,blocked,controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present;disk_ready,controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present
         """,
     )
     write_fixture(
@@ -86,6 +103,24 @@ def test_execution_packet_orders_private_config_before_capture() -> None:
         assert "controlled_public_config_present" in execution["needed_now_gates"]
 
 
+def test_existing_placeholder_config_refines_stage_zero_needed_now_gates() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        args = make_args(root)
+        write_placeholder_config(Path(args.config))
+        execution = build_execution_packet(args)
+        needed_now = set(execution["needed_now_gates"])
+
+        assert execution["next_trial_ready"] is False
+        assert "controlled_public_config_present" not in needed_now
+        assert {
+            "public_origin_host_configured",
+            "public_origin_url_configured",
+            "tls_config_present",
+        }.issubset(needed_now)
+        assert execution["stage_rows"][0]["status"] == "blocked"
+
+
 def test_execution_packet_is_public_safe_and_writable() -> None:
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -122,6 +157,7 @@ def test_dash_outputs_print_stdout_without_dash_file() -> None:
 
 def main() -> int:
     test_execution_packet_orders_private_config_before_capture()
+    test_existing_placeholder_config_refines_stage_zero_needed_now_gates()
     test_execution_packet_is_public_safe_and_writable()
     test_dash_outputs_print_stdout_without_dash_file()
     print("build_p0_baseline_execution_packet=ok")

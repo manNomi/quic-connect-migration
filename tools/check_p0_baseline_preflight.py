@@ -77,9 +77,24 @@ def allowed_next_action(go: bool, needed_now: list[str], missing_required: list[
     return "review-preflight-state"
 
 
+def local_readiness_from_packet(args: argparse.Namespace, packet: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "ready": bool(packet.get("next_trial_ready")),
+        "config_path": args.config,
+        "config_exists": Path(args.config).exists(),
+        "next_trial": packet.get("next_trial") or {},
+        "required_gates": list(packet.get("required_gates") or []),
+        "missing_required_gates": list(packet.get("missing_required_gates") or []),
+    }
+
+
 def build_preflight(args: argparse.Namespace) -> dict[str, Any]:
     packet = build_packet(packet_args(args))
-    p0_status = build_p0_status(Path(args.matrix), Path(args.scorecard))
+    p0_status = build_p0_status(
+        Path(args.matrix),
+        Path(args.scorecard),
+        local_readiness=local_readiness_from_packet(args, packet),
+    )
     config = build_config_report(Path(args.config), check_files=args.check_local_files)
 
     next_trial = packet["next_trial"] or {}
