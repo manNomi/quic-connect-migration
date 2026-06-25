@@ -87,7 +87,7 @@ def build_items(
             status=status_label(worksheet["baseline_config_ready"]),
             input_needed="Provide a public WebPKI origin that serves both TCP HTTPS Alt-Svc bootstrap and UDP HTTP/3 on the configured port.",
             why="Browser CM results are interpretable only after a controlled public application H3 baseline passes.",
-            validation_command="python3 tools/check_public_origin_readiness.py --url \"$PUBLIC_ORIGIN_URL\" --require-h3-alt-svc --format markdown",
+            validation_command="python3 tools/check_public_origin_readiness.py --url \"$PUBLIC_ORIGIN_URL\" --require-h3-alt-svc --redact-sensitive --format markdown",
             safe_handling="Run origin-host file checks on the origin host; local client reports must not expose TLS paths.",
             evidence=f"next_trial={next_trial.get('trial_id', '-')}; baseline_ready={worksheet['baseline_config_ready']}",
         ),

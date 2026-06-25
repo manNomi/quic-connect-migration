@@ -413,6 +413,7 @@ controlled public origin을 Chrome browser CM 실험에 쓰기 전에 DNS, WebPK
 python3 tools/check_public_origin_readiness.py \
   --url https://h3.example.com/browser-slow?duration_ms=6000 \
   --require-h3-alt-svc \
+  --redact-sensitive \
   --format markdown
 ```
 
@@ -809,7 +810,7 @@ python3 tools/summarize_experiment_results.py --format markdown
 python3 tools/scan_implementation_evidence.py repro/quic-go-min-repro --format markdown
 python3 tools/scan_public_alt_svc.py --url-file data/public-alt-svc-targets.txt --format markdown
 python3 tools/scan_public_origin_readiness.py --url-file data/public-alt-svc-targets.txt --format markdown
-python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --format markdown
+python3 tools/check_public_origin_readiness.py --url https://www.google.com/generate_204 --require-h3-alt-svc --redact-sensitive --format markdown
 python3 tools/check_handover_readiness.py --format markdown
 python3 tools/check_browser_cm_observability.py --format markdown
 python3 -m py_compile tools/run_safari_webdriver_navigation.py

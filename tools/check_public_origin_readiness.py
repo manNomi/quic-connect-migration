@@ -10,6 +10,7 @@ import ssl
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from research_clock import utc_date_iso
 from urllib.parse import urlparse
 
@@ -143,23 +144,75 @@ def build_result(url: str, timeout: int) -> PublicOriginReadiness:
     )
 
 
-def emit_markdown(result: PublicOriginReadiness) -> str:
+def redact_value(value: str, result: PublicOriginReadiness) -> str:
+    redacted = value
+    for token, replacement in [
+        (result.url, "<redacted-url>"),
+        (result.host, "<redacted-host>"),
+        (result.tls_subject, "<redacted-tls-subject>"),
+        (result.tls_issuer, "<redacted-tls-issuer>"),
+    ]:
+        if token:
+            redacted = redacted.replace(token, replacement)
+    for address in result.dns_addresses:
+        if address:
+            redacted = redacted.replace(address, "<redacted-address>")
+    return redacted
+
+
+def redacted_dns_summary(result: PublicOriginReadiness) -> str:
+    if not result.dns_addresses:
+        return "-"
+    count = len(result.dns_addresses)
+    return f"<redacted:{count} address{'es' if count != 1 else ''}>"
+
+
+def payload(result: PublicOriginReadiness, redact_sensitive: bool) -> dict[str, object]:
+    data: dict[str, object] = asdict(result)
+    data["ok"] = result.ok
+    data["redacted"] = redact_sensitive
+    if not redact_sensitive:
+        return data
+    data["url"] = "<redacted-url>"
+    data["host"] = "<redacted-host>"
+    data["dns_addresses"] = ["<redacted-address>"] if result.dns_addresses else []
+    data["tls_subject"] = "<redacted-tls-subject>" if result.tls_subject else ""
+    data["tls_issuer"] = "<redacted-tls-issuer>" if result.tls_issuer else ""
+    data["alt_svc_headers"] = redact_value(result.alt_svc_headers, result)
+    data["errors"] = [redact_value(error, result) for error in result.errors]
+    return data
+
+
+def emit_markdown(result: PublicOriginReadiness, redact_sensitive: bool = False) -> str:
+    url = "<redacted-url>" if redact_sensitive else result.url
+    dns = redacted_dns_summary(result) if redact_sensitive else ", ".join(result.dns_addresses) or "-"
+    alt_svc = redact_value(result.alt_svc_headers, result) if redact_sensitive else result.alt_svc_headers
+    errors = [redact_value(error, result) for error in result.errors] if redact_sensitive else result.errors
     return "\n".join(
         [
             "| check | value |",
             "| --- | --- |",
-            f"| url | `{result.url}` |",
-            f"| DNS addresses | `{', '.join(result.dns_addresses) or '-'}` |",
+            f"| url | `{url}` |",
+            f"| DNS addresses | `{dns}` |",
             f"| TCP/TLS OK | `{str(result.tcp_tls_ok).lower()}` |",
             f"| Python TLS OK | `{str(result.python_tls_ok).lower()}` |",
             f"| curl HTTPS OK | `{str(result.curl_https_ok).lower()}` |",
             f"| TLS version | `{result.tls_version or '-'}` |",
             f"| final status | `{result.final_status or '-'}` |",
             f"| h3 Alt-Svc | `{str(result.has_h3_alt_svc).lower()}` |",
-            f"| Alt-Svc | `{result.alt_svc_headers or '-'}` |",
-            f"| errors | `{'; '.join(result.errors) or '-'}` |",
+            f"| Alt-Svc | `{alt_svc or '-'}` |",
+            f"| errors | `{'; '.join(errors) or '-'}` |",
         ]
     ) + "\n"
+
+
+def write_output(text: str, output_arg: str | None) -> None:
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
 
 
 def main() -> int:
@@ -168,6 +221,8 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--require-h3-alt-svc", action="store_true")
     parser.add_argument("--format", choices=["json", "markdown"], default="json")
+    parser.add_argument("--redact-sensitive", action="store_true")
+    parser.add_argument("--output")
     args = parser.parse_args()
 
     try:
@@ -177,11 +232,10 @@ def main() -> int:
         return 2
 
     if args.format == "markdown":
-        sys.stdout.write(emit_markdown(result))
+        text = emit_markdown(result, redact_sensitive=args.redact_sensitive)
     else:
-        payload = asdict(result)
-        payload["ok"] = result.ok
-        sys.stdout.write(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+        text = json.dumps(payload(result, args.redact_sensitive), indent=2, ensure_ascii=False) + "\n"
+    write_output(text, args.output)
 
     if args.require_h3_alt_svc and not result.has_h3_alt_svc:
         return 1

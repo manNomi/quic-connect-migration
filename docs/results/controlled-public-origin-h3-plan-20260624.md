@@ -31,6 +31,7 @@
 python3 tools/check_public_origin_readiness.py \
   --url https://h3.example.com/browser-slow?duration_ms=6000 \
   --require-h3-alt-svc \
+  --redact-sensitive \
   --format markdown
 ```
 

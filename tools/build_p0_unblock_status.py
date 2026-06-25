@@ -45,7 +45,7 @@ GATE_GUIDANCE = {
     ),
     "public_origin_url_configured": (
         "needed-now",
-        "python3 tools/check_public_origin_readiness.py --url \"$PUBLIC_ORIGIN_URL\" --require-h3-alt-svc --format markdown",
+        "python3 tools/check_public_origin_readiness.py --url \"$PUBLIC_ORIGIN_URL\" --require-h3-alt-svc --redact-sensitive --format markdown",
         "Set the public WebPKI URL and verify Alt-Svc/H3 readiness.",
         "Use redacted/public-safe summaries only.",
     ),

@@ -680,6 +680,7 @@ python3 tools/classify_controlled_public_h3_baseline.py \
 python3 tools/check_public_origin_readiness.py \
   --url 'https://h3.example.com/browser-slow?duration_ms=6000&chunks=6&label=public-slow' \
   --require-h3-alt-svc \
+  --redact-sensitive \
   --format markdown
 ```
 

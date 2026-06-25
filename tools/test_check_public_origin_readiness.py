@@ -83,6 +83,17 @@ def test_build_result_combines_dns_tls_curl_without_live_network() -> None:
     assert result.errors == []
     markdown = readiness.emit_markdown(result)
     assert "| h3 Alt-Svc | `true` |" in markdown
+    redacted = readiness.emit_markdown(result, redact_sensitive=True)
+    assert "h3.test.local" not in redacted
+    assert "203.0.113.10" not in redacted
+    assert "<redacted-url>" in redacted
+    assert "<redacted:1 address>" in redacted
+    data = readiness.payload(result, redact_sensitive=True)
+    assert data["url"] == "<redacted-url>"
+    assert data["host"] == "<redacted-host>"
+    assert data["dns_addresses"] == ["<redacted-address>"]
+    assert data["tls_subject"] == "<redacted-tls-subject>"
+    assert data["tls_issuer"] == "<redacted-tls-issuer>"
 
 
 def test_build_result_records_failed_origin_without_throwing() -> None:
@@ -103,6 +114,7 @@ def test_build_result_records_failed_origin_without_throwing() -> None:
     assert result.ok is False
     assert result.has_h3_alt_svc is False
     assert result.errors == ["dns: not found", "tls: failed", "curl: failed"]
+    assert readiness.payload(result, redact_sensitive=False)["redacted"] is False
 
 
 def main() -> int:

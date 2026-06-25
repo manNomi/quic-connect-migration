@@ -80,7 +80,7 @@ set -a
 source harness/config/controlled-public-origin.env
 set +a
 python3 tools/check_controlled_public_config.py --require-baseline-ready
-python3 tools/check_public_origin_readiness.py --url "$PUBLIC_ORIGIN_URL" --require-h3-alt-svc --format markdown
+python3 tools/check_public_origin_readiness.py --url "$PUBLIC_ORIGIN_URL" --require-h3-alt-svc --redact-sensitive --format markdown
 python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md
 ```
 

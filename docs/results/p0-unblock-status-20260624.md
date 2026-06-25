@@ -21,7 +21,7 @@ This tracker is public-safe. It compresses final protocol readiness into the gat
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | `controlled_public_config_present` | `needed-now` | 10 | `yes` | Create the ignored controlled-public origin env file and fill non-secret baseline fields locally. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
 | 2 | `public_origin_host_configured` | `needed-now` | 10 | `yes` | Set the public origin host in the private controlled-public config. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
-| 3 | `public_origin_url_configured` | `needed-now` | 10 | `yes` | Set the public WebPKI URL and verify Alt-Svc/H3 readiness. | `python3 tools/check_public_origin_readiness.py --url "$PUBLIC_ORIGIN_URL" --require-h3-alt-svc --format markdown` |
+| 3 | `public_origin_url_configured` | `needed-now` | 10 | `yes` | Set the public WebPKI URL and verify Alt-Svc/H3 readiness. | `python3 tools/check_public_origin_readiness.py --url "$PUBLIC_ORIGIN_URL" --require-h3-alt-svc --redact-sensitive --format markdown` |
 | 4 | `tls_config_present` | `needed-now` | 10 | `yes` | Set TLS certificate and key paths on the private origin host/config. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
 | 5 | `baseline_summary_ready` | `needed-after-baseline` | 7 | `no` | Run and register the controlled-public Chrome application H3 baseline. | `python3 tools/check_controlled_public_baseline_unlock.py --require-unlocked` |
 | 6 | `desktop_secondary_path_ready` | `needed-after-baseline` | 7 | `no` | Prepare a real active secondary non-loopback path for desktop browser trials. | `python3 tools/check_handover_readiness.py --format markdown` |
