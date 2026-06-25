@@ -1982,6 +1982,12 @@ Chrome no-change downlink baseline은 다음 wrapper를 사용한다.
 bash harness/scripts/final-chrome-nochange-run.sh
 ```
 
+다음 final handover trial을 자동 선택하고 readiness가 열린 경우에만 알맞은 wrapper로 dispatch하려면 다음 wrapper를 사용한다.
+
+```bash
+bash harness/scripts/final-handover-run-next.sh
+```
+
 ## 42. P0 baseline preflight guard 재생성
 
 server/client artifact capture를 시작해도 되는지 마지막으로 판정한다.

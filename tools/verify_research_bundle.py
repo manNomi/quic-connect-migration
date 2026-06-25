@@ -269,6 +269,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_capture_storage_budget.py",
                 "tools/test_final_chrome_nochange_run_wrapper.py",
                 "tools/test_final_chrome_network_change_run_wrapper.py",
+                "tools/test_final_handover_run_next_wrapper.py",
                 "tools/test_final_p0_baseline_preflight_wrapper.py",
                 "tools/test_final_p0_baseline_run_wrapper.py",
                 "tools/test_final_handover_register_trial_wrapper.py",
@@ -636,6 +637,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "final_chrome_network_change_run_wrapper_regression",
             [python_bin, "tools/test_final_chrome_network_change_run_wrapper.py"],
+            {0},
+            60,
+        ),
+        (
+            "final_handover_run_next_wrapper_regression",
+            [python_bin, "tools/test_final_handover_run_next_wrapper.py"],
             {0},
             60,
         ),
@@ -1067,6 +1074,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "bash",
                 "-n",
                 "harness/scripts/controlled-public-preflight.sh",
+                "harness/scripts/final-handover-run-next.sh",
                 "harness/scripts/final-chrome-nochange-run.sh",
                 "harness/scripts/final-chrome-network-change-run.sh",
                 "harness/scripts/final-p0-baseline-preflight.sh",
