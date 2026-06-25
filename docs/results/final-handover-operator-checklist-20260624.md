@@ -50,6 +50,7 @@ python3 tools/audit_artifact_cleanup_safety.py --output docs/results/artifact-cl
 ### 3. next trial
 
 ```bash
+bash harness/scripts/final-handover-run-next.sh
 python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md
 ```
 

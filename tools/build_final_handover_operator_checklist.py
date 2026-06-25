@@ -124,6 +124,7 @@ def build_actions(
             f"Run next trial {next_readiness['next_trial']['trial_id']}.",
             "All gates required by the selected next trial are ready.",
             [
+                "bash harness/scripts/final-handover-run-next.sh",
                 "python3 tools/select_next_final_handover_trial.py --output docs/results/final-handover-next-trial-20260624.md",
                 "python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md",
             ],
@@ -136,7 +137,10 @@ def build_actions(
             "next trial",
             "Do not run the next final handover trial yet.",
             "Missing required gates: " + ", ".join(next_readiness["missing_required_gates"] or ["none"]),
-            ["python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md"],
+            [
+                "bash harness/scripts/final-handover-run-next.sh",
+                "python3 tools/check_next_final_handover_trial_readiness.py --output docs/results/final-handover-next-trial-readiness-20260624.md",
+            ],
         )
 
     if not config["active_network_change_config_ready"]:
