@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "b3a862c",
+    "commit": "cc7894a",
     "branch": "main"
   },
   "experiment_corpus": {
@@ -16,8 +16,8 @@
     "final_required_rows": 6
   },
   "verification": {
-    "checks": "105",
-    "passed": "105",
+    "checks": "107",
+    "passed": "107",
     "ok": "yes"
   },
   "research_audit": {
@@ -47,6 +47,7 @@
     "p0_baseline_preflight": "docs/results/p0-baseline-preflight-check-20260624.md",
     "p0_baseline_preflight_controls": "docs/results/p0-baseline-preflight-control-report-20260624.md",
     "final_capture_storage_budget": "docs/results/final-capture-storage-budget-20260624.md",
+    "artifact_cleanup_apply_report": "docs/results/artifact-cleanup-apply-report-20260625.md",
     "final_trial_acceptance_scorecard": "docs/results/final-trial-acceptance-scorecard-20260624.md",
     "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
     "paper_claim_support_matrix": "docs/results/paper-claim-support-matrix-20260624.md",

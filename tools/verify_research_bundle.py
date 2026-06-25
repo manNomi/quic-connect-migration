@@ -130,6 +130,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
+    cleanup_apply_report = "docs/results/artifact-cleanup-apply-report-20260625.md"
     cleanup_safety = "docs/results/artifact-cleanup-safety-audit-20260624.md"
     active_path_candidates = "docs/results/active-path-change-command-candidates-20260625.md"
     active_path_candidates_json = "data/active-path-change-command-candidates-20260625.json"
@@ -195,6 +196,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
+        cleanup_apply_report = str(generated_dir / "artifact-cleanup-apply-report.md")
         cleanup_safety = str(generated_dir / "artifact-cleanup-safety-audit.md")
         active_path_candidates = str(generated_dir / "active-path-change-command-candidates.md")
         active_path_candidates_json = str(generated_dir / "active-path-change-command-candidates.json")
@@ -211,6 +213,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "py_compile",
                 "tools/audit_final_browser_handover_trials.py",
                 "tools/audit_artifact_cleanup_safety.py",
+                "tools/apply_artifact_cleanup_plan.py",
                 "tools/audit_research_bundle.py",
                 "tools/append_final_handover_result_row.py",
                 "tools/build_application_recovery_tradeoff.py",
@@ -262,6 +265,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_append_final_handover_result_row.py",
                 "tools/test_build_application_recovery_tradeoff.py",
                 "tools/test_artifact_disk_guard.py",
+                "tools/test_apply_artifact_cleanup_plan.py",
                 "tools/test_audit_artifact_cleanup_safety.py",
                 "tools/test_build_final_handover_operator_checklist.py",
                 "tools/test_build_final_handover_trial_packet.py",
@@ -1004,6 +1008,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
+            "artifact_cleanup_apply_regression",
+            [python_bin, "tools/test_apply_artifact_cleanup_plan.py"],
+            {0},
+            30,
+        ),
+        (
             "artifact_cleanup_dry_run_plan",
             [
                 python_bin,
@@ -1014,6 +1024,21 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "review-unreferenced",
                 "--output",
                 cleanup_dry_run,
+            ],
+            {0},
+            60,
+        ),
+        (
+            "artifact_cleanup_apply_dry_run_report",
+            [
+                python_bin,
+                "tools/apply_artifact_cleanup_plan.py",
+                "--target-free-gib",
+                "7",
+                "--candidate-policy",
+                "review-unreferenced",
+                "--output",
+                cleanup_apply_report,
             ],
             {0},
             60,

@@ -98,6 +98,7 @@ def build_actions(
             ),
             [
                 "python3 tools/plan_artifact_cleanup.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-dry-run-20260624.md",
+                "python3 tools/apply_artifact_cleanup_plan.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-apply-report-20260625.md",
                 "python3 tools/audit_artifact_cleanup_safety.py --target-free-gib 7 --output docs/results/artifact-cleanup-safety-audit-20260624.md",
             ],
         )
@@ -111,6 +112,7 @@ def build_actions(
             f"Selected cleanup candidates reclaim {cleanup['selected_reclaimable_human']}.",
             [
                 "python3 tools/plan_artifact_cleanup.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-dry-run-20260624.md",
+                "python3 tools/apply_artifact_cleanup_plan.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-apply-report-20260625.md",
                 "python3 tools/audit_artifact_cleanup_safety.py --target-free-gib 7 --output docs/results/artifact-cleanup-safety-audit-20260624.md",
             ],
         )

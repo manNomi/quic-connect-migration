@@ -1084,6 +1084,38 @@ python3 tools/plan_artifact_cleanup.py \
 
 final browser handover capture용 public dry-run은 기본 disk floor 5 GiB에 다음 capture reserve 2 GiB를 더한 7 GiB를 목표로 둔다. `review-unreferenced` 후보만으로 목표를 채우지 못하면 referenced raw artifact를 삭제하지 말고 저장소 외부 파일을 정리하거나 raw artifact를 별도 archive한 뒤 판단한다.
 
+## 29-1. `tools/apply_artifact_cleanup_plan.py`
+
+`plan_artifact_cleanup.py`가 고른 `review-unreferenced` 후보를 실제 정리할 수 있는 executor다. 기본은 dry-run이며, 파일을 삭제하지 않고 apply report만 만든다.
+
+dry-run:
+
+```bash
+python3 tools/apply_artifact_cleanup_plan.py \
+  --target-free-gib 7 \
+  --candidate-policy review-unreferenced \
+  --output docs/results/artifact-cleanup-apply-report-20260625.md
+```
+
+실제 삭제:
+
+```bash
+python3 tools/apply_artifact_cleanup_plan.py \
+  --target-free-gib 7 \
+  --candidate-policy review-unreferenced \
+  --execute \
+  --confirm DELETE-REVIEW-UNREFERENCED \
+  --output docs/results/artifact-cleanup-apply-report-20260625.md
+```
+
+안전장치:
+
+- `--execute`가 없으면 삭제하지 않는다.
+- `--execute`는 정확한 confirmation token이 없으면 거부된다.
+- `review-unreferenced`가 아닌 후보는 삭제하지 않는다.
+- artifact root 밖의 경로, symlink, directory가 아닌 path는 삭제하지 않는다.
+- referenced raw artifact를 지워야 한다면 먼저 별도 archive와 paper evidence 보존 여부를 검토해야 한다.
+
 ## 30. `tools/validate_final_handover_trial_artifact.py`
 
 단일 최종 browser/mobile handover artifact가 `data/experiment-results.csv`에 등록 가능한지, 그리고 최종 protocol requirement에 실제로 카운트되는지를 검증한다. row 생성은 `draft_final_handover_result_row.py`가 담당하고, 이 도구는 그 row가 `audit_final_browser_handover_trials.py`의 matcher와 맞는지 확인한다.

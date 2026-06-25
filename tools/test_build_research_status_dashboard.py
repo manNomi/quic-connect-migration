@@ -110,6 +110,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             p0_baseline_preflight_controls=(root / "p0-baseline-preflight-control-report.csv").as_posix(),
             final_capture_storage_budget=(root / "final-capture-storage-budget.csv").as_posix(),
             aws_identity_readiness=(root / "aws-identity-readiness.json").as_posix(),
+            artifact_cleanup_apply_report=(root / "artifact-cleanup-apply-report.md").as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)
@@ -122,6 +123,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         assert "p0_baseline_preflight_controls" in dashboard["key_paths"]
         assert "final_capture_storage_budget" in dashboard["key_paths"]
         assert "aws_identity_readiness" in dashboard["key_paths"]
+        assert "artifact_cleanup_apply_report" in dashboard["key_paths"]
         assert "PRIVATE_KEY" not in markdown
         assert "AKIA" not in markdown
 

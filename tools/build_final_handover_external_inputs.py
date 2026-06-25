@@ -67,7 +67,7 @@ def build_items(
                 "Controlled-public wrappers now enforce the same minimum free-space guard used by readiness checks; "
                 f"current cleanup plan still has external gap {storage['remaining_gap_human']}."
             ),
-            validation_command="python3 tools/report_artifact_storage.py --output docs/results/artifact-storage-report-20260624.md",
+            validation_command="python3 tools/plan_artifact_cleanup.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-dry-run-20260624.md",
             safe_handling="Do not delete CSV-referenced raw artifacts unless they are archived and paper evidence is preserved.",
             evidence=f"current_free={storage['current_free_human']}; target_met={storage['target_met_by_selected']}",
         ),

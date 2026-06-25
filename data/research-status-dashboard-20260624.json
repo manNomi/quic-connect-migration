@@ -8,8 +8,8 @@
     "PASS_NEGATIVE_CONTROL": 35
   },
   "verification": {
-    "checks": "105",
-    "passed": "105",
+    "checks": "107",
+    "passed": "107",
     "ok": "yes"
   },
   "ci": {
@@ -61,6 +61,7 @@
     "p0_baseline_preflight": "data/p0-baseline-preflight-check-20260624.csv",
     "p0_baseline_preflight_controls": "data/p0-baseline-preflight-control-report-20260624.csv",
     "final_capture_storage_budget": "data/final-capture-storage-budget-20260624.csv",
+    "artifact_cleanup_apply_report": "docs/results/artifact-cleanup-apply-report-20260625.md",
     "aws_identity_readiness": "data/aws-identity-readiness-20260625.json",
     "acceptance_scorecard": "data/final-trial-acceptance-scorecard-20260624.csv",
     "operational_friction_matrix": "data/cm-operational-friction-matrix-20260624.csv",

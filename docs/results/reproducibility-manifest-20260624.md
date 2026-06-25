@@ -8,11 +8,11 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `b3a862c` |
+| source commit at generation | `cc7894a` |
 | branch | `main` |
 | total trials | `66` |
 | status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
-| verification | `105/105 passed; ok=yes` |
+| verification | `107/107 passed; ok=yes` |
 | final browser handover | `0/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
@@ -34,6 +34,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `p0_baseline_preflight` | `docs/results/p0-baseline-preflight-check-20260624.md` |
 | `p0_baseline_preflight_controls` | `docs/results/p0-baseline-preflight-control-report-20260624.md` |
 | `final_capture_storage_budget` | `docs/results/final-capture-storage-budget-20260624.md` |
+| `artifact_cleanup_apply_report` | `docs/results/artifact-cleanup-apply-report-20260625.md` |
 | `final_trial_acceptance_scorecard` | `docs/results/final-trial-acceptance-scorecard-20260624.md` |
 | `paper_gap_register` | `docs/results/paper-evidence-gap-register-20260624.md` |
 | `paper_claim_support_matrix` | `docs/results/paper-claim-support-matrix-20260624.md` |
