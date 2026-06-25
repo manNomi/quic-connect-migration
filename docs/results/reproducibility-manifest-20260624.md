@@ -8,7 +8,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `c2fa07b` |
+| source commit at generation | `f1015fa` |
 | branch | `main` |
 | total trials | `66` |
 | status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
@@ -33,6 +33,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `p0_baseline_execution_packet` | `docs/results/p0-baseline-execution-packet-20260624.md` |
 | `p0_baseline_preflight` | `docs/results/p0-baseline-preflight-check-20260624.md` |
 | `p0_baseline_preflight_controls` | `docs/results/p0-baseline-preflight-control-report-20260624.md` |
+| `p0_baseline_preflight_redaction_smoke` | `docs/results/final-p0-baseline-preflight-redaction-smoke-20260625.md` |
 | `final_capture_storage_budget` | `docs/results/final-capture-storage-budget-20260624.md` |
 | `artifact_cleanup_apply_report` | `docs/results/artifact-cleanup-apply-report-20260625.md` |
 | `artifact_cleanup_execution_log` | `docs/results/artifact-cleanup-execution-log-20260625.md` |

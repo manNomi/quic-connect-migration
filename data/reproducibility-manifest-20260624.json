@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "c2fa07b",
+    "commit": "f1015fa",
     "branch": "main"
   },
   "experiment_corpus": {
@@ -46,6 +46,7 @@
     "p0_baseline_execution_packet": "docs/results/p0-baseline-execution-packet-20260624.md",
     "p0_baseline_preflight": "docs/results/p0-baseline-preflight-check-20260624.md",
     "p0_baseline_preflight_controls": "docs/results/p0-baseline-preflight-control-report-20260624.md",
+    "p0_baseline_preflight_redaction_smoke": "docs/results/final-p0-baseline-preflight-redaction-smoke-20260625.md",
     "final_capture_storage_budget": "docs/results/final-capture-storage-budget-20260624.md",
     "artifact_cleanup_apply_report": "docs/results/artifact-cleanup-apply-report-20260625.md",
     "artifact_cleanup_execution_log": "docs/results/artifact-cleanup-execution-log-20260625.md",
