@@ -719,6 +719,28 @@ bash harness/scripts/controlled-public-preflight.sh
 
 이 wrapper가 `controlled_public_preflight=ready`를 출력해야 `run-controlled-public-h3-network-change.sh`를 본 실험으로 실행할 수 있다. `blocked`이면 출력된 blockers를 실험 전제 미충족으로 기록한다.
 
+## 18.1. `tools/suggest_active_path_change_commands.py`
+
+desktop/Android active path-change 후보를 읽기 전용으로 점검한다. 실제 Wi-Fi, service order, Android Wi-Fi 상태는 바꾸지 않는다.
+
+실행:
+
+```bash
+python3 tools/suggest_active_path_change_commands.py \
+  --format markdown \
+  --output docs/results/active-path-change-command-candidates-20260625.md
+```
+
+기본 출력은 public-safe다. MAC 주소, local IPv4, gateway, raw `ifconfig`/`networksetup` 출력, 실제 substituted command를 저장하지 않는다. operator가 로컬 ignored note로 실제 후보 command를 확인할 때만 `--include-commands`를 사용한다.
+
+| 후보 | 의미 |
+| --- | --- |
+| `macos_wifi_power_cutover` | secondary path가 active일 때 Wi-Fi device power를 끄는 후보 |
+| `macos_service_order_cutover` | active secondary network service를 default service보다 우선 배치하는 후보 |
+| `android_wifi_to_cellular_cutover` | ADB device에서 Wi-Fi를 끄고 cellular로 넘기는 후보 |
+
+현재 2026-06-25 점검에서는 active IPv4 interface가 `en0` 하나라 ready 후보가 없다. 이 결과는 CM 실패가 아니라 final active trial gate 미충족으로 해석한다.
+
 ## 19. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.

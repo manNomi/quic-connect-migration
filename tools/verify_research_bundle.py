@@ -131,6 +131,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     storage_report = "docs/results/artifact-storage-report-20260624.md"
     cleanup_dry_run = "docs/results/artifact-cleanup-dry-run-20260624.md"
     cleanup_safety = "docs/results/artifact-cleanup-safety-audit-20260624.md"
+    active_path_candidates = "docs/results/active-path-change-command-candidates-20260625.md"
+    active_path_candidates_json = "data/active-path-change-command-candidates-20260625.json"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
@@ -192,6 +194,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         storage_report = str(generated_dir / "artifact-storage-report.md")
         cleanup_dry_run = str(generated_dir / "artifact-cleanup-dry-run.md")
         cleanup_safety = str(generated_dir / "artifact-cleanup-safety-audit.md")
+        active_path_candidates = str(generated_dir / "active-path-change-command-candidates.md")
+        active_path_candidates_json = str(generated_dir / "active-path-change-command-candidates.json")
         research_audit = str(generated_dir / "research-bundle-audit.md")
 
     return [
@@ -240,6 +244,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/plan_artifact_cleanup.py",
                 "tools/plan_final_browser_handover_runs.py",
                 "tools/select_next_final_handover_trial.py",
+                "tools/suggest_active_path_change_commands.py",
                 "tools/summarize_chrome_rebinding_proxy_matrix.py",
                 "tools/summarize_chrome_rebinding_upload_matrix.py",
                 "tools/summarize_chrome_rebinding_timing_sensitivity.py",
@@ -290,6 +295,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_final_browser_handover_trial_audit.py",
                 "tools/test_validate_final_handover_trial_artifact.py",
                 "tools/test_select_next_final_handover_trial.py",
+                "tools/test_suggest_active_path_change_commands.py",
                 "tools/test_summarize_chrome_rebinding_proxy_matrix.py",
                 "tools/test_summarize_chrome_rebinding_upload_matrix.py",
                 "tools/test_summarize_chrome_rebinding_timing_sensitivity.py",
@@ -1023,6 +1029,38 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         ),
         ("handover_readiness", [python_bin, "tools/check_handover_readiness.py", "--format", "markdown"], {0}, 30),
         ("browser_observability", [python_bin, "tools/check_browser_cm_observability.py", "--format", "markdown"], {0}, 30),
+        (
+            "active_path_change_command_candidates_regression",
+            [python_bin, "tools/test_suggest_active_path_change_commands.py"],
+            {0},
+            30,
+        ),
+        (
+            "active_path_change_command_candidates",
+            [
+                python_bin,
+                "tools/suggest_active_path_change_commands.py",
+                "--format",
+                "markdown",
+                "--output",
+                active_path_candidates,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "active_path_change_command_candidates_json",
+            [
+                python_bin,
+                "tools/suggest_active_path_change_commands.py",
+                "--format",
+                "json",
+                "--output",
+                active_path_candidates_json,
+            ],
+            {0},
+            30,
+        ),
         (
             "controlled_public_wrapper_script_syntax",
             [

@@ -1,0 +1,192 @@
+{
+  "generated": "2026-06-25",
+  "commands_included": false,
+  "read_only": true,
+  "summary": {
+    "active_ipv4_interface_count": 1,
+    "active_ipv4_interfaces": [
+      "en0"
+    ],
+    "default_interface": "en0",
+    "secondary_path_ready": false,
+    "ready_candidate_count": 0,
+    "ready_candidates": []
+  },
+  "detected": {
+    "hardware_ports": [
+      {
+        "hardware_port": "Ethernet Adapter (en4)",
+        "device": "en4"
+      },
+      {
+        "hardware_port": "Ethernet Adapter (en5)",
+        "device": "en5"
+      },
+      {
+        "hardware_port": "Ethernet Adapter (en6)",
+        "device": "en6"
+      },
+      {
+        "hardware_port": "Thunderbolt Bridge",
+        "device": "bridge0"
+      },
+      {
+        "hardware_port": "Wi-Fi",
+        "device": "en0"
+      },
+      {
+        "hardware_port": "Thunderbolt 1",
+        "device": "en1"
+      },
+      {
+        "hardware_port": "Thunderbolt 2",
+        "device": "en2"
+      },
+      {
+        "hardware_port": "Thunderbolt 3",
+        "device": "en3"
+      }
+    ],
+    "network_services": [
+      {
+        "order": 1,
+        "name": "USB 10/100 LAN",
+        "hardware_port": "USB 10/100 LAN",
+        "device": "en7",
+        "disabled": false
+      },
+      {
+        "order": 2,
+        "name": "Thunderbolt Bridge",
+        "hardware_port": "Thunderbolt Bridge",
+        "device": "bridge0",
+        "disabled": false
+      },
+      {
+        "order": 3,
+        "name": "Wi-Fi",
+        "hardware_port": "Wi-Fi",
+        "device": "en0",
+        "disabled": false
+      },
+      {
+        "order": 4,
+        "name": "iPhone USB",
+        "hardware_port": "iPhone USB",
+        "device": "en8",
+        "disabled": false
+      }
+    ],
+    "active_ipv4_interfaces": [
+      {
+        "name": "en0",
+        "active": true,
+        "non_loopback_ipv4_count": 1
+      }
+    ],
+    "default_route": {
+      "interface": "en0"
+    }
+  },
+  "candidates": [
+    {
+      "id": "macos_wifi_power_cutover",
+      "label": "Turn Wi-Fi off after secondary path is active",
+      "ready": false,
+      "reason": "blocked: no active secondary non-loopback IPv4 path was detected",
+      "command_template": "networksetup -setairportpower <wifi-device> off",
+      "restore_template": "networksetup -setairportpower <wifi-device> on",
+      "command": "",
+      "restore_command": "",
+      "detected": {
+        "wifi_device": "en0"
+      },
+      "requires_operator_approval": true
+    },
+    {
+      "id": "macos_service_order_cutover",
+      "label": "Put active secondary service before the current default service",
+      "ready": false,
+      "reason": "blocked: no active secondary service was detected",
+      "command_template": "networksetup -ordernetworkservices <secondary-service> <primary-service> <remaining-services...>",
+      "restore_template": "networksetup -ordernetworkservices <primary-service> <secondary-service> <remaining-services...>",
+      "command": "",
+      "restore_command": "",
+      "detected": {
+        "primary_service": "Wi-Fi",
+        "secondary_service": "",
+        "primary_device": "en0",
+        "secondary_device": ""
+      },
+      "requires_operator_approval": true
+    },
+    {
+      "id": "android_wifi_to_cellular_cutover",
+      "label": "Disable Android Wi-Fi and rely on cellular",
+      "ready": false,
+      "reason": "blocked: no ADB device is connected",
+      "command_template": "adb shell svc wifi disable",
+      "restore_template": "adb shell svc wifi enable",
+      "command": "",
+      "restore_command": "",
+      "detected": {
+        "adb_device_count": "0"
+      },
+      "requires_operator_approval": true
+    }
+  ],
+  "claim_boundary": "A candidate command is not migration evidence; count a trial only after before/after client path snapshots and server/qlog/NetLog artifacts validate it.",
+  "commands": {
+    "hardware_ports": {
+      "command": [
+        "networksetup",
+        "-listallhardwareports"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "service_order": {
+      "command": [
+        "networksetup",
+        "-listnetworkserviceorder"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "ifconfig": {
+      "command": [
+        "ifconfig"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "default_route": {
+      "command": [
+        "route",
+        "-n",
+        "get",
+        "default"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "adb_devices": {
+      "command": [
+        "adb",
+        "devices"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  }
+}
