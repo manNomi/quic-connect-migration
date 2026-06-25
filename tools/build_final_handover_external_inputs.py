@@ -25,6 +25,18 @@ from check_next_final_handover_trial_readiness import DEFAULT_CHROME, DEFAULT_SA
 DEFAULT_OUTPUT = "docs/results/final-handover-external-inputs-20260624.md"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        print(text, end="")
+        return
+    if output_arg:
+        output = Path(output_arg)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+    else:
+        print(text, end="")
+
+
 @dataclass(frozen=True)
 class ExternalInputItem:
     id: str
@@ -251,12 +263,7 @@ def main() -> int:
 
     handoff = build_handoff(args)
     text = json.dumps(handoff, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(handoff)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     return 0
 
 

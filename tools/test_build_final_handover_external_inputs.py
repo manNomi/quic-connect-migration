@@ -3,7 +3,13 @@
 
 from __future__ import annotations
 
-from build_final_handover_external_inputs import build_items, emit_markdown
+import contextlib
+import io
+import os
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from build_final_handover_external_inputs import build_items, emit_markdown, write_output
 
 
 def fake_worksheet(baseline_ready: bool = False) -> dict:
@@ -74,9 +80,24 @@ def test_ready_now_inputs_do_not_leak_private_values() -> None:
     assert "AWS_SECRET" not in markdown
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("handoff\n", "-")
+            assert buffer.getvalue() == "handoff\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_now_inputs_are_marked_needed()
     test_ready_now_inputs_do_not_leak_private_values()
+    test_dash_output_prints_stdout_without_dash_file()
     print("build_final_handover_external_inputs=ok")
     return 0
 
