@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from build_p0_unblock_status import build_status, emit_markdown, write_csv
+from build_p0_unblock_status import build_status, emit_markdown, write_csv, write_output
 
 
 def write_fixture(path: Path, text: str) -> None:
@@ -73,9 +76,47 @@ def test_status_is_public_safe_and_writable() -> None:
         assert output.exists()
 
 
+def test_dash_outputs_print_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        matrix = root / "matrix.csv"
+        scorecard = root / "scorecard.csv"
+        write_fixture(
+            matrix,
+            """
+            order,trial_id,requirement_id,phase,browser,heartbeat,ready,state,required_gates,missing_gates
+            1,t1,r1,baseline,Chrome,n/a,False,blocked,tls_config_present,tls_config_present
+            """,
+        )
+        write_fixture(
+            scorecard,
+            """
+            requirement_id,complete
+            r1,False
+            """,
+        )
+        status = build_status(matrix, scorecard)
+        try:
+            os.chdir(root)
+            markdown_buffer = io.StringIO()
+            with contextlib.redirect_stdout(markdown_buffer):
+                write_output(emit_markdown(status), "-")
+            assert markdown_buffer.getvalue().startswith("# P0 Unblock Status")
+
+            csv_buffer = io.StringIO()
+            with contextlib.redirect_stdout(csv_buffer):
+                write_csv(status, "-")
+            assert csv_buffer.getvalue().startswith("order,unblock_item,status")
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_next_trial_gates_are_needed_now()
     test_status_is_public_safe_and_writable()
+    test_dash_outputs_print_stdout_without_dash_file()
     print("build_p0_unblock_status=ok")
     return 0
 

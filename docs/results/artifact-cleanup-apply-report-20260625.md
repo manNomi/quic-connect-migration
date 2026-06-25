@@ -15,8 +15,8 @@ This report is public-safe. It never prints qlog, NetLog, pcap, keylog, credenti
 | selected candidates | `0` |
 | selected reclaimable | `0 B` |
 | remaining gap before cleanup | `0 B` |
-| disk free before | `9.2 GiB` |
-| disk free after | `9.2 GiB` |
+| disk free before | `9.3 GiB` |
+| disk free after | `9.3 GiB` |
 | deleted count | `0` |
 | confirm required | `DELETE-REVIEW-UNREFERENCED` |
 | confirm ok | `no` |
