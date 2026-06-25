@@ -1,9 +1,9 @@
 {
   "generated": "2026-06-25",
   "public_safe": true,
-  "experiment_trials": 66,
+  "experiment_trials": 69,
   "experiment_status_counts": {
-    "PASS": 25,
+    "PASS": 28,
     "PASS_FEASIBILITY": 6,
     "PASS_NEGATIVE_CONTROL": 35
   },
@@ -18,13 +18,14 @@
     "conclusion": "-",
     "run_id": "-"
   },
-  "final_browser_handover": "0/6",
+  "final_browser_handover": "3/6",
   "planned_execution_state_counts": {
-    "blocked": 10
+    "blocked": 7,
+    "recorded": 3
   },
   "scorecard_paper_use_counts": {
-    "pending; do not claim browser CM success": 3,
-    "pending; required before active CM claim": 3
+    "baseline/control evidence available": 3,
+    "pending; do not claim browser CM success": 3
   },
   "operational_friction_paper_use_counts": {
     "cautious explanatory support": 2,
@@ -43,26 +44,17 @@
     "transition_zone": 5
   },
   "missing_gate_counts": {
-    "baseline_summary_ready": 7,
-    "controlled_public_config_present": 10,
     "desktop_secondary_path_ready": 7,
-    "network_change_command_present": 7,
-    "public_origin_host_configured": 10,
-    "public_origin_url_configured": 10,
-    "tls_config_present": 10
+    "network_change_command_present": 7
   },
-  "needed_now_inputs": [
-    "controlled-public-baseline-config",
-    "public-origin-host"
-  ],
+  "needed_now_inputs": [],
   "external_input_status_counts": {
     "incomplete": 1,
-    "needed": 2,
     "needed-after-baseline": 1,
     "optional-missing": 2,
-    "ready": 1
+    "ready": 3
   },
-  "next_operator_action": "Clear needed-now external inputs first: `controlled-public-baseline-config`, `public-origin-host`. See `docs/results/final-handover-external-inputs-20260624.md`.",
+  "next_operator_action": "Prepare an active secondary path and an operator-approved NETWORK_CHANGE_CMD.",
   "safe_claim_boundary": "Do not claim Chrome/Safari/Android browser handover CM success until the final browser handover protocol has countable rows.",
   "key_paths": {
     "manifest": "data/reproducibility-manifest-20260624.json",

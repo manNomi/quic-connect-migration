@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
@@ -122,6 +123,18 @@ def emit_markdown(report: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if output_arg:
+        output = Path(output_arg)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(text, encoding="utf-8")
+        return
+    sys.stdout.write(text)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trial-id", default=DEFAULT_TRIAL_ID)
@@ -135,12 +148,7 @@ def main() -> int:
     report = build_unlock_report(args.trial_id, Path(args.artifact_dir), Path(args.requirements))
 
     text = json.dumps(report, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(report)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     if args.require_unlocked and not report["unlocks_active_trials"]:
         return 1
     return 0 if report["baseline_summary_pass"] else 1

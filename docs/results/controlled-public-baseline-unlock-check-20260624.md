@@ -10,14 +10,14 @@ This public-safe check decides whether a controlled-public Chrome HTTP/3 baselin
 | --- | --- |
 | trial_id | `controlled-public-chrome-h3-baseline-001` |
 | artifact_dir | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001` |
-| summary_path | `-` |
-| summary status | `-` |
-| summary classification | `-` |
-| baseline summary PASS | `no` |
-| counts toward final protocol | `no` |
-| artifact bundle complete | `no` |
-| unlocks active trials | `no` |
-| claim strength | `summary_missing` |
+| summary_path | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json` |
+| summary status | `PASS` |
+| summary classification | `controlled_public_application_h3_confirmed` |
+| baseline summary PASS | `yes` |
+| counts toward final protocol | `yes` |
+| artifact bundle complete | `yes` |
+| unlocks active trials | `yes` |
+| claim strength | `counts_toward_final_protocol` |
 | public safe | `yes` |
 
 ## Allowed Unlock Classifications
@@ -27,21 +27,12 @@ This public-safe check decides whether a controlled-public Chrome HTTP/3 baselin
 
 ## Matched Final Requirements
 
-- -
+- chrome-controlled-public-application-h3-baseline
 
 ## Warnings
 
-- no known final handover summary found under repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001
+- -
 
 ## Blockers
 
-- baseline summary is not an unlocking PASS classification: status=- classification=-
-- baseline validation does not count toward final browser handover protocol
-- missing artifact: server result (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/server.json)
-- missing artifact: server qlog directory (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/qlog)
-- missing artifact: public origin readiness (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/public-origin-readiness.json)
-- missing artifact: classifier summary (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json)
-- missing artifact: Chrome bootstrap NetLog (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/chrome/bootstrap-netlog.json)
-- missing artifact: Chrome second NetLog (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/chrome/second-netlog.json)
-- missing artifact: Chrome public H3 summary (repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/chrome-public-h3-summary.json)
-- validation unavailable: no known final handover summary found under repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001
+- -

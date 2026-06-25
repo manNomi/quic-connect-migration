@@ -8,40 +8,34 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 | field | value |
 | --- | --- |
-| experiment trials | `66` |
-| experiment status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
+| experiment trials | `69` |
+| experiment status counts | `{'PASS': 28, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
 | verification | `109/109 passed; ok=yes` |
 | CI | `-/- (-)` |
-| final browser handover | `0/6` |
-| needed-now external inputs | `['controlled-public-baseline-config', 'public-origin-host']` |
-| planned execution states | `{'blocked': 10}` |
+| final browser handover | `3/6` |
+| needed-now external inputs | `[]` |
+| planned execution states | `{'blocked': 7, 'recorded': 3}` |
 | claim support | `{'negative_control_supported': 1, 'not_supported_yet': 2, 'supported_local_control': 4, 'supported_scoped': 2}` |
 | replication roles | `{'failure_candidate': 11, 'stable_candidate': 14, 'transition_zone': 5}` |
-| paper-use scorecard | `{'pending; do not claim browser CM success': 3, 'pending; required before active CM claim': 3}` |
+| paper-use scorecard | `{'baseline/control evidence available': 3, 'pending; do not claim browser CM success': 3}` |
 | operational friction | `{'cautious explanatory support': 2, 'related-work support only': 1, 'source-backed explanation with repo evidence': 10}` |
 
 ## Next Operator Action
 
-Clear needed-now external inputs first: `controlled-public-baseline-config`, `public-origin-host`. See `docs/results/final-handover-external-inputs-20260624.md`.
+Prepare an active secondary path and an operator-approved NETWORK_CHANGE_CMD.
 
 ## Needed-Now External Inputs
 
 | input id |
 | --- |
-| `controlled-public-baseline-config` |
-| `public-origin-host` |
+| - |
 
 ## Missing Gate Counts
 
 | gate | blocked planned executions |
 | --- | ---: |
-| `baseline_summary_ready` | 7 |
-| `controlled_public_config_present` | 10 |
 | `desktop_secondary_path_ready` | 7 |
 | `network_change_command_present` | 7 |
-| `public_origin_host_configured` | 10 |
-| `public_origin_url_configured` | 10 |
-| `tls_config_present` | 10 |
 
 ## Claim Boundary
 

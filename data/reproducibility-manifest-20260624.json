@@ -3,13 +3,13 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "608662f",
+    "commit": "0091d85",
     "branch": "main"
   },
   "experiment_corpus": {
-    "total_trials": 66,
+    "total_trials": 69,
     "status_counts": {
-      "PASS": 25,
+      "PASS": 28,
       "PASS_FEASIBILITY": 6,
       "PASS_NEGATIVE_CONTROL": 35
     },
@@ -24,14 +24,14 @@
     "publication_bundle_ok": "yes",
     "required_files_ok": "yes",
     "paper_tables_current": "yes",
-    "final_browser_handover_trials": "0/6",
+    "final_browser_handover_trials": "3/6",
     "goal_complete": "no"
   },
   "readiness": {
-    "next_trial": "controlled-public-chrome-h3-baseline-001",
+    "next_trial": "controlled-public-chrome-downlink-noheartbeat-network-change-001",
     "next_trial_ready": "no",
     "codex_can_run_next_trial_now": "no",
-    "needed_now_inputs": "2"
+    "needed_now_inputs": "0"
   },
   "ci": {
     "available": "not-requested"

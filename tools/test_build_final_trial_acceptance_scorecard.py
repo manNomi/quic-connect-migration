@@ -70,6 +70,7 @@ def test_complete_baseline_requirement_is_baseline_evidence() -> None:
         assert "server result" in row["required_artifact_roles"]
         assert "PRIVATE_KEY" not in markdown
         assert csv_output.exists()
+        assert "\r\n" not in csv_output.read_text(encoding="utf-8")
 
 
 def main() -> int:

@@ -172,13 +172,18 @@ def build_status(
 ) -> dict[str, object]:
     matrix_rows = read_csv(matrix_path)
     scorecard = read_csv(scorecard_path)
-    next_trial = first_blocked_trial(matrix_rows)
+    matrix_next_blocked_trial = first_blocked_trial(matrix_rows)
+    next_trial = matrix_next_blocked_trial
+    if local_readiness:
+        local_next = local_readiness.get("next_trial") or {}
+        if isinstance(local_next, dict) and local_next.get("trial_id"):
+            next_trial = local_next  # type: ignore[assignment]
     next_missing = set(split_cell(next_trial.get("missing_gates", ""))) if next_trial else set()
     local_overlay_applied = False
-    if local_readiness and next_trial:
+    if local_readiness:
         local_next = local_readiness.get("next_trial") or {}
         local_next_trial_id = local_next.get("trial_id") if isinstance(local_next, dict) else None
-        if local_next_trial_id == next_trial.get("trial_id"):
+        if local_next_trial_id and next_trial and local_next_trial_id == next_trial.get("trial_id"):
             next_missing = set(local_readiness.get("missing_required_gates") or [])
             local_overlay_applied = True
     counts = gate_counts(matrix_rows)
@@ -217,6 +222,7 @@ def build_status(
         "matrix_path": str(matrix_path),
         "scorecard_path": str(scorecard_path),
         "next_trial": next_trial or {},
+        "matrix_next_blocked_trial": matrix_next_blocked_trial or {},
         "total_planned_trials": len(matrix_rows),
         "blocked_planned_trials": sum(1 for row in matrix_rows if row.get("ready") != "True"),
         "complete_requirements": sum(1 for row in scorecard if row.get("complete") == "True"),
@@ -301,7 +307,7 @@ def emit_markdown(status: dict[str, object]) -> str:
             "",
             "## Interpretation",
             "",
-            "- The next concrete P0 step is to clear all `needed-now` gates for `controlled-public-chrome-h3-baseline-001`.",
+            "- The next concrete final-handover step is to clear all `needed-now` gates for the displayed next trial.",
             "- When the local overlay is `applied`, `blocks next` reflects the ignored local config/readiness state rather than only the tracked public matrix.",
             "- Active network-change gates remain after-baseline work until the controlled public application H3 baseline is registered.",
             "- This tracker does not create result evidence; it prevents premature execution and premature browser CM claims.",

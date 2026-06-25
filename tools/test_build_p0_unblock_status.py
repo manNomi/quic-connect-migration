@@ -97,6 +97,55 @@ def test_local_readiness_overlay_refines_next_trial_blockers() -> None:
         assert "`public_origin_host_configured`, `tls_config_present`" in markdown
 
 
+def test_local_ready_next_trial_takes_precedence_over_first_blocked_matrix_row() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        matrix = root / "matrix.csv"
+        scorecard = root / "scorecard.csv"
+        write_fixture(
+            matrix,
+            """
+            order,trial_id,requirement_id,phase,browser,heartbeat,ready,state,required_gates,missing_gates
+            1,controlled-public-chrome-h3-baseline-001,chrome-controlled-public-application-h3-baseline,baseline,Chrome,n/a,True,recorded,controlled_public_config_present,
+            2,controlled-public-chrome-downlink-noheartbeat-nochange-001,chrome-downlink-noheartbeat-nochange-baseline,no-change-baseline,Chrome,false,True,ready,controlled_public_config_present;disk_ready,
+            3,controlled-public-chrome-downlink-noheartbeat-network-change-001,chrome-downlink-noheartbeat-active-cm,active-network-change,Chrome,false,False,blocked,baseline_summary_ready;desktop_secondary_path_ready;network_change_command_present,baseline_summary_ready;desktop_secondary_path_ready;network_change_command_present
+            """,
+        )
+        write_fixture(
+            scorecard,
+            """
+            requirement_id,complete
+            chrome-controlled-public-application-h3-baseline,True
+            chrome-downlink-noheartbeat-nochange-baseline,False
+            chrome-downlink-noheartbeat-active-cm,False
+            """,
+        )
+        local_readiness = {
+            "ready": True,
+            "config_path": "harness/config/controlled-public-origin.env",
+            "config_exists": True,
+            "next_trial": {
+                "trial_id": "controlled-public-chrome-downlink-noheartbeat-nochange-001",
+                "phase": "no-change-baseline",
+            },
+            "required_gates": ["controlled_public_config_present", "disk_ready"],
+            "missing_required_gates": [],
+            "disk": {"free_gib": 9.2},
+        }
+        status = build_status(matrix, scorecard, local_readiness=local_readiness)
+        rows = {row["unblock_item"]: row for row in status["rows"]}
+        markdown = emit_markdown(status)
+
+        assert status["next_trial"]["trial_id"] == "controlled-public-chrome-downlink-noheartbeat-nochange-001"
+        assert status["matrix_next_blocked_trial"]["trial_id"] == "controlled-public-chrome-downlink-noheartbeat-network-change-001"
+        assert status["needed_now_count"] == 0
+        assert status["local_readiness"]["overlay_applied"] is True
+        assert rows["baseline_summary_ready"]["status"] == "needed-after-baseline"
+        assert rows["baseline_summary_ready"]["blocks_next_trial"] == "no"
+        assert "next trial | `controlled-public-chrome-downlink-noheartbeat-nochange-001`" in markdown
+        assert "local next-trial ready | `yes`" in markdown
+
+
 def test_status_is_public_safe_and_writable() -> None:
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -166,6 +215,7 @@ def test_dash_outputs_print_stdout_without_dash_file() -> None:
 def main() -> int:
     test_next_trial_gates_are_needed_now()
     test_local_readiness_overlay_refines_next_trial_blockers()
+    test_local_ready_next_trial_takes_precedence_over_first_blocked_matrix_row()
     test_status_is_public_safe_and_writable()
     test_dash_outputs_print_stdout_without_dash_file()
     print("build_p0_unblock_status=ok")

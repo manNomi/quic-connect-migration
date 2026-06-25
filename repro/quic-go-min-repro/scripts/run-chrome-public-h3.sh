@@ -14,6 +14,9 @@ SECOND_URL="${SECOND_URL:-$TARGET_URL}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-20}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Default}"
 CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-5000}"
+CHROME_RUNNER="${CHROME_RUNNER:-dump-dom}"
+CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-15}"
+NODE_BIN="${NODE_BIN:-node}"
 
 mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/results"
 
@@ -22,7 +25,7 @@ if [[ ! -x "$CHROME_BIN" ]]; then
   exit 2
 fi
 
-run_chrome() {
+run_chrome_dump_dom() {
   local url="$1"
   local netlog="$2"
   local dump="$3"
@@ -73,12 +76,28 @@ PY
 }
 
 BOOTSTRAP_EXIT=0
-run_chrome "$TARGET_URL" "bootstrap-netlog.json" "bootstrap-dump-dom.txt" || BOOTSTRAP_EXIT=$?
+run_chrome_dump_dom "$TARGET_URL" "bootstrap-netlog.json" "bootstrap-dump-dom.txt" || BOOTSTRAP_EXIT=$?
 
 sleep 1
 
 SECOND_EXIT=0
-run_chrome "$SECOND_URL" "second-netlog.json" "second-dump-dom.txt" || SECOND_EXIT=$?
+if [[ "$CHROME_RUNNER" == "cdp" ]]; then
+  "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
+    --chrome-bin "$CHROME_BIN" \
+    --artifact-dir "$ARTIFACT_DIR" \
+    --url "$SECOND_URL" \
+    --profile-dir-name "profile" \
+    --netlog-name "second-netlog.json" \
+    --dump-name "second-dump-dom.txt" \
+    --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
+    --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
+    --hold-seconds "$CHROME_HOLD_SECONDS" || SECOND_EXIT=$?
+elif [[ "$CHROME_RUNNER" == "dump-dom" ]]; then
+  run_chrome_dump_dom "$SECOND_URL" "second-netlog.json" "second-dump-dom.txt" || SECOND_EXIT=$?
+else
+  echo "unsupported CHROME_RUNNER=$CHROME_RUNNER" >&2
+  SECOND_EXIT=2
+fi
 
 python3 "$PROJECT_ROOT/tools/classify_chrome_public_h3_artifacts.py" "$ARTIFACT_DIR" \
   --url "$SECOND_URL" \

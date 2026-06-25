@@ -126,11 +126,19 @@ def test_heartbeat_trial_defaults_to_six_expected_requests() -> None:
         runner = tmp / "runner.sh"
         artifact_dir_out = tmp / "artifact-dir.txt"
         expected_requests_out = tmp / "expected-requests.txt"
+        chrome_runner_out = tmp / "chrome-runner.txt"
+        chrome_hold_out = tmp / "chrome-hold.txt"
+        bootstrap_url_out = tmp / "bootstrap-url.txt"
+        second_url_out = tmp / "second-url.txt"
         runner.write_text(
             "#!/usr/bin/env bash\n"
             "set -euo pipefail\n"
             f"printf '%s\\n' \"$ARTIFACT_DIR\" > {artifact_dir_out.as_posix()!r}\n"
-            f"printf '%s\\n' \"$CONTROLLED_PUBLIC_EXPECTED_REQUESTS\" > {expected_requests_out.as_posix()!r}\n",
+            f"printf '%s\\n' \"$CONTROLLED_PUBLIC_EXPECTED_REQUESTS\" > {expected_requests_out.as_posix()!r}\n"
+            f"printf '%s\\n' \"$CHROME_RUNNER\" > {chrome_runner_out.as_posix()!r}\n"
+            f"printf '%s\\n' \"$CHROME_HOLD_SECONDS\" > {chrome_hold_out.as_posix()!r}\n"
+            f"printf '%s\\n' \"$PUBLIC_ORIGIN_URL\" > {bootstrap_url_out.as_posix()!r}\n"
+            f"printf '%s\\n' \"$SECOND_URL\" > {second_url_out.as_posix()!r}\n",
             encoding="utf-8",
         )
         runner.chmod(0o755)
@@ -141,6 +149,8 @@ def test_heartbeat_trial_defaults_to_six_expected_requests() -> None:
                 "TRIAL_ID": "controlled-public-chrome-downlink-heartbeat-nochange-001",
                 "FINAL_CHROME_NOCHANGE_RUN_OUTPUT_DIR": (tmp / "out").as_posix(),
                 "NOCHANGE_RUNNER": runner.as_posix(),
+                "PUBLIC_ORIGIN_NOCHANGE_URL": "https://h3.test.local/browser-downlink?heartbeat=true",
+                "CONTROLLED_PUBLIC_EXPECTED_REQUESTS": "6",
                 "RUN_POSTCHECKS": "0",
             }
         )
@@ -150,6 +160,10 @@ def test_heartbeat_trial_defaults_to_six_expected_requests() -> None:
             "/artifacts/controlled-public-chrome-downlink-heartbeat-nochange-001"
         )
         assert expected_requests_out.read_text(encoding="utf-8").strip() == "6"
+        assert chrome_runner_out.read_text(encoding="utf-8").strip() == "cdp"
+        assert chrome_hold_out.read_text(encoding="utf-8").strip() == "20"
+        assert "/browser-slow" in bootstrap_url_out.read_text(encoding="utf-8").strip()
+        assert second_url_out.read_text(encoding="utf-8").strip().endswith("heartbeat=true")
 
 
 def main() -> int:

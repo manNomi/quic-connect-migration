@@ -176,7 +176,22 @@ func run(addr, tcpAddr, altSvc, logPath, resultPath, keyLogPath, qlogDir string,
 	done := make(chan struct{})
 	var doneOnce sync.Once
 	var mu sync.Mutex
+	activeHandlers := 0
+	maybeCompleteLocked := func() {
+		if len(result.Requests) >= expectedRequests && activeHandlers == 0 {
+			doneOnce.Do(func() { close(done) })
+		}
+	}
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		activeHandlers++
+		mu.Unlock()
+		defer func() {
+			mu.Lock()
+			activeHandlers--
+			maybeCompleteLocked()
+			mu.Unlock()
+		}()
 		if altSvc != "" {
 			w.Header().Set("Alt-Svc", altSvc)
 		}
@@ -205,9 +220,6 @@ func run(addr, tcpAddr, altSvc, logPath, resultPath, keyLogPath, qlogDir string,
 				"label": record.Label,
 				"error": err.Error(),
 			})
-		}
-		if count >= expectedRequests {
-			doneOnce.Do(func() { close(done) })
 		}
 	})
 

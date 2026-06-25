@@ -57,7 +57,7 @@ def duplicate_trial_id(path: Path, trial_id: str) -> bool:
 
 def append_row(path: Path, row: dict[str, str]) -> None:
     with path.open("a", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS)
+        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS, lineterminator="\n")
         writer.writerow(row)
 
 

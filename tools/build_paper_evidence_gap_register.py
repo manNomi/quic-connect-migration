@@ -225,7 +225,7 @@ def write_csv(register: dict[str, Any], output: Path) -> None:
         "next_action",
     ]
     with output.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=fieldnames)
+        writer = csv.DictWriter(fp, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(register["rows"])
 

@@ -227,7 +227,7 @@ def emit_csv(row: dict[str, str]) -> str:
     from io import StringIO
 
     buffer = StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=CSV_FIELDS)
+    writer = csv.DictWriter(buffer, fieldnames=CSV_FIELDS, lineterminator="\n")
     writer.writeheader()
     writer.writerow(row)
     return buffer.getvalue()

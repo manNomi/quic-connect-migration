@@ -206,7 +206,7 @@ def write_csv(scorecard: dict[str, Any], output: Path) -> None:
         "paper_use",
     ]
     with output.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=fieldnames)
+        writer = csv.DictWriter(fp, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(scorecard["rows"])
 

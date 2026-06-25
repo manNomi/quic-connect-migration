@@ -8,13 +8,13 @@ Generated: `2026-06-25`
 | --- | --- |
 | publication bundle ok | `yes` |
 | required files ok | `yes` |
-| experiment trials | `66` |
-| experiment status counts | `{'PASS': 25, 'PASS_NEGATIVE_CONTROL': 35, 'PASS_FEASIBILITY': 6}` |
+| experiment trials | `69` |
+| experiment status counts | `{'PASS': 28, 'PASS_NEGATIVE_CONTROL': 35, 'PASS_FEASIBILITY': 6}` |
 | experiment ids unique | `yes` |
 | matrix items | `112` |
 | matrix ids unique | `yes` |
 | paper tables current | `yes` |
-| final browser handover trials | `0/6` |
+| final browser handover trials | `3/6` |
 | goal complete | `no` |
 
 ## Readiness
@@ -26,8 +26,8 @@ Generated: `2026-06-25`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `9.23` |
-| local artifact roots total | `24.5 GiB` |
+| disk available GiB | `10.31` |
+| local artifact roots total | `24.7 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |
 | packet capture tooling ready | `yes` |
@@ -37,15 +37,12 @@ Generated: `2026-06-25`
 | check | value |
 | --- | --- |
 | complete | `no` |
-| requirements complete | `0/6` |
+| requirements complete | `3/6` |
 
 Incomplete final trial requirements:
 
-- chrome-controlled-public-application-h3-baseline: 0/1
 - chrome-downlink-noheartbeat-active-cm: 0/3
 - chrome-downlink-heartbeat-active-cm: 0/3
-- chrome-downlink-noheartbeat-nochange-baseline: 0/1
-- chrome-downlink-heartbeat-nochange-baseline: 0/1
 - p1-safari-or-android-feasibility: 0/1
 
 ## Blockers

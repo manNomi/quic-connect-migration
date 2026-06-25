@@ -85,6 +85,7 @@ def test_supported_claim_is_public_safe_and_csv_writable() -> None:
         assert "PRIVATE_KEY" not in markdown
         assert "AWS_SECRET" not in markdown
         assert csv_output.exists()
+        assert "\r\n" not in csv_output.read_text(encoding="utf-8")
 
 
 def main() -> int:

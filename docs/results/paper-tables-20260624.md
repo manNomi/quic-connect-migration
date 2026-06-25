@@ -6,10 +6,10 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 66 |
-| status counts | PASS=25; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=35 |
-| application success counts | false=15; true=51 |
-| experiment groups | browser / public web=48; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
+| total trials | 69 |
+| status counts | PASS=28; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=35 |
+| application success counts | false=15; true=54 |
+| experiment groups | browser / public web=51; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
 | non-none failure layers | application-level-retry-boundary=3; application-level-retry-recovery=4; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=2; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-polling-dashboard-boundary=2; transient-return-path-outage-threshold=6; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
@@ -116,6 +116,9 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-transient-poll-4000-replication-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy polling/dashboard 4000ms replication | local UDP proxy switches upstream socket A -> B at 500ms and repeats a 4000ms A+B server-... | no | no | 3-row 4000ms polling replication: PASS 0/3 with application_complete=false in every row; combined with the prior long-boundary 40... |
 | chrome-h3-rebinding-transient-upload-4750-replication-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy upload 4750ms replication | local UDP proxy switches upstream socket A -> B at 500ms and repeats a 4750ms A+B server-... | yes | no | 3-row 4750ms upload replication: PASS 2/3 with one FAIL at DOM error timing 6920ms; combined with the prior upload fine-boundary... |
 | chrome-h3-rebinding-transient-downlink-5000-5500-replication-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy downlink 5000/5500ms replication | local UDP proxy switches upstream socket A -> B at 500ms and repeats 5000ms/5500ms A+B se... | yes | no | 6-row downlink 5000/5500ms replication: 5000ms PASS 3/3 and 5500ms PASS 2/3; combined with prior fine-boundary rows this makes 50... |
+| controlled-public-chrome-h3-baseline-001 | PASS | controlled public browser baseline | controlled public application H3 baseline; no active path-change | no | yes | classification controlled_public_application_h3_confirmed; controlled_public_application_h3_confirmed; controlled_public_server_q... |
+| controlled-public-chrome-downlink-noheartbeat-nochange-001 | PASS | controlled public browser no-change baseline | no network change; controlled public downlink streaming without heartbeat | no | yes | classification controlled_public_application_h3_confirmed; no_path_change_baseline; client_path_change=-; server remote addr coun... |
+| controlled-public-chrome-downlink-heartbeat-nochange-001 | PASS | controlled public browser no-change baseline | no network change; controlled public downlink streaming with heartbeat | no | yes | classification controlled_public_application_h3_confirmed; no_path_change_baseline; heartbeat variant; client_path_change=-; serv... |
 
 ## Table 6. Remaining Evidence Gaps
 

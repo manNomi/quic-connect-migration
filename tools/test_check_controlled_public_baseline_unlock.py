@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from check_controlled_public_baseline_unlock import build_unlock_report
+from check_controlled_public_baseline_unlock import build_unlock_report, emit_markdown, write_output
 
 
 REQUIREMENTS = Path("data/final-browser-handover-required-trials.csv")
@@ -103,11 +106,29 @@ def test_missing_baseline_report_is_public_safe_and_blocked() -> None:
         assert any("missing artifact" in blocker for blocker in report["blockers"])
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp) / TRIAL_ID
+        write_minimal_bundle(root)
+        report = build_unlock_report(TRIAL_ID, root, REQUIREMENTS)
+        try:
+            os.chdir(root.parent)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output(emit_markdown(report), "-")
+            assert buffer.getvalue().startswith("# Controlled Public Baseline Unlock Check")
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_pass_baseline_unlocks_active_trials()
     test_negative_baseline_does_not_unlock()
     test_incomplete_bundle_does_not_unlock()
     test_missing_baseline_report_is_public_safe_and_blocked()
+    test_dash_output_prints_stdout_without_dash_file()
     print("check_controlled_public_baseline_unlock=ok")
     return 0
 

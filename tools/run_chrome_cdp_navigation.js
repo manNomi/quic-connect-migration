@@ -200,13 +200,14 @@ async function main() {
   const dumpName = requireArg(args, "dump-name");
   const timeoutSeconds = Number(args["timeout-seconds"]);
   const holdSeconds = Number(args["hold-seconds"]);
+  const profileDirName = args["profile-dir-name"] || "profile-cdp";
   const port = await freePort();
 
   const chromeDir = path.join(artifactDir, "chrome");
   await fs.mkdir(chromeDir, { recursive: true });
   const stderrPath = path.join(chromeDir, `${dumpName}.stderr.log`);
   const summaryPath = path.join(chromeDir, "cdp-summary.json");
-  const profileDir = path.join(chromeDir, "profile-cdp");
+  const profileDir = path.join(chromeDir, profileDirName);
   const netlogPath = path.join(chromeDir, netlogName);
   const dumpPath = path.join(chromeDir, dumpName);
   const stderr = await fs.open(stderrPath, "w");

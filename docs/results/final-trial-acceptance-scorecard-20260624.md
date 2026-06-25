@@ -9,7 +9,7 @@ This scorecard is public-safe. It states which final browser handover rows can b
 | field | value |
 | --- | --- |
 | final protocol complete | `no` |
-| complete requirements | `0/6` |
+| complete requirements | `3/6` |
 | config source | `public template` |
 | public safe | `yes` |
 
@@ -17,11 +17,11 @@ This scorecard is public-safe. It states which final browser handover rows can b
 
 | requirement | phase | browser | matched | planned trials | paper use |
 | --- | --- | --- | ---: | --- | --- |
-| `chrome-controlled-public-application-h3-baseline` | baseline | Chrome | 0/1 | `controlled-public-chrome-h3-baseline-001` | pending; required before active CM claim |
+| `chrome-controlled-public-application-h3-baseline` | baseline | Chrome | 1/1 | `controlled-public-chrome-h3-baseline-001` | baseline/control evidence available |
 | `chrome-downlink-noheartbeat-active-cm` | active-network-change | Chrome | 0/3 | `controlled-public-chrome-downlink-noheartbeat-network-change-001;controlled-public-chrome-downlink-noheartbeat-network-change-002;controlled-public-chrome-downlink-noheartbeat-network-change-003` | pending; do not claim browser CM success |
 | `chrome-downlink-heartbeat-active-cm` | active-network-change | Chrome | 0/3 | `controlled-public-chrome-downlink-heartbeat-network-change-001;controlled-public-chrome-downlink-heartbeat-network-change-002;controlled-public-chrome-downlink-heartbeat-network-change-003` | pending; do not claim browser CM success |
-| `chrome-downlink-noheartbeat-nochange-baseline` | no-change-baseline | Chrome | 0/1 | `controlled-public-chrome-downlink-noheartbeat-nochange-001` | pending; required before active CM claim |
-| `chrome-downlink-heartbeat-nochange-baseline` | no-change-baseline | Chrome | 0/1 | `controlled-public-chrome-downlink-heartbeat-nochange-001` | pending; required before active CM claim |
+| `chrome-downlink-noheartbeat-nochange-baseline` | no-change-baseline | Chrome | 1/1 | `controlled-public-chrome-downlink-noheartbeat-nochange-001` | baseline/control evidence available |
+| `chrome-downlink-heartbeat-nochange-baseline` | no-change-baseline | Chrome | 1/1 | `controlled-public-chrome-downlink-heartbeat-nochange-001` | baseline/control evidence available |
 | `p1-safari-or-android-feasibility` | active-network-change | Safari or Android Chrome | 0/1 | `controlled-public-safari-downlink-network-change-001` | pending; do not claim browser CM success |
 
 ## Acceptance Rules
