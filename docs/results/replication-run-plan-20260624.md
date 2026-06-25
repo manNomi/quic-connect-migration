@@ -10,8 +10,8 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | --- | --- |
 | plan rows | `17` |
 | P0 public/browser rows | `1` |
-| L1 transition-zone rows | `3` |
-| L1 transition-zone reviewed rows | `2` |
+| L1 transition-zone rows | `1` |
+| L1 transition-zone reviewed rows | `4` |
 | L2 anchor rows | `11` |
 | transition repetitions per condition | `6` |
 
@@ -23,8 +23,8 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | L1-transition-zone-reviewed | 3 | `poll-4000ms` | 1/6 | 0 | Record that the planned local transition-zone repetition target has been reached. | no immediate local repetition; revisit only if the paper needs narrower windows or a different workload. |
 | L1-transition-zone-replication | 1 | `upload-retry0-4750ms` | 1/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
 | L1-transition-zone-reviewed | 3 | `upload-4750ms` | 3/6 | 0 | Record that the planned local transition-zone repetition target has been reached. | no immediate local repetition; revisit only if the paper needs narrower windows or a different workload. |
-| L1-transition-zone-replication | 1 | `downlink-5000ms` | 2/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
-| L1-transition-zone-replication | 1 | `downlink-5500ms` | 2/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
+| L1-transition-zone-reviewed | 3 | `downlink-5000ms` | 5/6 | 0 | Record that the planned local transition-zone repetition target has been reached. | no immediate local repetition; revisit only if the paper needs narrower windows or a different workload. |
+| L1-transition-zone-reviewed | 3 | `downlink-5500ms` | 4/6 | 0 | Record that the planned local transition-zone repetition target has been reached. | no immediate local repetition; revisit only if the paper needs narrower windows or a different workload. |
 | L2-boundary-anchor-replication | 2 | `downlink-wait_only_no_retry-6000ms` | 0/3 | 13 | Turn an important all-pass/all-fail local boundary anchor from directional evidence into stronger local support. | only if the paper needs stronger local reliability wording after public handover trials are attempted |
 | L2-boundary-anchor-replication | 2 | `downlink-retry_enabled_1x500ms-6000ms` | 3/3 | 13 | Turn an important all-pass/all-fail local boundary anchor from directional evidence into stronger local support. | only if the paper needs stronger local reliability wording after public handover trials are attempted |
 | L2-boundary-anchor-replication | 2 | `poll-3000ms` | 3/3 | 13 | Turn an important all-pass/all-fail local boundary anchor from directional evidence into stronger local support. | only if the paper needs stronger local reliability wording after public handover trials are attempted |
@@ -45,8 +45,8 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | `poll-4000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Target repetitions reached; keep the condition as transition-zone evidence instead of treating it as a binary threshold. |
 | `upload-retry0-4750ms` | docs/reproducibility-guide-ko.md sections 32-33; run-chrome-h3-rebinding-transient-boundary-repetition.sh with upload retry env | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
 | `upload-4750ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Target repetitions reached; keep the condition as transition-zone evidence instead of treating it as a binary threshold. |
-| `downlink-5000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
-| `downlink-5500ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
+| `downlink-5000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Target repetitions reached; keep the condition as transition-zone evidence instead of treating it as a binary threshold. |
+| `downlink-5500ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Target repetitions reached; keep the condition as transition-zone evidence instead of treating it as a binary threshold. |
 | `downlink-wait_only_no_retry-6000ms` | docs/reproducibility-guide-ko.md section 35; run-chrome-h3-rebinding-transient-boundary-repetition.sh with downlink retry/wait env | The suggested count assumes future rows preserve the same all-pass or all-fail outcome. |
 | `downlink-retry_enabled_1x500ms-6000ms` | docs/reproducibility-guide-ko.md section 35; run-chrome-h3-rebinding-transient-boundary-repetition.sh with downlink retry/wait env | The suggested count assumes future rows preserve the same all-pass or all-fail outcome. |
 | `poll-3000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | The suggested count assumes future rows preserve the same all-pass or all-fail outcome. |

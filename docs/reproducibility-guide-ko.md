@@ -1241,6 +1241,44 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 6000ms downlink는 `0/3 PASS`
 - 모든 row가 qlog H3/path evidence를 남겼으므로, downlink DOM completion도 transport evidence와 별도로 봐야 한다.
 
+5000ms/5500ms transition-zone 추가 반복:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625 \
+BASE_PORT=9700 \
+WORKLOADS=downlink \
+DROP_WINDOWS_MS="5000 5500" \
+REPETITIONS=3 \
+REBIND_AFTER=500ms \
+TIMEOUT=90s \
+CHROME_TIMEOUT_SECONDS=80 \
+CHROME_HOLD_SECONDS=42 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+5000ms/5500ms replication summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625/rep01-downlink-1m-drop-ab-5000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625/rep01-downlink-1m-drop-ab-5500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625/rep02-downlink-1m-drop-ab-5000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625/rep02-downlink-1m-drop-ab-5500ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625/rep03-downlink-1m-drop-ab-5000ms \
+  downlink:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625/rep03-downlink-1m-drop-ab-5500ms \
+  --output docs/results/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625.md \
+  --csv-output data/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625.csv
+```
+
+추가 반복 관찰 기준:
+
+- 추가 downlink replication은 5000ms `3/3 PASS`, 5500ms `2/3 PASS`였다.
+- 기존 fine-boundary와 합치면 5000ms는 `5/6 PASS`, 5500ms는 `4/6 PASS`다.
+- 5500ms 실패 row에도 qlog PATH_CHALLENGE/PATH_RESPONSE `6/3`이 남았으므로, qlog path validation만으로 DOM task completion을 보장할 수 없다.
+- 6000ms는 기존 `0/3 PASS`이므로 downlink transition zone은 5.0-5.5초 성공 편향 혼재 후 6초 반복 실패로 보고한다.
+
 ## 26. Chrome local upload fine boundary 재현
 
 5000ms에서 upload만 반복 실패했으므로, upload workload만 더 촘촘하게 측정한다.

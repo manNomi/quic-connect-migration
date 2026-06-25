@@ -18,8 +18,8 @@ This audit is public-safe. It does not create new experiment results; it checks 
 
 | source | condition | PASS/runs | Wilson 95% CI | role | paper use | additional runs |
 | --- | --- | --- | --- | --- | --- | --- |
-| workload_transition | `downlink-5000ms` | 2/3 | 0.208-0.939 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
-| workload_transition | `downlink-5500ms` | 2/3 | 0.208-0.939 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
+| workload_transition | `downlink-5000ms` | 5/6 | 0.436-0.970 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
+| workload_transition | `downlink-5500ms` | 4/6 | 0.300-0.903 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
 | workload_transition | `downlink-6000ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | workload_transition | `upload-4600ms` | 3/3 | 0.438-1.000 | stable_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | workload_transition | `upload-4750ms` | 3/6 | 0.188-0.812 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |

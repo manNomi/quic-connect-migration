@@ -11,18 +11,18 @@ This public-safe budget estimates whether the local machine can store remaining 
 | next trial | `controlled-public-chrome-h3-baseline-001` |
 | remaining planned executions | `10` |
 | per-trial reserve GiB | `2.0` |
-| disk free GiB | `11.18` |
+| disk free GiB | `9.89` |
 | minimum free GiB floor | `5.0` |
-| usable GiB before floor | `6.18` |
-| max executions before floor | `3` |
-| current local artifact roots | `23.5 GiB` |
+| usable GiB before floor | `4.89` |
+| max executions before floor | `2` |
+| current local artifact roots | `24.6 GiB` |
 
 ## Budget Rows
 
 | scope | planned executions | required GiB | storage ready | cleanup needed GiB | interpretation |
 | --- | ---: | ---: | --- | ---: | --- |
 | `next-planned-execution` | 1 | 2.0 | `yes` | 0.0 | Enough space to attempt only the next selected capture if storage_ready=yes. |
-| `all-remaining-final-executions` | 10 | 20.0 | `no` | 13.82 | Enough space for the full remaining final browser handover queue if storage_ready=yes. |
+| `all-remaining-final-executions` | 10 | 20.0 | `no` | 15.11 | Enough space for the full remaining final browser handover queue if storage_ready=yes. |
 
 ## Interpretation
 

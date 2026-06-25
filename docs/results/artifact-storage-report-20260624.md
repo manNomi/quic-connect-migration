@@ -6,15 +6,15 @@ Generated: `2026-06-25`
 
 | metric | value |
 | --- | --- |
-| disk free | `11.2 GiB` |
-| disk free GiB | `11.17` |
-| local artifact roots total | `23.5 GiB` |
+| disk free | `9.9 GiB` |
+| disk free GiB | `9.89` |
+| local artifact roots total | `24.6 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `23.5 GiB` | 44318 | 17284 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `24.6 GiB` | 45678 | 17868 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -29,6 +29,7 @@ Generated: `2026-06-25`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-long-boundary-20260624` | `1.6 GiB` | 2049 | 874 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624` | `1.1 GiB` | 1384 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624` | `1.1 GiB` | 1365 | 583 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625` | `1.1 GiB` | 1360 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624` | `1.1 GiB` | 1367 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-boundary-20260624` | `1.1 GiB` | 1364 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624` | `1.1 GiB` | 1370 | 583 |
@@ -40,7 +41,6 @@ Generated: `2026-06-25`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | 897 | 377 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | 249 | 95 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624` | `382.6 MiB` | 249 | 95 |
-| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-repetition-20260624` | `49.1 MiB` | 1239 | 433 |
 
 ## Cleanup Note
 

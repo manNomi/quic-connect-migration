@@ -82,6 +82,7 @@
 70. Final handover registration wrapper는 artifact bundle check, validation, append dry-run/apply, audit를 묶고, missing artifact 상태에서는 CSV append 없이 fail-closed한다.
 71. Polling/dashboard 4000ms local replication 3회를 추가 실행했고 모두 FAIL이었다. 기존 1/3 PASS와 합산하면 4000ms는 1/6 PASS, 5/6 FAIL인 failure-heavy transition zone으로 정리된다.
 72. Upload 4750ms local replication 3회를 추가 실행했고 2/3 PASS였다. 기존 1/3 PASS와 합산하면 4750ms upload는 3/6 PASS, 3/6 FAIL인 중심 transition zone으로 유지된다.
+73. Downlink 5000/5500ms local replication 6회를 추가 실행했고 5000ms는 3/3 PASS, 5500ms는 2/3 PASS였다. 기존 결과와 합산하면 5000ms는 5/6 PASS, 5500ms는 4/6 PASS로 성공 편향 transition zone이다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 

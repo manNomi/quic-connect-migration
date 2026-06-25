@@ -18,6 +18,10 @@ DATASETS = [
         "data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv",
     ),
     (
+        "downlink 5000/5500ms replication",
+        "data/chrome-h3-rebinding-transient-downlink-5000-5500-replication-20260625.csv",
+    ),
+    (
         "upload fine boundary",
         "data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv",
     ),

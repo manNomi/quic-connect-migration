@@ -1,6 +1,6 @@
 workload,drop_window_ms,datasets,runs,pass_count,fail_count,application_complete_count,status_summary,classification_summary,complete_ms_min,complete_ms_median,complete_ms_max,error_ms_min,error_ms_median,error_ms_max,chrome_quic_sessions_min,chrome_quic_sessions_max
-downlink,5000,downlink fine boundary,3,2,1,2,FAIL=1; PASS=2,browser_application_task_failed=1; nat_rebinding_path_validation_without_observed_tuple_change=2,12276,12843,13411,6922,6922,6922,1,1
-downlink,5500,downlink fine boundary,3,2,1,2,FAIL=1; PASS=2,browser_application_task_failed=1; nat_rebinding_path_validation_without_observed_tuple_change=2,13840,13977,14114,6923,6923,6923,1,1
+downlink,5000,downlink 5000/5500ms replication; downlink fine boundary,6,5,1,5,FAIL=1; PASS=5,browser_application_task_failed=1; nat_rebinding_path_validation_without_observed_tuple_change=5,12126,12559,13411,6922,6922,6922,1,1
+downlink,5500,downlink 5000/5500ms replication; downlink fine boundary,6,4,2,4,FAIL=2; PASS=4,browser_application_task_failed=2; nat_rebinding_path_validation_without_observed_tuple_change=4,12626,13959,14114,6923,6936,6950,1,1
 downlink,6000,downlink fine boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,6923,6924,6927,1,1
 upload,4600,upload fine boundary,3,3,0,3,PASS=3,nat_rebinding_path_validation_without_observed_tuple_change=3,10215,10218,10230,,,,1,1
 upload,4750,upload 4750ms replication; upload fine boundary,6,3,3,3,FAIL=3; PASS=3,browser_application_task_failed=3; nat_rebinding_path_validation_without_observed_tuple_change=3,10466,10493,11261,6917,6920,6921,1,2
