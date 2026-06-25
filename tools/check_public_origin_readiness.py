@@ -207,6 +207,9 @@ def emit_markdown(result: PublicOriginReadiness, redact_sensitive: bool = False)
 
 
 def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
     if not output_arg:
         sys.stdout.write(text)
         return

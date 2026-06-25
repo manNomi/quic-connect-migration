@@ -3,6 +3,11 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
+import os
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import types
 
 import check_public_origin_readiness as readiness
@@ -117,11 +122,27 @@ def test_build_result_records_failed_origin_without_throwing() -> None:
     assert readiness.payload(result, redact_sensitive=False)["redacted"] is False
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        try:
+            os.chdir(root)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                readiness.write_output("origin=ok\n", "-")
+            assert buffer.getvalue() == "origin=ok\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_endpoint_requires_https_and_parses_default_port()
     test_curl_headers_keeps_final_status_and_alt_svc()
     test_build_result_combines_dns_tls_curl_without_live_network()
     test_build_result_records_failed_origin_without_throwing()
+    test_dash_output_prints_stdout_without_dash_file()
     print("check_public_origin_readiness=ok")
     return 0
 
