@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import csv
+import io
+import os
 import tempfile
 from pathlib import Path
 
-from build_final_handover_trial_packet import build_packet, expected_artifacts, summary_filename
+from build_final_handover_trial_packet import build_packet, emit_markdown, expected_artifacts, summary_filename, write_output
 from check_next_final_handover_trial_readiness import DEFAULT_CHROME, DEFAULT_REQUIREMENTS, DEFAULT_SAFARI, DEFAULT_SAFARI_TP
 from draft_final_handover_result_row import CSV_FIELDS
 
@@ -117,6 +120,29 @@ def test_redacted_local_config_packet_does_not_leak_private_commands() -> None:
     assert "printf path-change" not in combined
     assert "--redact-sensitive" in combined
     assert "<redacted-public-origin-url>" in combined
+    checklist_command = next(command for command in packet["preflight_commands"] if "build_final_handover_operator_checklist.py" in command)
+    assert "--use-local-config-for-plan" in checklist_command
+    assert "--redact-sensitive" in checklist_command
+
+
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        experiments = tmp_path / "experiments.csv"
+        config = tmp_path / "controlled-public-origin.env"
+        write_empty_experiments(experiments)
+        write_private_config(config)
+        packet = build_packet(packet_args(experiments, config, redact_sensitive=True))
+        original_cwd = Path.cwd()
+        try:
+            os.chdir(tmp_path)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output(emit_markdown(packet), "-")
+            assert buffer.getvalue().startswith("# Final Handover Trial Packet")
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
 
 
 def main() -> int:
@@ -124,6 +150,7 @@ def main() -> int:
     test_chrome_active_packet_expects_path_summary_and_netlog()
     test_safari_and_android_summary_names_are_distinct()
     test_redacted_local_config_packet_does_not_leak_private_commands()
+    test_dash_output_prints_stdout_without_dash_file()
     print("build_final_handover_trial_packet=ok")
     return 0
 

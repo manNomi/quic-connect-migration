@@ -3,12 +3,15 @@
 
 from __future__ import annotations
 
+import contextlib
 import csv
+import io
 import json
+import os
 import tempfile
 from pathlib import Path
 
-from append_final_handover_result_row import build_append_result
+from append_final_handover_result_row import build_append_result, emit_markdown, write_output
 from draft_final_handover_result_row import CSV_FIELDS
 
 
@@ -194,6 +197,36 @@ def test_require_artifact_bundle_allows_complete_bundle_apply() -> None:
         assert row_count(experiments) == 1
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        artifact = root / "artifact"
+        experiments = root / "experiments.csv"
+        write_summary(artifact, "possible_connection_migration")
+        write_empty_experiments(experiments)
+        result = build_append_result(
+            "controlled-public-chrome-downlink-noheartbeat-network-change-001",
+            artifact,
+            experiments,
+            REQUIREMENTS,
+            "2026-06-24",
+            None,
+            True,
+            False,
+            False,
+        )
+        try:
+            os.chdir(root)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output(emit_markdown(result), "-")
+            assert buffer.getvalue().startswith("# Final Handover Result Row Append")
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_dry_run_does_not_append()
     test_apply_appends_positive_once()
@@ -201,6 +234,7 @@ def main() -> int:
     test_require_final_countable_blocks_negative_control_apply()
     test_require_artifact_bundle_blocks_summary_only_apply()
     test_require_artifact_bundle_allows_complete_bundle_apply()
+    test_dash_output_prints_stdout_without_dash_file()
     print("append_final_handover_result_row=ok")
     return 0
 

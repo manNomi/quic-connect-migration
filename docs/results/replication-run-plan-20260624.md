@@ -15,7 +15,7 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | L2 anchor rows | `11` |
 | transition repetitions per condition | `6` |
 | optional local replication disk | `hold-local-optional-replication` |
-| optional local free GiB | `9.24` |
+| optional local free GiB | `9.2` |
 
 ## Staged Plan
 

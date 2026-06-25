@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import sys
 from dataclasses import dataclass, asdict
 from research_clock import utc_date_iso
 from pathlib import Path
@@ -157,6 +158,18 @@ def emit_markdown(result: AppendResult) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trial-id", required=True)
@@ -195,12 +208,7 @@ def main() -> int:
     else:
         text = emit_markdown(result)
 
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
 
     if args.apply and not result.appended:
         return 1

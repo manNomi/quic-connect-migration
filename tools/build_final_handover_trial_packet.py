@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from research_clock import utc_date_iso
 from pathlib import Path
 from typing import Any
@@ -140,22 +141,28 @@ def build_preflight_commands(args: argparse.Namespace) -> list[str]:
     redact_sensitive = redact_sensitive_enabled(args)
     selection_flags = []
     readiness_flags = []
+    checklist_flags = []
     if args.use_local_config:
         selection_flags.append("--use-local-config")
         readiness_flags.append("--use-local-config-for-plan")
+        checklist_flags.append("--use-local-config-for-plan")
     if redact_sensitive:
         selection_flags.append("--redact-sensitive")
         readiness_flags.append("--redact-sensitive")
+        checklist_flags.append("--redact-sensitive")
     if args.check_public_origin:
         readiness_flags.append("--check-public-origin")
     if args.check_local_files:
         readiness_flags.append("--check-local-files")
+        checklist_flags.append("--check-local-files")
     if args.repetitions != 3:
         selection_flags.extend(["--repetitions", str(args.repetitions)])
         readiness_flags.extend(["--repetitions", str(args.repetitions)])
+        checklist_flags.extend(["--repetitions", str(args.repetitions)])
     if args.prefer_p1 != "safari":
         selection_flags.extend(["--prefer-p1", args.prefer_p1])
         readiness_flags.extend(["--prefer-p1", args.prefer_p1])
+        checklist_flags.extend(["--prefer-p1", args.prefer_p1])
     return [
         "python3 tools/check_controlled_public_config.py --require-baseline-ready",
         " ".join(
@@ -172,7 +179,13 @@ def build_preflight_commands(args: argparse.Namespace) -> list[str]:
                 "--output docs/results/final-handover-next-trial-readiness-20260624.md",
             ]
         ),
-        "python3 tools/build_final_handover_operator_checklist.py --output docs/results/final-handover-operator-checklist-20260624.md",
+        " ".join(
+            [
+                "python3 tools/build_final_handover_operator_checklist.py",
+                *checklist_flags,
+                "--output docs/results/final-handover-operator-checklist-20260624.md",
+            ]
+        ),
     ]
 
 
@@ -303,6 +316,18 @@ def emit_markdown(packet: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--experiments", default=DEFAULT_EXPERIMENTS)
@@ -325,12 +350,7 @@ def main() -> int:
 
     packet = build_packet(args)
     text = json.dumps(packet, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(packet)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     return 0
 
 
