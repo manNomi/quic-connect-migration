@@ -14,7 +14,7 @@ Generated: `2026-06-25`
 | next phase | `baseline` |
 | next browser | `Chrome` |
 | final completion | `0/6` |
-| disk free GiB | `10.42` |
+| disk free GiB | `10.22` |
 | active IPv4 interfaces | `en0(192.168.32.190)` |
 | public origin URL | `-` |
 
