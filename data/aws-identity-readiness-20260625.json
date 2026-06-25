@@ -1,0 +1,32 @@
+{
+  "check_date": "2026-06-25",
+  "public_safe": true,
+  "aws_cli_found": true,
+  "aws_cli_version": "aws-cli/2.34.38 Python/3.14.4 Darwin/24.6.0 source/arm64",
+  "region": "ap-northeast-2",
+  "profile_state": "default-or-shared-config",
+  "identity_ok": false,
+  "classification": "invalid_client_token",
+  "remediation": "Refresh or replace the local AWS credentials, then rerun this checker.",
+  "account_id": "",
+  "arn": "",
+  "user_id": "",
+  "redaction_applied": true,
+  "diagnostics_included": false,
+  "commands": {
+    "aws_version": {
+      "command": "aws --version",
+      "found": true,
+      "exit_code": 0,
+      "stdout": "aws-cli/2.34.38 Python/3.14.4 Darwin/24.6.0 source/arm64",
+      "stderr": ""
+    },
+    "sts_get_caller_identity": {
+      "command": "aws sts get-caller-identity --output json",
+      "found": true,
+      "exit_code": 254,
+      "stdout": "",
+      "stderr": ""
+    }
+  }
+}

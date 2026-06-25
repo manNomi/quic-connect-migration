@@ -22,12 +22,11 @@ echo "== AWS CLI =="
 aws --version
 
 echo
-echo "== AWS configure list =="
-aws configure list
-
-echo
-echo "== STS caller identity =="
-aws sts get-caller-identity --output json
+echo "== Public-safe AWS identity readiness =="
+python3 "$PROJECT_ROOT/tools/check_aws_identity_readiness.py" \
+  --region "$AWS_REGION" \
+  --require-ok \
+  --include-redacted-diagnostics
 
 echo
 echo "== Region availability check =="

@@ -147,6 +147,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
             "trial_packet": "docs/results/final-handover-trial-packet-20260624.md",
             "deploy_packet": "docs/results/controlled-public-origin-deploy-packet-20260624.md",
+            "aws_identity_readiness": "docs/results/aws-identity-readiness-20260625.md",
             "active_path_cookbook": "docs/results/active-path-change-operator-cookbook-20260624.md",
         },
     }

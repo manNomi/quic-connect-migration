@@ -133,6 +133,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     cleanup_safety = "docs/results/artifact-cleanup-safety-audit-20260624.md"
     active_path_candidates = "docs/results/active-path-change-command-candidates-20260625.md"
     active_path_candidates_json = "data/active-path-change-command-candidates-20260625.json"
+    aws_identity_readiness = "docs/results/aws-identity-readiness-20260625.md"
+    aws_identity_readiness_json = "data/aws-identity-readiness-20260625.json"
     research_audit = "docs/results/research-bundle-audit-20260624.md"
     if generated_dir is not None:
         paper_tables = str(generated_dir / "paper-tables.md")
@@ -196,6 +198,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         cleanup_safety = str(generated_dir / "artifact-cleanup-safety-audit.md")
         active_path_candidates = str(generated_dir / "active-path-change-command-candidates.md")
         active_path_candidates_json = str(generated_dir / "active-path-change-command-candidates.json")
+        aws_identity_readiness = str(generated_dir / "aws-identity-readiness.md")
+        aws_identity_readiness_json = str(generated_dir / "aws-identity-readiness.json")
         research_audit = str(generated_dir / "research-bundle-audit.md")
 
     return [
@@ -232,6 +236,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_paper_claim_support_matrix.py",
                 "tools/build_reproducibility_manifest.py",
                 "tools/build_final_handover_external_inputs.py",
+                "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_final_handover_trial_artifact_bundle.py",
@@ -286,6 +291,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_paper_claim_support_matrix.py",
                 "tools/test_build_reproducibility_manifest.py",
                 "tools/test_build_final_handover_external_inputs.py",
+                "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_controlled_public_baseline_unlock.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
@@ -714,6 +720,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 p0_baseline_preflight_controls_input,
                 "--final-capture-storage-budget",
                 final_capture_storage_budget_input,
+                "--aws-identity-readiness",
+                aws_identity_readiness_json,
             ],
             {0},
             30,
@@ -870,6 +878,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "controlled_public_config_regression",
             [python_bin, "tools/test_check_controlled_public_config.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_identity_readiness_regression",
+            [python_bin, "tools/test_check_aws_identity_readiness.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_identity_readiness_public_safe",
+            [
+                python_bin,
+                "tools/check_aws_identity_readiness.py",
+                "--output",
+                aws_identity_readiness,
+                "--json-output",
+                aws_identity_readiness_json,
+            ],
             {0},
             30,
         ),
@@ -1080,6 +1107,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             [
                 "bash",
                 "-n",
+                "harness/scripts/aws-preflight.sh",
                 "harness/scripts/controlled-public-preflight.sh",
                 "harness/scripts/init-controlled-public-config.sh",
                 "harness/scripts/final-handover-run-next.sh",

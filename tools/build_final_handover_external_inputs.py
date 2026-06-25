@@ -17,6 +17,7 @@ from build_final_handover_operator_checklist import (
     DEFAULT_REQUIREMENTS,
     build_checklist,
 )
+from check_aws_identity_readiness import build_readiness as build_aws_identity_readiness
 from check_handover_readiness import build_readiness as build_handover_readiness
 from check_next_final_handover_trial_readiness import DEFAULT_CHROME, DEFAULT_SAFARI, DEFAULT_SAFARI_TP
 
@@ -125,9 +126,12 @@ def build_items(
             status=status_label(handover["aws_identity_ok"], when_missing="optional-missing"),
             input_needed="Provide AWS CLI identity only if automated EC2/public-origin or CloudFront follow-up provisioning should be run.",
             why="Current final browser handover baseline can proceed with a manually managed public origin, but AWS automation needs caller identity.",
-            validation_command="harness/scripts/aws-preflight.sh",
+            validation_command="python3 tools/check_aws_identity_readiness.py --require-ok",
             safe_handling="Use local AWS profiles/SSO/env vars only; never commit credentials or access-key CSV files.",
-            evidence=f"aws_identity_ok={handover['aws_identity_ok']}",
+            evidence=(
+                f"aws_identity_ok={handover['aws_identity_ok']}; "
+                f"classification={handover.get('aws_identity_classification', '-')}"
+            ),
         ),
         ExternalInputItem(
             id="final-protocol-completion",
@@ -143,11 +147,12 @@ def build_items(
     return items
 
 
-def handover_payload(handover: Any) -> dict[str, Any]:
+def handover_payload(handover: Any, aws_identity: Any) -> dict[str, Any]:
     return {
         "secondary_path_ready": handover.secondary_path_ready,
         "android_ready": handover.android_ready,
-        "aws_identity_ok": handover.aws_identity_ok,
+        "aws_identity_ok": aws_identity.identity_ok,
+        "aws_identity_classification": aws_identity.classification,
         "disk_available_gib": handover.disk_available_gib,
     }
 
@@ -169,7 +174,8 @@ def build_handoff(args: argparse.Namespace) -> dict[str, Any]:
         timeout=args.timeout,
     )
     checklist = build_checklist(checklist_args)
-    handover = handover_payload(build_handover_readiness(args.chrome_bin))
+    aws_identity = build_aws_identity_readiness(timeout=args.timeout)
+    handover = handover_payload(build_handover_readiness(args.chrome_bin), aws_identity)
     items = build_items(worksheet, checklist, handover)
     now_ready = checklist["next_trial_ready"]
     needed_now = [item for item in items if item.urgency == "now" and item.status != "ready"]

@@ -2306,3 +2306,40 @@ python3 tools/build_downlink_recovery_comparison.py \
 - retry-enabled 6000ms/9000ms는 `6/6 PASS`
 - retry-enabled PASS 내부에서도 `retries_used=0`과 `retries_used=1`이 섞인다.
 - downlink recovery는 application-level recovery/timer/session-management evidence로 보고해야 한다.
+
+## 66. `tools/check_aws_identity_readiness.py`
+
+AWS 기반 public origin 자동 구축을 실행하기 전에 AWS CLI identity 상태를 public-safe evidence로 고정한다.
+
+실행:
+
+```bash
+python3 tools/check_aws_identity_readiness.py \
+  --output docs/results/aws-identity-readiness-20260625.md \
+  --json-output data/aws-identity-readiness-20260625.json
+```
+
+자동화 실행을 강제하려면 다음처럼 실패 시 non-zero로 막는다.
+
+```bash
+python3 tools/check_aws_identity_readiness.py --require-ok
+```
+
+분류:
+
+| classification | 의미 |
+| --- | --- |
+| `ok` | `sts get-caller-identity` 성공. 단, 실제 EC2/ELB 권한은 별도 확인 필요 |
+| `invalid_client_token` | access key/session token이 현재 AWS에서 유효하지 않음 |
+| `expired_token` | session token 또는 SSO token 만료 |
+| `sso_login_required` | SSO login 갱신 필요 |
+| `missing_credentials` | local profile/env credential 없음 |
+| `access_denied` | identity 호출 또는 후속 provisioning 권한 부족 |
+| `network_or_region_error` | region, DNS, proxy, outbound network 문제 가능성 |
+| `aws_cli_missing` | AWS CLI 미설치 |
+
+현재 용도:
+
+- final browser handover baseline은 수동 public origin으로도 진행 가능하다.
+- AWS 자동 provisioning은 이 스캐너가 `identity_ok=yes`가 된 뒤 실행한다.
+- 출력은 AWS account ID, ARN, access key, secret key, session token, profile name을 공개하지 않는다.

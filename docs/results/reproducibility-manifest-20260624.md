@@ -8,11 +8,11 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `08f6e11` |
+| source commit at generation | `8e06c8d` |
 | branch | `main` |
 | total trials | `66` |
 | status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
-| verification | `102/102 passed; ok=yes` |
+| verification | `104/104 passed; ok=yes` |
 | final browser handover | `0/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
@@ -42,6 +42,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `external_inputs` | `docs/results/final-handover-external-inputs-20260624.md` |
 | `trial_packet` | `docs/results/final-handover-trial-packet-20260624.md` |
 | `deploy_packet` | `docs/results/controlled-public-origin-deploy-packet-20260624.md` |
+| `aws_identity_readiness` | `docs/results/aws-identity-readiness-20260625.md` |
 | `active_path_cookbook` | `docs/results/active-path-change-operator-cookbook-20260624.md` |
 
 ## Interpretation
