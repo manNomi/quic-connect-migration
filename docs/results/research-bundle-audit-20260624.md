@@ -1,6 +1,6 @@
 # Research Bundle Audit
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 ## Summary
 
@@ -26,7 +26,7 @@ Generated: `2026-06-24`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `12.22` |
+| disk available GiB | `11.88` |
 | local artifact roots total | `23.0 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |

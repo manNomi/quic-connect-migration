@@ -1,6 +1,6 @@
 # Replication Sufficiency Audit
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This audit is public-safe. It does not create new experiment results; it checks how cautiously the current repeated local controls should be worded in the paper.
 

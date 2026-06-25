@@ -1,6 +1,6 @@
 # P0 Unblock Status
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This tracker is public-safe. It compresses final protocol readiness into the gates that currently block the P0 controlled-public/browser handover path.
 

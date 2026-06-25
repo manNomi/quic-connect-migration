@@ -958,7 +958,13 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         ),
         (
             "final_handover_trial_artifact_bundle_require_complete_expected_incomplete",
-            [python_bin, "tools/check_final_handover_trial_artifact_bundle.py", "--require-complete"],
+            [
+                python_bin,
+                "tools/check_final_handover_trial_artifact_bundle.py",
+                "--require-complete",
+                "--output",
+                final_trial_artifact_bundle,
+            ],
             {1},
             30,
         ),

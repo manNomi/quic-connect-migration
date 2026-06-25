@@ -1,6 +1,6 @@
 # Downlink Recovery Comparison
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This synthesis compares local Chrome forced-H3 downlink wait-only and one-retry controls under the same 6000ms/9000ms A+B return-path outage windows. It is local recovery evidence, not public browser handover evidence.
 

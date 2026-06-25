@@ -1,13 +1,13 @@
 # Artifact Storage Report
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 ## Summary
 
 | metric | value |
 | --- | --- |
-| disk free | `12.5 GiB` |
-| disk free GiB | `12.49` |
+| disk free | `11.9 GiB` |
+| disk free GiB | `11.88` |
 | local artifact roots total | `23.0 GiB` |
 
 ## Artifact Roots

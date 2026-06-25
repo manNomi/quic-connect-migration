@@ -1,6 +1,6 @@
 # Paper Claim Support Matrix
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This matrix is public-safe. It translates the current measured corpus into claim-level wording guidance so the paper can separate supported results from tempting overclaims.
 

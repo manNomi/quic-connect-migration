@@ -1,6 +1,6 @@
 # Replication Run Plan
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This plan is public-safe. It turns the replication sufficiency audit into a staged execution plan and keeps the final public/browser handover protocol as the first priority.
 

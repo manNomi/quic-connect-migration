@@ -1,6 +1,6 @@
 # Final Protocol Readiness Matrix
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This matrix is public-safe. It evaluates every planned final browser handover execution against the current local readiness gates without printing private domains, TLS paths, or network-change commands.
 

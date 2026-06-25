@@ -1,6 +1,6 @@
 # Controlled Public Baseline Unlock Check
 
-Generated: `2026-06-24`
+Generated: `2026-06-25`
 
 This public-safe check decides whether a controlled-public Chrome HTTP/3 baseline can unlock active browser network-change trials.
 
