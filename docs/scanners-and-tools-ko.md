@@ -763,6 +763,7 @@ AWS wrapper:
 | 파일 | 역할 |
 | --- | --- |
 | `harness/scripts/aws-preflight.sh` | AWS CLI, region, VPC/subnet 사전 확인 |
+| `harness/scripts/final-chrome-nochange-run.sh` | Chrome downlink no-change baseline 실행, artifact bundle check, final-countable validation wrapper |
 | `harness/scripts/final-chrome-network-change-run.sh` | baseline unlock 이후 Chrome active network-change 실행, artifact bundle check, final-countable validation wrapper |
 | `harness/scripts/final-p0-baseline-preflight.sh` | controlled public P0 baseline 실행 직전 readiness gate wrapper |
 | `harness/scripts/final-p0-baseline-run.sh` | P0 Chrome baseline client 실행, artifact bundle check, final-countable validation wrapper |

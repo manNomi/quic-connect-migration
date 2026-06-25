@@ -115,6 +115,9 @@ def test_tracked_example_matches_final_baseline_trial_id() -> None:
         == "artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json"
     )
     assert values["CONTROLLED_PUBLIC_EXPECTED_REQUESTS"] == "4"
+    assert values["CONTROLLED_PUBLIC_NOCHANGE_RUN_ID"] == (
+        "controlled-public-chrome-downlink-noheartbeat-nochange-001"
+    )
     assert values["CONTROLLED_PUBLIC_NETWORK_CHANGE_RUN_ID"] == (
         "controlled-public-chrome-downlink-noheartbeat-network-change-001"
     )

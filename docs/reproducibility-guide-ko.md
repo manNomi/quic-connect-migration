@@ -1976,6 +1976,12 @@ python3 tools/build_p0_baseline_execution_packet.py \
 - stage 1 preflight command는 `harness/scripts/final-p0-baseline-preflight.sh` wrapper이며, wrapper 내부의 `check_p0_baseline_preflight.py --require-go`가 닫혀 있으면 stage 2 origin server로 넘어가지 않는다.
 - stage 3 browser client command는 `harness/scripts/final-p0-baseline-run.sh` wrapper이며, wrapper 내부에서 Chrome baseline 실행 뒤 raw artifact bundle과 final-countable validation을 확인한다.
 
+Chrome no-change downlink baseline은 다음 wrapper를 사용한다.
+
+```bash
+bash harness/scripts/final-chrome-nochange-run.sh
+```
+
 ## 42. P0 baseline preflight guard 재생성
 
 server/client artifact capture를 시작해도 되는지 마지막으로 판정한다.
