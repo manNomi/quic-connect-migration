@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from build_p0_baseline_execution_packet import build_execution_packet, emit_markdown, write_csv
+from build_p0_baseline_execution_packet import build_execution_packet, emit_markdown, write_csv, write_output
 
 
 def write_fixture(path: Path, text: str) -> None:
@@ -96,9 +99,31 @@ def test_execution_packet_is_public_safe_and_writable() -> None:
         assert output.exists()
 
 
+def test_dash_outputs_print_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        execution = build_execution_packet(make_args(root))
+        try:
+            os.chdir(root)
+            markdown_buffer = io.StringIO()
+            with contextlib.redirect_stdout(markdown_buffer):
+                write_output(emit_markdown(execution), "-")
+            assert markdown_buffer.getvalue().startswith("# P0 Baseline Execution Packet")
+
+            csv_buffer = io.StringIO()
+            with contextlib.redirect_stdout(csv_buffer):
+                write_csv(execution, "-")
+            assert csv_buffer.getvalue().startswith("stage,order,status")
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_execution_packet_orders_private_config_before_capture()
     test_execution_packet_is_public_safe_and_writable()
+    test_dash_outputs_print_stdout_without_dash_file()
     print("build_p0_baseline_execution_packet=ok")
     return 0
 

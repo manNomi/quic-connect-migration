@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from check_p0_baseline_preflight import build_preflight, emit_markdown, write_csv
+from check_p0_baseline_preflight import build_preflight, emit_markdown, write_csv, write_output
 
 
 def write_fixture(path: Path, text: str) -> None:
@@ -90,9 +93,31 @@ def test_preflight_output_is_public_safe_and_writable() -> None:
         assert output.exists()
 
 
+def test_dash_outputs_print_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        preflight = build_preflight(make_args(root))
+        try:
+            os.chdir(root)
+            markdown_buffer = io.StringIO()
+            with contextlib.redirect_stdout(markdown_buffer):
+                write_output(emit_markdown(preflight), "-")
+            assert markdown_buffer.getvalue().startswith("# P0 Baseline Preflight Check")
+
+            csv_buffer = io.StringIO()
+            with contextlib.redirect_stdout(csv_buffer):
+                write_csv(preflight, "-")
+            assert csv_buffer.getvalue().startswith("check,required,ok")
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_missing_config_blocks_capture()
     test_preflight_output_is_public_safe_and_writable()
+    test_dash_outputs_print_stdout_without_dash_file()
     print("check_p0_baseline_preflight=ok")
     return 0
 

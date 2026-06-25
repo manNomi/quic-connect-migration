@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 import json
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -200,12 +202,33 @@ def emit_markdown(preflight: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def write_csv(preflight: dict[str, Any], path: Path) -> None:
+def csv_text(preflight: dict[str, Any]) -> str:
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=CSV_FIELDS, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(preflight["checks"])
+    return buffer.getvalue()
+
+
+def write_csv(preflight: dict[str, Any], path_arg: Path | str) -> None:
+    if str(path_arg) == "-":
+        sys.stdout.write(csv_text(preflight))
+        return
+    path = Path(path_arg)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(preflight["checks"])
+    path.write_text(csv_text(preflight), encoding="utf-8")
+
+
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
 
 
 def main() -> int:
@@ -231,11 +254,9 @@ def main() -> int:
     args = parser.parse_args()
 
     preflight = build_preflight(args)
-    write_csv(preflight, Path(args.csv_output))
+    write_csv(preflight, args.csv_output)
     text = json.dumps(preflight, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(preflight)
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(text, encoding="utf-8")
+    write_output(text, args.output)
     if args.require_go and not preflight["go_for_p0_baseline_capture"]:
         return 1
     return 0

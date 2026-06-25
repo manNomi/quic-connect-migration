@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -267,12 +268,33 @@ def emit_markdown(report: dict[str, object]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def write_csv(report: dict[str, object], path: Path) -> None:
+def csv_text(report: dict[str, object]) -> str:
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=CSV_FIELDS, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(report["rows"])  # type: ignore[arg-type]
+    return buffer.getvalue()
+
+
+def write_csv(report: dict[str, object], path_arg: Path | str) -> None:
+    if str(path_arg) == "-":
+        sys.stdout.write(csv_text(report))
+        return
+    path = Path(path_arg)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(report["rows"])  # type: ignore[arg-type]
+    path.write_text(csv_text(report), encoding="utf-8")
+
+
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
 
 
 def main() -> int:
@@ -282,10 +304,8 @@ def main() -> int:
     args = parser.parse_args()
 
     report = build_report()
-    write_csv(report, Path(args.csv_output))
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(emit_markdown(report), encoding="utf-8")
+    write_csv(report, args.csv_output)
+    write_output(emit_markdown(report), args.output)
     return 0 if report["all_controls_passed"] else 1
 
 

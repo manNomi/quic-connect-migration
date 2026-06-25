@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -212,12 +214,33 @@ def emit_markdown(execution: dict[str, object]) -> str:
     return "\n".join(sections).rstrip() + "\n"
 
 
-def write_csv(execution: dict[str, object], path: Path) -> None:
+def csv_text(execution: dict[str, object]) -> str:
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=CSV_FIELDS, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(execution["stage_rows"])  # type: ignore[arg-type]
+    return buffer.getvalue()
+
+
+def write_csv(execution: dict[str, object], path_arg: Path | str) -> None:
+    if str(path_arg) == "-":
+        sys.stdout.write(csv_text(execution))
+        return
+    path = Path(path_arg)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="", encoding="utf-8") as fp:
-        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(execution["stage_rows"])  # type: ignore[arg-type]
+    path.write_text(csv_text(execution), encoding="utf-8")
+
+
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
 
 
 def main() -> int:
@@ -239,10 +262,8 @@ def main() -> int:
     args = parser.parse_args()
 
     execution = build_execution_packet(args)
-    write_csv(execution, Path(args.csv_output))
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(emit_markdown(execution), encoding="utf-8")
+    write_csv(execution, args.csv_output)
+    write_output(emit_markdown(execution), args.output)
     return 0
 
 
