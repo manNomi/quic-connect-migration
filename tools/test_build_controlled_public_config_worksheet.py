@@ -3,10 +3,13 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
+import os
 import tempfile
 from pathlib import Path
 
-from build_controlled_public_config_worksheet import build_worksheet, emit_markdown
+from build_controlled_public_config_worksheet import build_worksheet, emit_markdown, write_output
 
 
 def test_missing_config_reports_baseline_next_step() -> None:
@@ -57,9 +60,24 @@ def test_valid_config_is_public_safe_without_printing_values() -> None:
         assert "port equals PUBLIC_ORIGIN_PORT" in markdown
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("worksheet\n", "-")
+            assert buffer.getvalue() == "worksheet\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_missing_config_reports_baseline_next_step()
     test_valid_config_is_public_safe_without_printing_values()
+    test_dash_output_prints_stdout_without_dash_file()
     print("build_controlled_public_config_worksheet=ok")
     return 0
 

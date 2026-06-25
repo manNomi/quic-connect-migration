@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict, dataclass
 from research_clock import utc_date_iso
 from pathlib import Path
@@ -277,6 +278,18 @@ def emit_markdown(worksheet: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def write_output(text: str, output_arg: str | None) -> None:
+    if output_arg == "-":
+        sys.stdout.write(text)
+        return
+    if not output_arg:
+        sys.stdout.write(text)
+        return
+    output = Path(output_arg)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(text, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default=DEFAULT_CONFIG)
@@ -287,12 +300,7 @@ def main() -> int:
 
     worksheet = build_worksheet(Path(args.config), args.check_files)
     text = json.dumps(worksheet, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(worksheet)
-    if args.output:
-        output = Path(args.output)
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(text, encoding="utf-8")
-    else:
-        print(text, end="")
+    write_output(text, args.output)
     return 0
 
 

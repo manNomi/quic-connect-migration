@@ -3,7 +3,13 @@
 
 from __future__ import annotations
 
-from build_final_handover_operator_checklist import build_actions
+import contextlib
+import io
+import os
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from build_final_handover_operator_checklist import build_actions, write_output
 
 
 def incomplete_config() -> dict:
@@ -75,9 +81,24 @@ def test_ready_baseline_state_marks_next_trial_runnable() -> None:
     assert all(item.scope != "final protocol" for item in actions)
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("checklist\n", "-")
+            assert buffer.getvalue() == "checklist\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_blocked_state_prioritizes_config_storage_and_next_trial()
     test_ready_baseline_state_marks_next_trial_runnable()
+    test_dash_output_prints_stdout_without_dash_file()
     print("build_final_handover_operator_checklist=ok")
     return 0
 
