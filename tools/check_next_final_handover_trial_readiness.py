@@ -15,6 +15,7 @@ from check_controlled_public_config import check_key
 from check_final_browser_handover_readiness import baseline_ready, command_preview, parse_env_file
 from check_handover_readiness import build_readiness as build_handover_readiness
 from check_public_origin_readiness import build_result as build_public_origin_readiness
+from check_public_origin_readiness import payload as public_origin_payload
 from report_artifact_storage import build_report as build_storage_report
 from select_next_final_handover_trial import DEFAULT_EXPERIMENTS, build_selection
 
@@ -79,6 +80,7 @@ def valid_config_key(values: dict[str, str], key: str) -> bool:
 
 
 def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
+    redact_sensitive = bool(getattr(args, "redact_sensitive", False))
     selection_args = argparse.Namespace(
         experiments=args.experiments,
         requirements=args.requirements,
@@ -86,6 +88,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         use_local_config=args.use_local_config_for_plan,
         repetitions=args.repetitions,
         prefer_p1=args.prefer_p1,
+        redact_sensitive=redact_sensitive,
     )
     selection = build_selection(selection_args)
     next_trial = selection["next_trial"]
@@ -107,10 +110,10 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         if public_url:
             try:
                 result = build_public_origin_readiness(public_url, args.timeout)
-                public_origin = asdict(result)
-                public_origin["ok"] = result.ok
+                public_origin = public_origin_payload(result, redact_sensitive)
             except Exception as exc:  # noqa: BLE001 - readiness reports exact local failure.
-                public_origin = {"ok": False, "error": str(exc), "url": public_url}
+                url = "<redacted-url>" if redact_sensitive else public_url
+                public_origin = {"ok": False, "error": command_preview(str(exc)) if redact_sensitive else str(exc), "url": url}
         else:
             public_origin = {"ok": False, "error": "PUBLIC_ORIGIN_URL is not configured"}
 
@@ -257,6 +260,7 @@ def main() -> int:
         help="require TLS files to exist on the machine running this checker; use on the public origin host",
     )
     parser.add_argument("--check-public-origin", action="store_true")
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)

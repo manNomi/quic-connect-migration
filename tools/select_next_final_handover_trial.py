@@ -18,6 +18,7 @@ from plan_final_browser_handover_runs import (
     TrialPlan,
     make_plan,
     parse_env_file,
+    redact_trial_plan,
 )
 
 
@@ -72,20 +73,24 @@ def build_selection(args: argparse.Namespace) -> dict[str, Any]:
     incomplete = incomplete_requirements(audit)
     existing = existing_trial_ids(experiments_path)
     selected = select_next_plan(plans, incomplete, existing)
+    selected_index = (plans.index(selected) + 1) if selected else None
+    redact_sensitive = bool(getattr(args, "redact_sensitive", False))
+    rendered_selected = redact_trial_plan(selected, values) if selected and redact_sensitive else selected
     selection = {
         "generated": utc_date_iso(),
         "experiments": experiments_path.as_posix(),
         "requirements": requirements_path.as_posix(),
-        "config_source": args.config if args.use_local_config else "public template",
-        "public_safe_default": not args.use_local_config,
+        "config_source": "local config (redacted)" if args.use_local_config and redact_sensitive else (args.config if args.use_local_config else "public template"),
+        "public_safe_default": (not args.use_local_config) or redact_sensitive,
+        "redact_sensitive": redact_sensitive,
         "protocol_complete": audit["complete"],
         "complete_count": audit["complete_count"],
         "requirement_count": audit["requirement_count"],
         "blockers": audit["blockers"],
         "existing_trial_count": len(existing),
         "planned_trial_count": len(plans),
-        "next_trial": asdict(selected) if selected else None,
-        "next_trial_index": (plans.index(selected) + 1) if selected else None,
+        "next_trial": asdict(rendered_selected) if rendered_selected else None,
+        "next_trial_index": selected_index,
         "post_trial_commands": [],
     }
     if selected:
@@ -140,6 +145,7 @@ def emit_markdown(selection: dict[str, Any]) -> str:
         f"| experiments | `{selection['experiments']}` |",
         f"| config source | `{selection['config_source']}` |",
         f"| public-safe default | `{'yes' if selection['public_safe_default'] else 'no'}` |",
+        f"| sensitive values redacted | `{'yes' if selection.get('redact_sensitive') else 'no'}` |",
         f"| final protocol complete | `{'yes' if selection['protocol_complete'] else 'no'}` |",
         f"| complete requirements | `{selection['complete_count']}/{selection['requirement_count']}` |",
         f"| existing trial rows | `{selection['existing_trial_count']}` |",
@@ -209,6 +215,7 @@ def main() -> int:
     parser.add_argument("--use-local-config", action="store_true")
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--prefer-p1", choices=["safari", "android", "both"], default="safari")
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     args = parser.parse_args()

@@ -9,6 +9,7 @@ Generated: `2026-06-25`
 | experiments | `data/experiment-results.csv` |
 | config source | `public template` |
 | public-safe default | `yes` |
+| sensitive values redacted | `no` |
 | final protocol complete | `no` |
 | complete requirements | `0/6` |
 | existing trial rows | `66` |

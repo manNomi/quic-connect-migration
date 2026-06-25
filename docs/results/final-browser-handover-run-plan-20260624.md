@@ -8,6 +8,7 @@ Generated: `2026-06-25`
 | --- | --- |
 | config source | `public template` |
 | public-safe default | `yes` |
+| sensitive values redacted | `no` |
 | Chrome active repetitions per variant | `3` |
 | P1 feasibility target | `safari` |
 | required trial groups | `6` |

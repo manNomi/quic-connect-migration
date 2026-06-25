@@ -23,6 +23,10 @@ from select_next_final_handover_trial import DEFAULT_EXPERIMENTS, build_selectio
 DEFAULT_OUTPUT = "docs/results/final-handover-trial-packet-20260624.md"
 
 
+def redact_sensitive_enabled(args: argparse.Namespace) -> bool:
+    return bool(getattr(args, "redact_sensitive", False))
+
+
 def artifact_root(next_trial: dict[str, Any]) -> str:
     return f"repro/quic-go-min-repro/{next_trial['artifact_dir']}"
 
@@ -82,6 +86,7 @@ def expected_artifacts(next_trial: dict[str, Any] | None) -> list[dict[str, str]
 
 
 def build_selection_args(args: argparse.Namespace) -> argparse.Namespace:
+    redact_sensitive = redact_sensitive_enabled(args)
     return argparse.Namespace(
         experiments=args.experiments,
         requirements=args.requirements,
@@ -89,10 +94,12 @@ def build_selection_args(args: argparse.Namespace) -> argparse.Namespace:
         use_local_config=args.use_local_config,
         repetitions=args.repetitions,
         prefer_p1=args.prefer_p1,
+        redact_sensitive=redact_sensitive,
     )
 
 
 def build_readiness_args(args: argparse.Namespace) -> argparse.Namespace:
+    redact_sensitive = redact_sensitive_enabled(args)
     return argparse.Namespace(
         experiments=args.experiments,
         requirements=args.requirements,
@@ -107,13 +114,17 @@ def build_readiness_args(args: argparse.Namespace) -> argparse.Namespace:
         check_local_files=args.check_local_files,
         check_public_origin=args.check_public_origin,
         timeout=args.timeout,
+        redact_sensitive=redact_sensitive,
     )
 
 
 def option_flags(args: argparse.Namespace) -> str:
+    redact_sensitive = redact_sensitive_enabled(args)
     flags: list[str] = []
     if args.use_local_config:
         flags.append("--use-local-config")
+    if redact_sensitive:
+        flags.append("--redact-sensitive")
     if args.check_public_origin:
         flags.append("--check-public-origin")
     if args.check_local_files:
@@ -126,11 +137,15 @@ def option_flags(args: argparse.Namespace) -> str:
 
 
 def build_preflight_commands(args: argparse.Namespace) -> list[str]:
+    redact_sensitive = redact_sensitive_enabled(args)
     selection_flags = []
     readiness_flags = []
     if args.use_local_config:
         selection_flags.append("--use-local-config")
         readiness_flags.append("--use-local-config-for-plan")
+    if redact_sensitive:
+        selection_flags.append("--redact-sensitive")
+        readiness_flags.append("--redact-sensitive")
     if args.check_public_origin:
         readiness_flags.append("--check-public-origin")
     if args.check_local_files:
@@ -174,6 +189,7 @@ def build_post_registration_commands(selection: dict[str, Any]) -> list[str]:
 
 
 def build_packet(args: argparse.Namespace) -> dict[str, Any]:
+    redact_sensitive = redact_sensitive_enabled(args)
     selection = build_selection(build_selection_args(args))
     readiness = build_readiness(build_readiness_args(args))
     next_trial = selection["next_trial"]
@@ -187,7 +203,8 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
     return {
         "generated": utc_date_iso(),
         "state": state,
-        "public_safe_default": not args.use_local_config,
+        "public_safe_default": (not args.use_local_config) or redact_sensitive,
+        "redact_sensitive": redact_sensitive,
         "option_flags": option_flags(args),
         "next_trial": next_trial,
         "next_trial_ready": readiness["ready"],
@@ -223,6 +240,7 @@ def emit_markdown(packet: dict[str, Any]) -> str:
         "| --- | --- |",
         f"| state | `{packet['state']}` |",
         f"| public-safe default | `{'yes' if packet['public_safe_default'] else 'no'}` |",
+        f"| sensitive values redacted | `{'yes' if packet.get('redact_sensitive') else 'no'}` |",
         f"| next trial ready | `{'yes' if packet['next_trial_ready'] else 'no'}` |",
         f"| next trial | `{next_trial['trial_id'] if next_trial else '-'}` |",
         f"| next browser | `{next_trial['browser'] if next_trial else '-'}` |",
@@ -299,6 +317,7 @@ def main() -> int:
     parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--check-public-origin", action="store_true")
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import contextlib
+import csv
 import io
 import os
 import argparse
@@ -21,10 +22,17 @@ from check_next_final_handover_trial_readiness import (
     required_gate_names,
     write_output,
 )
+from draft_final_handover_result_row import CSV_FIELDS
 
 
 def trial(phase: str, browser: str) -> dict:
     return {"phase": phase, "browser": browser}
+
+
+def write_empty_experiments(path: Path) -> None:
+    with path.open("w", newline="", encoding="utf-8") as fp:
+        writer = csv.DictWriter(fp, fieldnames=CSV_FIELDS)
+        writer.writeheader()
 
 
 def test_baseline_does_not_require_network_change() -> None:
@@ -135,7 +143,10 @@ def test_placeholder_config_does_not_open_baseline_readiness() -> None:
 
 def test_private_config_values_are_redacted_from_next_readiness() -> None:
     with tempfile.TemporaryDirectory() as tmp:
-        config = Path(tmp) / "controlled-public-origin.env"
+        tmp_path = Path(tmp)
+        config = tmp_path / "controlled-public-origin.env"
+        experiments = tmp_path / "experiments.csv"
+        write_empty_experiments(experiments)
         config.write_text(
             "\n".join(
                 [
@@ -156,10 +167,10 @@ def test_private_config_values_are_redacted_from_next_readiness() -> None:
         )
         readiness = build_readiness(
             argparse.Namespace(
-                experiments="data/experiment-results.csv",
+                experiments=experiments.as_posix(),
                 requirements=DEFAULT_REQUIREMENTS,
                 config=config.as_posix(),
-                use_local_config_for_plan=False,
+                use_local_config_for_plan=True,
                 repetitions=3,
                 prefer_p1="safari",
                 chrome_bin=DEFAULT_CHROME,
@@ -169,14 +180,21 @@ def test_private_config_values_are_redacted_from_next_readiness() -> None:
                 check_local_files=False,
                 check_public_origin=False,
                 timeout=1,
+                redact_sensitive=True,
             )
         )
     markdown = emit_markdown(readiness)
+    next_trial = readiness["next_trial"]
+    combined = f"{next_trial['server_command']}\n{next_trial['client_command']}"
     assert readiness["public_origin_url_preview"] == "<configured>"
     assert readiness["network_change_command_preview"] == "<configured>"
     assert "h3.private-lab.test" not in markdown
     assert "/private/lab" not in markdown
     assert "printf path-change" not in markdown
+    assert "h3.private-lab.test" not in combined
+    assert "/private/lab" not in combined
+    assert "printf path-change" not in combined
+    assert "<redacted-public-origin-url>" in combined
 
 
 def main() -> int:

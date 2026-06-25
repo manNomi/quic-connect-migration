@@ -364,6 +364,44 @@ def make_plan(values: dict[str, str], repetitions: int, prefer_p1: str) -> list[
     return plans
 
 
+def redact_text(text: str, values: dict[str, str]) -> str:
+    redactions = {
+        "PUBLIC_ORIGIN_URL": "<redacted-public-origin-url>",
+        "TLS_CERT_FILE": "<redacted-tls-cert-file>",
+        "TLS_KEY_FILE": "<redacted-tls-key-file>",
+        "NETWORK_CHANGE_CMD": "<redacted-network-change-cmd>",
+        "ANDROID_NETWORK_CHANGE_CMD": "<redacted-android-network-change-cmd>",
+        "PUBLIC_ORIGIN_HOST": "<redacted-public-origin-host>",
+    }
+    redacted = text
+    replacements: list[tuple[str, str]] = []
+    for key, replacement in redactions.items():
+        value = values.get(key, "")
+        if value and value != "...":
+            replacements.append((value, replacement))
+    replacements.sort(key=lambda item: len(item[0]), reverse=True)
+    for value, replacement in replacements:
+        redacted = redacted.replace(value, replacement)
+    return redacted
+
+
+def redact_trial_plan(plan: TrialPlan, values: dict[str, str]) -> TrialPlan:
+    return TrialPlan(
+        requirement_id=plan.requirement_id,
+        trial_id=plan.trial_id,
+        phase=plan.phase,
+        browser=plan.browser,
+        workload=plan.workload,
+        heartbeat=plan.heartbeat,
+        expected_requests=plan.expected_requests,
+        artifact_dir=plan.artifact_dir,
+        claim_gate=plan.claim_gate,
+        server_command=redact_text(plan.server_command, values),
+        client_command=redact_text(plan.client_command, values),
+        registration_hint=plan.registration_hint,
+    )
+
+
 def coverage(required: list[RequiredTrial], plans: list[TrialPlan]) -> list[dict[str, Any]]:
     counts = Counter(plan.requirement_id for plan in plans)
     rows: list[dict[str, Any]] = []
@@ -401,17 +439,20 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
     required = load_required_trials(Path(args.required_trials))
     plans = make_plan(values, args.repetitions, args.prefer_p1)
+    redact_sensitive = bool(getattr(args, "redact_sensitive", False))
+    rendered_plans = [redact_trial_plan(plan, values) for plan in plans] if redact_sensitive else plans
     cov = coverage(required, plans)
     return {
         "generated": utc_date_iso(),
-        "config_source": config_source,
-        "public_safe_default": not args.use_local_config,
+        "config_source": "local config (redacted)" if args.use_local_config and redact_sensitive else config_source,
+        "public_safe_default": (not args.use_local_config) or redact_sensitive,
+        "redact_sensitive": redact_sensitive,
         "repetitions": args.repetitions,
         "prefer_p1": args.prefer_p1,
         "requirement_count": len(required),
         "planned_trial_count": len(plans),
         "coverage": cov,
-        "plans": [asdict(plan) for plan in plans],
+        "plans": [asdict(plan) for plan in rendered_plans],
         "post_run_verification_commands": [
             "python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md",
             "python3 tools/build_paper_tables.py --output docs/results/paper-tables-20260624.md",
@@ -438,6 +479,7 @@ def emit_markdown(report: dict[str, Any]) -> str:
         "| --- | --- |",
         f"| config source | `{report['config_source']}` |",
         f"| public-safe default | `{markdown_bool(report['public_safe_default'])}` |",
+        f"| sensitive values redacted | `{markdown_bool(report.get('redact_sensitive', False))}` |",
         f"| Chrome active repetitions per variant | `{report['repetitions']}` |",
         f"| P1 feasibility target | `{report['prefer_p1']}` |",
         f"| required trial groups | `{report['requirement_count']}` |",
@@ -538,6 +580,7 @@ def main() -> int:
     parser.add_argument("--baseline-summary", default="")
     parser.add_argument("--network-change-cmd", default="")
     parser.add_argument("--android-network-change-cmd", default="")
+    parser.add_argument("--redact-sensitive", action="store_true")
     args = parser.parse_args()
 
     if args.repetitions < 1:

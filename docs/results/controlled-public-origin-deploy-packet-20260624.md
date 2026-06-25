@@ -89,7 +89,7 @@ python3 tools/check_next_final_handover_trial_readiness.py --output docs/results
 Use the generated final handover trial packet for the exact server/client commands:
 
 ```bash
-python3 tools/build_final_handover_trial_packet.py --use-local-config --output docs/results/final-handover-trial-packet-20260624.md
+python3 tools/build_final_handover_trial_packet.py --use-local-config --redact-sensitive --output docs/results/final-handover-trial-packet-20260624.md
 ```
 
 After the browser baseline finishes, register only if the artifact bundle and final-countable gates pass:

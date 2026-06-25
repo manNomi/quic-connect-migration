@@ -8,6 +8,7 @@ Generated: `2026-06-25`
 | --- | --- |
 | state | `blocked_by_readiness` |
 | public-safe default | `yes` |
+| sensitive values redacted | `no` |
 | next trial ready | `no` |
 | next trial | `controlled-public-chrome-h3-baseline-001` |
 | next browser | `Chrome` |
