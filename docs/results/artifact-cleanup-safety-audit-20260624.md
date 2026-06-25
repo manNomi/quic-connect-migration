@@ -7,7 +7,7 @@ Generated: `2026-06-25`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `9.8 GiB` |
+| disk free | `10.4 GiB` |
 | target free GiB | `5.0` |
 | artifact roots total | `24.6 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
@@ -17,7 +17,7 @@ Generated: `2026-06-25`
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
 | protected referenced/planned size | `24.5 GiB` |
-| projected free if review-unreferenced removed | `9.9 GiB` |
+| projected free if review-unreferenced removed | `10.5 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 

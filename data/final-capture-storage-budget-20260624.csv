@@ -1,3 +1,3 @@
 scope,planned_executions,reserve_gib_each,required_gib,usable_gib_before_floor,storage_ready,cleanup_needed_gib,interpretation
-next-planned-execution,1,2.0,2.0,4.81,True,0.0,Enough space to attempt only the next selected capture if storage_ready=yes.
-all-remaining-final-executions,10,2.0,20.0,4.81,False,15.19,Enough space for the full remaining final browser handover queue if storage_ready=yes.
+next-planned-execution,1,2.0,2.0,5.42,True,0.0,Enough space to attempt only the next selected capture if storage_ready=yes.
+all-remaining-final-executions,10,2.0,20.0,5.42,False,14.58,Enough space for the full remaining final browser handover queue if storage_ready=yes.

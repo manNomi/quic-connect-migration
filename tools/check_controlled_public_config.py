@@ -79,12 +79,25 @@ def valid_port(value: str) -> bool:
     return 1 <= port <= 65535
 
 
-def valid_int(value: str) -> bool:
+def valid_non_negative_int(value: str) -> bool:
     try:
-        int(value)
-        return True
+        return int(value) >= 0
     except ValueError:
         return False
+
+
+def valid_host(value: str) -> bool:
+    return bool(value.strip()) and "://" not in value and "/" not in value
+
+
+def valid_addr_port(value: str) -> bool:
+    if value.startswith("["):
+        match = re.match(r"^\[[^\]]+\]:(\d+)$", value)
+        return bool(match and valid_port(match.group(1)))
+    if ":" not in value:
+        return False
+    host, port = value.rsplit(":", 1)
+    return bool(host.strip()) and valid_port(port)
 
 
 def valid_url(value: str, host: str | None = None) -> bool:
@@ -96,8 +109,13 @@ def valid_url(value: str, host: str | None = None) -> bool:
     return True
 
 
-def valid_alt_svc(value: str) -> bool:
-    return "h3" in value and re.search(r":\d+", value) is not None
+def valid_alt_svc(value: str, port: str | None = None) -> bool:
+    match = re.search(r"h3[^,]*:(\d+)", value)
+    if not match:
+        return False
+    if port and valid_port(port):
+        return match.group(1) == port
+    return True
 
 
 def check_key(key: str, values: dict[str, str]) -> KeyCheck:
@@ -118,12 +136,18 @@ def check_key(key: str, values: dict[str, str]) -> KeyCheck:
     elif valid and key in {"PUBLIC_ORIGIN_URL", "PUBLIC_ORIGIN_NETWORK_CHANGE_URL"}:
         valid = valid_url(value, host)
         detail = "valid_https_url" if valid else "invalid_https_url_or_host_mismatch"
+    elif valid and key == "PUBLIC_ORIGIN_HOST":
+        valid = valid_host(value)
+        detail = "valid_host" if valid else "invalid_host"
+    elif valid and key in {"LISTEN_ADDR", "TCP_ADDR"}:
+        valid = valid_addr_port(value)
+        detail = "valid_addr_port" if valid else "invalid_addr_port"
     elif valid and key == "NETWORK_CHANGE_AFTER_SECONDS":
-        valid = valid_int(value)
-        detail = "valid_integer" if valid else "invalid_integer"
+        valid = valid_non_negative_int(value)
+        detail = "valid_non_negative_integer" if valid else "invalid_non_negative_integer"
     elif valid and key == "ALT_SVC":
-        valid = valid_alt_svc(value)
-        detail = "valid_h3_alt_svc" if valid else "invalid_h3_alt_svc"
+        valid = valid_alt_svc(value, values.get("PUBLIC_ORIGIN_PORT"))
+        detail = "valid_h3_alt_svc" if valid else "invalid_h3_alt_svc_or_port_mismatch"
     elif valid and key == "CHROME_BIN":
         valid = Path(value).exists()
         detail = "path_exists" if valid else "path_missing"

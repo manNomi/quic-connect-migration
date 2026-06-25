@@ -87,6 +87,24 @@ CHROME_BIN=/bin/sh
     assert host["valid"] is False
 
 
+def test_baseline_rejects_invalid_listener_alt_svc_and_negative_network_change_time() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "controlled-public-origin.env"
+        path.write_text(
+            BASELINE_CONFIG.replace("LISTEN_ADDR=0.0.0.0:443", "LISTEN_ADDR=0.0.0.0")
+            .replace("ALT_SVC='h3=\":443\"; ma=60'", "ALT_SVC='h3=\":8443\"; ma=60'")
+            + ACTIVE_EXTRA.replace("NETWORK_CHANGE_AFTER_SECONDS=3", "NETWORK_CHANGE_AFTER_SECONDS=-1"),
+            encoding="utf-8",
+        )
+        report = build_report(path)
+    assert report["baseline_config_ready"] is False
+    assert report["active_network_change_config_ready"] is False
+    checks = {item["key"]: item for item in report["key_checks"]}
+    assert checks["LISTEN_ADDR"]["detail"] == "invalid_addr_port"
+    assert checks["ALT_SVC"]["detail"] == "invalid_h3_alt_svc_or_port_mismatch"
+    assert checks["NETWORK_CHANGE_AFTER_SECONDS"]["detail"] == "invalid_non_negative_integer"
+
+
 def test_tracked_example_matches_final_baseline_trial_id() -> None:
     values = parse_env_file(Path("harness/config/controlled-public-origin.env.example"))
     assert values["CONTROLLED_PUBLIC_BASELINE_RUN_ID"] == "controlled-public-chrome-h3-baseline-001"
@@ -128,6 +146,7 @@ def main() -> int:
     test_baseline_ready_does_not_require_active_keys()
     test_active_ready_when_all_keys_present()
     test_example_placeholders_are_not_ready()
+    test_baseline_rejects_invalid_listener_alt_svc_and_negative_network_change_time()
     test_tracked_example_matches_final_baseline_trial_id()
     test_preflight_defaults_match_final_baseline_trial_id()
     test_dash_output_prints_stdout_without_dash_file()

@@ -22,12 +22,12 @@ Generated: `2026-06-25`
 | baseline status | `not provided` |
 | network-change command present | `no` |
 | Android network-change command present | `no` |
-| active IPv4 interfaces | `en0(192.168.0.212)` |
+| active IPv4 interfaces | `en0(192.168.32.190)` |
 | secondary path ready | `no` |
 | Android ready | `no` |
 | Safari WebDriver ready | `yes` |
 | disk ready | `yes` |
-| disk free GiB | `9.81` |
+| disk free GiB | `10.42` |
 
 ## Blockers
 

@@ -21,12 +21,12 @@ Generated: `2026-06-25`
 
 | check | value |
 | --- | --- |
-| active IPv4 interfaces | `en0(192.168.0.212)` |
+| active IPv4 interfaces | `en0(192.168.32.190)` |
 | secondary path ready | `no` |
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `9.81` |
+| disk available GiB | `10.39` |
 | local artifact roots total | `24.6 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |
