@@ -6,11 +6,11 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 63 |
-| status counts | PASS=25; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=32 |
-| application success counts | false=12; true=51 |
-| experiment groups | browser / public web=45; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
-| non-none failure layers | application-level-retry-boundary=3; application-level-retry-recovery=4; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=2; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-polling-dashboard-boundary=1; transient-return-path-outage-threshold=4; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
+| total trials | 64 |
+| status counts | PASS=25; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=33 |
+| application success counts | false=13; true=51 |
+| experiment groups | browser / public web=46; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
+| non-none failure layers | application-level-retry-boundary=3; application-level-retry-recovery=4; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=2; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-polling-dashboard-boundary=2; transient-return-path-outage-threshold=4; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
 
@@ -55,6 +55,7 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-heartbeat-local-001 | local browser NAT rebinding proxy | browser-multiple-quic-sessions-nat-rebinding | yes | yes | yes | classification nat_rebinding_multiple_quic_sessions; proxy switched 127.0.0.1:49851 -> 127.0.0.1:56349; server request remote add... |
 | chrome-h3-rebinding-return-path-drop-controls-local-001 | local browser NAT rebinding proxy return-path drop controls | return-path-loss-application-continuity | yes | no | no | 4/4 rows matched expected outcome; B-only server packet drop rows PASS 2/2 because old return path still delivered application da... |
 | chrome-h3-rebinding-transient-boundary-repetition-local-001 | local browser NAT rebinding proxy transient boundary repetition | transient-return-path-outage-threshold | yes | no | no | 18-row boundary repetition: 4000ms PASS 6/6, 4500ms PASS 6/6, 5000ms split with downlink PASS 3/3 and upload FAIL 3/3; total PASS... |
+| chrome-h3-rebinding-transient-poll-4000-replication-local-001 | local browser NAT rebinding proxy polling/dashboard 4000ms replication | transient-polling-dashboard-boundary | no | no | no | 3-row 4000ms polling replication: PASS 0/3 with application_complete=false in every row; combined with the prior long-boundary 40... |
 | chrome-h3-rebinding-transient-poll-boundary-local-001 | local browser NAT rebinding proxy polling/dashboard control | browser-multiple-quic-sessions-nat-rebinding | no | yes | yes | 9-row polling control: 250ms/1500ms/3000ms PASS 9/9 with 7 server requests per row; every row had server remote addr count 2 and... |
 | chrome-h3-rebinding-transient-poll-long-boundary-local-001 | local browser NAT rebinding proxy polling/dashboard long-boundary control | transient-polling-dashboard-boundary | no | no | no | 9-row polling long-boundary: 4000ms PASS 1/3, 6000ms PASS 0/3, 9000ms PASS 0/3; failure rows stopped after /browser-poll and firs... |
 | chrome-h3-rebinding-transient-return-path-sweep-local-001 | local browser NAT rebinding proxy transient return-path outage sweep | transient-return-path-outage-threshold | yes | no | no | 14-row sweep: 250ms/1500ms/3000ms/4000ms windows PASS 8/8, 5000ms/6000ms/9000ms windows FAIL 6/6 with browser_application_task_fa... |
@@ -62,7 +63,6 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-transient-upload-retry-boundary-local-001 | local browser NAT rebinding proxy upload retry recovery control | application-level-retry-recovery | yes | yes | yes | 6-row retry boundary: 4900ms PASS 3/3 and 5000ms PASS 3/3 where no-retry fine boundary previously failed 6/6 at 4900ms/5000ms; ev... |
 | chrome-h3-rebinding-transient-upload-retry-long-outage-local-001 | local browser NAT rebinding proxy long upload retry recovery control | application-level-retry-recovery | yes | yes | yes | 6-row long-outage retry boundary: 6000ms PASS 3/3 and 9000ms PASS 3/3 where no-retry transient sweep failed at 6000ms/9000ms; eve... |
 | chrome-h3-rebinding-transient-upload-retry-stress-boundary-local-001 | local browser NAT rebinding proxy retry stress boundary | application-level-retry-boundary | yes | yes | no | 6-row retry stress boundary: 12000ms PASS 3/3 with DOM complete timing 19978-19984ms, but 15000ms FAIL 3/3 with DOM error timing... |
-| chrome-h3-rebinding-transient-upload-retry2-15000ms-local-001 | local browser NAT rebinding proxy retry2 recovery control | application-level-retry-recovery | yes | yes | yes | 3-row retry2 recovery control: 15000ms upload PASS 3/3 where one-retry stress boundary failed 3/3 at the same outage window; DOM... |
 
 ## Table 5. Browser / Public Web Evidence
 
@@ -113,6 +113,7 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | chrome-h3-rebinding-transient-downlink-wait-boundary-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy downlink wait-only control | local UDP proxy switches upstream socket A -> B at 500ms and repeats 6000ms/9000ms A+B se... | yes | no | 6-row wait-only control: 6000ms FAIL 3/3 and 9000ms FAIL 3/3 despite the longer hold/grace timing used by the retry control; DOM... |
 | chrome-h3-rebinding-transient-poll-boundary-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy polling/dashboard control | local UDP proxy switches upstream socket A -> B at 500ms and repeats 250ms/1500ms/3000ms... | no | yes | 9-row polling control: 250ms/1500ms/3000ms PASS 9/9 with 7 server requests per row; every row had server remote addr count 2 and... |
 | chrome-h3-rebinding-transient-poll-long-boundary-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy polling/dashboard long-boundary control | local UDP proxy switches upstream socket A -> B at 500ms and repeats 4000ms/6000ms/9000ms... | no | no | 9-row polling long-boundary: 4000ms PASS 1/3, 6000ms PASS 0/3, 9000ms PASS 0/3; failure rows stopped after /browser-poll and firs... |
+| chrome-h3-rebinding-transient-poll-4000-replication-local-001 | PASS_NEGATIVE_CONTROL | local browser NAT rebinding proxy polling/dashboard 4000ms replication | local UDP proxy switches upstream socket A -> B at 500ms and repeats a 4000ms A+B server-... | no | no | 3-row 4000ms polling replication: PASS 0/3 with application_complete=false in every row; combined with the prior long-boundary 40... |
 
 ## Table 6. Remaining Evidence Gaps
 

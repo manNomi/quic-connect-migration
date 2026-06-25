@@ -11,7 +11,7 @@ Generated: `2026-06-24`
 | public-safe default | `yes` |
 | final protocol complete | `no` |
 | complete requirements | `0/6` |
-| existing trial rows | `63` |
+| existing trial rows | `64` |
 | planned trial executions | `10` |
 
 ## Blockers

@@ -20,6 +20,10 @@ DATASETS = [
         "poll long boundary",
         "data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv",
     ),
+    (
+        "poll 4000ms replication",
+        "data/chrome-h3-rebinding-transient-poll-4000-replication-20260625.csv",
+    ),
 ]
 
 CSV_FIELDS = [
@@ -123,6 +127,15 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 
 
 def build_markdown(grouped: list[dict[str, str]]) -> str:
+    by_window = {row["drop_window_ms"]: row for row in grouped}
+    short_rows = [row for row in grouped if int(row["drop_window_ms"]) <= 3000]
+    short_runs = sum(int(row["runs"]) for row in short_rows)
+    short_passes = sum(int(row["pass_count"]) for row in short_rows)
+    row_4000 = by_window.get("4000", {})
+    row_6000 = by_window.get("6000", {})
+    row_9000 = by_window.get("9000", {})
+    fail_6000_9000 = sum(int(row.get("fail_count") or 0) for row in (row_6000, row_9000))
+    runs_6000_9000 = sum(int(row.get("runs") or 0) for row in (row_6000, row_9000))
     detail_rows = [
         [
             f"{row['drop_window_ms']}ms",
@@ -165,9 +178,13 @@ def build_markdown(grouped: list[dict[str, str]]) -> str:
         "",
         "## Interpretation",
         "",
-        "- The polling workload completed 9/9 through 3000ms in the short-boundary control.",
-        "- At 4000ms the result became mixed: 1/3 PASS and 2/3 FAIL.",
-        "- At 6000ms and 9000ms it repeatedly failed, with only the page request and first poll reaching the server in failure rows.",
+        f"- The polling workload completed {short_passes}/{short_runs} through 3000ms in the short-boundary control.",
+        (
+            "- At 4000ms the result remains a transition-zone result: "
+            f"{row_4000.get('pass_count', '0')}/{row_4000.get('runs', '0')} PASS and "
+            f"{row_4000.get('fail_count', '0')}/{row_4000.get('runs', '0')} FAIL."
+        ),
+        f"- At 6000ms and 9000ms it repeatedly failed: {fail_6000_9000}/{runs_6000_9000} FAIL.",
         "- PASS rows still used two Chrome target QUIC sessions, so polling completion is not single-session browser CM evidence.",
         "- Use this table to justify dashboard recovery as a separate application-level metric that must be reported with session attribution.",
     ]

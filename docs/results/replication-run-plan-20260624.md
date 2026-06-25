@@ -10,7 +10,8 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | --- | --- |
 | plan rows | `17` |
 | P0 public/browser rows | `1` |
-| L1 transition-zone rows | `5` |
+| L1 transition-zone rows | `4` |
+| L1 transition-zone reviewed rows | `1` |
 | L2 anchor rows | `11` |
 | transition repetitions per condition | `6` |
 
@@ -19,7 +20,7 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | stage | priority | condition | current PASS/runs | suggested reps | purpose | run when |
 | --- | --- | --- | --- | --- | --- | --- |
 | P0-public-browser-handover | 0 | `controlled-public-final-protocol` | 0/6 final requirements | 6 required trial rows | Produce the missing publishable browser/mobile active path-change evidence before broad CM claims. | after controlled public origin config, active secondary path, and network-change command are ready |
-| L1-transition-zone-replication | 1 | `poll-4000ms` | 1/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
+| L1-transition-zone-reviewed | 3 | `poll-4000ms` | 1/6 | 0 | Record that the planned local transition-zone repetition target has been reached. | no immediate local repetition; revisit only if the paper needs narrower windows or a different workload. |
 | L1-transition-zone-replication | 1 | `upload-retry0-4750ms` | 1/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
 | L1-transition-zone-replication | 1 | `upload-4750ms` | 1/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
 | L1-transition-zone-replication | 1 | `downlink-5000ms` | 2/3 | 6 | Stabilize mixed transition-zone wording and detect whether the mixed row is timer/packet-alignment sensitive. | after disk free space is comfortable for local NetLog/qlog artifacts or after old artifacts are reviewed |
@@ -41,7 +42,7 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | condition | command source | notes |
 | --- | --- | --- |
 | `controlled-public-final-protocol` | docs/results/final-handover-trial-packet-20260624.md | This remains higher priority than optional local replication because it closes the main paper blocker. |
-| `poll-4000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
+| `poll-4000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Target repetitions reached; keep the condition as transition-zone evidence instead of treating it as a binary threshold. |
 | `upload-retry0-4750ms` | docs/reproducibility-guide-ko.md sections 32-33; run-chrome-h3-rebinding-transient-boundary-repetition.sh with upload retry env | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
 | `upload-4750ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
 | `downlink-5000ms` | docs/reproducibility-guide-ko.md sections 34-36; run-chrome-h3-rebinding-transient-boundary-repetition.sh | Keep this as transition-zone evidence even after extra repetitions unless the mixed behavior disappears consistently. |
@@ -62,4 +63,5 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 
 - Do not spend the remaining disk budget on broad local replication before the controlled-public final protocol is unblocked.
 - If public/browser handover remains externally blocked, L1 transition-zone rows are the highest-value local repetitions.
+- Transition-zone rows that have reached the planned repetition count should be used to refine wording, not rerun blindly.
 - L2 anchor repetitions are optional unless the paper needs stronger local reliability wording.

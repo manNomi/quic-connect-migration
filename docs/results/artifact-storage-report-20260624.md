@@ -6,15 +6,15 @@ Generated: `2026-06-24`
 
 | metric | value |
 | --- | --- |
-| disk free | `13.9 GiB` |
-| disk free GiB | `13.87` |
-| local artifact roots total | `22.4 GiB` |
+| disk free | `12.5 GiB` |
+| disk free GiB | `12.49` |
+| local artifact roots total | `23.0 GiB` |
 
 ## Artifact Roots
 
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
-| `repro/quic-go-min-repro/artifacts` | `true` | `22.4 GiB` | 42953 | 16698 |
+| `repro/quic-go-min-repro/artifacts` | `true` | `23.0 GiB` | 43636 | 16991 |
 | `harness/results` | `false` | `0 B` | 0 | 0 |
 
 ## Largest Artifact Directories
@@ -35,12 +35,12 @@ Generated: `2026-06-24`
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624` | `1.1 GiB` | 1360 | 583 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624` | `812.7 MiB` | 1160 | 486 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624` | `555.9 MiB` | 691 | 292 |
+| `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-4000-replication-20260625` | `546.0 MiB` | 683 | 292 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | 897 | 377 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | 249 | 95 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624` | `382.6 MiB` | 249 | 95 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-repetition-20260624` | `49.1 MiB` | 1239 | 433 |
 | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624` | `49.0 MiB` | 1237 | 433 |
-| `repro/quic-go-min-repro/artifacts/chrome-public-h3-bing-home-20260624` | `40.2 MiB` | 688 | 67 |
 
 ## Cleanup Note
 

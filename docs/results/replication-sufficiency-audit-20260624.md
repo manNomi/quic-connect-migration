@@ -45,7 +45,7 @@ This audit is public-safe. It does not create new experiment results; it checks 
 | polling_transition | `poll-250ms` | 3/3 | 0.438-1.000 | stable_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | polling_transition | `poll-1500ms` | 3/3 | 0.438-1.000 | stable_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | polling_transition | `poll-3000ms` | 3/3 | 0.438-1.000 | stable_candidate | directional local evidence; avoid reliability probability wording | 13 |
-| polling_transition | `poll-4000ms` | 1/3 | 0.061-0.792 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
+| polling_transition | `poll-4000ms` | 1/6 | 0.030-0.564 | transition_zone | transition-zone evidence; avoid binary threshold wording | - |
 | polling_transition | `poll-6000ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 | polling_transition | `poll-9000ms` | 0/3 | 0.000-0.562 | failure_candidate | directional local evidence; avoid reliability probability wording | 13 |
 

@@ -1732,6 +1732,40 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 실패 row는 `/browser-poll`과 첫 `/poll`까지만 서버에 도달했고 DOM `pollComplete`가 false였다.
 - 유일한 4000ms PASS row도 Chrome target QUIC session count가 2였으므로 single-session browser CM success가 아니다.
 
+4000ms transition-zone 추가 반복:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-poll-4000-replication-20260625 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-poll-4000-replication-20260625 \
+BASE_PORT=9300 \
+DROP_WINDOWS_MS=4000 \
+WORKLOADS=poll \
+REPETITIONS=3 \
+TIMEOUT=70s \
+CHROME_TIMEOUT_SECONDS=60 \
+CHROME_HOLD_SECONDS=30 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+4000ms replication summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-4000-replication-20260625/rep01-poll-1m-drop-ab-4000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-4000-replication-20260625/rep02-poll-1m-drop-ab-4000ms \
+  poll:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-4000-replication-20260625/rep03-poll-1m-drop-ab-4000ms \
+  --output docs/results/chrome-h3-rebinding-transient-poll-4000-replication-20260625.md \
+  --csv-output data/chrome-h3-rebinding-transient-poll-4000-replication-20260625.csv
+```
+
+추가 반복 관찰 기준:
+
+- 추가 4000ms polling replication은 `0/3 PASS`였다.
+- 기존 long-boundary 4000ms `1/3 PASS`와 합치면 현재 4000ms polling은 `1/6 PASS`, `5/6 FAIL`이다.
+- 한 실패 row에는 qlog PATH_CHALLENGE/PATH_RESPONSE `6/3`이 남았지만 DOM task는 완료되지 않았다.
+- 따라서 4000ms는 여전히 transition zone이지만, 현재 증거로는 failure-heavy transition zone으로 보고한다.
+
 polling transition-zone synthesis 재생성:
 
 ```bash
@@ -1743,7 +1777,7 @@ python3 tools/build_polling_transition_zone_table.py \
 현재 관찰된 기준:
 
 - polling workload는 3000ms까지 9/9 PASS였다.
-- 4000ms는 1/3 PASS로 transition zone이다.
+- 4000ms는 1/6 PASS, 5/6 FAIL인 failure-heavy transition zone이다.
 - 6000ms/9000ms는 0/6 PASS로 반복 실패 구간이다.
 - 모든 PASS row가 Chrome target QUIC session 2개였으므로, dashboard continuity는 session attribution과 함께 보고해야 한다.
 

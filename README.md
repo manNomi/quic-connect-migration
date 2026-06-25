@@ -80,6 +80,7 @@
 68. P0 baseline execution packet의 stage 1 preflight 명령은 `harness/scripts/final-p0-baseline-preflight.sh` wrapper를 사용해 ignored artifact dir에 readiness output을 쓰고, 내부 `--require-go` guard 통과 전 stage 2 capture를 열지 않는다.
 69. Final capture storage budget은 현재 여유공간으로 next planned execution은 가능하지만, 2GiB reserve 기준 remaining final queue 전체에는 추가 cleanup/provisioning이 필요함을 분리한다.
 70. Final handover registration wrapper는 artifact bundle check, validation, append dry-run/apply, audit를 묶고, missing artifact 상태에서는 CSV append 없이 fail-closed한다.
+71. Polling/dashboard 4000ms local replication 3회를 추가 실행했고 모두 FAIL이었다. 기존 1/3 PASS와 합산하면 4000ms는 1/6 PASS, 5/6 FAIL인 failure-heavy transition zone으로 정리된다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 

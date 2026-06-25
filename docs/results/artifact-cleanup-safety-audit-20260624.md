@@ -7,17 +7,17 @@ Generated: `2026-06-24`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `13.9 GiB` |
+| disk free | `12.5 GiB` |
 | target free GiB | `5.0` |
-| artifact roots total | `22.4 GiB` |
+| artifact roots total | `23.0 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
-| cleanup candidates | `76` |
-| CSV-referenced candidates | `54` |
+| cleanup candidates | `77` |
+| CSV-referenced candidates | `55` |
 | planned final-trial candidates | `0` |
 | review-unreferenced candidates | `20` |
 | review-unreferenced size | `66.8 MiB` |
-| protected referenced/planned size | `22.4 GiB` |
-| projected free if review-unreferenced removed | `13.9 GiB` |
+| protected referenced/planned size | `22.9 GiB` |
+| projected free if review-unreferenced removed | `12.6 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
@@ -48,6 +48,7 @@ Generated: `2026-06-24`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624` | `1.1 GiB` | chrome-h3-rebinding-transient-downlink-wait-boundary-local-001, rep01-downlink-1m-drop-ab-6000ms, rep01-downlink-1m-drop-ab-9000ms, rep02-downlink-1m-drop-ab-6000ms, rep02-downlink-1m-drop-ab-9000ms, rep03-downlink-1m-drop-ab-6000ms, rep03-downlink-1m-drop-ab-9000ms | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-stress-20260624` | `812.7 MiB` | chrome-h3-rebinding-old-path-drop-stress-local-001, downlink-1m-noheartbeat, downlink-1m-heartbeat, downlink-4m-noheartbeat, upload-1m, upload-4m | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624` | `555.9 MiB` | chrome-h3-rebinding-transient-upload-retry2-15000ms-local-001, rep01-upload-1m-drop-ab-15000ms, rep02-upload-1m-drop-ab-15000ms, rep03-upload-1m-drop-ab-15000ms | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-poll-4000-replication-20260625` | `546.0 MiB` | chrome-h3-rebinding-transient-poll-4000-replication-local-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | chrome-h3-rebinding-return-path-drop-controls-local-001, downlink-1m-drop-b-only, upload-1m-drop-b-only, downlink-1m-drop-a-and-b, upload-1m-drop-a-and-b | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | chrome-h3-alt-svc-localhost-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624` | `382.6 MiB` | chrome-h3-alt-svc-ip-literal-001 | artifact path is referenced by a tracked artifact reference CSV |

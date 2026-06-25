@@ -218,6 +218,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_capture_storage_budget.py",
                 "tools/build_research_status_dashboard.py",
                 "tools/build_workload_transition_zone_table.py",
+                "tools/build_polling_transition_zone_table.py",
                 "tools/build_replication_sufficiency_audit.py",
                 "tools/build_replication_run_plan.py",
                 "tools/build_cm_operational_friction_matrix.py",
@@ -265,6 +266,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_research_status_dashboard.py",
                 "tools/test_build_replication_sufficiency_audit.py",
                 "tools/test_build_replication_run_plan.py",
+                "tools/test_build_polling_transition_zone_table.py",
                 "tools/test_build_cm_operational_friction_matrix.py",
                 "tools/test_build_controlled_public_config_worksheet.py",
                 "tools/test_build_controlled_public_origin_deploy_packet.py",
@@ -623,6 +625,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "research_status_dashboard_regression",
             [python_bin, "tools/test_build_research_status_dashboard.py"],
+            {0},
+            30,
+        ),
+        (
+            "polling_transition_zone_table_regression",
+            [python_bin, "tools/test_build_polling_transition_zone_table.py"],
             {0},
             30,
         ),

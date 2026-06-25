@@ -107,6 +107,21 @@ def build_public_first_row() -> PlanRow:
 
 def transition_plan(row: dict[str, str]) -> PlanRow:
     condition = row["condition_id"]
+    runs = int_value(row.get("runs"))
+    if runs >= TRANSITION_REPS:
+        return PlanRow(
+            stage="L1-transition-zone-reviewed",
+            priority=3,
+            condition_id=condition,
+            source=row["source"],
+            current_role=row["evidence_role"],
+            current_pass_runs=f"{row['pass_count']}/{row['runs']}",
+            suggested_repetitions="0",
+            purpose="Record that the planned local transition-zone repetition target has been reached.",
+            run_when="no immediate local repetition; revisit only if the paper needs narrower windows or a different workload.",
+            command_source=command_source_for(row["source"]),
+            notes="Target repetitions reached; keep the condition as transition-zone evidence instead of treating it as a binary threshold.",
+        )
     return PlanRow(
         stage="L1-transition-zone-replication",
         priority=1,
@@ -179,6 +194,7 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 def emit_markdown(plan: dict[str, object]) -> str:
     rows = list(plan["rows"])  # type: ignore[arg-type]
     transition_rows = [row for row in rows if row["stage"] == "L1-transition-zone-replication"]
+    transition_reviewed_rows = [row for row in rows if row["stage"] == "L1-transition-zone-reviewed"]
     anchor_rows = [row for row in rows if row["stage"] == "L2-boundary-anchor-replication"]
     detail_rows = [
         [
@@ -206,6 +222,7 @@ def emit_markdown(plan: dict[str, object]) -> str:
         f"| plan rows | `{len(rows)}` |",
         f"| P0 public/browser rows | `1` |",
         f"| L1 transition-zone rows | `{len(transition_rows)}` |",
+        f"| L1 transition-zone reviewed rows | `{len(transition_reviewed_rows)}` |",
         f"| L2 anchor rows | `{len(anchor_rows)}` |",
         f"| transition repetitions per condition | `{plan['transition_repetitions_per_condition']}` |",
         "",
@@ -235,6 +252,7 @@ def emit_markdown(plan: dict[str, object]) -> str:
         "",
         "- Do not spend the remaining disk budget on broad local replication before the controlled-public final protocol is unblocked.",
         "- If public/browser handover remains externally blocked, L1 transition-zone rows are the highest-value local repetitions.",
+        "- Transition-zone rows that have reached the planned repetition count should be used to refine wording, not rerun blindly.",
         "- L2 anchor repetitions are optional unless the paper needs stronger local reliability wording.",
     ]
     return "\n".join(sections).rstrip() + "\n"

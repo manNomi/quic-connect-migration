@@ -58,9 +58,30 @@ def test_plan_is_public_safe_and_writable() -> None:
         assert output.exists()
 
 
+def test_transition_rows_with_target_repetitions_are_marked_reviewed() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        audit = root / "audit.csv"
+        write_fixture(
+            audit,
+            """
+            source,condition_id,condition_label,pass_count,runs,pass_rate,wilson_low_95,wilson_high_95,evidence_role,paper_use,additional_same_outcome_runs_for_rule_of_thumb,next_action
+            polling_transition,poll-4000ms,poll mixed,1,6,0.167,0.030,0.564,transition_zone,transition-zone evidence,-,refine
+            """,
+        )
+        plan = build_plan(audit)
+        row = next(item for item in plan["rows"] if item["condition_id"] == "poll-4000ms")
+        assert row["stage"] == "L1-transition-zone-reviewed"
+        assert row["priority"] == 3
+        assert row["suggested_repetitions"] == "0"
+        markdown = emit_markdown(plan)
+        assert "L1 transition-zone reviewed rows" in markdown
+
+
 def main() -> int:
     test_plan_keeps_public_handover_first_and_selects_transition_rows()
     test_plan_is_public_safe_and_writable()
+    test_transition_rows_with_target_repetitions_are_marked_reviewed()
     print("build_replication_run_plan=ok")
     return 0
 
