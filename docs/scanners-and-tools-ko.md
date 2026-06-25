@@ -763,6 +763,9 @@ AWS wrapper:
 | 파일 | 역할 |
 | --- | --- |
 | `harness/scripts/aws-preflight.sh` | AWS CLI, region, VPC/subnet 사전 확인 |
+| `harness/scripts/final-p0-baseline-preflight.sh` | controlled public P0 baseline 실행 직전 readiness gate wrapper |
+| `harness/scripts/final-p0-baseline-run.sh` | P0 Chrome baseline client 실행, artifact bundle check, final-countable validation wrapper |
+| `harness/scripts/final-handover-register-trial.sh` | final handover artifact 검증 후 `experiment-results.csv` append wrapper |
 | `harness/scripts/package-quic-go-ec2.sh` | public repo 구조 기준 EC2 package 생성 |
 | `harness/scripts/run-aws-nlb-quic-data-plane.sh` | EC2 A/B, NLB, target group, client, cleanup end-to-end |
 | `harness/scripts/run-local-quic-go.sh` | harness 결과 디렉터리에 local transport 실행 |

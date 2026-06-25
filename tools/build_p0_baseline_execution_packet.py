@@ -115,9 +115,9 @@ def build_stage_rows(packet: dict[str, object], p0_status: dict[str, object]) ->
                 order=4,
                 status="blocked" if not next_ready else "ready",
                 owner="client-host",
-                action="Run Chrome baseline navigation and collect NetLog/qlog summaries.",
-                command=str(packet["client_command"]),
-                stop_condition="stop if server/origin terminal is not running",
+                action="Run the final P0 Chrome baseline wrapper and collect/validate browser artifacts.",
+                command="bash harness/scripts/final-p0-baseline-run.sh",
+                stop_condition="stop if server/origin terminal is not running or wrapper postchecks fail",
             )
         )
         rows.append(
@@ -206,7 +206,7 @@ def emit_markdown(execution: dict[str, object]) -> str:
         "## Interpretation",
         "",
         "- Run stage 0 and stage 1 first; do not start server/client artifact capture while needed-now gates remain.",
-        "- The server/client commands remain public-template commands until the private config is supplied locally.",
+        "- The origin-server command remains a public-template command; the client wrapper reads the private config locally.",
         "- After a PASS baseline is registered, regenerate P0 status; the next blocker should move from baseline config to active path-change readiness.",
     ]
     return "\n".join(sections).rstrip() + "\n"

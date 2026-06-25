@@ -1961,13 +1961,14 @@ python3 tools/build_p0_baseline_execution_packet.py \
 
 - stage 0은 private config 작성이고, needed-now gate가 남아 있으면 blocked다.
 - stage 1은 preflight이며, required gate가 남아 있으면 server/client capture로 넘어가지 않는다.
-- stage 2 이후는 origin server, browser client, artifact validation, CSV append 순서를 유지한다.
+- stage 2 이후는 origin server, final P0 baseline run wrapper, CSV append 순서를 유지한다.
 
 현재 관찰된 기준:
 
 - P0 baseline은 아직 `blocked_by_readiness`다.
 - server/client capture는 private config와 public origin baseline preflight가 통과한 뒤에만 실행해야 한다.
 - stage 1 preflight command는 `harness/scripts/final-p0-baseline-preflight.sh` wrapper이며, wrapper 내부의 `check_p0_baseline_preflight.py --require-go`가 닫혀 있으면 stage 2 origin server로 넘어가지 않는다.
+- stage 3 browser client command는 `harness/scripts/final-p0-baseline-run.sh` wrapper이며, wrapper 내부에서 Chrome baseline 실행 뒤 raw artifact bundle과 final-countable validation을 확인한다.
 
 ## 42. P0 baseline preflight guard 재생성
 
