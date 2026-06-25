@@ -13,6 +13,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | verification | `107/107 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `0/6` |
+| needed-now external inputs | `['disk-free-space', 'controlled-public-baseline-config', 'public-origin-host']` |
 | planned execution states | `{'blocked': 10}` |
 | claim support | `{'negative_control_supported': 1, 'not_supported_yet': 2, 'supported_local_control': 4, 'supported_scoped': 2}` |
 | replication roles | `{'failure_candidate': 11, 'stable_candidate': 14, 'transition_zone': 5}` |
@@ -21,7 +22,15 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 ## Next Operator Action
 
-Run `bash harness/scripts/init-controlled-public-config.sh`, fill the ignored controlled-public origin env file, then validate baseline config.
+Clear needed-now external inputs first: `disk-free-space`, `controlled-public-baseline-config`, `public-origin-host`. See `docs/results/final-handover-external-inputs-20260624.md`.
+
+## Needed-Now External Inputs
+
+| input id |
+| --- |
+| `disk-free-space` |
+| `controlled-public-baseline-config` |
+| `public-origin-host` |
 
 ## Missing Gate Counts
 
@@ -51,6 +60,7 @@ Do not claim Chrome/Safari/Android browser handover CM success until the final b
 | `p0_baseline_preflight_controls` | `data/p0-baseline-preflight-control-report-20260624.csv` |
 | `final_capture_storage_budget` | `data/final-capture-storage-budget-20260624.csv` |
 | `artifact_cleanup_apply_report` | `docs/results/artifact-cleanup-apply-report-20260625.md` |
+| `external_inputs` | `docs/results/final-handover-external-inputs-20260624.md` |
 | `aws_identity_readiness` | `data/aws-identity-readiness-20260625.json` |
 | `acceptance_scorecard` | `data/final-trial-acceptance-scorecard-20260624.csv` |
 | `operational_friction_matrix` | `data/cm-operational-friction-matrix-20260624.csv` |

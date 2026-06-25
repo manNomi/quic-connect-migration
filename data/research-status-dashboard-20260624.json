@@ -51,7 +51,18 @@
     "public_origin_url_configured": 10,
     "tls_config_present": 10
   },
-  "next_operator_action": "Run `bash harness/scripts/init-controlled-public-config.sh`, fill the ignored controlled-public origin env file, then validate baseline config.",
+  "needed_now_inputs": [
+    "disk-free-space",
+    "controlled-public-baseline-config",
+    "public-origin-host"
+  ],
+  "external_input_status_counts": {
+    "incomplete": 1,
+    "needed": 3,
+    "needed-after-baseline": 1,
+    "optional-missing": 2
+  },
+  "next_operator_action": "Clear needed-now external inputs first: `disk-free-space`, `controlled-public-baseline-config`, `public-origin-host`. See `docs/results/final-handover-external-inputs-20260624.md`.",
   "safe_claim_boundary": "Do not claim Chrome/Safari/Android browser handover CM success until the final browser handover protocol has countable rows.",
   "key_paths": {
     "manifest": "data/reproducibility-manifest-20260624.json",
@@ -62,6 +73,7 @@
     "p0_baseline_preflight_controls": "data/p0-baseline-preflight-control-report-20260624.csv",
     "final_capture_storage_budget": "data/final-capture-storage-budget-20260624.csv",
     "artifact_cleanup_apply_report": "docs/results/artifact-cleanup-apply-report-20260625.md",
+    "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
     "aws_identity_readiness": "data/aws-identity-readiness-20260625.json",
     "acceptance_scorecard": "data/final-trial-acceptance-scorecard-20260624.csv",
     "operational_friction_matrix": "data/cm-operational-friction-matrix-20260624.csv",

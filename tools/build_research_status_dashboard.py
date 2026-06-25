@@ -30,6 +30,7 @@ DEFAULT_P0_BASELINE_PREFLIGHT_CONTROLS = "data/p0-baseline-preflight-control-rep
 DEFAULT_FINAL_CAPTURE_STORAGE_BUDGET = "data/final-capture-storage-budget-20260624.csv"
 DEFAULT_AWS_IDENTITY_READINESS = "data/aws-identity-readiness-20260625.json"
 DEFAULT_ARTIFACT_CLEANUP_APPLY_REPORT = "docs/results/artifact-cleanup-apply-report-20260625.md"
+DEFAULT_EXTERNAL_INPUTS = "docs/results/final-handover-external-inputs-20260624.md"
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -49,12 +50,48 @@ def split_cell(value: str) -> list[str]:
     return [item for item in (value or "").split(";") if item]
 
 
+def clean_markdown_cell(value: str) -> str:
+    return value.strip().strip("`")
+
+
+def read_external_inputs(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    rows: list[dict[str, str]] = []
+    in_inputs = False
+    headers: list[str] = []
+    for raw in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if line == "## Inputs":
+            in_inputs = True
+            continue
+        if in_inputs and line.startswith("## "):
+            break
+        if not in_inputs or not line.startswith("|") or line.startswith("| ---"):
+            continue
+        cells = [clean_markdown_cell(cell) for cell in line.strip("|").split("|")]
+        if cells and cells[0] == "id":
+            headers = cells
+            continue
+        if headers and len(cells) >= len(headers):
+            rows.append(dict(zip(headers, cells)))
+    return rows
+
+
 def missing_gate_counts(matrix_rows: list[dict[str, str]]) -> dict[str, int]:
     counts: Counter[str] = Counter()
     for row in matrix_rows:
         for gate in split_cell(row.get("missing_gates", "")):
             counts[gate] += 1
     return dict(sorted(counts.items()))
+
+
+def needed_now_inputs(external_inputs: list[dict[str, str]]) -> list[str]:
+    return [
+        row.get("id", "")
+        for row in external_inputs
+        if row.get("urgency") == "now" and row.get("status") != "ready" and row.get("id")
+    ]
 
 
 def first_action_from_missing_gates(counts: dict[str, int]) -> str:
@@ -82,6 +119,13 @@ def first_action_from_missing_gates(counts: dict[str, int]) -> str:
     return "No missing gate was detected in the matrix."
 
 
+def next_operator_action(counts: dict[str, int], needed_now: list[str]) -> str:
+    if needed_now:
+        items = ", ".join(f"`{item}`" for item in needed_now)
+        return f"Clear needed-now external inputs first: {items}. See `docs/results/final-handover-external-inputs-20260624.md`."
+    return first_action_from_missing_gates(counts)
+
+
 def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
     experiments = read_csv(Path(args.experiments))
     matrix = read_csv(Path(args.matrix))
@@ -90,6 +134,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
     friction = read_csv(Path(args.friction))
     claim_support = read_csv(Path(args.claim_support))
     replication_audit = read_csv(Path(args.replication_audit))
+    external_inputs = read_external_inputs(Path(args.external_inputs))
 
     experiment_status_counts = dict(sorted(Counter(row.get("status", "") for row in experiments).items()))
     matrix_state_counts = dict(sorted(Counter(row.get("state", "") for row in matrix).items()))
@@ -98,6 +143,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
     claim_support_counts = dict(sorted(Counter(row.get("support_level", "") for row in claim_support).items()))
     replication_role_counts = dict(sorted(Counter(row.get("evidence_role", "") for row in replication_audit).items()))
     missing_counts = missing_gate_counts(matrix)
+    needed_now = needed_now_inputs(external_inputs)
     final_handover = (manifest.get("research_audit") or {}).get("final_browser_handover_trials", "-")
     verification = manifest.get("verification") or {}
     ci = manifest.get("ci") or {}
@@ -125,7 +171,9 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
         "claim_support_counts": claim_support_counts,
         "replication_role_counts": replication_role_counts,
         "missing_gate_counts": missing_counts,
-        "next_operator_action": first_action_from_missing_gates(missing_counts),
+        "needed_now_inputs": needed_now,
+        "external_input_status_counts": dict(sorted(Counter(row.get("status", "") for row in external_inputs).items())),
+        "next_operator_action": next_operator_action(missing_counts, needed_now),
         "safe_claim_boundary": (
             "Do not claim Chrome/Safari/Android browser handover CM success until the final browser handover protocol has countable rows."
         ),
@@ -138,6 +186,7 @@ def build_dashboard(args: argparse.Namespace) -> dict[str, Any]:
             "p0_baseline_preflight_controls": args.p0_baseline_preflight_controls,
             "final_capture_storage_budget": args.final_capture_storage_budget,
             "artifact_cleanup_apply_report": args.artifact_cleanup_apply_report,
+            "external_inputs": args.external_inputs,
             "aws_identity_readiness": args.aws_identity_readiness,
             "acceptance_scorecard": args.scorecard,
             "operational_friction_matrix": args.friction,
@@ -168,6 +217,7 @@ def emit_markdown(dashboard: dict[str, Any]) -> str:
         f"| verification | `{verification['passed']}/{verification['checks']} passed; ok={verification['ok']}` |",
         f"| CI | `{ci['status']}/{ci['conclusion']} ({ci['run_id']})` |",
         f"| final browser handover | `{dashboard['final_browser_handover']}` |",
+        f"| needed-now external inputs | `{dashboard['needed_now_inputs']}` |",
         f"| planned execution states | `{dashboard['planned_execution_state_counts']}` |",
         f"| claim support | `{dashboard['claim_support_counts']}` |",
         f"| replication roles | `{dashboard['replication_role_counts']}` |",
@@ -178,11 +228,25 @@ def emit_markdown(dashboard: dict[str, Any]) -> str:
         "",
         dashboard["next_operator_action"],
         "",
+        "## Needed-Now External Inputs",
+        "",
+        "| input id |",
+        "| --- |",
+    ]
+    if dashboard["needed_now_inputs"]:
+        for item in dashboard["needed_now_inputs"]:
+            lines.append(f"| `{item}` |")
+    else:
+        lines.append("| - |")
+    lines.extend(
+        [
+            "",
         "## Missing Gate Counts",
         "",
         "| gate | blocked planned executions |",
         "| --- | ---: |",
-    ]
+        ]
+    )
     if dashboard["missing_gate_counts"]:
         for gate, count in dashboard["missing_gate_counts"].items():
             lines.append(f"| `{gate}` | {count} |")
@@ -224,6 +288,7 @@ def main() -> int:
     parser.add_argument("--final-capture-storage-budget", default=DEFAULT_FINAL_CAPTURE_STORAGE_BUDGET)
     parser.add_argument("--aws-identity-readiness", default=DEFAULT_AWS_IDENTITY_READINESS)
     parser.add_argument("--artifact-cleanup-apply-report", default=DEFAULT_ARTIFACT_CLEANUP_APPLY_REPORT)
+    parser.add_argument("--external-inputs", default=DEFAULT_EXTERNAL_INPUTS)
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--json-output", default=DEFAULT_JSON_OUTPUT)
     parser.add_argument("--format", choices=["markdown", "json"], default="markdown")

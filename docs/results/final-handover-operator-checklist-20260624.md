@@ -11,10 +11,10 @@ Generated: `2026-06-25`
 | baseline config ready | `no` |
 | active config ready | `no` |
 | Android config ready | `no` |
-| current disk free | `6.0 GiB` |
+| current disk free | `5.9 GiB` |
 | target free GiB | `7.0` |
 | storage target met by artifact cleanup | `no` |
-| remaining external cleanup gap | `966.3 MiB` |
+| remaining external cleanup gap | `1.0 GiB` |
 | final trial completion | `0/6` |
 
 ## Actions
@@ -22,7 +22,7 @@ Generated: `2026-06-25`
 | priority | status | scope | action | reason |
 | ---: | --- | --- | --- | --- |
 | 1 | `todo-now` | controlled public baseline | Create and fill the private controlled public origin config. | The next selected trial is a controlled-public Chrome baseline and config baseline readiness is false. |
-| 2 | `todo-now` | storage | Free enough disk before running heavy browser/qlog captures. | Current artifact cleanup candidates are insufficient for the target free-space threshold; remaining external cleanup gap is 966.3 MiB. |
+| 2 | `todo-now` | storage | Free enough disk before running heavy browser/qlog captures. | Current artifact cleanup candidates are insufficient for the target free-space threshold; remaining external cleanup gap is 1.0 GiB. |
 | 3 | `blocked-now` | next trial | Do not run the next final handover trial yet. | Missing required gates: controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present |
 | 4 | `todo-later` | active network-change | Prepare active network-change config before Chrome/Safari active trials. | The final protocol requires active path-change trials after the baseline/no-change rows are registered. |
 | 5 | `todo-later` | desktop path-change | Provide a real active secondary path before desktop active network-change trials. | Chrome/Safari active trials require a path change, but the current machine has no secondary active non-loopback IPv4 path. |

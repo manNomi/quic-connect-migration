@@ -10,7 +10,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from textwrap import dedent
 
-from build_research_status_dashboard import build_dashboard, emit_markdown, first_action_from_missing_gates
+from build_research_status_dashboard import (
+    build_dashboard,
+    emit_markdown,
+    first_action_from_missing_gates,
+    read_external_inputs,
+)
 from research_clock import utc_date_iso
 
 
@@ -39,6 +44,7 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
         friction = root / "friction.csv"
         claim_support = root / "claim-support.csv"
         replication_audit = root / "replication-audit.csv"
+        external_inputs = root / "external-inputs.md"
         manifest = root / "manifest.json"
         write_fixture(
             experiments,
@@ -95,6 +101,22 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             ),
             encoding="utf-8",
         )
+        write_fixture(
+            external_inputs,
+            """
+            # Final Handover External Inputs Handoff
+
+            ## Inputs
+
+            | id | urgency | status | input needed | validation command | evidence |
+            | --- | --- | --- | --- | --- | --- |
+            | `disk-free-space` | `now` | `needed` | Free disk. | `safe` | `current_free=6.0 GiB` |
+            | `controlled-public-baseline-config` | `now` | `needed` | Fill config. | `safe` | `missing=host` |
+            | `aws-identity` | `automation-optional` | `optional-missing` | Refresh AWS. | `safe` | `invalid_client_token` |
+
+            ## Safe Handling
+            """,
+        )
         args = argparse.Namespace(
             experiments=experiments.as_posix(),
             matrix=matrix.as_posix(),
@@ -111,19 +133,29 @@ def test_dashboard_summarizes_public_safe_inputs() -> None:
             final_capture_storage_budget=(root / "final-capture-storage-budget.csv").as_posix(),
             aws_identity_readiness=(root / "aws-identity-readiness.json").as_posix(),
             artifact_cleanup_apply_report=(root / "artifact-cleanup-apply-report.md").as_posix(),
+            external_inputs=external_inputs.as_posix(),
         )
         dashboard = build_dashboard(args)
         markdown = emit_markdown(dashboard)
+        parsed_inputs = read_external_inputs(external_inputs)
         assert dashboard["experiment_trials"] == 2
         assert dashboard["planned_execution_state_counts"] == {"blocked": 1}
         assert dashboard["operational_friction_paper_use_counts"] == {"source-backed explanation with repo evidence": 1}
         assert dashboard["claim_support_counts"] == {"not_supported_yet": 1, "supported_scoped": 1}
         assert dashboard["replication_role_counts"] == {"stable_candidate": 1, "transition_zone": 1}
         assert dashboard["final_browser_handover"] == "0/6"
+        assert [item["id"] for item in parsed_inputs] == [
+            "disk-free-space",
+            "controlled-public-baseline-config",
+            "aws-identity",
+        ]
+        assert dashboard["needed_now_inputs"] == ["disk-free-space", "controlled-public-baseline-config"]
+        assert "disk-free-space" in dashboard["next_operator_action"]
         assert "p0_baseline_preflight_controls" in dashboard["key_paths"]
         assert "final_capture_storage_budget" in dashboard["key_paths"]
         assert "aws_identity_readiness" in dashboard["key_paths"]
         assert "artifact_cleanup_apply_report" in dashboard["key_paths"]
+        assert "external_inputs" in dashboard["key_paths"]
         assert "PRIVATE_KEY" not in markdown
         assert "AKIA" not in markdown
 
