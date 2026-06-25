@@ -97,8 +97,8 @@ def build_actions(
                 f"remaining external cleanup gap is {cleanup['remaining_gap_human']}."
             ),
             [
-                "python3 tools/plan_artifact_cleanup.py --output docs/results/artifact-cleanup-dry-run-20260624.md",
-                "python3 tools/audit_artifact_cleanup_safety.py --output docs/results/artifact-cleanup-safety-audit-20260624.md",
+                "python3 tools/plan_artifact_cleanup.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-dry-run-20260624.md",
+                "python3 tools/audit_artifact_cleanup_safety.py --target-free-gib 7 --output docs/results/artifact-cleanup-safety-audit-20260624.md",
             ],
         )
     else:
@@ -110,8 +110,8 @@ def build_actions(
             "Disk target can be met by reviewed artifact cleanup candidates.",
             f"Selected cleanup candidates reclaim {cleanup['selected_reclaimable_human']}.",
             [
-                "python3 tools/plan_artifact_cleanup.py --output docs/results/artifact-cleanup-dry-run-20260624.md",
-                "python3 tools/audit_artifact_cleanup_safety.py --output docs/results/artifact-cleanup-safety-audit-20260624.md",
+                "python3 tools/plan_artifact_cleanup.py --target-free-gib 7 --candidate-policy review-unreferenced --output docs/results/artifact-cleanup-dry-run-20260624.md",
+                "python3 tools/audit_artifact_cleanup_safety.py --target-free-gib 7 --output docs/results/artifact-cleanup-safety-audit-20260624.md",
             ],
         )
 
@@ -201,13 +201,20 @@ def build_checklist(args: argparse.Namespace) -> dict[str, Any]:
         chrome_bin=args.chrome_bin,
         safari_bin=args.safari_bin,
         safari_tp_bin=args.safari_tp_bin,
-        min_disk_gib=args.target_free_gib,
+        min_disk_gib=args.min_disk_gib,
         check_local_files=args.check_local_files,
         check_public_origin=False,
         timeout=args.timeout,
     )
     next_readiness = build_next_readiness(next_args)
-    cleanup = build_cleanup_plan(["repro/quic-go-min-repro/artifacts", "harness/results"], args.target_free_gib)
+    cleanup = build_cleanup_plan(
+        ["repro/quic-go-min-repro/artifacts", "harness/results"],
+        args.target_free_gib,
+        candidate_policy="review-unreferenced",
+        experiments_path=Path(args.experiments),
+        repetitions=args.repetitions,
+        prefer_p1=args.prefer_p1,
+    )
     final_audit = build_final_trial_audit(Path(args.requirements), Path(args.experiments))
     actions = build_actions(config, next_readiness, cleanup, final_audit)
     return {
@@ -295,7 +302,8 @@ def main() -> int:
     parser.add_argument("--chrome-bin", default=DEFAULT_CHROME)
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
-    parser.add_argument("--target-free-gib", type=float, default=5.0)
+    parser.add_argument("--min-disk-gib", type=float, default=5.0)
+    parser.add_argument("--target-free-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")

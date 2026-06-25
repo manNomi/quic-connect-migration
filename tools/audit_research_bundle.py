@@ -140,6 +140,7 @@ REQUIRED_FILES = [
     "tools/test_final_p0_baseline_run_wrapper.py",
     "tools/test_final_handover_register_trial_wrapper.py",
     "tools/test_init_controlled_public_config_wrapper.py",
+    "tools/test_plan_artifact_cleanup.py",
     "tools/test_build_research_status_dashboard.py",
     "tools/test_build_application_recovery_tradeoff.py",
     "tools/test_build_workload_transition_zone_table.py",

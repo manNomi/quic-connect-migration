@@ -169,6 +169,7 @@ def build_handoff(args: argparse.Namespace) -> dict[str, Any]:
         chrome_bin=args.chrome_bin,
         safari_bin=args.safari_bin,
         safari_tp_bin=args.safari_tp_bin,
+        min_disk_gib=args.min_disk_gib,
         target_free_gib=args.target_free_gib,
         check_local_files=args.check_local_files,
         timeout=args.timeout,
@@ -235,7 +236,8 @@ def main() -> int:
     parser.add_argument("--chrome-bin", default=DEFAULT_CHROME)
     parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
     parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
-    parser.add_argument("--target-free-gib", type=float, default=5.0)
+    parser.add_argument("--min-disk-gib", type=float, default=5.0)
+    parser.add_argument("--target-free-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--timeout", type=float, default=5.0)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")

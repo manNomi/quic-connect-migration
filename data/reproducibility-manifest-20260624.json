@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "8e06c8d",
+    "commit": "b3a862c",
     "branch": "main"
   },
   "experiment_corpus": {
@@ -16,8 +16,8 @@
     "final_required_rows": 6
   },
   "verification": {
-    "checks": "104",
-    "passed": "104",
+    "checks": "105",
+    "passed": "105",
     "ok": "yes"
   },
   "research_audit": {
@@ -31,7 +31,7 @@
     "next_trial": "controlled-public-chrome-h3-baseline-001",
     "next_trial_ready": "no",
     "codex_can_run_next_trial_now": "no",
-    "needed_now_inputs": "2"
+    "needed_now_inputs": "3"
   },
   "ci": {
     "available": "not-requested"
