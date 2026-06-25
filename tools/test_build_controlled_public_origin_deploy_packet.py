@@ -4,8 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import io
+import os
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
-from build_controlled_public_origin_deploy_packet import build_packet, emit_markdown
+from build_controlled_public_origin_deploy_packet import build_packet, emit_markdown, write_output
 
 
 def fake_args(**overrides):
@@ -44,9 +49,24 @@ def test_custom_package_path_is_used_without_building() -> None:
     assert "package built now | `no`" in markdown
 
 
+def test_dash_output_prints_stdout_without_dash_file() -> None:
+    original_cwd = Path.cwd()
+    with TemporaryDirectory() as tmp:
+        try:
+            os.chdir(tmp)
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                write_output("deploy-packet\n", "-")
+            assert buffer.getvalue() == "deploy-packet\n"
+            assert not Path("-").exists()
+        finally:
+            os.chdir(original_cwd)
+
+
 def main() -> int:
     test_default_packet_is_public_safe()
     test_custom_package_path_is_used_without_building()
+    test_dash_output_prints_stdout_without_dash_file()
     print("build_controlled_public_origin_deploy_packet=ok")
     return 0
 
