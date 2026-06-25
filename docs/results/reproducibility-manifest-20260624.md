@@ -8,7 +8,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `6bfaaa9` |
+| source commit at generation | `1db70eb` |
 | branch | `main` |
 | total trials | `66` |
 | status counts | `{'PASS': 25, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
@@ -44,6 +44,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `external_inputs` | `docs/results/final-handover-external-inputs-20260624.md` |
 | `trial_packet` | `docs/results/final-handover-trial-packet-20260624.md` |
 | `deploy_packet` | `docs/results/controlled-public-origin-deploy-packet-20260624.md` |
+| `controlled_public_package_smoke` | `docs/results/controlled-public-package-smoke-20260625.md` |
 | `aws_identity_readiness` | `docs/results/aws-identity-readiness-20260625.md` |
 | `active_path_cookbook` | `docs/results/active-path-change-operator-cookbook-20260624.md` |
 
