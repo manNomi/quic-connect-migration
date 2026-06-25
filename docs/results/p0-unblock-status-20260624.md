@@ -13,13 +13,16 @@ This tracker is public-safe. It compresses final protocol readiness into the gat
 | total planned trials | `10` |
 | blocked planned trials | `10` |
 | final requirements complete | `0/6` |
-| needed-now gates | `4` |
+| needed-now gates | `3` |
+| local next-trial overlay | `applied` |
+| local next-trial ready | `no` |
+| local missing required gates | `public_origin_host_configured`, `public_origin_url_configured`, `tls_config_present` |
 
 ## Blocking Gates
 
 | order | gate | status | blocked trials | blocks next | operator action | validation command |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `controlled_public_config_present` | `needed-now` | 10 | `yes` | Create the ignored controlled-public origin env file and fill non-secret baseline fields locally. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
+| 1 | `controlled_public_config_present` | `ready-for-next-trial` | 10 | `no` | Create the ignored controlled-public origin env file and fill non-secret baseline fields locally. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
 | 2 | `public_origin_host_configured` | `needed-now` | 10 | `yes` | Set the public origin host in the private controlled-public config. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
 | 3 | `public_origin_url_configured` | `needed-now` | 10 | `yes` | Set the public WebPKI URL and verify Alt-Svc/H3 readiness. | `python3 tools/check_public_origin_readiness.py --url "$PUBLIC_ORIGIN_URL" --require-h3-alt-svc --redact-sensitive --format markdown` |
 | 4 | `tls_config_present` | `needed-now` | 10 | `yes` | Set TLS certificate and key paths on the private origin host/config. | `python3 tools/check_controlled_public_config.py --require-baseline-ready` |
@@ -40,5 +43,6 @@ This tracker is public-safe. It compresses final protocol readiness into the gat
 ## Interpretation
 
 - The next concrete P0 step is to clear all `needed-now` gates for `controlled-public-chrome-h3-baseline-001`.
+- When the local overlay is `applied`, `blocks next` reflects the ignored local config/readiness state rather than only the tracked public matrix.
 - Active network-change gates remain after-baseline work until the controlled public application H3 baseline is registered.
 - This tracker does not create result evidence; it prevents premature execution and premature browser CM claims.

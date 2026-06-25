@@ -47,6 +47,56 @@ def test_next_trial_gates_are_needed_now() -> None:
         assert rows["desktop_secondary_path_ready"]["blocks_next_trial"] == "no"
 
 
+def test_local_readiness_overlay_refines_next_trial_blockers() -> None:
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        matrix = root / "matrix.csv"
+        scorecard = root / "scorecard.csv"
+        write_fixture(
+            matrix,
+            """
+            order,trial_id,requirement_id,phase,browser,heartbeat,ready,state,required_gates,missing_gates
+            1,controlled-public-chrome-h3-baseline-001,chrome-controlled-public-application-h3-baseline,baseline,Chrome,n/a,False,blocked,controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present,controlled_public_config_present;public_origin_host_configured;public_origin_url_configured;tls_config_present
+            2,controlled-public-chrome-downlink-network-change-001,chrome-downlink-noheartbeat-active-cm,active-network-change,Chrome,false,False,blocked,controlled_public_config_present;baseline_summary_ready;desktop_secondary_path_ready,controlled_public_config_present;baseline_summary_ready;desktop_secondary_path_ready
+            """,
+        )
+        write_fixture(
+            scorecard,
+            """
+            requirement_id,complete
+            chrome-controlled-public-application-h3-baseline,False
+            chrome-downlink-noheartbeat-active-cm,False
+            """,
+        )
+        local_readiness = {
+            "ready": False,
+            "config_path": "harness/config/controlled-public-origin.env",
+            "config_exists": True,
+            "next_trial": {"trial_id": "controlled-public-chrome-h3-baseline-001"},
+            "required_gates": [
+                "controlled_public_config_present",
+                "public_origin_host_configured",
+                "public_origin_url_configured",
+                "tls_config_present",
+            ],
+            "missing_required_gates": ["public_origin_host_configured", "tls_config_present"],
+            "disk": {"free_gib": 9.2},
+        }
+        status = build_status(matrix, scorecard, local_readiness=local_readiness)
+        rows = {row["unblock_item"]: row for row in status["rows"]}
+        markdown = emit_markdown(status)
+
+        assert status["local_readiness"]["overlay_applied"] is True
+        assert rows["controlled_public_config_present"]["status"] == "ready-for-next-trial"
+        assert rows["controlled_public_config_present"]["blocks_next_trial"] == "no"
+        assert rows["public_origin_url_configured"]["status"] == "ready-for-next-trial"
+        assert rows["public_origin_url_configured"]["blocks_next_trial"] == "no"
+        assert rows["public_origin_host_configured"]["status"] == "needed-now"
+        assert rows["tls_config_present"]["status"] == "needed-now"
+        assert "local next-trial overlay | `applied`" in markdown
+        assert "`public_origin_host_configured`, `tls_config_present`" in markdown
+
+
 def test_status_is_public_safe_and_writable() -> None:
     with TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -115,6 +165,7 @@ def test_dash_outputs_print_stdout_without_dash_file() -> None:
 
 def main() -> int:
     test_next_trial_gates_are_needed_now()
+    test_local_readiness_overlay_refines_next_trial_blockers()
     test_status_is_public_safe_and_writable()
     test_dash_outputs_print_stdout_without_dash_file()
     print("build_p0_unblock_status=ok")

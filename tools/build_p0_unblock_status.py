@@ -11,6 +11,15 @@ from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from check_next_final_handover_trial_readiness import (
+    DEFAULT_CHROME,
+    DEFAULT_CONFIG,
+    DEFAULT_EXPERIMENTS,
+    DEFAULT_REQUIREMENTS,
+    DEFAULT_SAFARI,
+    DEFAULT_SAFARI_TP,
+    build_readiness as build_next_trial_readiness,
+)
 from research_clock import utc_date_iso
 
 
@@ -138,11 +147,40 @@ def gate_counts(matrix_rows: list[dict[str, str]]) -> Counter[str]:
     return counts
 
 
-def build_status(matrix_path: Path, scorecard_path: Path) -> dict[str, object]:
+def local_readiness_summary(readiness: dict[str, object] | None, overlay_applied: bool) -> dict[str, object]:
+    if not readiness:
+        return {"enabled": False, "overlay_applied": False}
+    next_trial = readiness.get("next_trial") or {}
+    disk = readiness.get("disk") or {}
+    return {
+        "enabled": True,
+        "overlay_applied": overlay_applied,
+        "ready": bool(readiness.get("ready")),
+        "config_path": readiness.get("config_path", ""),
+        "config_exists": bool(readiness.get("config_exists")),
+        "next_trial": next_trial.get("trial_id", "") if isinstance(next_trial, dict) else "",
+        "missing_required_gates": list(readiness.get("missing_required_gates") or []),
+        "required_gates": list(readiness.get("required_gates") or []),
+        "disk_free_gib": disk.get("free_gib", "") if isinstance(disk, dict) else "",
+    }
+
+
+def build_status(
+    matrix_path: Path,
+    scorecard_path: Path,
+    local_readiness: dict[str, object] | None = None,
+) -> dict[str, object]:
     matrix_rows = read_csv(matrix_path)
     scorecard = read_csv(scorecard_path)
     next_trial = first_blocked_trial(matrix_rows)
     next_missing = set(split_cell(next_trial.get("missing_gates", ""))) if next_trial else set()
+    local_overlay_applied = False
+    if local_readiness and next_trial:
+        local_next = local_readiness.get("next_trial") or {}
+        local_next_trial_id = local_next.get("trial_id") if isinstance(local_next, dict) else None
+        if local_next_trial_id == next_trial.get("trial_id"):
+            next_missing = set(local_readiness.get("missing_required_gates") or [])
+            local_overlay_applied = True
     counts = gate_counts(matrix_rows)
 
     rows: list[UnblockRow] = []
@@ -158,6 +196,8 @@ def build_status(matrix_path: Path, scorecard_path: Path) -> dict[str, object]:
         )
         if gate in next_missing and status.startswith("needed"):
             status = "needed-now"
+        elif local_overlay_applied and status == "needed-now":
+            status = "ready-for-next-trial"
         rows.append(
             UnblockRow(
                 order=index,
@@ -182,6 +222,7 @@ def build_status(matrix_path: Path, scorecard_path: Path) -> dict[str, object]:
         "complete_requirements": sum(1 for row in scorecard if row.get("complete") == "True"),
         "requirement_count": len(scorecard),
         "needed_now_count": sum(1 for row in rows if row.status == "needed-now"),
+        "local_readiness": local_readiness_summary(local_readiness, local_overlay_applied),
         "rows": [asdict(row) for row in rows],
     }
 
@@ -199,6 +240,9 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 def emit_markdown(status: dict[str, object]) -> str:
     rows = list(status["rows"])  # type: ignore[arg-type]
     next_trial = status["next_trial"]  # type: ignore[assignment]
+    local = status.get("local_readiness", {"enabled": False})  # type: ignore[assignment]
+    local_missing = ", ".join(f"`{item}`" for item in local.get("missing_required_gates", [])) or "-"
+    local_overlay_state = "applied" if local.get("overlay_applied") else ("enabled-not-matched" if local.get("enabled") else "not-used")
     detail_rows = [
         [
             str(row["order"]),
@@ -228,6 +272,9 @@ def emit_markdown(status: dict[str, object]) -> str:
         f"| blocked planned trials | `{status['blocked_planned_trials']}` |",
         f"| final requirements complete | `{status['complete_requirements']}/{status['requirement_count']}` |",
         f"| needed-now gates | `{status['needed_now_count']}` |",
+        f"| local next-trial overlay | `{local_overlay_state}` |",
+        f"| local next-trial ready | `{'yes' if local.get('ready') else ('no' if local.get('enabled') else '-')}` |",
+        f"| local missing required gates | {local_missing} |",
         "",
         "## Blocking Gates",
         "",
@@ -255,6 +302,7 @@ def emit_markdown(status: dict[str, object]) -> str:
             "## Interpretation",
             "",
             "- The next concrete P0 step is to clear all `needed-now` gates for `controlled-public-chrome-h3-baseline-001`.",
+            "- When the local overlay is `applied`, `blocks next` reflects the ignored local config/readiness state rather than only the tracked public matrix.",
             "- Active network-change gates remain after-baseline work until the controlled public application H3 baseline is registered.",
             "- This tracker does not create result evidence; it prevents premature execution and premature browser CM claims.",
         ]
@@ -295,11 +343,42 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", default=DEFAULT_MATRIX)
     parser.add_argument("--scorecard", default=DEFAULT_SCORECARD)
+    parser.add_argument("--experiments", default=DEFAULT_EXPERIMENTS)
+    parser.add_argument("--requirements", default=DEFAULT_REQUIREMENTS)
+    parser.add_argument("--config", default=DEFAULT_CONFIG)
+    parser.add_argument("--use-local-config-for-plan", action="store_true")
+    parser.add_argument("--repetitions", type=int, default=3)
+    parser.add_argument("--prefer-p1", choices=["safari", "android", "both"], default="safari")
+    parser.add_argument("--chrome-bin", default=DEFAULT_CHROME)
+    parser.add_argument("--safari-bin", default=DEFAULT_SAFARI)
+    parser.add_argument("--safari-tp-bin", default=DEFAULT_SAFARI_TP)
+    parser.add_argument("--min-disk-gib", type=float, default=7.0)
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--csv-output", default=DEFAULT_CSV_OUTPUT)
     args = parser.parse_args()
 
-    status = build_status(Path(args.matrix), Path(args.scorecard))
+    local_readiness = None
+    if args.use_local_config_for_plan:
+        local_args = argparse.Namespace(
+            experiments=args.experiments,
+            requirements=args.requirements,
+            config=args.config,
+            use_local_config_for_plan=True,
+            repetitions=args.repetitions,
+            prefer_p1=args.prefer_p1,
+            chrome_bin=args.chrome_bin,
+            safari_bin=args.safari_bin,
+            safari_tp_bin=args.safari_tp_bin,
+            min_disk_gib=args.min_disk_gib,
+            check_local_files=False,
+            check_public_origin=False,
+            redact_sensitive=bool(args.redact_sensitive or args.use_local_config_for_plan),
+            timeout=8,
+        )
+        local_readiness = build_next_trial_readiness(local_args)
+
+    status = build_status(Path(args.matrix), Path(args.scorecard), local_readiness=local_readiness)
     write_csv(status, args.csv_output)
     write_output(emit_markdown(status), args.output)
     return 0
