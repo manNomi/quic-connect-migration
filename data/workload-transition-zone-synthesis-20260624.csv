@@ -3,6 +3,6 @@ downlink,5000,downlink fine boundary,3,2,1,2,FAIL=1; PASS=2,browser_application_
 downlink,5500,downlink fine boundary,3,2,1,2,FAIL=1; PASS=2,browser_application_task_failed=1; nat_rebinding_path_validation_without_observed_tuple_change=2,13840,13977,14114,6923,6923,6923,1,1
 downlink,6000,downlink fine boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,6923,6924,6927,1,1
 upload,4600,upload fine boundary,3,3,0,3,PASS=3,nat_rebinding_path_validation_without_observed_tuple_change=3,10215,10218,10230,,,,1,1
-upload,4750,upload fine boundary,3,1,2,1,FAIL=2; PASS=1,browser_application_task_failed=2; nat_rebinding_path_validation_without_observed_tuple_change=1,11261,11261,11261,6917,6919,6921,1,2
+upload,4750,upload 4750ms replication; upload fine boundary,6,3,3,3,FAIL=3; PASS=3,browser_application_task_failed=3; nat_rebinding_path_validation_without_observed_tuple_change=3,10466,10493,11261,6917,6920,6921,1,2
 upload,4900,upload fine boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,6919,6922,6922,2,2
 upload,5000,upload fine boundary,3,0,3,0,FAIL=3,browser_application_task_failed=3,,,,6917,6918,6920,2,2

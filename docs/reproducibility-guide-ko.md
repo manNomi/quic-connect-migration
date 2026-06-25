@@ -1290,6 +1290,41 @@ python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
 - 4900ms와 5000ms upload는 `6/6 FAIL`
 - 이 결과도 local upload-specific transition-zone control이며 public handover evidence가 아니다.
 
+4750ms transition-zone 추가 반복:
+
+```bash
+cd repro/quic-go-min-repro
+MATRIX_ID=chrome-h3-rebinding-transient-upload-4750-replication-20260625 \
+ARTIFACT_ROOT=artifacts/chrome-h3-rebinding-transient-upload-4750-replication-20260625 \
+BASE_PORT=9500 \
+WORKLOADS=upload \
+DROP_WINDOWS_MS=4750 \
+REPETITIONS=3 \
+REBIND_AFTER=500ms \
+TIMEOUT=42s \
+CHROME_TIMEOUT_SECONDS=36 \
+CHROME_HOLD_SECONDS=18 \
+./scripts/run-chrome-h3-rebinding-transient-boundary-repetition.sh
+```
+
+4750ms replication summary 등록:
+
+```bash
+python3 tools/summarize_chrome_rebinding_transient_return_path_sweep.py \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-4750-replication-20260625/rep01-upload-1m-drop-ab-4750ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-4750-replication-20260625/rep02-upload-1m-drop-ab-4750ms \
+  upload:repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-transient-upload-4750-replication-20260625/rep03-upload-1m-drop-ab-4750ms \
+  --output docs/results/chrome-h3-rebinding-transient-upload-4750-replication-20260625.md \
+  --csv-output data/chrome-h3-rebinding-transient-upload-4750-replication-20260625.csv
+```
+
+추가 반복 관찰 기준:
+
+- 추가 4750ms upload replication은 `2/3 PASS`였다.
+- 기존 upload fine boundary 4750ms `1/3 PASS`와 합치면 현재 4750ms upload는 `3/6 PASS`, `3/6 FAIL`이다.
+- PASS row와 FAIL row 모두 qlog path validation evidence를 남겼으므로, transport path evidence와 DOM upload completion은 별도 outcome으로 보고한다.
+- 따라서 4750ms는 안정 성공/반복 실패 어느 쪽도 아닌 중심 transition zone으로 유지한다.
+
 ## 27. Chrome local upload retry recovery boundary 재현
 
 4900ms/5000ms upload는 no-retry 조건에서 반복 실패했으므로, 동일한 outage window에서 application-level retry가 작업 완료를 회복하는지 확인한다.

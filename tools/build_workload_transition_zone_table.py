@@ -21,6 +21,10 @@ DATASETS = [
         "upload fine boundary",
         "data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv",
     ),
+    (
+        "upload 4750ms replication",
+        "data/chrome-h3-rebinding-transient-upload-4750-replication-20260625.csv",
+    ),
 ]
 
 CSV_FIELDS = [
@@ -132,6 +136,14 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 
 
 def build_markdown(grouped: list[dict[str, str]]) -> str:
+    by_key = {(row["workload"], row["drop_window_ms"]): row for row in grouped}
+    downlink_5000 = by_key.get(("downlink", "5000"), {})
+    downlink_5500 = by_key.get(("downlink", "5500"), {})
+    downlink_6000 = by_key.get(("downlink", "6000"), {})
+    upload_4600 = by_key.get(("upload", "4600"), {})
+    upload_4750 = by_key.get(("upload", "4750"), {})
+    upload_4900 = by_key.get(("upload", "4900"), {})
+    upload_5000 = by_key.get(("upload", "5000"), {})
     detail_rows = [
         [
             row["workload"],
@@ -174,8 +186,23 @@ def build_markdown(grouped: list[dict[str, str]]) -> str:
         "",
         "## Interpretation",
         "",
-        "- Downlink is mixed at 5000ms and 5500ms, then repeatedly fails at 6000ms in this local fine-boundary set.",
-        "- Upload is stable at 4600ms, mixed at 4750ms, and repeatedly fails from 4900ms.",
+        (
+            "- Downlink remains mixed at 5000ms "
+            f"({downlink_5000.get('pass_count', '0')}/{downlink_5000.get('runs', '0')} PASS) "
+            "and 5500ms "
+            f"({downlink_5500.get('pass_count', '0')}/{downlink_5500.get('runs', '0')} PASS), "
+            "then repeatedly fails at 6000ms "
+            f"({downlink_6000.get('pass_count', '0')}/{downlink_6000.get('runs', '0')} PASS)."
+        ),
+        (
+            "- Upload is stable at 4600ms "
+            f"({upload_4600.get('pass_count', '0')}/{upload_4600.get('runs', '0')} PASS), "
+            "remains mixed at 4750ms "
+            f"({upload_4750.get('pass_count', '0')}/{upload_4750.get('runs', '0')} PASS), "
+            "and repeatedly fails at 4900ms/5000ms "
+            f"({upload_4900.get('pass_count', '0')}/{upload_4900.get('runs', '0')} and "
+            f"{upload_5000.get('pass_count', '0')}/{upload_5000.get('runs', '0')} PASS)."
+        ),
         "- Workload direction changes the transition zone; a single outage-duration threshold would hide this behavior.",
         "- qlog path evidence appears in both PASS and FAIL rows, so transport evidence and DOM task completion must remain separate outcomes.",
     ]
