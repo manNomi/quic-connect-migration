@@ -241,6 +241,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
+                "tools/check_public_origin_readiness.py",
                 "tools/check_final_browser_handover_readiness.py",
                 "tools/check_final_handover_trial_artifact_bundle.py",
                 "tools/check_next_final_handover_trial_readiness.py",
@@ -298,6 +299,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
+                "tools/test_check_public_origin_readiness.py",
                 "tools/test_check_controlled_public_baseline_unlock.py",
                 "tools/test_check_final_handover_trial_artifact_bundle.py",
                 "tools/test_check_next_final_handover_trial_readiness.py",
@@ -883,6 +885,12 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         (
             "controlled_public_config_regression",
             [python_bin, "tools/test_check_controlled_public_config.py"],
+            {0},
+            30,
+        ),
+        (
+            "public_origin_readiness_regression",
+            [python_bin, "tools/test_check_public_origin_readiness.py"],
             {0},
             30,
         ),

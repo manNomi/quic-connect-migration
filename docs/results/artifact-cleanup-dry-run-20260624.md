@@ -8,11 +8,11 @@ Generated: `2026-06-25`
 | --- | --- |
 | target free GiB | `7.0` |
 | candidate policy | `review-unreferenced` |
-| current free | `8.3 GiB` |
+| current free | `7.9 GiB` |
 | free space needed | `0 B` |
 | selected candidates | `0/13` |
 | reclaimable from selected | `0 B` |
-| projected free after selected cleanup | `8.3 GiB` |
+| projected free after selected cleanup | `7.9 GiB` |
 | target met by selected cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |
 
