@@ -10,7 +10,7 @@ from typing import Any
 
 from classify_chrome_h3_artifacts import QLOG_PATTERNS, qlog_counts
 from classify_chrome_public_h3_artifacts import summarize_netlog
-from classify_controlled_public_h3_baseline import read_json, request_summary
+from classify_controlled_public_h3_baseline import application_summary, read_json, request_summary
 
 
 TARGET_H3_WORKLOADS = {
@@ -58,31 +58,6 @@ def client_path_change_summary(path: Path) -> dict[str, Any]:
         "public_ip_changed": bool(data.get("public_ip_changed")),
         "before": data.get("before") if isinstance(data.get("before"), dict) else {},
         "after": data.get("after") if isinstance(data.get("after"), dict) else {},
-    }
-
-
-def application_summary(artifact_dir: Path) -> dict[str, Any]:
-    cdp, cdp_error = read_json(artifact_dir / "chrome" / "cdp-summary.json")
-    page_state = cdp.get("page_state") if isinstance(cdp.get("page_state"), dict) else {}
-    dataset = page_state.get("body_dataset") if isinstance(page_state.get("body_dataset"), dict) else {}
-    error_keys = sorted(key for key in dataset if key.lower().endswith("error") or "lasterror" in key.lower())
-    success: bool | None = None
-    workload = "unknown"
-    if any(key.startswith("downlink") for key in dataset):
-        workload = "downlink"
-        success = dataset.get("downlinkComplete") == "true" and not error_keys
-    elif any(key.startswith("upload") for key in dataset):
-        workload = "upload"
-        success = dataset.get("uploadComplete") == "true" and not error_keys
-    elif dataset.get("slowComplete") == "true":
-        workload = "slow"
-        success = True
-    return {
-        "cdp_summary_error": cdp_error,
-        "workload": workload,
-        "success": success,
-        "error_keys": error_keys,
-        "body_dataset": dataset,
     }
 
 

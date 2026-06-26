@@ -75,6 +75,6 @@ Chrome controlled-public HTTP/3 downlink workload 중 macOS Wi-Fi를 끄고 iPho
 
 ## 다음 조치
 
-1. iPhone USB가 default route가 될 때까지 대기한 뒤 workload를 시작하는 pre-cutover control을 추가해 “tethering 자체 품질”과 “mid-flight migration”을 분리한다.
+1. iPhone USB가 default route가 될 때까지 대기한 뒤 workload를 시작하는 pre-cutover control을 추가해 “tethering 자체 품질”과 “mid-flight migration”을 분리한다. 실행 결과는 `docs/results/chrome-iphone-usb-precutover-nochange-20260626.md`에 기록했다.
 2. Android Chrome ADB 또는 Safari/iOS처럼 OS가 더 자연스럽게 cellular handover를 수행하는 P1 feasibility path를 병행한다.
 3. active CM final row는 `possible_connection_migration`, qlog path validation, client active path-change, application success가 함께 관찰될 때만 등록한다.

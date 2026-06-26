@@ -91,6 +91,35 @@ def browser_summary(chrome_public: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def application_summary(browser_dir: Path) -> dict[str, Any]:
+    cdp, cdp_error = read_json(browser_dir / "chrome" / "cdp-summary.json")
+    page_state = cdp.get("page_state") if isinstance(cdp.get("page_state"), dict) else {}
+    dataset = page_state.get("body_dataset") if isinstance(page_state.get("body_dataset"), dict) else {}
+    error_keys = sorted(
+        key
+        for key in dataset
+        if key.lower().endswith("error") or key.lower().endswith("lasterror")
+    )
+    success: bool | None = None
+    workload = "unknown"
+    if any(key.startswith("downlink") for key in dataset):
+        workload = "downlink"
+        success = dataset.get("downlinkComplete") == "true" and not error_keys
+    elif any(key.startswith("upload") for key in dataset):
+        workload = "upload"
+        success = dataset.get("uploadComplete") == "true" and not error_keys
+    elif dataset.get("slowComplete") == "true":
+        workload = "slow"
+        success = True
+    return {
+        "cdp_summary_error": cdp_error,
+        "workload": workload,
+        "success": success,
+        "error_keys": error_keys,
+        "body_dataset": dataset,
+    }
+
+
 def classify(summary: dict[str, Any]) -> tuple[str, str]:
     if summary["server_error"] == "missing":
         return "FAIL", "controlled_public_server_artifact_missing"
@@ -133,6 +162,7 @@ def main() -> int:
     qlog_summary = {key: qcounts[key] for key in QLOG_PATTERNS}
     server_requests = request_summary(server, args.expected_requests)
     browser = browser_summary(chrome_public)
+    application = application_summary(browser_dir)
     server_qlog_has_application_h3 = qcounts["chosen_alpn"] > 0 and qcounts["http3_frame"] > 0
 
     summary: dict[str, Any] = {
@@ -159,6 +189,7 @@ def main() -> int:
         },
         "server_requests": server_requests,
         "browser": browser,
+        "application": application,
         "qlog_counts": qlog_summary,
         "server_qlog_has_application_h3": server_qlog_has_application_h3,
         "server_qlog_has_path_validation": qcounts["path_challenge"] > 0 or qcounts["path_response"] > 0,
