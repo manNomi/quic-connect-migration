@@ -58,6 +58,6 @@
 
 ## 다음 단계
 
-1. trigger 시점을 2초, 4초, 6초로 바꿔 application incompletion이 trigger timing에 민감한지 확인한다.
+1. trigger timing sweep은 4초, 6초, 7초 조건으로 수행했고, 상세 결과는 `docs/results/iphone-usb-trigger-timing-sweep-20260626.md`에 기록했다.
 2. 같은 stable workload에 heartbeat 또는 retry를 추가해 application-level recovery가 continuity를 회복하는지 별도 negative/control row로 측정한다.
 3. Android Chrome 또는 Safari/iOS에서 동일한 stable workload를 사용해 OS-native handover 가능성을 비교한다.
