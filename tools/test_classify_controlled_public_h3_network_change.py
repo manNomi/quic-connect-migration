@@ -36,6 +36,11 @@ def base_summary(
             "classification": client_path_classification,
             "active_path_changed": client_active_path_changed,
         },
+        "client_path_eventual_change": {
+            "error": None,
+            "classification": "",
+            "active_path_changed": False,
+        },
         "netlog": {
             "target_quic_session_count": quic_sessions,
         },
@@ -87,11 +92,34 @@ def test_safari_feasibility_also_requires_client_active_path_change() -> None:
     assert classification == "possible_connection_migration_server_qlog_only"
 
 
+def test_eventual_client_path_change_with_application_failure_is_negative_control() -> None:
+    summary = base_summary(
+        client_path_classification="interface_set_changed_without_route_change",
+        client_active_path_changed=False,
+        qlog_path_validation=False,
+        remote_addr_count=1,
+    )
+    summary["client_path_eventual_change"] = {
+        "error": None,
+        "classification": "client_active_path_changed",
+        "active_path_changed": True,
+    }
+    summary["application"] = {
+        "workload": "downlink",
+        "success": False,
+        "error_keys": ["downlinkError"],
+    }
+    status, classification = classify(summary)
+    assert status == "PASS_NEGATIVE_CONTROL"
+    assert classification == "application_task_failed_without_quic_path_validation"
+
+
 def main() -> int:
     test_chrome_positive_requires_client_active_path_change()
     test_missing_client_path_snapshot_is_negative_control()
     test_no_client_active_path_change_is_negative_control()
     test_safari_feasibility_also_requires_client_active_path_change()
+    test_eventual_client_path_change_with_application_failure_is_negative_control()
     print("classify_controlled_public_h3_network_change=ok")
     return 0
 

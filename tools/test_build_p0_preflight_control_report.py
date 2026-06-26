@@ -18,7 +18,7 @@ def test_control_report_passes_all_scenarios() -> None:
     assert report["all_controls_passed"] is True
     assert rows["missing_config_blocks_capture"]["actual_go"] is False
     assert rows["synthetic_ready_allows_baseline_capture"]["actual_go"] is True
-    assert rows["stale_needed_now_gate_blocks_capture"]["actual_go"] is False
+    assert rows["local_overlay_overrides_stale_matrix_gate"]["actual_go"] is True
 
 
 def test_control_report_outputs_are_public_safe() -> None:

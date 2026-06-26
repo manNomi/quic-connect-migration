@@ -13,6 +13,17 @@ from classify_chrome_public_h3_artifacts import summarize_netlog
 from classify_controlled_public_h3_baseline import read_json, request_summary
 
 
+TARGET_H3_WORKLOADS = {
+    "browser-downlink",
+    "downlink-stream",
+    "heartbeat",
+    "browser-upload",
+    "upload-sink",
+    "upload",
+    "download",
+}
+
+
 def read_text(path: Path) -> str:
     if not path.exists():
         return ""
@@ -50,20 +61,66 @@ def client_path_change_summary(path: Path) -> dict[str, Any]:
     }
 
 
+def application_summary(artifact_dir: Path) -> dict[str, Any]:
+    cdp, cdp_error = read_json(artifact_dir / "chrome" / "cdp-summary.json")
+    page_state = cdp.get("page_state") if isinstance(cdp.get("page_state"), dict) else {}
+    dataset = page_state.get("body_dataset") if isinstance(page_state.get("body_dataset"), dict) else {}
+    error_keys = sorted(key for key in dataset if key.lower().endswith("error") or "lasterror" in key.lower())
+    success: bool | None = None
+    workload = "unknown"
+    if any(key.startswith("downlink") for key in dataset):
+        workload = "downlink"
+        success = dataset.get("downlinkComplete") == "true" and not error_keys
+    elif any(key.startswith("upload") for key in dataset):
+        workload = "upload"
+        success = dataset.get("uploadComplete") == "true" and not error_keys
+    elif dataset.get("slowComplete") == "true":
+        workload = "slow"
+        success = True
+    return {
+        "cdp_summary_error": cdp_error,
+        "workload": workload,
+        "success": success,
+        "error_keys": error_keys,
+        "body_dataset": dataset,
+    }
+
+
+def enrich_network_change_requests(server: dict[str, Any], server_requests: dict[str, Any]) -> dict[str, Any]:
+    target_h3_addrs = sorted(
+        {
+            str(request.get("remote_addr"))
+            for request in server.get("requests", [])
+            if request.get("remote_addr")
+            and request.get("workload") in TARGET_H3_WORKLOADS
+            and (request.get("proto") == "HTTP/3.0" or request.get("tls_alpn") == "h3")
+        }
+    )
+    enriched = dict(server_requests)
+    enriched["target_h3_remote_addrs"] = target_h3_addrs
+    enriched["target_h3_remote_addr_count"] = len(target_h3_addrs)
+    return enriched
+
+
 def classify(summary: dict[str, Any]) -> tuple[str, str]:
     server_requests = summary["server_requests"]
     network_change = summary["network_change"]
     netlog = summary["netlog"]
     client_path_change = summary["client_path_change"]
+    eventual_client_path_change = summary.get("client_path_eventual_change") or {}
     qlog_has_path_validation = summary["server_qlog_has_path_validation"]
     browser_kind = summary["browser_kind"]
     remote_addr_count = int(server_requests["remote_addr_count"])
     quic_sessions = int(netlog.get("target_quic_session_count") or 0)
+    application = summary.get("application") if isinstance(summary.get("application"), dict) else {}
     client_path_error = client_path_change.get("error")
     client_path_classification = str(client_path_change.get("classification") or "")
+    eventual_client_path_classification = str(eventual_client_path_change.get("classification") or "")
     client_active_path_changed = (
         bool(client_path_change.get("active_path_changed"))
         or client_path_classification == "client_active_path_changed"
+        or bool(eventual_client_path_change.get("active_path_changed"))
+        or eventual_client_path_classification == "client_active_path_changed"
     )
 
     if summary["server_error"] == "missing":
@@ -80,6 +137,10 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
         return "PASS_NEGATIVE_CONTROL", "path_snapshot_missing"
     if not client_active_path_changed:
         return "PASS_NEGATIVE_CONTROL", "no_client_active_path_change_observed"
+    if application.get("success") is False:
+        if qlog_has_path_validation:
+            return "PASS_NEGATIVE_CONTROL", "application_task_failed_despite_quic_path_validation"
+        return "PASS_NEGATIVE_CONTROL", "application_task_failed_without_quic_path_validation"
 
     if browser_kind != "chrome" and remote_addr_count > 1 and qlog_has_path_validation:
         return "PASS_FEASIBILITY", "possible_connection_migration_server_qlog_only"
@@ -117,9 +178,13 @@ def main() -> int:
     qcounts = qlog_counts(server_dir / "qlog")
     netlog = summarize_netlog(artifact_dir / "chrome" / "network-change-netlog.json", args.url)
     dump = read_text(artifact_dir / "chrome" / "network-change-dump-dom.txt")
-    server_requests = request_summary(server, args.expected_requests)
+    server_requests = enrich_network_change_requests(server, request_summary(server, args.expected_requests))
     network_change = network_change_summary(artifact_dir / "results" / "network-change.json")
     client_path_change = client_path_change_summary(artifact_dir / "results" / "client-path-change-summary.json")
+    client_path_eventual_change = client_path_change_summary(
+        artifact_dir / "results" / "client-path-eventual-change-summary.json"
+    )
+    application = application_summary(artifact_dir)
 
     summary: dict[str, Any] = {
         "status": "FAIL",
@@ -142,6 +207,8 @@ def main() -> int:
         "server_requests": server_requests,
         "network_change": network_change,
         "client_path_change": client_path_change,
+        "client_path_eventual_change": client_path_eventual_change,
+        "application": application,
         "public_origin_readiness": {
             "https_ok": readiness.get("https_ok"),
             "has_h3_alt_svc": readiness.get("has_h3_alt_svc"),

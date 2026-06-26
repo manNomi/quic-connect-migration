@@ -1,6 +1,6 @@
 # Reproducibility Manifest
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 This manifest is public-safe. It summarizes reproducibility state without printing domains, credentials, private keys, device IDs, qlogs, keylogs, pcaps, or NetLogs.
 
@@ -8,10 +8,10 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `0091d85` |
+| source commit at generation | `7c3f0b6` |
 | branch | `main` |
-| total trials | `69` |
-| status counts | `{'PASS': 28, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 35}` |
+| total trials | `71` |
+| status counts | `{'PASS': 28, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 37}` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |

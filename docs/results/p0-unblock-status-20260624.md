@@ -1,6 +1,6 @@
 # P0 Unblock Status
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 This tracker is public-safe. It compresses final protocol readiness into the gates that currently block the P0 controlled-public/browser handover path.
 
@@ -12,7 +12,7 @@ This tracker is public-safe. It compresses final protocol readiness into the gat
 | next phase | `active-network-change` |
 | total planned trials | `10` |
 | blocked planned trials | `7` |
-| final requirements complete | `2/6` |
+| final requirements complete | `3/6` |
 | needed-now gates | `2` |
 | local next-trial overlay | `not-used` |
 | local next-trial ready | `-` |

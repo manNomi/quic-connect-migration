@@ -1,6 +1,6 @@
 # Active Path-Change Command Candidates
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 This report is read-only. It does not execute network-change commands.
 

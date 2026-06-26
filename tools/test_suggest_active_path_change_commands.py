@@ -42,6 +42,15 @@ en8: flags=8822<BROADCAST,SMART,SIMPLEX,MULTICAST> mtu 1500
     status: inactive
 """
 
+IFCONFIG_LINK_LOCAL_SECONDARY = """
+en0: flags=8863<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+    inet 192.168.1.10 netmask 0xffffff00 broadcast 192.168.1.255
+    status: active
+en9: flags=8863<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+    inet 169.254.12.34 netmask 0xffff0000 broadcast 169.254.255.255
+    status: active
+"""
+
 DEFAULT_ROUTE = """
    route to: default
 destination: default
@@ -112,10 +121,25 @@ def test_single_active_interface_blocks_desktop_candidates() -> None:
     assert candidate_by_id(plan, "macos_service_order_cutover")["ready"] is False
 
 
+def test_link_local_ipv4_does_not_count_as_secondary_path() -> None:
+    plan = build_plan(
+        hardware_ports_text=HARDWARE_PORTS,
+        service_order_text=SERVICE_ORDER,
+        ifconfig_text=IFCONFIG_LINK_LOCAL_SECONDARY,
+        default_route_text=DEFAULT_ROUTE,
+        adb_devices_text="List of devices attached\n",
+        include_commands=True,
+    )
+    assert plan["summary"]["secondary_path_ready"] is False
+    assert plan["summary"]["active_ipv4_interfaces"] == ["en0"]
+    assert candidate_by_id(plan, "macos_wifi_power_cutover")["ready"] is False
+
+
 def main() -> int:
     test_secondary_path_enables_macos_candidates_without_printing_commands()
     test_include_commands_requires_explicit_flag()
     test_single_active_interface_blocks_desktop_candidates()
+    test_link_local_ipv4_does_not_count_as_secondary_path()
     print("suggest_active_path_change_commands=ok")
     return 0
 

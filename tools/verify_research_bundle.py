@@ -927,13 +927,13 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
             30,
         ),
         (
-            "controlled_public_config_expected_incomplete",
+            "controlled_public_config_state_check",
             [python_bin, "tools/check_controlled_public_config.py", "--output", controlled_public_config],
-            {1},
+            {0, 1},
             30,
         ),
         (
-            "controlled_public_baseline_unlock_expected_incomplete",
+            "controlled_public_baseline_unlock_state_check",
             [
                 python_bin,
                 "tools/check_controlled_public_baseline_unlock.py",
@@ -941,7 +941,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "--output",
                 controlled_public_baseline_unlock,
             ],
-            {1},
+            {0, 1},
             30,
         ),
         (

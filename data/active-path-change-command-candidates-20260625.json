@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-25",
+  "generated": "2026-06-26",
   "commands_included": false,
   "read_only": true,
   "summary": {
@@ -45,6 +45,10 @@
       {
         "hardware_port": "Thunderbolt 3",
         "device": "en3"
+      },
+      {
+        "hardware_port": "iPhone USB",
+        "device": "en8"
       }
     ],
     "network_services": [
@@ -81,6 +85,7 @@
       {
         "name": "en0",
         "active": true,
+        "usable_ipv4_count": 1,
         "non_loopback_ipv4_count": 1
       }
     ],

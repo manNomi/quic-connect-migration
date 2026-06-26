@@ -1,17 +1,17 @@
 {
-  "generated": "2026-06-25",
+  "generated": "2026-06-26",
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "0091d85",
+    "commit": "7c3f0b6",
     "branch": "main"
   },
   "experiment_corpus": {
-    "total_trials": 69,
+    "total_trials": 71,
     "status_counts": {
       "PASS": 28,
       "PASS_FEASIBILITY": 6,
-      "PASS_NEGATIVE_CONTROL": 35
+      "PASS_NEGATIVE_CONTROL": 37
     },
     "final_required_rows": 6
   },

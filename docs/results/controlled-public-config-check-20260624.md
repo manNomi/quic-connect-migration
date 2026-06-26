@@ -1,15 +1,15 @@
 # Controlled Public Config Check
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 ## Summary
 
 | field | value |
 | --- | --- |
 | config path | `harness/config/controlled-public-origin.env` |
-| config exists | `no` |
+| config exists | `yes` |
 | check local files | `no` |
-| baseline config ready | `no` |
+| baseline config ready | `yes` |
 | active network-change config ready | `no` |
 | Android network-change config ready | `no` |
 | public safe | `yes` |
@@ -18,36 +18,23 @@ Generated: `2026-06-25`
 
 | key | present | placeholder | valid | detail |
 | --- | --- | --- | --- | --- |
-| `PUBLIC_ORIGIN_HOST` | `no` | `yes` | `no` | `missing` |
-| `PUBLIC_ORIGIN_PORT` | `no` | `yes` | `no` | `missing` |
-| `PUBLIC_ORIGIN_URL` | `no` | `yes` | `no` | `missing` |
-| `TLS_CERT_FILE` | `no` | `yes` | `no` | `missing` |
-| `TLS_KEY_FILE` | `no` | `yes` | `no` | `missing` |
-| `LISTEN_ADDR` | `no` | `yes` | `no` | `missing` |
-| `TCP_ADDR` | `no` | `yes` | `no` | `missing` |
-| `ALT_SVC` | `no` | `yes` | `no` | `missing` |
-| `CHROME_BIN` | `no` | `yes` | `no` | `missing` |
-| `PUBLIC_ORIGIN_NETWORK_CHANGE_URL` | `no` | `yes` | `no` | `missing` |
-| `CONTROLLED_PUBLIC_BASELINE_SUMMARY` | `no` | `yes` | `no` | `missing` |
-| `NETWORK_CHANGE_AFTER_SECONDS` | `no` | `yes` | `no` | `missing` |
+| `PUBLIC_ORIGIN_HOST` | `yes` | `no` | `yes` | `valid_host` |
+| `PUBLIC_ORIGIN_PORT` | `yes` | `no` | `yes` | `valid_port` |
+| `PUBLIC_ORIGIN_URL` | `yes` | `no` | `yes` | `valid_https_url` |
+| `TLS_CERT_FILE` | `yes` | `no` | `yes` | `present` |
+| `TLS_KEY_FILE` | `yes` | `no` | `yes` | `present` |
+| `LISTEN_ADDR` | `yes` | `no` | `yes` | `valid_addr_port` |
+| `TCP_ADDR` | `yes` | `no` | `yes` | `valid_addr_port` |
+| `ALT_SVC` | `yes` | `no` | `yes` | `valid_h3_alt_svc` |
+| `CHROME_BIN` | `yes` | `no` | `yes` | `path_exists` |
+| `PUBLIC_ORIGIN_NETWORK_CHANGE_URL` | `yes` | `no` | `yes` | `valid_https_url` |
+| `CONTROLLED_PUBLIC_BASELINE_SUMMARY` | `yes` | `no` | `yes` | `present` |
+| `NETWORK_CHANGE_AFTER_SECONDS` | `yes` | `no` | `yes` | `valid_non_negative_integer` |
 | `NETWORK_CHANGE_CMD` | `no` | `yes` | `no` | `missing` |
 | `ANDROID_NETWORK_CHANGE_CMD` | `no` | `yes` | `no` | `missing` |
 
 ## Blockers
 
-- controlled public config file is missing
-- baseline config key not ready: PUBLIC_ORIGIN_HOST (missing)
-- baseline config key not ready: PUBLIC_ORIGIN_PORT (missing)
-- baseline config key not ready: PUBLIC_ORIGIN_URL (missing)
-- baseline config key not ready: TLS_CERT_FILE (missing)
-- baseline config key not ready: TLS_KEY_FILE (missing)
-- baseline config key not ready: LISTEN_ADDR (missing)
-- baseline config key not ready: TCP_ADDR (missing)
-- baseline config key not ready: ALT_SVC (missing)
-- baseline config key not ready: CHROME_BIN (missing)
-- active network-change config key not ready: PUBLIC_ORIGIN_NETWORK_CHANGE_URL (missing)
-- active network-change config key not ready: CONTROLLED_PUBLIC_BASELINE_SUMMARY (missing)
-- active network-change config key not ready: NETWORK_CHANGE_AFTER_SECONDS (missing)
 - active network-change config key not ready: NETWORK_CHANGE_CMD (missing)
 
 This report intentionally does not print actual domain names, certificate paths, private key paths, or network-change commands.

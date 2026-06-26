@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from research_clock import utc_date_iso
+from network_ipv4 import has_usable_ipv4, usable_ipv4_addresses
 
 
 @dataclass
@@ -164,15 +165,17 @@ def active_non_loopback_ipv4(interfaces: list[InterfaceInfo]) -> list[InterfaceI
     return [
         item
         for item in interfaces
-        if item.active and any(not ip.startswith("127.") for ip in item.ipv4)
+        if item.active and has_usable_ipv4(item.ipv4)
     ]
 
 
 def public_interface_summary(interface: InterfaceInfo) -> dict[str, Any]:
     non_loopback_count = len([ip for ip in interface.ipv4 if not ip.startswith("127.")])
+    usable_count = len(usable_ipv4_addresses(interface.ipv4))
     return {
         "name": interface.name,
         "active": interface.active,
+        "usable_ipv4_count": usable_count,
         "non_loopback_ipv4_count": non_loopback_count,
     }
 

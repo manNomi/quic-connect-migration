@@ -1,11 +1,11 @@
 {
-  "generated": "2026-06-25",
+  "generated": "2026-06-26",
   "public_safe": true,
-  "experiment_trials": 69,
+  "experiment_trials": 71,
   "experiment_status_counts": {
     "PASS": 28,
     "PASS_FEASIBILITY": 6,
-    "PASS_NEGATIVE_CONTROL": 35
+    "PASS_NEGATIVE_CONTROL": 37
   },
   "verification": {
     "checks": "109",

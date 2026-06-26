@@ -6,11 +6,11 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 
 | metric | value |
 | --- | --- |
-| total trials | 69 |
-| status counts | PASS=28; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=35 |
-| application success counts | false=15; true=54 |
-| experiment groups | browser / public web=51; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
-| non-none failure layers | application-level-retry-boundary=3; application-level-retry-recovery=4; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=2; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-polling-dashboard-boundary=2; transient-return-path-outage-threshold=6; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
+| total trials | 71 |
+| status counts | PASS=28; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=37 |
+| application success counts | false=17; true=54 |
+| experiment groups | browser / public web=53; cloud deployment=10; implementation control=7; proxy / intermediary=1 |
+| non-none failure layers | application-level-retry-boundary=3; application-level-retry-recovery=4; application_task_failed_without_quic_path_validation=2; browser-alt-svc-h3-not-observed=2; browser-alt-svc-marked-broken=1; browser-alt-svc-quic-candidate-cert-rejected=3; browser-multiple-quic-sessions-nat-rebinding=2; browser-multiple-quic-sessions-no-network-change=1; browser-public-application-h3-not-confirmed=4; nlb-cid-format=1; nlb-cid-server-id-mismatch=1; proxy-path-validation=1; return-path-loss-application-continuity=1; transient-polling-dashboard-boundary=2; transient-return-path-outage-threshold=6; trigger-no-active-path-change=2; trigger-no-client-path-change=1 |
 
 ## Table 2. Evidence Chain Rubric
 
@@ -119,6 +119,8 @@ Generated from `data/experiment-results.csv` and `data/evidence-chain-rubric.csv
 | controlled-public-chrome-h3-baseline-001 | PASS | controlled public browser baseline | controlled public application H3 baseline; no active path-change | no | yes | classification controlled_public_application_h3_confirmed; controlled_public_application_h3_confirmed; controlled_public_server_q... |
 | controlled-public-chrome-downlink-noheartbeat-nochange-001 | PASS | controlled public browser no-change baseline | no network change; controlled public downlink streaming without heartbeat | no | yes | classification controlled_public_application_h3_confirmed; no_path_change_baseline; client_path_change=-; server remote addr coun... |
 | controlled-public-chrome-downlink-heartbeat-nochange-001 | PASS | controlled public browser no-change baseline | no network change; controlled public downlink streaming with heartbeat | no | yes | classification controlled_public_application_h3_confirmed; no_path_change_baseline; heartbeat variant; client_path_change=-; serv... |
+| controlled-public-chrome-downlink-noheartbeat-iphone-usb-network-change-001 | PASS_NEGATIVE_CONTROL | controlled public browser active network-change | active path change during Chrome downlink workload; NETWORK_CHANGE_CMD executed | no | no | classification application_task_failed_without_quic_path_validation; client_path_change=interface_set_changed_without_route_chang... |
+| controlled-public-chrome-downlink-noheartbeat-iphone-usb-network-change-002 | PASS_NEGATIVE_CONTROL | controlled public browser active network-change | active path change during Chrome downlink workload; NETWORK_CHANGE_CMD executed | no | no | classification application_task_failed_without_quic_path_validation; client_path_change=client_active_path_changed; client_path_e... |
 
 ## Table 6. Remaining Evidence Gaps
 

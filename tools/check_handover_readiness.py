@@ -14,6 +14,8 @@ from dataclasses import asdict, dataclass
 from research_clock import utc_date_iso
 from pathlib import Path
 
+from network_ipv4 import has_usable_ipv4
+
 
 ACCOUNT_ID_RE = re.compile(r"\b\d{12}\b")
 
@@ -144,7 +146,7 @@ def build_readiness(chrome_bin: str, include_command_output: bool = False) -> Ha
     active_ipv4 = [
         info
         for info in interfaces
-        if info.active and any(not ip.startswith("127.") for ip in info.ipv4)
+        if info.active and has_usable_ipv4(info.ipv4)
     ]
 
     chrome_found = os.path.exists(chrome_bin) and os.access(chrome_bin, os.X_OK)
@@ -153,7 +155,7 @@ def build_readiness(chrome_bin: str, include_command_output: bool = False) -> Ha
     if not chrome_found:
         blockers.append("Chrome binary not found")
     if len(active_ipv4) < 2:
-        blockers.append("Need at least two active non-loopback IPv4 interfaces for desktop path-change experiments")
+        blockers.append("Need at least two active usable IPv4 interfaces for desktop path-change experiments")
     if not adb_devices:
         blockers.append("No Android device connected over ADB")
     if not aws_identity_ok:

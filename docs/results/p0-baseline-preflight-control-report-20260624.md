@@ -1,6 +1,6 @@
 # P0 Baseline Preflight Control Report
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 This public-safe control report uses synthetic fixtures to check that the P0 preflight guard opens and closes only under the intended readiness states.
 
@@ -18,7 +18,7 @@ This public-safe control report uses synthetic fixtures to check that the P0 pre
 | --- | --- | --- | --- | --- | --- | --- |
 | `missing_config_blocks_capture` | `no` | `no` | `yes` | `fill-private-controlled-public-config` | `baseline_config_ready;needed_now_gates_cleared;next_trial_ready` | Fail closed when the private controlled-public baseline config is absent. |
 | `synthetic_ready_allows_baseline_capture` | `yes` | `yes` | `yes` | `start-origin-server-and-client-baseline-capture` | `-` | Open only for a syntactically ready P0 baseline fixture; this does not prove public browser CM. |
-| `stale_needed_now_gate_blocks_capture` | `no` | `no` | `yes` | `fill-private-controlled-public-config` | `needed_now_gates_cleared` | Fail closed if the P0 status still reports a needed-now gate, even when packet readiness is otherwise satisfied. |
+| `local_overlay_overrides_stale_matrix_gate` | `yes` | `yes` | `yes` | `start-origin-server-and-client-baseline-capture` | `-` | Open when the ignored local next-trial readiness overlay is ready, even if the tracked public matrix is stale. |
 
 ## Interpretation
 

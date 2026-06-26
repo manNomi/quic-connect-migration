@@ -1,21 +1,21 @@
 # Final Handover Next Trial Readiness
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 ## Summary
 
 | field | value |
 | --- | --- |
-| ready | `yes` |
+| ready | `no` |
 | config path | `harness/config/controlled-public-origin.env` |
 | config exists | `yes` |
 | check local files | `no` |
-| next trial | `controlled-public-chrome-downlink-heartbeat-nochange-001` |
-| next phase | `no-change-baseline` |
+| next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
+| next phase | `active-network-change` |
 | next browser | `Chrome` |
-| final completion | `2/6` |
-| disk free GiB | `9.68` |
-| active IPv4 interfaces | `en0(192.168.32.190)` |
+| final completion | `3/6` |
+| disk free GiB | `27.97` |
+| active IPv4 interfaces | `en0(192.168.0.212)` |
 | public origin URL | `<configured>` |
 
 ## Required Gates
@@ -33,14 +33,15 @@ Generated: `2026-06-25`
 | `chrome_ready` | `yes` | `yes` |
 | `safari_webdriver_ready` | `yes` | `no` |
 | `android_adb_ready` | `no` | `no` |
-| `desktop_secondary_path_ready` | `no` | `no` |
-| `baseline_summary_ready` | `yes` | `no` |
-| `network_change_command_present` | `no` | `no` |
+| `desktop_secondary_path_ready` | `no` | `yes` |
+| `baseline_summary_ready` | `yes` | `yes` |
+| `network_change_command_present` | `no` | `yes` |
 | `android_network_change_command_present` | `no` | `no` |
 
 ## Missing Required Gates
 
-- -
+- network_change_command_present
+- desktop_secondary_path_ready
 
 ## Next Trial Commands
 
@@ -48,16 +49,16 @@ Server/origin terminal:
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-chrome-downlink-heartbeat-nochange-001 \
-ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-heartbeat-nochange-001 \
-PUBLIC_ORIGIN_HOST=<redacted-public-origin-host> \
+RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+PUBLIC_ORIGIN_HOST=h3.example.com \
 PUBLIC_ORIGIN_PORT=443 \
-TLS_CERT_FILE=<redacted-tls-cert-file> \
-TLS_KEY_FILE=<redacted-tls-key-file> \
+TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
+TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
 LISTEN_ADDR=0.0.0.0:443 \
 TCP_ADDR=0.0.0.0:443 \
 ALT_SVC='h3=":443"; ma=60' \
-EXPECTED_REQUESTS=6 \
+EXPECTED_REQUESTS=2 \
 TIMEOUT=300s \
 COMPLETION_GRACE=2s \
 ./scripts/run-controlled-public-h3-server.sh
@@ -67,13 +68,19 @@ Browser/client terminal:
 
 ```bash
 cd repro/quic-go-min-repro
-RUN_ID=controlled-public-chrome-downlink-heartbeat-nochange-001 \
-ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-heartbeat-nochange-001 \
-CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-heartbeat-nochange-001 \
-PUBLIC_ORIGIN_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=true&heartbeat_delay_ms=5000&label=public-downlink-heartbeat' \
-SECOND_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=true&heartbeat_delay_ms=5000&label=public-downlink-heartbeat' \
-CONTROLLED_PUBLIC_EXPECTED_REQUESTS=6 \
+RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
+PUBLIC_ORIGIN_URL='https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \
+CONTROLLED_PUBLIC_EXPECTED_REQUESTS=2 \
 REQUIRE_H3_ALT_SVC=1 \
-REQUIRE_CONTROLLED_PUBLIC_APPLICATION_H3=1 \
-./scripts/run-controlled-public-h3-browser-baseline.sh
+REQUIRE_CONTROLLED_PUBLIC_BASELINE=1 \
+CHROME_RUNNER=cdp \
+CHROME_HOLD_SECONDS=18 \
+CHROME_TIMEOUT_SECONDS=30 \
+CHROME_NET_LOG_CAPTURE_MODE=Default \
+NETWORK_CHANGE_AFTER_SECONDS=3 \
+NETWORK_CHANGE_CMD=... \
+./scripts/run-controlled-public-h3-network-change.sh
 ```

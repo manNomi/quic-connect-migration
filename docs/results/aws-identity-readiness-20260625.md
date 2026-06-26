@@ -1,6 +1,6 @@
 # AWS Identity Readiness
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 This report is public-safe. It does not print AWS account IDs, ARNs, access keys, secret keys, session tokens, or profile names.
 

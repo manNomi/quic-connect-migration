@@ -158,6 +158,9 @@ def failure_layer_for(status: str, summary: dict[str, Any]) -> str:
 
 
 def application_success(summary: dict[str, Any], status: str) -> bool:
+    application = summary.get("application")
+    if isinstance(application, dict) and isinstance(application.get("success"), bool):
+        return bool(application["success"])
     if not status.startswith("PASS"):
         return False
     server_requests = summary.get("server_requests") or {}
@@ -168,12 +171,20 @@ def application_success(summary: dict[str, Any], status: str) -> bool:
     return True
 
 
+def tuple_change_observed(phase: str, server_requests: dict[str, Any]) -> bool:
+    if phase == "active-network-change" and "target_h3_remote_addr_count" in server_requests:
+        return int(server_requests.get("target_h3_remote_addr_count") or 0) > 1
+    return int(server_requests.get("remote_addr_count") or 0) > 1
+
+
 def notes_for(phase: str, browser: str, heartbeat: bool, summary: dict[str, Any]) -> str:
     classification = str(summary.get("classification") or "unclassified")
     server_requests = summary.get("server_requests") or {}
     remote_count = server_requests.get("remote_addr_count", "-")
+    target_h3_remote_count = server_requests.get("target_h3_remote_addr_count")
     qlog_path = bool(summary.get("server_qlog_has_path_validation"))
     client_path = (summary.get("client_path_change") or {}).get("classification") or "-"
+    eventual_client_path = (summary.get("client_path_eventual_change") or {}).get("classification") or "-"
     parts = [f"classification {classification}"]
     if phase == "no-change-baseline":
         parts.append("no_path_change_baseline")
@@ -188,10 +199,13 @@ def notes_for(phase: str, browser: str, heartbeat: bool, summary: dict[str, Any]
     parts.extend(
         [
             f"client_path_change={client_path}",
+            f"client_path_eventual_change={eventual_client_path}",
             f"server remote addr count {remote_count}",
             f"qlog path validation={str(qlog_path).lower()}",
         ]
     )
+    if target_h3_remote_count is not None:
+        parts.append(f"target h3 remote addr count {target_h3_remote_count}")
     return "; ".join(parts)
 
 
@@ -201,7 +215,6 @@ def build_row(trial_id: str, artifact_dir: Path, summary: dict[str, Any], run_da
     heartbeat = has_heartbeat(trial_id, summary)
     status = status_for(phase, browser, summary)
     server_requests = summary.get("server_requests") or {}
-    remote_count = int(server_requests.get("remote_addr_count") or 0)
     path_validation = bool(summary.get("server_qlog_has_path_validation"))
     row = {
         "trial_id": trial_id,
@@ -212,7 +225,7 @@ def build_row(trial_id: str, artifact_dir: Path, summary: dict[str, Any], run_da
         "protocol": "HTTP/3 over QUIC",
         "migration_trigger": trigger_for(phase, browser, heartbeat),
         "path_validation_observed": bool_cell(path_validation),
-        "tuple_change_observed": bool_cell(remote_count > 1),
+        "tuple_change_observed": bool_cell(tuple_change_observed(phase, server_requests)),
         "application_task": task_for(phase, heartbeat),
         "application_success": bool_cell(application_success(summary, status)),
         "manual_intervention_required": "false",

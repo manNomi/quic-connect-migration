@@ -15,6 +15,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from network_ipv4 import has_usable_ipv4
+
 
 @dataclass
 class CommandResult:
@@ -145,7 +147,7 @@ def build_snapshot(url: str, include_public_ip_url: str, timeout: int) -> dict[s
     active_ipv4 = [
         asdict(info)
         for info in interfaces
-        if info.active and any(not ip.startswith("127.") for ip in info.ipv4)
+        if info.active and has_usable_ipv4(info.ipv4)
     ]
     target_for_route = first_address or host
     return {

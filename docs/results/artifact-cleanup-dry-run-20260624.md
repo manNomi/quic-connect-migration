@@ -1,6 +1,6 @@
 # Artifact Cleanup Dry-run Plan
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 ## Summary
 
@@ -8,11 +8,11 @@ Generated: `2026-06-25`
 | --- | --- |
 | target free GiB | `7.0` |
 | candidate policy | `review-unreferenced` |
-| current free | `9.2 GiB` |
+| current free | `28.0 GiB` |
 | free space needed | `0 B` |
-| selected candidates | `0/15` |
+| selected candidates | `0/19` |
 | reclaimable from selected | `0 B` |
-| projected free after selected cleanup | `9.2 GiB` |
+| projected free after selected cleanup | `28.0 GiB` |
 | target met by selected cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |
 

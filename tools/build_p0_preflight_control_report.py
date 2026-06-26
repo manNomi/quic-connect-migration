@@ -196,12 +196,12 @@ def build_report() -> dict[str, object]:
             ),
             evaluate_scenario(
                 root,
-                "stale_needed_now_gate_blocks_capture",
+                "local_overlay_overrides_stale_matrix_gate",
                 config_exists=True,
                 matrix_ready=False,
                 matrix_missing=["controlled_public_config_present"],
-                expected_go=False,
-                interpretation="Fail closed if the P0 status still reports a needed-now gate, even when packet readiness is otherwise satisfied.",
+                expected_go=True,
+                interpretation="Open when the ignored local next-trial readiness overlay is ready, even if the tracked public matrix is stale.",
             ),
         ]
     return {

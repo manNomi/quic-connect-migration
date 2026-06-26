@@ -91,6 +91,7 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
             "mkdir -p \"$ARTIFACT_DIR/results\"\n"
             "printf '%s\\n' \"$RUN_ID\" > \"$ARTIFACT_DIR/results/run-id.txt\"\n"
             "printf '%s\\n' \"$MIN_ARTIFACT_FREE_GIB\" > \"$ARTIFACT_DIR/results/min-free.txt\"\n"
+            "printf '%s\\n' \"$PUBLIC_ORIGIN_BOOTSTRAP_URL\" > \"$ARTIFACT_DIR/results/bootstrap-url.txt\"\n"
             f"touch {marker.as_posix()!r}\n",
             encoding="utf-8",
         )
@@ -119,6 +120,9 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
             "controlled-public-chrome-downlink-noheartbeat-network-change-001"
         )
         assert (artifact_dir / "results" / "min-free.txt").read_text(encoding="utf-8").strip() == "7"
+        assert (artifact_dir / "results" / "bootstrap-url.txt").read_text(encoding="utf-8").strip() == (
+            "https://h3.test.local/browser-slow?duration_ms=6000&chunks=6&label=public-slow"
+        )
         assert "AKIA" not in combined
         assert "PRIVATE_KEY" not in combined
 

@@ -15,15 +15,26 @@ CONTROLLED_PUBLIC_BASELINE_SUMMARY="${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-}"
 REQUIRE_CONTROLLED_PUBLIC_BASELINE="${REQUIRE_CONTROLLED_PUBLIC_BASELINE:-1}"
 NETWORK_CHANGE_CMD="${NETWORK_CHANGE_CMD:?set NETWORK_CHANGE_CMD to the active path/interface change command}"
 NETWORK_CHANGE_AFTER_SECONDS="${NETWORK_CHANGE_AFTER_SECONDS:-2}"
+NETWORK_CHANGE_AFTER_SNAPSHOT_COUNT="${NETWORK_CHANGE_AFTER_SNAPSHOT_COUNT:-1}"
+NETWORK_CHANGE_AFTER_SNAPSHOT_INTERVAL_SECONDS="${NETWORK_CHANGE_AFTER_SNAPSHOT_INTERVAL_SECONDS:-1}"
 REQUIRE_H3_ALT_SVC="${REQUIRE_H3_ALT_SVC:-1}"
 CHROME_TIMEOUT_SECONDS="${CHROME_TIMEOUT_SECONDS:-30}"
 CHROME_NET_LOG_CAPTURE_MODE="${CHROME_NET_LOG_CAPTURE_MODE:-Everything}"
 CHROME_VIRTUAL_TIME_BUDGET_MS="${CHROME_VIRTUAL_TIME_BUDGET_MS:-0}"
 CHROME_RUNNER="${CHROME_RUNNER:-dump-dom}"
 CHROME_HOLD_SECONDS="${CHROME_HOLD_SECONDS:-15}"
+PUBLIC_ORIGIN_BOOTSTRAP_URL="${PUBLIC_ORIGIN_BOOTSTRAP_URL:-}"
 NODE_BIN="${NODE_BIN:-node}"
 SERVER_RESULT_WAIT_SECONDS="${SERVER_RESULT_WAIT_SECONDS:-15}"
 MIN_ARTIFACT_FREE_GIB="${MIN_ARTIFACT_FREE_GIB:-7}"
+
+if [[ -z "${CHROME_PROFILE_DIR_NAME:-}" ]]; then
+  if [[ "$CHROME_RUNNER" == "cdp" ]]; then
+    CHROME_PROFILE_DIR_NAME="profile-cdp"
+  else
+    CHROME_PROFILE_DIR_NAME="profile"
+  fi
+fi
 
 "$SCRIPT_DIR/ensure-min-disk-free.sh" "$MIN_ARTIFACT_FREE_GIB" "$REPRO_DIR"
 
@@ -56,65 +67,18 @@ fi
 python3 "$PROJECT_ROOT/tools/check_public_origin_readiness.py" "${READINESS_ARGS[@]}" \
   >"$ARTIFACT_DIR/results/public-origin-readiness.json"
 
-python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
-  --url "$PUBLIC_ORIGIN_URL" \
-  --output "$ARTIFACT_DIR/results/client-path-before.json" || true
-
-(
-  sleep "$NETWORK_CHANGE_AFTER_SECONDS"
-  STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
-    --url "$PUBLIC_ORIGIN_URL" \
-    --output "$ARTIFACT_DIR/results/client-path-command-before.json" || true
-  EXIT_CODE=0
-  bash -lc "$NETWORK_CHANGE_CMD" || EXIT_CODE=$?
-  COMPLETED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
-    --url "$PUBLIC_ORIGIN_URL" \
-    --output "$ARTIFACT_DIR/results/client-path-command-after.json" || true
-  python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \
-    "$ARTIFACT_DIR/results/client-path-command-before.json" \
-    "$ARTIFACT_DIR/results/client-path-command-after.json" \
-    --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
-  python3 - "$ARTIFACT_DIR/results/network-change.json" "$EXIT_CODE" "$STARTED_AT" "$COMPLETED_AT" <<'PY'
-import json
-import sys
-
-output, exit_code, started_at, completed_at = sys.argv[1:]
-data = {
-    "command_present": True,
-    "exit": int(exit_code),
-    "started_at": started_at,
-    "completed_at": completed_at,
-}
-with open(output, "w", encoding="utf-8") as fp:
-    json.dump(data, fp, indent=2)
-    fp.write("\n")
-PY
-  exit "$EXIT_CODE"
-) >"$ARTIFACT_DIR/logs/network-change.log" 2>&1 &
-NETWORK_CHANGE_PID=$!
-
-CHROME_EXIT=0
-if [[ "$CHROME_RUNNER" == "cdp" ]]; then
-  "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
-    --chrome-bin "$CHROME_BIN" \
-    --artifact-dir "$ARTIFACT_DIR" \
-    --url "$PUBLIC_ORIGIN_URL" \
-    --netlog-name "network-change-netlog.json" \
-    --dump-name "network-change-dump-dom.txt" \
-    --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
-    --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
-    --hold-seconds "$CHROME_HOLD_SECONDS" || CHROME_EXIT=$?
-elif [[ "$CHROME_RUNNER" == "dump-dom" ]]; then
-  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$PUBLIC_ORIGIN_URL" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" <<'PY' || CHROME_EXIT=$?
+run_chrome_dump_dom() {
+  local url="$1"
+  local netlog="$2"
+  local dump="$3"
+  python3 - "$CHROME_BIN" "$ARTIFACT_DIR" "$url" "$CHROME_TIMEOUT_SECONDS" "$CHROME_NET_LOG_CAPTURE_MODE" "$CHROME_VIRTUAL_TIME_BUDGET_MS" "$netlog" "$dump" "$CHROME_PROFILE_DIR_NAME" <<'PY'
 import os
 import pathlib
 import shlex
 import subprocess
 import sys
 
-chrome_bin, artifact_dir, url, timeout_s, net_log_capture_mode, virtual_time_budget_ms = sys.argv[1:]
+chrome_bin, artifact_dir, url, timeout_s, net_log_capture_mode, virtual_time_budget_ms, netlog_name, dump_name, profile_dir_name = sys.argv[1:]
 artifact = pathlib.Path(artifact_dir)
 cmd = [
     chrome_bin,
@@ -134,8 +98,8 @@ cmd = [
     "--safebrowsing-disable-auto-update",
     "--disable-features=AutofillServerCommunication,CertificateTransparencyComponentUpdater,InterestFeedContentSuggestions,MediaRouter,OptimizationGuideModelDownloading,OptimizationHints,OptimizationTargetPrediction,SafeBrowsingEnhancedProtection",
     "--enable-quic",
-    f"--user-data-dir={artifact / 'chrome' / 'profile'}",
-    f"--log-net-log={artifact / 'chrome' / 'network-change-netlog.json'}",
+    f"--user-data-dir={artifact / 'chrome' / profile_dir_name}",
+    f"--log-net-log={artifact / 'chrome' / netlog_name}",
     f"--net-log-capture-mode={net_log_capture_mode}",
     "--dump-dom",
     url,
@@ -145,12 +109,104 @@ if int(virtual_time_budget_ms) > 0:
 extra_args = os.environ.get("CHROME_EXTRA_ARGS", "")
 if extra_args:
     cmd[1:1] = shlex.split(extra_args)
-with (artifact / "chrome" / "network-change-dump-dom.txt").open("wb") as out, (artifact / "chrome" / "network-change-dump-dom.txt.stderr.log").open("wb") as err:
+with (artifact / "chrome" / dump_name).open("wb") as out, (artifact / "chrome" / f"{dump_name}.stderr.log").open("wb") as err:
     try:
         subprocess.run(cmd, stdout=out, stderr=err, timeout=int(timeout_s), check=True)
     except subprocess.TimeoutExpired:
         raise SystemExit(124)
 PY
+}
+
+BOOTSTRAP_EXIT=0
+if [[ -n "$PUBLIC_ORIGIN_BOOTSTRAP_URL" ]]; then
+  run_chrome_dump_dom "$PUBLIC_ORIGIN_BOOTSTRAP_URL" "bootstrap-netlog.json" "bootstrap-dump-dom.txt" || BOOTSTRAP_EXIT=$?
+  python3 - "$ARTIFACT_DIR/results/chrome-bootstrap.json" "$PUBLIC_ORIGIN_BOOTSTRAP_URL" "$BOOTSTRAP_EXIT" "$CHROME_PROFILE_DIR_NAME" <<'PY'
+import json
+import sys
+
+output, url, exit_code, profile_dir_name = sys.argv[1:]
+with open(output, "w", encoding="utf-8") as fp:
+    json.dump(
+        {
+            "url": url,
+            "exit": int(exit_code),
+            "profile_dir_name": profile_dir_name,
+        },
+        fp,
+        indent=2,
+    )
+    fp.write("\n")
+PY
+  sleep 1
+fi
+
+python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+  --url "$PUBLIC_ORIGIN_URL" \
+  --output "$ARTIFACT_DIR/results/client-path-before.json" || true
+
+(
+  sleep "$NETWORK_CHANGE_AFTER_SECONDS"
+  STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+    --url "$PUBLIC_ORIGIN_URL" \
+    --output "$ARTIFACT_DIR/results/client-path-command-before.json" || true
+  EXIT_CODE=0
+  bash -lc "$NETWORK_CHANGE_CMD" || EXIT_CODE=$?
+  COMPLETED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  for attempt in $(seq 1 "$NETWORK_CHANGE_AFTER_SNAPSHOT_COUNT"); do
+    python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
+      --url "$PUBLIC_ORIGIN_URL" \
+      --output "$ARTIFACT_DIR/results/client-path-command-after-${attempt}.json" || true
+    cp "$ARTIFACT_DIR/results/client-path-command-after-${attempt}.json" "$ARTIFACT_DIR/results/client-path-command-after.json" 2>/dev/null || true
+    if [[ "$attempt" != "$NETWORK_CHANGE_AFTER_SNAPSHOT_COUNT" ]]; then
+      sleep "$NETWORK_CHANGE_AFTER_SNAPSHOT_INTERVAL_SECONDS"
+    fi
+  done
+  python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \
+    "$ARTIFACT_DIR/results/client-path-command-before.json" \
+    "$ARTIFACT_DIR/results/client-path-command-after.json" \
+    --output "$ARTIFACT_DIR/results/client-path-change-summary.json" || true
+  python3 - \
+    "$ARTIFACT_DIR/results/network-change.json" \
+    "$EXIT_CODE" \
+    "$STARTED_AT" \
+    "$COMPLETED_AT" \
+    "$NETWORK_CHANGE_AFTER_SNAPSHOT_COUNT" \
+    "$NETWORK_CHANGE_AFTER_SNAPSHOT_INTERVAL_SECONDS" <<'PY'
+import json
+import sys
+
+output, exit_code, started_at, completed_at, after_snapshot_count, after_snapshot_interval_seconds = sys.argv[1:]
+data = {
+    "command_present": True,
+    "exit": int(exit_code),
+    "started_at": started_at,
+    "completed_at": completed_at,
+    "after_snapshot_count": int(after_snapshot_count),
+    "after_snapshot_interval_seconds": int(after_snapshot_interval_seconds),
+}
+with open(output, "w", encoding="utf-8") as fp:
+    json.dump(data, fp, indent=2)
+    fp.write("\n")
+PY
+  exit "$EXIT_CODE"
+) >"$ARTIFACT_DIR/logs/network-change.log" 2>&1 &
+NETWORK_CHANGE_PID=$!
+
+CHROME_EXIT=0
+if [[ "$CHROME_RUNNER" == "cdp" ]]; then
+  "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
+    --chrome-bin "$CHROME_BIN" \
+    --artifact-dir "$ARTIFACT_DIR" \
+    --url "$PUBLIC_ORIGIN_URL" \
+    --profile-dir-name "$CHROME_PROFILE_DIR_NAME" \
+    --netlog-name "network-change-netlog.json" \
+    --dump-name "network-change-dump-dom.txt" \
+    --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
+    --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
+    --hold-seconds "$CHROME_HOLD_SECONDS" || CHROME_EXIT=$?
+elif [[ "$CHROME_RUNNER" == "dump-dom" ]]; then
+  run_chrome_dump_dom "$PUBLIC_ORIGIN_URL" "network-change-netlog.json" "network-change-dump-dom.txt" || CHROME_EXIT=$?
 else
   echo "unsupported CHROME_RUNNER=$CHROME_RUNNER" >&2
   CHROME_EXIT=2
@@ -173,6 +229,13 @@ fi
 python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
   --url "$PUBLIC_ORIGIN_URL" \
   --output "$ARTIFACT_DIR/results/client-path-final.json" || true
+
+if [[ -f "$ARTIFACT_DIR/results/client-path-command-before.json" && -f "$ARTIFACT_DIR/results/client-path-final.json" ]]; then
+  python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \
+    "$ARTIFACT_DIR/results/client-path-command-before.json" \
+    "$ARTIFACT_DIR/results/client-path-final.json" \
+    --output "$ARTIFACT_DIR/results/client-path-eventual-change-summary.json" || true
+fi
 
 if [[ -f "$ARTIFACT_DIR/results/client-path-command-before.json" && -f "$ARTIFACT_DIR/results/client-path-command-after.json" && ! -f "$ARTIFACT_DIR/results/client-path-change-summary.json" ]]; then
   python3 "$PROJECT_ROOT/tools/compare_network_path_snapshots.py" \

@@ -1,23 +1,23 @@
 # Artifact Cleanup Safety Audit
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 ## Summary
 
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `9.2 GiB` |
+| disk free | `28.0 GiB` |
 | target free GiB | `7.0` |
-| artifact roots total | `24.5 GiB` |
+| artifact roots total | `24.8 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
-| cleanup candidates | `77` |
-| CSV-referenced candidates | `57` |
-| planned final-trial candidates | `1` |
-| review-unreferenced candidates | `15` |
-| review-unreferenced size | `15.6 MiB` |
-| protected referenced/planned size | `24.5 GiB` |
-| projected free if review-unreferenced removed | `9.2 GiB` |
+| cleanup candidates | `85` |
+| CSV-referenced candidates | `62` |
+| planned final-trial candidates | `4` |
+| review-unreferenced candidates | `19` |
+| review-unreferenced size | `15.8 MiB` |
+| protected referenced/planned size | `24.8 GiB` |
+| projected free if review-unreferenced removed | `28.0 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
@@ -54,6 +54,9 @@ Generated: `2026-06-25`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-return-path-drop-controls-20260624` | `534.1 MiB` | chrome-h3-rebinding-return-path-drop-controls-local-001, downlink-1m-drop-b-only, upload-1m-drop-b-only, downlink-1m-drop-a-and-b, upload-1m-drop-a-and-b | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-localhost-20260624` | `383.5 MiB` | chrome-h3-alt-svc-localhost-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-local-20260624` | `382.6 MiB` | chrome-h3-alt-svc-ip-literal-001 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-heartbeat-nochange-001` | `120.2 MiB` | controlled-public-chrome-downlink-heartbeat-nochange-001 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-iphone-usb-network-change-002` | `75.9 MiB` | controlled-public-chrome-downlink-noheartbeat-iphone-usb-network-change-002 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001` | `75.5 MiB` | controlled-public-chrome-downlink-noheartbeat-iphone-usb-network-change-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-old-path-drop-repetition-20260624` | `49.1 MiB` | chrome-h3-rebinding-old-path-drop-local-001, noheartbeat-r1, noheartbeat-r2, noheartbeat-r3, heartbeat-r1, heartbeat-r2, heartbeat-r3 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-repetition-20260624` | `49.0 MiB` | noheartbeat-r1, noheartbeat-r2, noheartbeat-r3, heartbeat-r1, heartbeat-r2, heartbeat-r3 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-bing-home-20260624` | `40.2 MiB` | chrome-public-h3-bing-home-20260624 | artifact path is referenced by a tracked artifact reference CSV |
@@ -73,11 +76,13 @@ Generated: `2026-06-25`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-noheartbeat-smoke-20260624` | `8.1 MiB` | chrome-h3-rebinding-noheartbeat-local-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-youtube-generate204-20260624` | `5.9 MiB` | chrome-public-h3-youtube-204-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-h3-browser-wrapper-google-smoke-20260624` | `5.7 MiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001` | `5.7 MiB` | controlled-public-chrome-h3-baseline-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-google-generate204-20260624` | `5.6 MiB` | chrome-public-h3-google-204-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/quic-go-h3-midflight-repetition-20260624` | `5.3 MiB` | r1, r2, r3 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-inactive-if-toggle` | `4.7 MiB` | chrome-h3-slow-wifi-ip-inactive-if-toggle-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-inactive-if-toggle` | `4.7 MiB` | chrome-h3-slow-inactive-if-toggle-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-slow-wifi-ip-nochange` | `4.7 MiB` | chrome-h3-slow-wifi-ip-nochange-001 | artifact path is referenced by a tracked artifact reference CSV |
+| `keep-referenced` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-nochange-001` | `4.6 MiB` | controlled-public-chrome-downlink-noheartbeat-nochange-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-ip-20260624` | `4.3 MiB` | chrome-h3-alt-svc-html-mkcert-ip-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-public-h3-cloudflare-quic-trace-20260624` | `4.3 MiB` | chrome-public-h3-cloudflare-trace-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-local-20260624` | `4.3 MiB` | chrome-h3-alt-svc-html-ip-literal-001 | artifact path is referenced by a tracked artifact reference CSV |
@@ -97,10 +102,13 @@ Generated: `2026-06-25`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/local-h3-midflight-rerun-20260624` | `1.7 MiB` | quic-go-local-h3-midflight-upload-rerun-20260624-001, quic-go-local-h3-midflight-download-rerun-20260624-001 | artifact path is referenced by a tracked artifact reference CSV |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/local-20260624T045440Z` | `1.4 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-happy-named` | `1.4 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-unreferenced` | `harness/results/packages` | `220.6 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/verify-local-h3-workload` | `154.9 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/local-h3-workload-rerun-20260624` | `150.4 KiB` | quic-go-local-h3-workload-rerun-20260624-001 | artifact path is referenced by a tracked artifact reference CSV |
-| `review-unreferenced` | `harness/results/packages` | `43.8 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-p0-baseline-preflight-current-20260625` | `14.4 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-p0-baseline-preflight-current-20260625b` | `14.3 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044030Z` | `7.8 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-unreferenced` | `harness/results/active-trials-20260626` | `7.0 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T044223Z` | `6.9 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T052907Z` | `6.8 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T072436Z` | `6.7 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
@@ -108,8 +116,8 @@ Generated: `2026-06-25`
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-config-init-20260625T074109Z` | `6.1 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-config-init-20260625T044018Z` | `5.9 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/final-handover-run-next-20260625T041915Z` | `4.2 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
-| `keep-planned-final-trial` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001` | `2.0 KiB` | - | artifact path matches a planned final browser handover trial id |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-preflight-20260624T094137Z` | `1.8 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
+| `review-unreferenced` | `harness/results/aws-origin-20260625` | `362 B` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-alt-svc-html-mkcert-localhost-20260624` | `141 B` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 
 ## Note

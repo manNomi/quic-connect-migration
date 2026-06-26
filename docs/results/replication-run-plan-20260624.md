@@ -1,6 +1,6 @@
 # Replication Run Plan
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 This plan is public-safe. It turns the replication sufficiency audit into a staged execution plan and keeps the final public/browser handover protocol as the first priority.
 
@@ -14,8 +14,8 @@ This plan is public-safe. It turns the replication sufficiency audit into a stag
 | L1 transition-zone reviewed rows | `5` |
 | L2 anchor rows | `11` |
 | transition repetitions per condition | `6` |
-| optional local replication disk | `hold-local-optional-replication` |
-| optional local free GiB | `9.2` |
+| optional local replication disk | `optional-local-replication-disk-ready` |
+| optional local free GiB | `27.97` |
 
 ## Staged Plan
 

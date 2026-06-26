@@ -1,43 +1,41 @@
 # Final Handover Operator Checklist
 
-Generated: `2026-06-25`
+Generated: `2026-06-26`
 
 ## Summary
 
 | field | value |
 | --- | --- |
-| next trial | `controlled-public-chrome-h3-baseline-001` |
+| next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
 | next trial ready | `no` |
 | sensitive values redacted | `no` |
-| baseline config ready | `no` |
+| baseline config ready | `yes` |
 | active config ready | `no` |
 | Android config ready | `no` |
-| current disk free | `9.2 GiB` |
+| current disk free | `28.0 GiB` |
 | target free GiB | `7.0` |
 | storage target met by artifact cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |
-| final trial completion | `0/6` |
+| final trial completion | `3/6` |
 
 ## Actions
 
 | priority | status | scope | action | reason |
 | ---: | --- | --- | --- | --- |
-| 1 | `todo-now` | controlled public baseline | Create and fill the private controlled public origin config. | The next selected trial is a controlled-public Chrome baseline and config baseline readiness is false. |
+| 1 | `ready` | controlled public baseline | Controlled public baseline config is ready. | Baseline config keys are present and non-placeholder. |
 | 2 | `ready` | storage | Disk target can be met by reviewed artifact cleanup candidates. | Selected cleanup candidates reclaim 0 B. |
-| 3 | `blocked-now` | next trial | Do not run the next final handover trial yet. | Missing required gates: controlled_public_config_present, public_origin_host_configured, public_origin_url_configured, tls_config_present |
+| 3 | `blocked-now` | next trial | Do not run the next final handover trial yet. | Missing required gates: network_change_command_present, desktop_secondary_path_ready |
 | 4 | `todo-later` | active network-change | Prepare active network-change config before Chrome/Safari active trials. | The final protocol requires active path-change trials after the baseline/no-change rows are registered. |
 | 5 | `todo-later` | desktop path-change | Provide a real active secondary path before desktop active network-change trials. | Chrome/Safari active trials require a path change, but the current machine has no secondary active non-loopback IPv4 path. |
 | 6 | `todo-later` | Android P1 | Connect an Android device over ADB before Android Chrome feasibility trials. | The P1 feasibility requirement can be satisfied by Safari or Android, but Android remains unavailable. |
-| 7 | `incomplete` | final protocol | Continue the final trial loop until all required rows are counted. | Current final completion is 0/6. |
+| 7 | `incomplete` | final protocol | Continue the final trial loop until all required rows are counted. | Current final completion is 3/6. |
 
 ## Commands
 
 ### 1. controlled public baseline
 
 ```bash
-bash harness/scripts/init-controlled-public-config.sh
 python3 tools/build_controlled_public_config_worksheet.py --output docs/results/controlled-public-config-worksheet-20260624.md
-$EDITOR harness/config/controlled-public-origin.env
 python3 tools/check_controlled_public_config.py --require-baseline-ready
 ```
 

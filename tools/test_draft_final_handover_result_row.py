@@ -30,6 +30,7 @@ def base_network_summary(classification: str = "possible_connection_migration") 
         "server_requests": {
             "reached_expected_count": True,
             "remote_addr_count": 2,
+            "target_h3_remote_addr_count": 2,
             "request_workloads": ["browser-downlink", "downlink-stream"],
             "request_labels": ["public-downlink-noheartbeat", "public-downlink-noheartbeat-stream"],
         },
@@ -69,6 +70,40 @@ def test_chrome_reconnect_is_negative_control_not_counted_as_cm() -> None:
     )
     assert row["status"] == "PASS_NEGATIVE_CONTROL"
     assert not row_matches(requirement("chrome-downlink-noheartbeat-active-cm"), row)
+
+
+def test_application_dataset_error_overrides_pass_negative_control_success() -> None:
+    summary = base_network_summary("no_client_active_path_change_observed")
+    summary["status"] = "PASS_NEGATIVE_CONTROL"
+    summary["application"] = {
+        "workload": "downlink",
+        "success": False,
+        "error_keys": ["downlinkError"],
+    }
+    row = build_row(
+        "controlled-public-chrome-downlink-noheartbeat-network-change-001",
+        Path("repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001"),
+        summary,
+        "2026-06-24",
+    )
+    assert row["status"] == "PASS_NEGATIVE_CONTROL"
+    assert row["application_success"] == "false"
+    assert not row_matches(requirement("chrome-downlink-noheartbeat-active-cm"), row)
+
+
+def test_active_tuple_change_uses_target_h3_remote_addr_count() -> None:
+    summary = base_network_summary("no_client_active_path_change_observed")
+    summary["status"] = "PASS_NEGATIVE_CONTROL"
+    summary["server_requests"]["remote_addr_count"] = 4
+    summary["server_requests"]["target_h3_remote_addr_count"] = 1
+    row = build_row(
+        "controlled-public-chrome-downlink-noheartbeat-network-change-001",
+        Path("repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001"),
+        summary,
+        "2026-06-24",
+    )
+    assert row["tuple_change_observed"] == "false"
+    assert "target h3 remote addr count 1" in row["notes"]
 
 
 def test_chrome_heartbeat_nochange_matches_baseline_requirement() -> None:
@@ -136,6 +171,8 @@ def test_baseline_matches_application_h3_requirement() -> None:
 def main() -> int:
     test_chrome_active_positive_matches_final_requirement()
     test_chrome_reconnect_is_negative_control_not_counted_as_cm()
+    test_application_dataset_error_overrides_pass_negative_control_success()
+    test_active_tuple_change_uses_target_h3_remote_addr_count()
     test_chrome_heartbeat_nochange_matches_baseline_requirement()
     test_safari_server_qlog_only_matches_p1_feasibility()
     test_baseline_matches_application_h3_requirement()
