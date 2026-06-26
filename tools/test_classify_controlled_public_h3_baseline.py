@@ -42,6 +42,25 @@ def test_downlink_complete_without_error_marks_application_success(tmp_path: Pat
     assert summary["success"] is True
 
 
+def test_downlink_complete_with_retry_last_error_marks_application_success(tmp_path: Path) -> None:
+    write_cdp_summary(
+        tmp_path,
+        {
+            "downlinkAttempt": "2",
+            "downlinkComplete": "true",
+            "downlinkBytes": "65536",
+            "downlinkLastError": "AbortError: BodyStreamBuffer was aborted",
+            "downlinkRetriesUsed": "1",
+        },
+    )
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "downlink"
+    assert summary["complete"] is True
+    assert summary["success"] is True
+    assert summary["error_keys"] == ["downlinkLastError"]
+    assert summary["terminal_error_keys"] == []
+
+
 def main() -> int:
     from tempfile import TemporaryDirectory
 
@@ -49,6 +68,8 @@ def main() -> int:
         test_downlink_dataset_error_marks_application_failure(Path(first))
     with TemporaryDirectory() as second:
         test_downlink_complete_without_error_marks_application_success(Path(second))
+    with TemporaryDirectory() as third:
+        test_downlink_complete_with_retry_last_error_marks_application_success(Path(third))
     return 0
 
 

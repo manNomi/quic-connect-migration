@@ -100,17 +100,18 @@ def application_summary(browser_dir: Path) -> dict[str, Any]:
         for key in dataset
         if key.lower().endswith("error") or key.lower().endswith("lasterror")
     )
+    terminal_error_keys = [key for key in error_keys if not key.lower().endswith("lasterror")]
     success: bool | None = None
     complete: bool | None = None
     workload = "unknown"
     if any(key.startswith("downlink") for key in dataset):
         workload = "downlink"
         complete = dataset.get("downlinkComplete") == "true"
-        success = complete and not error_keys
+        success = complete and not terminal_error_keys
     elif any(key.startswith("upload") for key in dataset):
         workload = "upload"
         complete = dataset.get("uploadComplete") == "true"
-        success = complete and not error_keys
+        success = complete and not terminal_error_keys
     elif dataset.get("slowComplete") == "true":
         workload = "slow"
         complete = True
@@ -121,6 +122,7 @@ def application_summary(browser_dir: Path) -> dict[str, Any]:
         "complete": complete,
         "success": success,
         "error_keys": error_keys,
+        "terminal_error_keys": terminal_error_keys,
         "body_dataset": dataset,
     }
 
