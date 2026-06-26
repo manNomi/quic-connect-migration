@@ -112,6 +112,10 @@ def application_summary(browser_dir: Path) -> dict[str, Any]:
         workload = "upload"
         complete = dataset.get("uploadComplete") == "true"
         success = complete and not terminal_error_keys
+    elif any(key.startswith("poll") for key in dataset):
+        workload = "poll"
+        complete = dataset.get("pollComplete") == "true"
+        success = complete and not terminal_error_keys
     elif dataset.get("slowComplete") == "true":
         workload = "slow"
         complete = True

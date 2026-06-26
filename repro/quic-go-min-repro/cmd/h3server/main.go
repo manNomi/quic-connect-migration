@@ -410,10 +410,18 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		if intervalMillis > 30000 {
 			intervalMillis = 30000
 		}
+		retryAttempts := queryInt(r, "retry_attempts", 0)
+		if retryAttempts > 5 {
+			retryAttempts = 5
+		}
+		retryDelayMillis := queryInt(r, "retry_delay_ms", 500)
+		if retryDelayMillis > 60000 {
+			retryDelayMillis = 60000
+		}
 		if label == "" {
 			label = "chrome-poll"
 		}
-		html := buildBrowserPollHTML(label, count, intervalMillis)
+		html := buildBrowserPollHTML(label, count, intervalMillis, retryAttempts, retryDelayMillis)
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
@@ -668,17 +676,20 @@ func buildBrowserSequenceHTML(label string, resources, size int) string {
 	return body
 }
 
-func buildBrowserPollHTML(label string, count, intervalMillis int) string {
+func buildBrowserPollHTML(label string, count, intervalMillis, retryAttempts, retryDelayMillis int) string {
 	escapedLabel := html.EscapeString(label)
 	queryLabel := url.QueryEscape(label)
 	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 poll</title><link rel=\"icon\" href=\"data:,\"></head><body>"
 	body += fmt.Sprintf("<h1>Chrome H3 poll</h1><div id=\"status\" data-label=\"%s\">pending</div><ol id=\"events\"></ol>", escapedLabel)
 	body += "<script>"
-	body += fmt.Sprintf("const count=%d, interval=%d, label=%q;", count, intervalMillis, queryLabel)
+	body += fmt.Sprintf("const count=%d, interval=%d, label=%q,retryAttempts=%d,retryDelayMs=%d;", count, intervalMillis, queryLabel, retryAttempts, retryDelayMillis)
 	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
 	body += "const events=document.getElementById('events');"
-	body += "async function run(){for(let i=1;i<=count;i++){const res=await fetch(`/poll?label=${label}-${i}&i=${i}&ts=${Date.now()}`,{cache:'no-store'});const json=await res.json();const li=document.createElement('li');li.textContent=`${json.label}:${res.status}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.pollComplete='true';}"
-	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.pollError=String(error);});"
+	body += "async function fetchPoll(i,attempt){const res=await fetch(`/poll?label=${label}-${i}&i=${i}&attempt=${attempt}&ts=${Date.now()}`,{cache:'no-store'});const json=await res.json();return {status:res.status,label:json.label};}"
+	body += "async function pollWithRetry(i){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{return {attempt,result:await fetchPoll(i,attempt)};}catch(error){lastError=String(error);document.body.dataset.pollLastError=lastError;document.body.dataset.pollLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'poll failed');}"
+	body += "const startedAt=performance.now();"
+	body += "async function run(){let totalRetries=0;for(let i=1;i<=count;i++){const item=await pollWithRetry(i);totalRetries+=item.attempt-1;document.body.dataset.pollCompletedCount=String(i);document.body.dataset.pollRetriesUsed=String(totalRetries);const li=document.createElement('li');li.textContent=`${item.result.label}:${item.result.status}:attempt:${item.attempt}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.pollElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.pollComplete='true';}"
+	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.pollErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.pollError=String(error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body

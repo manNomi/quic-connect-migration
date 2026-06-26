@@ -61,6 +61,23 @@ def test_downlink_complete_with_retry_last_error_marks_application_success(tmp_p
     assert summary["terminal_error_keys"] == []
 
 
+def test_poll_complete_marks_application_success(tmp_path: Path) -> None:
+    write_cdp_summary(tmp_path, {"pollComplete": "true"})
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "poll"
+    assert summary["complete"] is True
+    assert summary["success"] is True
+
+
+def test_poll_error_marks_application_failure(tmp_path: Path) -> None:
+    write_cdp_summary(tmp_path, {"pollError": "TypeError: Failed to fetch"})
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "poll"
+    assert summary["complete"] is False
+    assert summary["success"] is False
+    assert summary["terminal_error_keys"] == ["pollError"]
+
+
 def main() -> int:
     from tempfile import TemporaryDirectory
 
@@ -70,6 +87,10 @@ def main() -> int:
         test_downlink_complete_without_error_marks_application_success(Path(second))
     with TemporaryDirectory() as third:
         test_downlink_complete_with_retry_last_error_marks_application_success(Path(third))
+    with TemporaryDirectory() as fourth:
+        test_poll_complete_marks_application_success(Path(fourth))
+    with TemporaryDirectory() as fifth:
+        test_poll_error_marks_application_failure(Path(fifth))
     return 0
 
 

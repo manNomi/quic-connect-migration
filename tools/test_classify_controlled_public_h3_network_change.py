@@ -150,6 +150,46 @@ def test_successful_application_without_target_h3_tuple_change_is_not_cm() -> No
     assert classification == "application_task_succeeded_without_observed_quic_migration"
 
 
+def test_server_timeout_with_observed_application_failure_is_negative_control() -> None:
+    summary = base_summary(
+        qlog_path_validation=False,
+        remote_addr_count=1,
+    )
+    summary["server_ok"] = False
+    summary["server_requests"]["reached_expected_count"] = False
+    summary["application"] = {
+        "workload": "poll",
+        "complete": False,
+        "success": False,
+        "error_keys": ["pollError"],
+        "body_dataset": {"pollError": "TypeError: Failed to fetch"},
+    }
+    status, classification = classify(summary)
+    assert status == "PASS_NEGATIVE_CONTROL"
+    assert classification == "application_task_failed_without_quic_path_validation"
+
+
+def test_server_timeout_with_observed_application_success_still_classifies() -> None:
+    summary = base_summary(
+        qlog_path_validation=False,
+        remote_addr_count=2,
+        quic_sessions=2,
+    )
+    summary["server_ok"] = False
+    summary["server_requests"]["reached_expected_count"] = False
+    summary["server_requests"]["target_h3_remote_addr_count"] = 2
+    summary["application"] = {
+        "workload": "poll",
+        "complete": True,
+        "success": True,
+        "error_keys": [],
+        "body_dataset": {"pollComplete": "true"},
+    }
+    status, classification = classify(summary)
+    assert status == "PASS_NEGATIVE_CONTROL"
+    assert classification == "tuple_changed_without_path_validation"
+
+
 def main() -> int:
     test_chrome_positive_requires_client_active_path_change()
     test_missing_client_path_snapshot_is_negative_control()
@@ -158,6 +198,8 @@ def main() -> int:
     test_eventual_client_path_change_with_application_failure_is_negative_control()
     test_incomplete_application_without_error_is_distinct_negative_control()
     test_successful_application_without_target_h3_tuple_change_is_not_cm()
+    test_server_timeout_with_observed_application_failure_is_negative_control()
+    test_server_timeout_with_observed_application_success_still_classifies()
     print("classify_controlled_public_h3_network_change=ok")
     return 0
 

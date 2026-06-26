@@ -24,3 +24,23 @@ func TestBuildBrowserDownlinkHTMLIncludesStreamTimeoutRetryControls(t *testing.T
 		}
 	}
 }
+
+func TestBuildBrowserPollHTMLIncludesRetryControls(t *testing.T) {
+	html := buildBrowserPollHTML("poll retry", 6, 1000, 2, 750)
+
+	wantSubstrings := []string{
+		"retryAttempts=2",
+		"retryDelayMs=750",
+		"pollWithRetry",
+		"attempt=${attempt}",
+		"pollRetriesUsed",
+		"pollCompletedCount",
+		"pollComplete",
+		"pollErrorElapsedMs",
+	}
+	for _, want := range wantSubstrings {
+		if !strings.Contains(html, want) {
+			t.Fatalf("browser poll HTML missing %q in:\n%s", want, html)
+		}
+	}
+}

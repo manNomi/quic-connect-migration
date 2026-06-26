@@ -19,6 +19,8 @@ TARGET_H3_WORKLOADS = {
     "heartbeat",
     "browser-upload",
     "upload-sink",
+    "browser-poll",
+    "poll",
     "upload",
     "download",
 }
@@ -104,7 +106,10 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
 
     if summary["server_error"] == "missing":
         return "FAIL", "controlled_public_network_change_server_artifact_missing"
-    if not summary["server_ok"] or not server_requests["reached_expected_count"]:
+    server_workload_incomplete = not summary["server_ok"] or not server_requests["reached_expected_count"]
+    if server_workload_incomplete and not (
+        summary["server_qlog_has_application_h3"] and application.get("success") is not None
+    ):
         return "FAIL", "controlled_public_network_change_workload_failed"
     if not summary["server_qlog_has_application_h3"]:
         return "FAIL", "controlled_public_network_change_application_h3_precondition_failed"
