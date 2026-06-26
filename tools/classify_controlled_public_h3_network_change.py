@@ -113,6 +113,10 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
     if not client_active_path_changed:
         return "PASS_NEGATIVE_CONTROL", "no_client_active_path_change_observed"
     if application.get("success") is False:
+        if application.get("complete") is False and not application.get("error_keys"):
+            if qlog_has_path_validation:
+                return "PASS_NEGATIVE_CONTROL", "application_task_incomplete_despite_quic_path_validation"
+            return "PASS_NEGATIVE_CONTROL", "application_task_incomplete_without_quic_path_validation"
         if qlog_has_path_validation:
             return "PASS_NEGATIVE_CONTROL", "application_task_failed_despite_quic_path_validation"
         return "PASS_NEGATIVE_CONTROL", "application_task_failed_without_quic_path_validation"

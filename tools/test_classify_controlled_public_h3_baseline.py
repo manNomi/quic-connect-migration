@@ -29,6 +29,7 @@ def test_downlink_dataset_error_marks_application_failure(tmp_path: Path) -> Non
     )
     summary = application_summary(tmp_path)
     assert summary["workload"] == "downlink"
+    assert summary["complete"] is False
     assert summary["success"] is False
     assert summary["error_keys"] == ["downlinkError"]
 
@@ -37,6 +38,7 @@ def test_downlink_complete_without_error_marks_application_success(tmp_path: Pat
     write_cdp_summary(tmp_path, {"downlinkComplete": "true", "downlinkBytes": "65536"})
     summary = application_summary(tmp_path)
     assert summary["workload"] == "downlink"
+    assert summary["complete"] is True
     assert summary["success"] is True
 
 

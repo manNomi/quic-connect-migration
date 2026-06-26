@@ -106,6 +106,7 @@ def test_eventual_client_path_change_with_application_failure_is_negative_contro
     }
     summary["application"] = {
         "workload": "downlink",
+        "complete": False,
         "success": False,
         "error_keys": ["downlinkError"],
     }
@@ -114,12 +115,30 @@ def test_eventual_client_path_change_with_application_failure_is_negative_contro
     assert classification == "application_task_failed_without_quic_path_validation"
 
 
+def test_incomplete_application_without_error_is_distinct_negative_control() -> None:
+    summary = base_summary(
+        qlog_path_validation=False,
+        remote_addr_count=1,
+    )
+    summary["application"] = {
+        "workload": "downlink",
+        "complete": False,
+        "success": False,
+        "error_keys": [],
+        "body_dataset": {"downlinkBytes": "4120"},
+    }
+    status, classification = classify(summary)
+    assert status == "PASS_NEGATIVE_CONTROL"
+    assert classification == "application_task_incomplete_without_quic_path_validation"
+
+
 def main() -> int:
     test_chrome_positive_requires_client_active_path_change()
     test_missing_client_path_snapshot_is_negative_control()
     test_no_client_active_path_change_is_negative_control()
     test_safari_feasibility_also_requires_client_active_path_change()
     test_eventual_client_path_change_with_application_failure_is_negative_control()
+    test_incomplete_application_without_error_is_distinct_negative_control()
     print("classify_controlled_public_h3_network_change=ok")
     return 0
 

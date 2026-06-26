@@ -101,19 +101,24 @@ def application_summary(browser_dir: Path) -> dict[str, Any]:
         if key.lower().endswith("error") or key.lower().endswith("lasterror")
     )
     success: bool | None = None
+    complete: bool | None = None
     workload = "unknown"
     if any(key.startswith("downlink") for key in dataset):
         workload = "downlink"
-        success = dataset.get("downlinkComplete") == "true" and not error_keys
+        complete = dataset.get("downlinkComplete") == "true"
+        success = complete and not error_keys
     elif any(key.startswith("upload") for key in dataset):
         workload = "upload"
-        success = dataset.get("uploadComplete") == "true" and not error_keys
+        complete = dataset.get("uploadComplete") == "true"
+        success = complete and not error_keys
     elif dataset.get("slowComplete") == "true":
         workload = "slow"
+        complete = True
         success = True
     return {
         "cdp_summary_error": cdp_error,
         "workload": workload,
+        "complete": complete,
         "success": success,
         "error_keys": error_keys,
         "body_dataset": dataset,
