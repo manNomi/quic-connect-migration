@@ -34,15 +34,16 @@ When `stream_timeout_ms > 0`, the browser page wraps each `ReadableStreamDefault
 | Condition | Repetitions | Application success | Retry used | Target H3 tuple change | Chrome QUIC sessions | Server qlog path validation |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | `stream_timeout_ms=1500` | 3 | 3/3 | 3/3 | 2/3 | 2 in every row | 0/3 |
+| `stream_timeout_ms=3000`, `retry_attempts=0` | 3 | 0/3 | 0/3 | 0/3 | 1 in every row | 0/3 |
 | `stream_timeout_ms=3000` | 3 | 3/3 | 3/3 | 3/3 | 2 in every row | 0/3 |
 
 The 1500ms condition verifies that the timeout/retry mechanism works, but its timeout can fire before the 2s network-change trigger. It is useful as a harness diagnostic, not as the strongest handover claim.
 
-The 3000ms condition is the stronger result. The first retry error was recorded at 3029-4029ms, after the 2s Wi-Fi cutover trigger. All three repetitions completed the 8s/32KB downlink task after one retry.
+The 3000ms condition is the stronger result. The first retry error was recorded at 3029-4029ms, after the 2s Wi-Fi cutover trigger. With no retry, all three repetitions failed at 3026-3035ms after receiving only 4122 bytes. With one retry, all three repetitions completed the 8s/32KB downlink task.
 
 ## Interpretation
 
-The timeout+retry strategy restored application-level task completion in the public Chrome iPhone USB handover setup.
+The timeout+retry strategy restored application-level task completion in the public Chrome iPhone USB handover setup. The timeout-only control did not: it only turned the stuck stream into an explicit application failure.
 
 It did not demonstrate browser QUIC Connection Migration. In the 3000ms condition, every row had:
 
@@ -58,6 +59,8 @@ That evidence points to replacement or multiple HTTP/3 connections after the fet
 1. Chrome did not provide observable single-session QUIC Connection Migration in this active Wi-Fi to iPhone USB test.
 2. A small application-level timeout+retry policy can still preserve the user-visible downlink task under the same handover.
 
+The timeout-only control sharpens the second claim. Under the same 2s active path change and 3000ms stream timeout, `retry_attempts=0` failed 3/3 with `downlinkError=Error: AbortError: BodyStreamBuffer was aborted`, while `retry_attempts=1` succeeded 3/3. This isolates retry/reconnect behavior as the recovery mechanism.
+
 ## Relation To Prior Controls
 
 The same stable 8s/32KB iPhone USB no-change workload passed before active handover testing. The no-retry active handover controls failed or remained incomplete across repetitions and trigger timings. The heartbeat diagnostic showed that separate application requests can receive responses after cutover, but that alone did not recover the original streaming task.
@@ -68,6 +71,9 @@ This diagnostic closes that gap: explicit stream timeout plus retry recovered th
 
 - Detailed CSV: `data/iphone-usb-timeout-retry-diagnostic-20260626.csv`
 - Main artifacts:
+  - `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-timeout3000-retry0-iphone-usb-network-change-001`
+  - `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-timeout3000-retry0-iphone-usb-network-change-002`
+  - `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-timeout3000-retry0-iphone-usb-network-change-003`
   - `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-timeout3000-retry1-iphone-usb-network-change-001`
   - `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-timeout3000-retry1-iphone-usb-network-change-002`
   - `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-timeout3000-retry1-iphone-usb-network-change-003`
