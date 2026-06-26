@@ -86,6 +86,10 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
     qlog_has_path_validation = summary["server_qlog_has_path_validation"]
     browser_kind = summary["browser_kind"]
     remote_addr_count = int(server_requests["remote_addr_count"])
+    if "target_h3_remote_addr_count" in server_requests:
+        migration_remote_addr_count = int(server_requests.get("target_h3_remote_addr_count") or 0)
+    else:
+        migration_remote_addr_count = remote_addr_count
     quic_sessions = int(netlog.get("target_quic_session_count") or 0)
     application = summary.get("application") if isinstance(summary.get("application"), dict) else {}
     client_path_error = client_path_change.get("error")
@@ -121,17 +125,19 @@ def classify(summary: dict[str, Any]) -> tuple[str, str]:
             return "PASS_NEGATIVE_CONTROL", "application_task_failed_despite_quic_path_validation"
         return "PASS_NEGATIVE_CONTROL", "application_task_failed_without_quic_path_validation"
 
-    if browser_kind != "chrome" and remote_addr_count > 1 and qlog_has_path_validation:
+    if browser_kind != "chrome" and migration_remote_addr_count > 1 and qlog_has_path_validation:
         return "PASS_FEASIBILITY", "possible_connection_migration_server_qlog_only"
-    if remote_addr_count > 1 and qlog_has_path_validation and quic_sessions <= 1:
+    if migration_remote_addr_count > 1 and qlog_has_path_validation and quic_sessions <= 1:
         return "PASS", "possible_connection_migration"
-    if remote_addr_count > 1 and qlog_has_path_validation and quic_sessions > 1:
+    if migration_remote_addr_count > 1 and qlog_has_path_validation and quic_sessions > 1:
         return "PASS_NEGATIVE_CONTROL", "reconnect_or_multiple_sessions"
-    if remote_addr_count > 1 and not qlog_has_path_validation:
+    if migration_remote_addr_count > 1 and not qlog_has_path_validation:
         return "PASS_NEGATIVE_CONTROL", "tuple_changed_without_path_validation"
-    if remote_addr_count == 1 and qlog_has_path_validation:
+    if migration_remote_addr_count == 1 and qlog_has_path_validation:
         return "PASS_NEGATIVE_CONTROL", "path_validation_without_observed_tuple_change"
-    if remote_addr_count == 1:
+    if migration_remote_addr_count == 1 and application.get("success") is True:
+        return "PASS_NEGATIVE_CONTROL", "application_task_succeeded_without_observed_quic_migration"
+    if migration_remote_addr_count == 1:
         return "PASS_NEGATIVE_CONTROL", "no_path_change_after_trigger"
     return "PASS_NEGATIVE_CONTROL", "controlled_public_network_change_inconclusive"
 

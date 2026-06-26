@@ -132,6 +132,24 @@ def test_incomplete_application_without_error_is_distinct_negative_control() -> 
     assert classification == "application_task_incomplete_without_quic_path_validation"
 
 
+def test_successful_application_without_target_h3_tuple_change_is_not_cm() -> None:
+    summary = base_summary(
+        qlog_path_validation=False,
+        remote_addr_count=5,
+    )
+    summary["server_requests"]["target_h3_remote_addr_count"] = 1
+    summary["application"] = {
+        "workload": "downlink",
+        "complete": True,
+        "success": True,
+        "error_keys": [],
+        "body_dataset": {"downlinkComplete": "true"},
+    }
+    status, classification = classify(summary)
+    assert status == "PASS_NEGATIVE_CONTROL"
+    assert classification == "application_task_succeeded_without_observed_quic_migration"
+
+
 def main() -> int:
     test_chrome_positive_requires_client_active_path_change()
     test_missing_client_path_snapshot_is_negative_control()
@@ -139,6 +157,7 @@ def main() -> int:
     test_safari_feasibility_also_requires_client_active_path_change()
     test_eventual_client_path_change_with_application_failure_is_negative_control()
     test_incomplete_application_without_error_is_distinct_negative_control()
+    test_successful_application_without_target_h3_tuple_change_is_not_cm()
     print("classify_controlled_public_h3_network_change=ok")
     return 0
 
