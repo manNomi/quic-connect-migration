@@ -1,0 +1,120 @@
+{
+  "generated": "2026-06-29",
+  "public_safe": true,
+  "requirements": "data/final-browser-handover-required-trials.csv",
+  "experiments": "data/experiment-results.csv",
+  "workload_synthesis": "data/workload-sensitivity-synthesis-20260629.csv",
+  "iphone_failover": "data/iphone-usb-latent-failover-live-rerun-20260629.json",
+  "origin_access": "data/controlled-public-origin-access-check-rerun-20260629.json",
+  "experiment_status_counts": {
+    "PASS": 32,
+    "PASS_FEASIBILITY": 6,
+    "PASS_NEGATIVE_CONTROL": 58
+  },
+  "final_protocol": {
+    "complete": false,
+    "complete_count": 3,
+    "requirement_count": 6,
+    "blockers": [
+      "chrome-downlink-noheartbeat-active-cm: 0/3",
+      "chrome-downlink-heartbeat-active-cm: 0/3",
+      "p1-safari-or-android-feasibility: 0/1"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "quic-cm-is-a-real-standard-feature",
+      "readiness": "source-backed",
+      "evidence": "RFC 9000 defines path validation and connection migration; quic-go documents AddPath/Probe/Switch as client-side path migration primitives.",
+      "safe_paper_wording": "QUIC provides standardized primitives for path validation and client-initiated migration, and at least some implementations expose explicit migration APIs.",
+      "do_not_claim": "Do not infer that HTTP/3 browsers automatically use those primitives during Wi-Fi/cellular handover.",
+      "next_step": "Use RFC 9000 and implementation docs as background, then rely on local artifacts for runtime behavior."
+    },
+    {
+      "claim_id": "controlled-implementations-can-migrate",
+      "readiness": "supported-scoped",
+      "evidence": "13 PASS rows have both path validation and tuple-change evidence; AWS NLB/CID-related evidence rows=9. Key rows include quic-go direct origin and quiche local migration controls.",
+      "safe_paper_wording": "Controlled QUIC clients and deployment paths can demonstrate migration or CID-aware continuity under instrumented conditions.",
+      "do_not_claim": "Do not generalize controlled CLI/library success to Chrome/Safari browser handover.",
+      "next_step": "Keep controlled implementation results as positive controls and contrast them with browser/runtime policy evidence."
+    },
+    {
+      "claim_id": "controlled-public-browser-h3-baseline-exists",
+      "readiness": "supported-historical",
+      "evidence": "Final audit still has the controlled public Chrome application H3 baseline requirement complete; no-change downlink baselines are also complete.",
+      "safe_paper_wording": "The study already established that the controlled public origin was previously usable for Chrome HTTP/3 application traffic and no-change comparisons.",
+      "do_not_claim": "Do not treat the previous baseline as proof that the public origin is currently online.",
+      "next_step": "After origin recovery, rerun a fresh baseline before final active path-change rows."
+    },
+    {
+      "claim_id": "iphone-usb-path-change-trigger-is-ready",
+      "readiness": "supported-scoped",
+      "evidence": "Rerun classification=latent_iphone_usb_failover_observed; ready=True; ready_at_ms=1321; before=en0; after=en8.",
+      "safe_paper_wording": "On this Mac, Wi-Fi-off can trigger a reproducible latent iPhone USB failover, suitable as a real client path-change trigger with an explicit claim boundary.",
+      "do_not_claim": "Do not call this simultaneous active multipath; it is delayed OS failover from Wi-Fi to iPhone USB.",
+      "next_step": "Use NETWORK_CHANGE_CMD=\"networksetup -setairportpower 'en0' off\" in page-ready public trials once the origin is reachable."
+    },
+    {
+      "claim_id": "public-origin-currently-blocks-final-runs",
+      "readiness": "blocked-by-origin",
+      "evidence": "Origin TCP classification=connection_refused; AWS identity classification=invalid_client_token; any recovery path ready=False.",
+      "safe_paper_wording": "The current inability to run final public trials is an infrastructure readiness blocker, not evidence that iPhone USB path change failed.",
+      "do_not_claim": "Do not report a failed final browser CM trial when the controlled origin did not accept HTTPS/H3 connections.",
+      "next_step": "Refresh AWS credentials or provide SSH/cert access, restart the controlled origin, and rerun baseline plus active trials."
+    },
+    {
+      "claim_id": "chrome-single-session-browser-cm-not-yet-proven",
+      "readiness": "not-supported-yet",
+      "evidence": "Final protocol complete=False; complete requirements=3/6; blockers=chrome-downlink-noheartbeat-active-cm: 0/3; chrome-downlink-heartbeat-active-cm: 0/3; p1-safari-or-android-feasibility: 0/1; public iPhone network-change rows observed=20.",
+      "safe_paper_wording": "The current Chrome evidence supports workload failure/recovery and replacement-session observations, but not a publishable single-session browser CM success claim.",
+      "do_not_claim": "Do not state that Chrome successfully migrated the original HTTP/3 connection across Wi-Fi-to-iPhone-USB.",
+      "next_step": "Complete 3 no-heartbeat active rows, 3 heartbeat active rows, and one Safari/Android feasibility row with the full evidence chain."
+    },
+    {
+      "claim_id": "upload-download-app-recovery-is-strong",
+      "readiness": "supported",
+      "evidence": "Upload: retry0 failed 3/3; retry1 succeeded 3/3 after one failed first attempt; Download: timeout-only retry0 failed 3/3; timeout+retry1 succeeded 3/3; local Range 6000ms no-retry 1/3 PASS and retry2 3/3 PASS.",
+      "safe_paper_wording": "For large upload/download, application retry or byte-range recovery can convert visible task failure into task completion, but this is not the same as single-session QUIC CM.",
+      "do_not_claim": "Do not use retry-completed rows as transport-layer CM success.",
+      "next_step": "When public origin is restored, rerun page-ready upload/download with retry0 and retry1/range variants."
+    },
+    {
+      "claim_id": "streaming-continuity-needs-qoe-metrics",
+      "readiness": "supported-local-control",
+      "evidence": "Media: segment replication 3000ms/6000ms completed 3/3; buffered playback 3000ms completed 12/12 but low buffer had 14 rebuffer events while high buffer had ~15s startup delay and 0 rebuffer; Music-like: 6000ms no-retry failed 3/3 after first segment; retry1 completed 3/3 with all eight segments.",
+      "safe_paper_wording": "Streaming workloads require startup delay, rebuffer events, segment retry, and session churn metrics; completion alone hides the mechanism.",
+      "do_not_claim": "Do not say CM helps streaming unless the row also proves session continuity and path validation.",
+      "next_step": "Run public page-ready buffered-media handover after origin recovery and compare it against local buffered-media controls."
+    },
+    {
+      "claim_id": "paper-direction-is-evidence-chain-and-workload-maturity",
+      "readiness": "supported-as-framing",
+      "evidence": "Implementation positives, browser negative controls, iPhone path-change readiness, workload recovery controls, and origin readiness gates now form a coherent evidence-boundary story.",
+      "safe_paper_wording": "The defensible paper direction is a maturity and workload-continuity study: why CM is hard to observe/deploy, which workloads expose the gap, and what evidence is required before claiming browser CM.",
+      "do_not_claim": "Do not frame the paper as already proving browser/mobile HTTP/3 CM success.",
+      "next_step": "Write the paper around evidence chain, workload sensitivity, and controlled recovery; add final public handover rows when infrastructure is restored."
+    }
+  ],
+  "source_anchors": [
+    {
+      "label": "RFC 9000, QUIC transport",
+      "url": "https://datatracker.ietf.org/doc/html/rfc9000",
+      "use": "Normative connection migration and path validation semantics."
+    },
+    {
+      "label": "quic-go connection migration docs",
+      "url": "https://quic-go.net/docs/quic/connection-migration/",
+      "use": "Implementation-level AddPath/Probe/Switch control model."
+    },
+    {
+      "label": "curl issue 7695",
+      "url": "https://github.com/curl/curl/issues/7695",
+      "use": "Practitioner report that HTTP/3 support did not imply automatic connection migration in curl."
+    },
+    {
+      "label": "An Analysis of QUIC Connection Migration in the Wild",
+      "url": "https://arxiv.org/abs/2410.06066",
+      "use": "Measurement anchor for uneven Internet CM support among HTTP/3-capable destinations."
+    }
+  ]
+}

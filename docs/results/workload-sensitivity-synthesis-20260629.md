@@ -40,8 +40,8 @@ This framing avoids overclaiming. It also answers why a good transport feature m
 
 ## Immediate Next Experiments
 
-1. Public page-ready polling handover once iPhone USB has active IPv4.
-2. Public page-ready media segment handover once iPhone USB has active IPv4.
+1. Public page-ready polling handover after the controlled origin is reachable.
+2. Public page-ready media segment handover after the controlled origin is reachable.
 3. Run public page-ready Range handover after the controlled origin is reachable.
 4. Compare public iPhone USB media rows against these local proxy controls.
 5. If streaming becomes central, add adaptive-bitrate or larger buffer-depth variants.

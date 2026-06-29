@@ -26,6 +26,8 @@ Latest local OS-level failover evidence:
 
 | artifact | result |
 | --- | --- |
+| `data/iphone-usb-latent-failover-live-rerun-20260629.json` | Wi-Fi off trigger observed `en0 -> en8` iPhone USB default-route failover at `1321` ms |
+| `docs/results/iphone-usb-latent-failover-live-rerun-20260629.md` | public-safe rerun report; claim boundary remains delayed OS failover, not simultaneous multipath |
 | `data/iphone-usb-latent-failover-live-20260629.json` | Wi-Fi off trigger observed iPhone USB as default route at `584` ms |
 | `docs/results/iphone-usb-latent-failover-live-20260629.md` | repeated Markdown check observed iPhone USB as default route at `548` ms |
 | `docs/results/final-browser-handover-readiness-latent-iphone-usb-20260629.md` | final readiness accepts latent iPhone USB only with explicit `--allow-latent-secondary-path` |
@@ -50,6 +52,8 @@ Generated report:
 
 - `docs/results/controlled-public-origin-access-check-20260629.md`
 - `data/controlled-public-origin-access-check-20260629.json`
+- `docs/results/controlled-public-origin-access-check-rerun-20260629.md`
+- `data/controlled-public-origin-access-check-rerun-20260629.json`
 
 Interpretation: the public host exists, but the controlled origin server is not currently listening on 443. The WebPKI cert/key paths are not available on this Mac, and SSH auth to the origin host is not available from the current machine. The server likely needs to be restarted on the origin host where the cert/key live, or AWS credentials need to be refreshed to provision/recover a new origin.
 
@@ -83,6 +87,8 @@ networksetup -setairportpower 'en0' on
 ```
 
 The public origin server must be running and reachable before the active trial. The current config has baseline fields and a baseline summary, but the active server artifact was missing during preflight.
+
+Latest rerun boundary: do not execute the final Chrome network-change wrapper while the origin readiness check returns `connection_refused`. That would create a server-readiness failure artifact, not a meaningful browser CM row.
 
 ## Recommended First Trial
 

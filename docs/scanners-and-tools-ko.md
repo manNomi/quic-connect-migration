@@ -2540,3 +2540,36 @@ python3 tools/summarize_chrome_rebinding_buffered_media_matrix.py \
 - low buffer `startup/max=1/1`은 빠르게 시작하지만 rebuffer event가 많다.
 - high buffer `startup/max=4/6`은 rebuffer event가 없지만 startup delay가 약 15초로 길다.
 - 모든 row가 `nat_rebinding_multiple_quic_sessions`이므로, 이 결과는 playback-level continuity/QoE evidence로 보고하고 browser single-session CM 성공으로 쓰지 않는다.
+
+## 70. `tools/build_paper_claim_readiness_audit.py`
+
+현재 연구 bundle을 논문 claim 단위로 감사한다. 이 도구는 새 실험을 돌리지 않고 `data/experiment-results.csv`, final browser handover requirement, workload sensitivity synthesis, iPhone USB failover rerun, controlled public origin access check를 읽어서 "지금 쓸 수 있는 주장"과 "아직 쓰면 안 되는 주장"을 분리한다.
+
+사용 예:
+
+```bash
+python3 tools/build_paper_claim_readiness_audit.py \
+  --json-output data/paper-claim-readiness-audit-20260629.json
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/results/paper-claim-readiness-audit-20260629.md` | 논문 claim readiness report |
+| `data/paper-claim-readiness-audit-20260629.csv` | claim별 CSV |
+| `data/paper-claim-readiness-audit-20260629.json` | source path와 final protocol 상태를 포함한 machine-readable audit |
+
+현재 결과:
+
+- final browser protocol은 `3/6` requirement 완료 상태다.
+- iPhone USB path-change trigger는 `latent_iphone_usb_failover_observed`, `1321ms`, `en0 -> en8`로 scoped supported다.
+- controlled public origin은 현재 `connection_refused`, AWS identity는 `invalid_client_token`이라 final public trial 실행 blocker다.
+- Chrome single-session browser CM은 아직 `not-supported-yet`이다.
+- upload/download application recovery, Range resume, streaming QoE/buffer tradeoff는 논문에 쓸 수 있는 workload-continuity evidence다.
+
+논문 사용 원칙:
+
+- positive wording은 "workload-sensitive CM maturity study"로 제한한다.
+- retry, Range resume, buffered playback completion을 single-session QUIC CM 성공으로 승격하지 않는다.
+- public origin 복구 후 fresh baseline과 page-ready active path-change rows를 추가해야 browser CM success claim을 검토할 수 있다.
