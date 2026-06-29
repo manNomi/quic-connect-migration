@@ -120,6 +120,10 @@ def application_summary(browser_dir: Path) -> dict[str, Any]:
         workload = "media"
         complete = dataset.get("mediaComplete") == "true"
         success = complete and not terminal_error_keys
+    elif any(key.startswith("range") for key in dataset):
+        workload = "range"
+        complete = dataset.get("rangeComplete") == "true"
+        success = complete and not terminal_error_keys
     elif dataset.get("slowComplete") == "true":
         workload = "slow"
         complete = True

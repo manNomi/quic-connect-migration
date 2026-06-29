@@ -119,6 +119,12 @@ The expected contribution is not simply "CM helps streaming." A more defensible 
 
 > QUIC CM relevance is workload-dependent. Long-lived upload/download tasks expose transport continuity more directly, while media workloads often convert transport disruption into segment retry, buffer depletion, quality adaptation, or reconnect behavior. Therefore browser HTTP/3 CM maturity should be evaluated together with workload semantics and application recovery strategy.
 
+Related large-transfer control:
+
+- `docs/results/chrome-h3-rebinding-range-download-control-20260629.md`
+
+This Range/resume control is not a streaming workload, but it helps separate two recovery semantics that matter for video/file transfer: restarting a whole long response versus retrying only the failed byte range.
+
 ## Data
 
 - Workload case matrix: `data/streaming-workload-case-analysis-20260629.csv`

@@ -144,6 +144,15 @@ def test_media_completion_and_timing_are_detected() -> None:
     }
 
 
+def test_range_completion_and_timing_are_detected() -> None:
+    dump = '<body data-range-complete="true" data-range-elapsed-ms="6420"></body>'
+    assert dump_application_complete(dump, "rebinding-proxy-range") is True
+    assert dump_task_timing(dump, "rebinding-proxy-range") == {
+        "elapsed_ms": 6420,
+        "error_elapsed_ms": None,
+    }
+
+
 def main() -> int:
     test_rebinding_path_validation_without_tuple_change_gets_nat_label()
     test_rebinding_probe_without_response_is_not_validation()
@@ -153,6 +162,7 @@ def main() -> int:
     test_browser_application_failure_overrides_transport_evidence()
     test_dump_task_timing_reads_elapsed_attributes()
     test_media_completion_and_timing_are_detected()
+    test_range_completion_and_timing_are_detected()
     print("classify_chrome_h3_artifacts=ok")
     return 0
 

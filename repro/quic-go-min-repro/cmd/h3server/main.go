@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -26,23 +27,24 @@ import (
 )
 
 type requestRecord struct {
-	Label               string `json:"label"`
-	Method              string `json:"method"`
-	Path                string `json:"path"`
-	RemoteAddr          string `json:"remote_addr"`
-	RequestBytes        int    `json:"request_bytes"`
-	RequestSHA256       string `json:"request_sha256,omitempty"`
-	ResponseBytes       int    `json:"response_bytes"`
-	ResponseSHA256      string `json:"response_sha256,omitempty"`
-	ResponseContentType string `json:"response_content_type,omitempty"`
-	Proto               string `json:"proto,omitempty"`
-	TLSALPN             string `json:"tls_alpn,omitempty"`
-	HandledAt           string `json:"handled_at"`
-	Workload            string `json:"workload"`
-	StreamResponse      bool   `json:"stream_response,omitempty"`
-	ChunkBytes          int    `json:"chunk_bytes,omitempty"`
-	ChunkDelayMillis    int64  `json:"chunk_delay_millis,omitempty"`
-	DecodeSuccessful    bool   `json:"decode_successful"`
+	Label               string            `json:"label"`
+	Method              string            `json:"method"`
+	Path                string            `json:"path"`
+	RemoteAddr          string            `json:"remote_addr"`
+	RequestBytes        int               `json:"request_bytes"`
+	RequestSHA256       string            `json:"request_sha256,omitempty"`
+	ResponseBytes       int               `json:"response_bytes"`
+	ResponseSHA256      string            `json:"response_sha256,omitempty"`
+	ResponseContentType string            `json:"response_content_type,omitempty"`
+	ResponseHeaders     map[string]string `json:"response_headers,omitempty"`
+	Proto               string            `json:"proto,omitempty"`
+	TLSALPN             string            `json:"tls_alpn,omitempty"`
+	HandledAt           string            `json:"handled_at"`
+	Workload            string            `json:"workload"`
+	StreamResponse      bool              `json:"stream_response,omitempty"`
+	ChunkBytes          int               `json:"chunk_bytes,omitempty"`
+	ChunkDelayMillis    int64             `json:"chunk_delay_millis,omitempty"`
+	DecodeSuccessful    bool              `json:"decode_successful"`
 }
 
 type serverResult struct {
@@ -215,7 +217,7 @@ func run(addr, tcpAddr, altSvc, logPath, resultPath, keyLogPath, qlogDir string,
 			"chunk_delay_ms":  record.ChunkDelayMillis,
 			"count":           count,
 		})
-		if err := writeWorkloadResponse(w, status, response, record.ResponseContentType, record.StreamResponse, record.ChunkBytes, time.Duration(record.ChunkDelayMillis)*time.Millisecond); err != nil {
+		if err := writeWorkloadResponse(w, status, response, record.ResponseContentType, record.ResponseHeaders, record.StreamResponse, record.ChunkBytes, time.Duration(record.ChunkDelayMillis)*time.Millisecond); err != nil {
 			_ = logger.Log("response_write_error", map[string]any{
 				"label": record.Label,
 				"error": err.Error(),
@@ -518,6 +520,88 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		}
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, msg
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-range-download":
+		record.Workload = "browser-range-download"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		totalBytes := queryInt(r, "bytes", 1048576)
+		if totalBytes > 16*1024*1024 {
+			totalBytes = 16 * 1024 * 1024
+		}
+		rangeBytes := queryInt(r, "range_bytes", 131072)
+		if rangeBytes > totalBytes {
+			rangeBytes = totalBytes
+		}
+		rangeDurationMillis := queryInt(r, "range_duration_ms", 250)
+		if rangeDurationMillis > 60000 {
+			rangeDurationMillis = 60000
+		}
+		rangeChunks := queryInt(r, "range_chunks", 2)
+		if rangeChunks > 100 {
+			rangeChunks = 100
+		}
+		retryAttempts := queryInt(r, "retry_attempts", 0)
+		if retryAttempts > 5 {
+			retryAttempts = 5
+		}
+		retryDelayMillis := queryInt(r, "retry_delay_ms", 500)
+		if retryDelayMillis > 60000 {
+			retryDelayMillis = 60000
+		}
+		if label == "" {
+			label = "browser-range-download"
+		}
+		html := buildBrowserRangeDownloadHTML(label, totalBytes, rangeBytes, rangeDurationMillis, rangeChunks, retryAttempts, retryDelayMillis)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/range-download":
+		record.Workload = "range-download"
+		record.ResponseContentType = "application/octet-stream"
+		totalBytes := queryInt(r, "bytes", 1048576)
+		if totalBytes > 16*1024*1024 {
+			totalBytes = 16 * 1024 * 1024
+		}
+		durationMillis := queryInt(r, "duration_ms", 250)
+		if durationMillis > 60000 {
+			durationMillis = 60000
+		}
+		chunks := queryInt(r, "chunks", 1)
+		if chunks > 100 {
+			chunks = 100
+		}
+		if label == "" {
+			label = "range-download"
+		}
+		payload := common.DeterministicPayload(label, totalBytes)
+		start, end, partial, err := parseRangeHeader(r.Header.Get("Range"), len(payload))
+		if err != nil {
+			return record, http.StatusRequestedRangeNotSatisfiable, []byte(err.Error())
+		}
+		response := payload[start : end+1]
+		record.Label = label
+		record.ResponseBytes = len(response)
+		record.ResponseSHA256 = sha256Hex(response)
+		record.StreamResponse = durationMillis > 0 || queryBool(r, "stream", false)
+		record.ChunkBytes = len(response) / chunks
+		if record.ChunkBytes <= 0 {
+			record.ChunkBytes = 1
+		}
+		if chunks > 0 {
+			delayMillis := durationMillis / chunks
+			if durationMillis > 0 && delayMillis <= 0 {
+				delayMillis = 1
+			}
+			record.ChunkDelayMillis = int64(delayMillis)
+		}
+		record.ResponseHeaders = map[string]string{"Accept-Ranges": "bytes"}
+		if partial {
+			record.ResponseHeaders["Content-Range"] = fmt.Sprintf("bytes %d-%d/%d", start, end, len(payload))
+		}
+		record.DecodeSuccessful = true
+		if partial {
+			return record, http.StatusPartialContent, response
+		}
+		return record, http.StatusOK, response
 	case r.Method == http.MethodGet && r.URL.Path == "/browser-slow":
 		record.Workload = "browser-slow"
 		record.ResponseContentType = "text/html; charset=utf-8"
@@ -705,14 +789,17 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 	}
 }
 
-func writeWorkloadResponse(w http.ResponseWriter, status int, response []byte, contentType string, stream bool, chunkBytes int, chunkDelay time.Duration) error {
+func writeWorkloadResponse(w http.ResponseWriter, status int, response []byte, contentType string, headers map[string]string, stream bool, chunkBytes int, chunkDelay time.Duration) error {
 	if contentType == "" {
 		contentType = "application/octet-stream"
 	}
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Content-Length", strconv.Itoa(len(response)))
+	for key, value := range headers {
+		w.Header().Set(key, value)
+	}
 	w.WriteHeader(status)
-	if !stream || status != http.StatusOK {
+	if !stream || (status != http.StatusOK && status != http.StatusPartialContent) {
 		_, err := w.Write(response)
 		return err
 	}
@@ -787,6 +874,26 @@ func buildBrowserMediaSegmentsHTML(label string, count, intervalMillis, size, se
 	body += "async function segmentWithRetry(i){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{return {attempt,result:await fetchSegment(i,attempt)};}catch(error){lastError=String(error);document.body.dataset.mediaLastError=lastError;document.body.dataset.mediaLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'media segment failed');}"
 	body += "async function run(){let totalRetries=0,totalBytes=0;for(let i=1;i<=count;i++){const item=await segmentWithRetry(i);totalRetries+=item.attempt-1;totalBytes+=item.result.bytes;document.body.dataset.mediaCompletedCount=String(i);document.body.dataset.mediaRetriesUsed=String(totalRetries);document.body.dataset.mediaBytes=String(totalBytes);const li=document.createElement('li');li.textContent=`segment:${i}:status:${item.result.status}:bytes:${item.result.bytes}:attempt:${item.attempt}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.mediaElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaComplete='true';}"
 	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.mediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaError=String(error);});"
+	body += "</script>"
+	body += "</body></html>"
+	return body
+}
+
+func buildBrowserRangeDownloadHTML(label string, totalBytes, rangeBytes, rangeDurationMillis, rangeChunks, retryAttempts, retryDelayMillis int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	rangeURL := fmt.Sprintf("/range-download?bytes=%d&duration_ms=%d&chunks=%d&label=%s", totalBytes, rangeDurationMillis, rangeChunks, queryLabel)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 range download</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Chrome H3 range download</h1><div id=\"status\" data-label=\"%s\">pending</div><ol id=\"events\"></ol>", escapedLabel)
+	body += "<script>"
+	body += fmt.Sprintf("const totalBytes=%d,rangeBytes=%d,rangeUrl=%q,retryAttempts=%d,retryDelayMs=%d;", totalBytes, rangeBytes, rangeURL, retryAttempts, retryDelayMillis)
+	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
+	body += "const events=document.getElementById('events');"
+	body += "const startedAt=performance.now();"
+	body += "async function fetchRange(start,end,attempt){const res=await fetch(rangeUrl+'&start='+start+'&end='+end+'&attempt='+attempt+'&ts='+Date.now(),{cache:'no-store',headers:{Range:`bytes=${start}-${end}`}});const buf=await res.arrayBuffer();if(res.status!==206&&res.status!==200){throw new Error('range status '+res.status);}const expected=end-start+1;if(buf.byteLength!==expected){throw new Error('range length '+buf.byteLength+' expected '+expected);}return {status:res.status,bytes:buf.byteLength};}"
+	body += "async function rangeWithRetry(start,end,index){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{return {attempt,result:await fetchRange(start,end,attempt)};}catch(error){lastError=String(error);document.body.dataset.rangeLastError=lastError;document.body.dataset.rangeLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'range failed');}"
+	body += "async function run(){let totalRetries=0,completedBytes=0,completedChunks=0;for(let start=0,index=1;start<totalBytes;start+=rangeBytes,index++){const end=Math.min(totalBytes-1,start+rangeBytes-1);const item=await rangeWithRetry(start,end,index);totalRetries+=item.attempt-1;completedBytes+=item.result.bytes;completedChunks=index;document.body.dataset.rangeCompletedBytes=String(completedBytes);document.body.dataset.rangeCompletedChunks=String(completedChunks);document.body.dataset.rangeRetriesUsed=String(totalRetries);const li=document.createElement('li');li.textContent=`range:${index}:${start}-${end}:status:${item.result.status}:bytes:${item.result.bytes}:attempt:${item.attempt}`;events.appendChild(li);}document.getElementById('status').textContent='complete';document.body.dataset.rangeElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.rangeComplete='true';}"
+	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.rangeErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.rangeError=String(error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body
@@ -890,4 +997,36 @@ func queryBool(r *http.Request, key string, fallback bool) bool {
 		return fallback
 	}
 	return parsed
+}
+
+func parseRangeHeader(header string, size int) (int, int, bool, error) {
+	if header == "" {
+		return 0, size - 1, false, nil
+	}
+	if !strings.HasPrefix(header, "bytes=") {
+		return 0, 0, false, fmt.Errorf("unsupported range unit")
+	}
+	rangeSpec := strings.TrimPrefix(header, "bytes=")
+	if strings.Contains(rangeSpec, ",") {
+		return 0, 0, false, fmt.Errorf("multiple ranges are not supported")
+	}
+	parts := strings.SplitN(rangeSpec, "-", 2)
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return 0, 0, false, fmt.Errorf("invalid range")
+	}
+	start, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return 0, 0, false, fmt.Errorf("invalid range start")
+	}
+	end, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return 0, 0, false, fmt.Errorf("invalid range end")
+	}
+	if start < 0 || end < start || start >= size {
+		return 0, 0, false, fmt.Errorf("range out of bounds")
+	}
+	if end >= size {
+		end = size - 1
+	}
+	return start, end, true, nil
 }

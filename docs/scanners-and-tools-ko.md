@@ -2493,3 +2493,28 @@ python3 tools/summarize_chrome_rebinding_media_matrix.py \
 - video-like 3000ms/6000ms no-retry replication은 각각 `3/3 PASS`였지만 모두 `nat_rebinding_multiple_quic_sessions`다.
 - music-like 6000ms no-retry는 `0/3 PASS`, retry1은 `3/3 PASS`다.
 - 따라서 media continuity는 single-session QUIC CM으로 바로 해석하지 않고 segment cadence, retry, buffering, session churn evidence로 분리해서 보고한다.
+
+## 68. `tools/summarize_chrome_rebinding_range_matrix.py`
+
+Chrome local UDP rebinding byte-range download artifact를 CSV와 논문용 Markdown 표로 요약한다. 이 실험은 대용량 다운로드에서 전체 재시작과 Range/resume recovery를 구분하기 위한 local control이다.
+
+실행:
+
+```bash
+python3 tools/summarize_chrome_rebinding_range_matrix.py \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-range-rep1-drop6000-retry0-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-range-rep2-drop6000-retry0-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-range-rep3-drop6000-retry0-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-range-rep1-drop6000-retry2-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-range-rep2-drop6000-retry2-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-range-rep3-drop6000-retry2-20260629 \
+  --profile range-resumable-download \
+  --output docs/results/chrome-h3-rebinding-range-download-control-20260629.md \
+  --csv-output data/chrome-h3-rebinding-range-download-control-20260629.csv
+```
+
+현재 결과:
+
+- 6000ms no-retry Range download는 `1/3 PASS`였다.
+- 6000ms retry2 Range download는 `3/3 PASS`였고, 그중 `2/3`은 실제 byte-range retry를 사용했다.
+- 완료 row는 모두 `nat_rebinding_multiple_quic_sessions`이므로, Range 결과는 resumable application-level continuity evidence로 보고하고 single-session browser CM 성공으로 쓰지 않는다.

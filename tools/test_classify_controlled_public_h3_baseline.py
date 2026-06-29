@@ -95,6 +95,23 @@ def test_media_error_marks_application_failure(tmp_path: Path) -> None:
     assert summary["terminal_error_keys"] == ["mediaError"]
 
 
+def test_range_complete_marks_application_success(tmp_path: Path) -> None:
+    write_cdp_summary(tmp_path, {"rangeComplete": "true", "rangeCompletedBytes": "1048576"})
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "range"
+    assert summary["complete"] is True
+    assert summary["success"] is True
+
+
+def test_range_error_marks_application_failure(tmp_path: Path) -> None:
+    write_cdp_summary(tmp_path, {"rangeCompletedChunks": "2", "rangeError": "TypeError: Failed to fetch"})
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "range"
+    assert summary["complete"] is False
+    assert summary["success"] is False
+    assert summary["terminal_error_keys"] == ["rangeError"]
+
+
 def main() -> int:
     from tempfile import TemporaryDirectory
 
@@ -112,6 +129,10 @@ def main() -> int:
         test_media_complete_marks_application_success(Path(sixth))
     with TemporaryDirectory() as seventh:
         test_media_error_marks_application_failure(Path(seventh))
+    with TemporaryDirectory() as eighth:
+        test_range_complete_marks_application_success(Path(eighth))
+    with TemporaryDirectory() as ninth:
+        test_range_error_marks_application_failure(Path(ninth))
     return 0
 
 

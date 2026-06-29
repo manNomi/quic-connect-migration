@@ -65,3 +65,51 @@ func TestBuildBrowserMediaSegmentsHTMLIncludesSegmentRetryControls(t *testing.T)
 		}
 	}
 }
+
+func TestBuildBrowserRangeDownloadHTMLIncludesRangeRetryControls(t *testing.T) {
+	html := buildBrowserRangeDownloadHTML("range retry", 1048576, 131072, 250, 2, 1, 750)
+
+	wantSubstrings := []string{
+		"range-download",
+		"Range:`bytes=${start}-${end}`",
+		"retryAttempts=1",
+		"retryDelayMs=750",
+		"rangeWithRetry",
+		"rangeCompletedBytes",
+		"rangeCompletedChunks",
+		"rangeRetriesUsed",
+		"rangeComplete",
+		"rangeErrorElapsedMs",
+	}
+	for _, want := range wantSubstrings {
+		if !strings.Contains(html, want) {
+			t.Fatalf("browser range HTML missing %q in:\n%s", want, html)
+		}
+	}
+}
+
+func TestParseRangeHeader(t *testing.T) {
+	start, end, partial, err := parseRangeHeader("bytes=10-19", 100)
+	if err != nil {
+		t.Fatalf("parse range: %v", err)
+	}
+	if start != 10 || end != 19 || !partial {
+		t.Fatalf("unexpected range parse: start=%d end=%d partial=%v", start, end, partial)
+	}
+
+	start, end, partial, err = parseRangeHeader("", 100)
+	if err != nil {
+		t.Fatalf("parse empty range: %v", err)
+	}
+	if start != 0 || end != 99 || partial {
+		t.Fatalf("unexpected empty range parse: start=%d end=%d partial=%v", start, end, partial)
+	}
+
+	start, end, partial, err = parseRangeHeader("bytes=90-120", 100)
+	if err != nil {
+		t.Fatalf("parse clipped range: %v", err)
+	}
+	if start != 90 || end != 99 || !partial {
+		t.Fatalf("unexpected clipped range parse: start=%d end=%d partial=%v", start, end, partial)
+	}
+}

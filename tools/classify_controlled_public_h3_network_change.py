@@ -23,6 +23,8 @@ TARGET_H3_WORKLOADS = {
     "poll",
     "browser-media-segments",
     "media-segment",
+    "browser-range-download",
+    "range-download",
     "upload",
     "download",
 }
