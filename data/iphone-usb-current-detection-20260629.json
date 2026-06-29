@@ -1,0 +1,65 @@
+{
+  "check_date": "2026-06-29",
+  "tool": "check_iphone_usb_latent_failover",
+  "mode": "snapshot",
+  "wifi_device": "en0",
+  "iphone_device": "en8",
+  "measured": false,
+  "ready": false,
+  "ready_at_ms": null,
+  "classification": "iphone_usb_not_detected",
+  "network_change_exit": null,
+  "restore_wifi": false,
+  "restore_exit": null,
+  "before": {
+    "captured_ms": 31,
+    "wifi_power": "Wi-Fi Power (en0): On",
+    "default_interface": "en0",
+    "iphone_usb": {
+      "name": "en8",
+      "present": false,
+      "active": false,
+      "ipv4": [],
+      "usable_ipv4": []
+    }
+  },
+  "after": {
+    "captured_ms": 61,
+    "wifi_power": "Wi-Fi Power (en0): On",
+    "default_interface": "en0",
+    "iphone_usb": {
+      "name": "en8",
+      "present": false,
+      "active": false,
+      "ipv4": [],
+      "usable_ipv4": []
+    }
+  },
+  "events": [
+    {
+      "captured_ms": 31,
+      "wifi_power": "Wi-Fi Power (en0): On",
+      "default_interface": "en0",
+      "iphone_usb": {
+        "name": "en8",
+        "present": false,
+        "active": false,
+        "ipv4": [],
+        "usable_ipv4": []
+      }
+    },
+    {
+      "captured_ms": 61,
+      "wifi_power": "Wi-Fi Power (en0): On",
+      "default_interface": "en0",
+      "iphone_usb": {
+        "name": "en8",
+        "present": false,
+        "active": false,
+        "ipv4": [],
+        "usable_ipv4": []
+      }
+    }
+  ],
+  "claim_boundary": "This measures OS-level delayed Wi-Fi-to-iPhone-USB failover. It can validate a real client path change trigger, but by itself it does not prove single-connection QUIC migration."
+}
