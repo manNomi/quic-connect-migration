@@ -106,6 +106,26 @@ def test_active_tuple_change_uses_target_h3_remote_addr_count() -> None:
     assert "target h3 remote addr count 1" in row["notes"]
 
 
+def test_range_workload_gets_range_specific_task_and_trigger() -> None:
+    summary = base_network_summary("tuple_changed_without_path_validation")
+    summary["status"] = "PASS_NEGATIVE_CONTROL"
+    summary["application"] = {"workload": "range", "success": True}
+    summary["server_requests"]["request_workloads"] = [
+        "browser-range-download",
+        "range-download",
+        "range-download",
+    ]
+    summary["server_requests"]["request_labels"] = ["range-retry"]
+    row = build_row(
+        "controlled-public-chrome-range-retry-network-change-page-ready-001",
+        Path("repro/quic-go-min-repro/artifacts/controlled-public-chrome-range-retry-network-change-page-ready-001"),
+        summary,
+        "2026-06-29",
+    )
+    assert row["application_task"] == "GET /browser-range-download plus byte-range GET /range-download"
+    assert row["migration_trigger"] == "active path change during Chrome byte-range download workload; NETWORK_CHANGE_CMD executed"
+
+
 def test_chrome_heartbeat_nochange_matches_baseline_requirement() -> None:
     summary = {
         "status": "PASS",
@@ -173,6 +193,7 @@ def main() -> int:
     test_chrome_reconnect_is_negative_control_not_counted_as_cm()
     test_application_dataset_error_overrides_pass_negative_control_success()
     test_active_tuple_change_uses_target_h3_remote_addr_count()
+    test_range_workload_gets_range_specific_task_and_trigger()
     test_chrome_heartbeat_nochange_matches_baseline_requirement()
     test_safari_server_qlog_only_matches_p1_feasibility()
     test_baseline_matches_application_h3_requirement()

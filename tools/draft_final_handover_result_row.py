@@ -94,9 +94,38 @@ def implementation_for(browser: str) -> str:
     return f"{browser} + controlled public quic-go H3"
 
 
-def task_for(phase: str, heartbeat: bool) -> str:
+def workload_for(phase: str, summary: dict[str, Any]) -> str:
+    application = summary.get("application") or {}
+    workload = str(application.get("workload") or "").strip().lower()
+    if workload and workload != "unknown":
+        return workload
+    server_requests = summary.get("server_requests") or {}
+    request_workloads = " ".join(str(item) for item in server_requests.get("request_workloads", []))
+    lowered = request_workloads.lower()
+    if "range" in lowered:
+        return "range"
+    if "upload" in lowered:
+        return "upload"
+    if "media" in lowered:
+        return "media"
+    if "poll" in lowered:
+        return "poll"
+    if "downlink" in lowered:
+        return "downlink"
+    return "baseline" if phase == "baseline" else "downlink"
+
+
+def task_for(phase: str, heartbeat: bool, workload: str) -> str:
     if phase == "baseline":
         return "GET /browser-slow plus streaming GET /slow-js"
+    if workload == "range":
+        return "GET /browser-range-download plus byte-range GET /range-download"
+    if workload == "upload":
+        return "POST upload workload with application retry policy"
+    if workload == "media":
+        return "GET /browser-media-segments plus media segment fetches"
+    if workload == "poll":
+        return "GET polling workload with repeated fetches"
     if heartbeat:
         return "GET /browser-downlink then streaming GET /downlink-stream plus GET /heartbeat"
     return "GET /browser-downlink then streaming GET /downlink-stream"
@@ -130,14 +159,28 @@ def deployment_for(phase: str, browser: str) -> str:
     return "controlled public browser active network-change"
 
 
-def trigger_for(phase: str, browser: str, heartbeat: bool) -> str:
+def trigger_for(phase: str, browser: str, heartbeat: bool, workload: str) -> str:
     if phase == "baseline":
         return "controlled public application H3 baseline; no active path-change"
     if phase == "no-change-baseline":
+        if workload == "range":
+            return "no network change; controlled public byte-range download"
+        if workload == "upload":
+            return "no network change; controlled public upload workload"
+        if workload == "media":
+            return "no network change; controlled public media segment workload"
+        if workload == "poll":
+            return "no network change; controlled public polling workload"
         suffix = "with heartbeat" if heartbeat else "without heartbeat"
         return f"no network change; controlled public downlink streaming {suffix}"
     target = browser if browser != "Chrome" else "Chrome"
-    return f"active path change during {target} downlink workload; NETWORK_CHANGE_CMD executed"
+    workload_label = {
+        "range": "byte-range download",
+        "upload": "upload",
+        "media": "media segment",
+        "poll": "polling",
+    }.get(workload, "downlink")
+    return f"active path change during {target} {workload_label} workload; NETWORK_CHANGE_CMD executed"
 
 
 def failure_layer_for(status: str, summary: dict[str, Any]) -> str:
@@ -213,6 +256,7 @@ def build_row(trial_id: str, artifact_dir: Path, summary: dict[str, Any], run_da
     browser = infer_browser(trial_id, summary)
     phase = infer_phase(trial_id)
     heartbeat = has_heartbeat(trial_id, summary)
+    workload = workload_for(phase, summary)
     status = status_for(phase, browser, summary)
     server_requests = summary.get("server_requests") or {}
     path_validation = bool(summary.get("server_qlog_has_path_validation"))
@@ -223,10 +267,10 @@ def build_row(trial_id: str, artifact_dir: Path, summary: dict[str, Any], run_da
         "implementation": implementation_for(browser),
         "deployment_tier": deployment_for(phase, browser),
         "protocol": "HTTP/3 over QUIC",
-        "migration_trigger": trigger_for(phase, browser, heartbeat),
+        "migration_trigger": trigger_for(phase, browser, heartbeat, workload),
         "path_validation_observed": bool_cell(path_validation),
         "tuple_change_observed": bool_cell(tuple_change_observed(phase, server_requests)),
-        "application_task": task_for(phase, heartbeat),
+        "application_task": task_for(phase, heartbeat, workload),
         "application_success": bool_cell(application_success(summary, status)),
         "manual_intervention_required": "false",
         "failure_layer": failure_layer_for(status, summary),
