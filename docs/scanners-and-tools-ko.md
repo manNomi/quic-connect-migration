@@ -2573,3 +2573,34 @@ python3 tools/build_paper_claim_readiness_audit.py \
 - positive wording은 "workload-sensitive CM maturity study"로 제한한다.
 - retry, Range resume, buffered playback completion을 single-session QUIC CM 성공으로 승격하지 않는다.
 - public origin 복구 후 fresh baseline과 page-ready active path-change rows를 추가해야 browser CM success claim을 검토할 수 있다.
+
+## 71. `tools/build_current_evidence_manuscript_sections.py`
+
+현재 evidence bundle에서 논문 본문용 Methods/Results 장 초안을 한국어와 영어로 생성한다. `paper claim readiness audit`, workload sensitivity synthesis, final browser handover audit, iPhone USB failover rerun, controlled public origin access rerun을 입력으로 사용한다.
+
+실행:
+
+```bash
+python3 tools/build_current_evidence_manuscript_sections.py
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/paper/current-evidence-methods-results-ko-20260629.md` | 한국어 Methods/Results 장 초안 |
+| `docs/paper/current-evidence-methods-results-en-20260629.md` | 영어 Methods/Results 장 초안 |
+
+문서 내용:
+
+- 연구 질문 3개: 구현체 성숙도, browser single-session CM 관측 가능성, workload별 작업 연속성
+- 방법: implementation/deployment positive control, browser evidence chain, workload continuity 분리
+- 현재 corpus: `PASS=32`, `PASS_FEASIBILITY=6`, `PASS_NEGATIVE_CONTROL=58`, final protocol `3/6`
+- 결과 해석: controlled implementation CM은 supported scoped, Chrome single-session browser CM은 not supported yet
+- 한계와 다음 실행 순서: origin 복구, fresh baseline, Chrome no-heartbeat/heartbeat active rows, Range/media, Safari/Android feasibility
+
+사용 원칙:
+
+- 이 문서는 논문 초안 재료이지 최종 결론이 아니다.
+- `claim readiness`와 `do not claim` 문구를 함께 유지한다.
+- public origin 복구 후 새 row가 추가되면 이 도구를 다시 실행해 초안을 갱신한다.
