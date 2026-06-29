@@ -21,6 +21,9 @@ def sample_readiness() -> ControlledPublicExperimentReadiness:
         application_h3_baseline_ready=True,
         network_change_harness_ready=True,
         desktop_handover_ready=True,
+        allow_latent_secondary_path=False,
+        latent_iphone_usb_candidate_ready=False,
+        desktop_path_change_mode="active-secondary-path",
         can_run_application_h3_baseline=True,
         can_run_network_change=True,
         chrome_found=True,
@@ -97,6 +100,7 @@ def test_redacted_markdown_does_not_leak_private_origin_or_commands() -> None:
     assert_no_private_values(markdown)
     assert "| public origin URL | `<configured>` |" in markdown
     assert "| NETWORK_CHANGE_CMD preview | `<configured>` |" in markdown
+    assert "| desktop path-change mode | `active-secondary-path` |" in markdown
     assert "en0(<redacted:1 address>)" in markdown
     assert "| baseline summary | `PASS` |" in markdown
 

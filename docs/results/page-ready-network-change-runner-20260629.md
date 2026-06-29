@@ -48,13 +48,13 @@ Completed local checks:
 
 ## Current Execution Gate
 
-The active iPhone USB path was not available at the time of implementation verification:
+Later iPhone USB checks showed that this Mac+iPhone setup is a latent failover environment:
 
-- `scutil --nwi` showed only `en0`.
-- `ifconfig en8` returned `interface en8 does not exist`.
-- `networksetup -listnetworkserviceorder` still listed `iPhone USB (en8)`, but the interface was not active.
+- With Wi-Fi on, `en0` is the only active usable IPv4 path and `iPhone USB (en8)` is present but inactive.
+- With Wi-Fi off, `en8` becomes active and default route moves to iPhone USB/cellular.
+- `tools/check_iphone_usb_latent_failover.py --measure` observed `latent_iphone_usb_failover_observed` with `ready_at_ms=575`.
 
-The next experiment should be run only after iPhone USB Personal Hotspot appears as an active IPv4 interface.
+Therefore the next experiment should use `ALLOW_LATENT_SECONDARY_PATH=1`, `NETWORK_CHANGE_CMD="networksetup -setairportpower 'en0' off"`, and should report the environment as delayed Wi-Fi-loss-to-iPhone-USB failover rather than simultaneous active-secondary-path migration.
 
 ## Next Experiment
 

@@ -1,0 +1,2 @@
+date,tool,classification,wifi_device,iphone_device,before_default_interface,before_iphone_present,before_iphone_active,before_iphone_usable_ipv4_count,network_change_exit,ready_at_ms,after_default_interface,after_iphone_present,after_iphone_active,after_iphone_usable_ipv4_count,artifact
+2026-06-29,check_iphone_usb_latent_failover,latent_iphone_usb_failover_observed,en0,en8,en0,true,false,0,0,575,en8,true,true,1,data/iphone-usb-latent-failover-20260629.json

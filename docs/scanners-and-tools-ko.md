@@ -741,10 +741,47 @@ python3 tools/suggest_active_path_change_commands.py \
 | 후보 | 의미 |
 | --- | --- |
 | `macos_wifi_power_cutover` | secondary path가 active일 때 Wi-Fi device power를 끄는 후보 |
+| `macos_wifi_to_iphone_usb_latent_failover` | Wi-Fi가 active이고 iPhone USB가 present/inactive일 때 Wi-Fi off 후 iPhone USB 활성화를 측정하는 후보 |
 | `macos_service_order_cutover` | active secondary network service를 default service보다 우선 배치하는 후보 |
 | `android_wifi_to_cellular_cutover` | ADB device에서 Wi-Fi를 끄고 cellular로 넘기는 후보 |
 
-현재 2026-06-25 점검에서는 active IPv4 interface가 `en0` 하나라 ready 후보가 없다. 이 결과는 CM 실패가 아니라 final active trial gate 미충족으로 해석한다.
+`macos_wifi_to_iphone_usb_latent_failover`는 동시 active secondary path가 아니다. 이 후보는 OS가 Wi-Fi loss 뒤에 iPhone USB tethering을 지연 활성화하는지 확인하기 위한 trigger 후보이며, final trial에서는 반드시 `tools/check_iphone_usb_latent_failover.py --measure`와 client before/after path snapshot을 함께 남긴다.
+
+## 18.2. `tools/check_iphone_usb_latent_failover.py`
+
+macOS에서 iPhone USB tethering이 Wi-Fi active 상태에서는 inactive로 있다가 Wi-Fi off 뒤 default route로 올라오는지 측정한다.
+
+읽기 전용 snapshot:
+
+```bash
+python3 tools/check_iphone_usb_latent_failover.py \
+  --wifi-device en0 \
+  --iphone-device en8 \
+  --format markdown
+```
+
+실제 측정:
+
+```bash
+python3 tools/check_iphone_usb_latent_failover.py \
+  --wifi-device en0 \
+  --iphone-device en8 \
+  --measure \
+  --timeout-seconds 15 \
+  --poll-interval-ms 250 \
+  --format json \
+  --output data/iphone-usb-latent-failover-20260629.json
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `classification=latent_iphone_usb_failover_observed` | Wi-Fi off 뒤 iPhone USB가 default route가 됨 |
+| `ready_at_ms` | Wi-Fi off trigger 이후 iPhone USB default route 관찰 시간 |
+| `before.default_interface` / `after.default_interface` | client path 변화의 OS-level evidence |
+
+이 도구는 OS-level path activation evidence만 제공한다. QUIC single-connection migration 근거는 network-change trial의 qlog, server tuple, Chrome NetLog, workload completion을 함께 확인해야 한다.
 
 ## 19. 실험 실행 코드
 

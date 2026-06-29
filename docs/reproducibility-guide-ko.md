@@ -713,6 +713,44 @@ python3 tools/check_controlled_public_experiment_readiness.py \
   --format markdown
 ```
 
+Mac+iPhone USB 환경처럼 Wi-Fi가 켜진 동안 iPhone USB가 inactive이고, Wi-Fi를 끈 뒤에야 iPhone USB가 default route가 되는 경우는 latent failover mode로 분리한다. 먼저 trigger 후보를 확인한다.
+
+```bash
+python3 tools/suggest_active_path_change_commands.py \
+  --format markdown \
+  --output docs/results/active-path-change-candidates-20260629.md
+```
+
+`macos_wifi_to_iphone_usb_latent_failover`만 ready인 경우에는 strict active-secondary-path 실험이 아니다. 아래 측정으로 OS-level failover delay를 먼저 기록한다.
+
+```bash
+python3 tools/check_iphone_usb_latent_failover.py \
+  --wifi-device en0 \
+  --iphone-device en8 \
+  --measure \
+  --timeout-seconds 15 \
+  --poll-interval-ms 250 \
+  --format json \
+  --output data/iphone-usb-latent-failover-20260629.json
+```
+
+이 모드로 network-change readiness를 평가할 때만 `--allow-latent-secondary-path`를 추가한다.
+
+```bash
+python3 tools/check_controlled_public_experiment_readiness.py \
+  --public-origin-url 'https://h3.example.com/browser-slow?duration_ms=15000&chunks=15&label=handover-slow' \
+  --baseline-summary repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
+  --network-change-cmd "networksetup -setairportpower 'en0' off" \
+  --allow-latent-secondary-path \
+  --format markdown
+```
+
+wrapper를 사용할 때는 같은 의미로 다음 환경변수를 켠다.
+
+```bash
+ALLOW_LATENT_SECONDARY_PATH=1 bash harness/scripts/controlled-public-preflight.sh
+```
+
 Server side:
 
 ```bash

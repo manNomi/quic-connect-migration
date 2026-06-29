@@ -32,6 +32,7 @@ NETWORK_CHANGE_CMD="${NETWORK_CHANGE_CMD:-}"
 CHROME_BIN="${CHROME_BIN:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 CONTROLLED_PUBLIC_READINESS_TIMEOUT="${CONTROLLED_PUBLIC_READINESS_TIMEOUT:-8}"
 REDACT_SENSITIVE="${REDACT_SENSITIVE:-1}"
+ALLOW_LATENT_SECONDARY_PATH="${ALLOW_LATENT_SECONDARY_PATH:-${CONTROLLED_PUBLIC_ALLOW_LATENT_SECONDARY_PATH:-0}}"
 
 preview_value() {
   local value="${1:-}"
@@ -67,6 +68,9 @@ READINESS_ARGS=(
 if [[ "$REDACT_SENSITIVE" == "1" ]]; then
   READINESS_ARGS+=(--redact-sensitive)
 fi
+if [[ "$ALLOW_LATENT_SECONDARY_PATH" == "1" ]]; then
+  READINESS_ARGS+=(--allow-latent-secondary-path)
+fi
 
 echo "== Controlled public origin preflight =="
 print_kv "config_file" "$CONFIG_FILE"
@@ -79,6 +83,7 @@ print_kv "network_change_url" "$(preview_value "${PUBLIC_ORIGIN_NETWORK_CHANGE_U
 print_kv "baseline_summary" "$(preview_value "${CONTROLLED_PUBLIC_BASELINE_SUMMARY:-}")"
 print_kv "server_artifact_dir" "$(preview_value "${CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR:-}")"
 print_kv "network_change_cmd_present" "$([[ -n "$NETWORK_CHANGE_CMD" ]] && echo true || echo false)"
+print_kv "allow_latent_secondary_path" "$ALLOW_LATENT_SECONDARY_PATH"
 echo
 
 JSON_EXIT=0

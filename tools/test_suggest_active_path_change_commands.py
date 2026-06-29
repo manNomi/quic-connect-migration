@@ -81,10 +81,13 @@ def test_secondary_path_enables_macos_candidates_without_printing_commands() -> 
         include_commands=False,
     )
     assert plan["summary"]["secondary_path_ready"] is True
+    assert plan["summary"]["latent_iphone_usb_candidate_ready"] is False
     wifi = candidate_by_id(plan, "macos_wifi_power_cutover")
     order = candidate_by_id(plan, "macos_service_order_cutover")
+    latent = candidate_by_id(plan, "macos_wifi_to_iphone_usb_latent_failover")
     assert wifi["ready"] is True
     assert order["ready"] is True
+    assert latent["ready"] is False
     assert wifi["command"] == ""
     assert order["command"] == ""
     assert wifi["detected"]["wifi_device"] == "en0"
@@ -117,7 +120,9 @@ def test_single_active_interface_blocks_desktop_candidates() -> None:
         include_commands=True,
     )
     assert plan["summary"]["secondary_path_ready"] is False
+    assert plan["summary"]["latent_iphone_usb_candidate_ready"] is True
     assert candidate_by_id(plan, "macos_wifi_power_cutover")["ready"] is False
+    assert candidate_by_id(plan, "macos_wifi_to_iphone_usb_latent_failover")["ready"] is True
     assert candidate_by_id(plan, "macos_service_order_cutover")["ready"] is False
 
 
@@ -135,11 +140,29 @@ def test_link_local_ipv4_does_not_count_as_secondary_path() -> None:
     assert candidate_by_id(plan, "macos_wifi_power_cutover")["ready"] is False
 
 
+def test_latent_iphone_usb_candidate_includes_command_only_when_requested() -> None:
+    plan = build_plan(
+        hardware_ports_text=HARDWARE_PORTS,
+        service_order_text=SERVICE_ORDER,
+        ifconfig_text=IFCONFIG_ONE_ACTIVE,
+        default_route_text=DEFAULT_ROUTE,
+        adb_devices_text="List of devices attached\n",
+        include_commands=True,
+    )
+    latent = candidate_by_id(plan, "macos_wifi_to_iphone_usb_latent_failover")
+    assert latent["ready"] is True
+    assert latent["detected"]["iphone_service"] == "iPhone USB"
+    assert latent["detected"]["iphone_device"] == "en8"
+    assert latent["command"] == "networksetup -setairportpower 'en0' off"
+    assert latent["restore_command"] == "networksetup -setairportpower 'en0' on"
+
+
 def main() -> int:
     test_secondary_path_enables_macos_candidates_without_printing_commands()
     test_include_commands_requires_explicit_flag()
     test_single_active_interface_blocks_desktop_candidates()
     test_link_local_ipv4_does_not_count_as_secondary_path()
+    test_latent_iphone_usb_candidate_includes_command_only_when_requested()
     print("suggest_active_path_change_commands=ok")
     return 0
 

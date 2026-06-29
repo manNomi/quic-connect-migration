@@ -13,6 +13,7 @@ from pathlib import Path
 from check_handover_readiness import HandoverReadiness, build_readiness
 from check_public_origin_readiness import PublicOriginReadiness, build_result
 from check_public_origin_readiness import payload as public_origin_readiness_payload
+from suggest_active_path_change_commands import collect_plan
 
 
 @dataclass
@@ -32,6 +33,9 @@ class ControlledPublicExperimentReadiness:
     application_h3_baseline_ready: bool
     network_change_harness_ready: bool
     desktop_handover_ready: bool
+    allow_latent_secondary_path: bool
+    latent_iphone_usb_candidate_ready: bool
+    desktop_path_change_mode: str
     can_run_application_h3_baseline: bool
     can_run_network_change: bool
     chrome_found: bool
@@ -203,8 +207,13 @@ def build_experiment_readiness(
     network_change_cmd: str,
     chrome_bin: str,
     timeout: int,
+    allow_latent_secondary_path: bool = False,
 ) -> ControlledPublicExperimentReadiness:
     handover: HandoverReadiness = build_readiness(chrome_bin, include_command_output=False)
+    command_plan = collect_plan(include_commands=False)
+    latent_iphone_usb_candidate_ready = bool(
+        command_plan.get("summary", {}).get("latent_iphone_usb_candidate_ready")
+    )
     blockers: list[str] = []
     public_origin: PublicOriginReadiness | None = None
     if public_origin_url:
@@ -221,8 +230,17 @@ def build_experiment_readiness(
     harness_ready = shutil.which("python3") is not None and Path("repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh").exists()
     controlled_origin_ready = public_origin.ok if public_origin else False
     baseline_ready = baseline.exists and baseline.status == "PASS"
+    desktop_path_change_ready = handover.secondary_path_ready or (
+        allow_latent_secondary_path and latent_iphone_usb_candidate_ready
+    )
+    if handover.secondary_path_ready:
+        desktop_path_change_mode = "active-secondary-path"
+    elif allow_latent_secondary_path and latent_iphone_usb_candidate_ready:
+        desktop_path_change_mode = "latent-iphone-usb-failover"
+    else:
+        desktop_path_change_mode = "not-ready"
     can_run_baseline = handover.chrome_found and controlled_origin_ready
-    can_run_network_change = can_run_baseline and baseline_ready and handover.secondary_path_ready and network_change_command_present and harness_ready
+    can_run_network_change = can_run_baseline and baseline_ready and desktop_path_change_ready and network_change_command_present and harness_ready
 
     if not handover.chrome_found:
         blockers.append("Chrome binary not found")
@@ -232,7 +250,7 @@ def build_experiment_readiness(
         blockers.append("controlled public origin does not advertise h3 Alt-Svc")
     if not baseline_ready:
         blockers.append("controlled public application H3 baseline summary is not PASS")
-    if not handover.secondary_path_ready:
+    if not handover.secondary_path_ready and not desktop_path_change_ready:
         blockers.append("active secondary network path is not ready")
     if not network_change_command_present:
         blockers.append("NETWORK_CHANGE_CMD is not provided")
@@ -248,6 +266,9 @@ def build_experiment_readiness(
         application_h3_baseline_ready=baseline_ready,
         network_change_harness_ready=harness_ready,
         desktop_handover_ready=handover.desktop_handover_ready,
+        allow_latent_secondary_path=allow_latent_secondary_path,
+        latent_iphone_usb_candidate_ready=latent_iphone_usb_candidate_ready,
+        desktop_path_change_mode=desktop_path_change_mode,
         can_run_application_h3_baseline=can_run_baseline,
         can_run_network_change=can_run_network_change,
         chrome_found=handover.chrome_found,
@@ -306,6 +327,9 @@ def emit_markdown(readiness: ControlledPublicExperimentReadiness, redact_sensiti
         f"| Chrome found | `{str(readiness.chrome_found).lower()}` |",
         f"| active IPv4 interfaces | `{active}` |",
         f"| secondary path ready | `{str(readiness.secondary_path_ready).lower()}` |",
+        f"| latent iPhone USB candidate ready | `{str(readiness.latent_iphone_usb_candidate_ready).lower()}` |",
+        f"| allow latent secondary path | `{str(readiness.allow_latent_secondary_path).lower()}` |",
+        f"| desktop path-change mode | `{readiness.desktop_path_change_mode}` |",
         f"| NETWORK_CHANGE_CMD present | `{str(readiness.network_change_command_present).lower()}` |",
         f"| NETWORK_CHANGE_CMD preview | `{network_change_preview or '-'}` |",
         f"| can run application H3 baseline | `{str(readiness.can_run_application_h3_baseline).lower()}` |",
@@ -325,6 +349,11 @@ def main() -> int:
     parser.add_argument("--network-change-cmd", default="")
     parser.add_argument("--chrome-bin", default="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
     parser.add_argument("--timeout", type=int, default=8)
+    parser.add_argument(
+        "--allow-latent-secondary-path",
+        action="store_true",
+        help="allow measured Wi-Fi-to-iPhone-USB delayed failover as the desktop path-change mode",
+    )
     parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output")
@@ -337,6 +366,7 @@ def main() -> int:
         args.network_change_cmd,
         args.chrome_bin,
         args.timeout,
+        allow_latent_secondary_path=args.allow_latent_secondary_path,
     )
     if args.format == "json":
         text = json.dumps(payload(readiness, args.redact_sensitive), indent=2, ensure_ascii=False) + "\n"

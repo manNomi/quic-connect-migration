@@ -197,6 +197,20 @@ def service_for_device(services: list[NetworkService], device: str) -> NetworkSe
     return None
 
 
+def service_for_hardware_port(services: list[NetworkService], hardware_port: str) -> NetworkService | None:
+    for service in services:
+        if service.hardware_port.lower() == hardware_port.lower() and not service.disabled:
+            return service
+    return None
+
+
+def interface_for_name(interfaces: list[InterfaceInfo], name: str) -> InterfaceInfo | None:
+    for interface in interfaces:
+        if interface.name == name:
+            return interface
+    return None
+
+
 def candidate(
     candidate_id: str,
     label: str,
@@ -257,6 +271,15 @@ def build_plan(
     secondary_service = secondary_services[0] if secondary_services else None
     wifi_port = next((port for port in hardware_ports if port.hardware_port.lower() == "wi-fi"), None)
     wifi_active = bool(wifi_port and wifi_port.device in active_names)
+    iphone_service = service_for_hardware_port(services, "iPhone USB")
+    iphone_interface = interface_for_name(interfaces, iphone_service.device) if iphone_service else None
+    iphone_latent_ready = bool(
+        wifi_port
+        and wifi_active
+        and iphone_service
+        and iphone_interface
+        and not iphone_interface.active
+    )
     adb_device_count = parse_adb_devices(adb_devices_text)
     secondary_ready = len(active_ipv4) >= 2
 
@@ -281,6 +304,38 @@ def build_plan(
             command=f"networksetup -setairportpower {shell_quote(wifi_device)} off" if wifi_port else "",
             restore_command=f"networksetup -setairportpower {shell_quote(wifi_device)} on" if wifi_port else "",
             detected={"wifi_device": wifi_device},
+        )
+    )
+
+    latent_reason = "ready: Wi-Fi is active and iPhone USB is present but latent/inactive"
+    if not wifi_port:
+        latent_reason = "blocked: Wi-Fi hardware port was not detected"
+    elif not wifi_active:
+        latent_reason = "blocked: Wi-Fi is not an active IPv4 path"
+    elif not iphone_service:
+        latent_reason = "blocked: iPhone USB network service was not detected"
+    elif not iphone_interface:
+        latent_reason = "blocked: iPhone USB interface was not present in ifconfig output"
+    elif iphone_interface.active and has_usable_ipv4(iphone_interface.ipv4):
+        latent_reason = "blocked: iPhone USB is already active; this is not latent failover"
+    elif iphone_interface.active:
+        latent_reason = "blocked: iPhone USB is active but has no usable IPv4 address"
+    candidates.append(
+        candidate(
+            "macos_wifi_to_iphone_usb_latent_failover",
+            "Turn Wi-Fi off and measure delayed iPhone USB activation",
+            iphone_latent_ready,
+            latent_reason,
+            "networksetup -setairportpower <wifi-device> off",
+            "networksetup -setairportpower <wifi-device> on",
+            include_commands,
+            command=f"networksetup -setairportpower {shell_quote(wifi_device)} off" if wifi_port else "",
+            restore_command=f"networksetup -setairportpower {shell_quote(wifi_device)} on" if wifi_port else "",
+            detected={
+                "wifi_device": wifi_device,
+                "iphone_service": iphone_service.name if iphone_service else "",
+                "iphone_device": iphone_service.device if iphone_service else "",
+            },
         )
     )
 
@@ -336,6 +391,7 @@ def build_plan(
             "active_ipv4_interfaces": active_names,
             "default_interface": default_interface,
             "secondary_path_ready": secondary_ready,
+            "latent_iphone_usb_candidate_ready": iphone_latent_ready,
             "ready_candidate_count": len(ready_candidates),
             "ready_candidates": ready_candidates,
         },
@@ -390,6 +446,7 @@ def emit_markdown(plan: dict[str, Any]) -> str:
         f"| active IPv4 interfaces | `{', '.join(summary['active_ipv4_interfaces']) or '-'}` |",
         f"| default interface | `{summary['default_interface'] or '-'}` |",
         f"| secondary path ready | `{'yes' if summary['secondary_path_ready'] else 'no'}` |",
+        f"| latent iPhone USB candidate ready | `{'yes' if summary['latent_iphone_usb_candidate_ready'] else 'no'}` |",
         f"| ready candidates | `{', '.join(summary['ready_candidates']) or '-'}` |",
         f"| commands included | `{'yes' if plan['commands_included'] else 'no'}` |",
         "",
