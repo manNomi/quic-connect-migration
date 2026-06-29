@@ -2604,3 +2604,27 @@ python3 tools/build_current_evidence_manuscript_sections.py
 - 이 문서는 논문 초안 재료이지 최종 결론이 아니다.
 - `claim readiness`와 `do not claim` 문구를 함께 유지한다.
 - public origin 복구 후 새 row가 추가되면 이 도구를 다시 실행해 초안을 갱신한다.
+
+## 72. `tools/build_cm_underuse_chapter.py`
+
+CM이 "좋은 기술인데 왜 덜 쓰이거나 보수적으로 지원되는가"라는 질문을 논문 본문용 한국어/영어 챕터로 생성한다. 입력은 `data/cm-operational-friction-matrix-20260624.csv`와 `data/implementation-survey.csv`다.
+
+실행:
+
+```bash
+python3 tools/build_cm_underuse_chapter.py
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/paper/cm-underuse-and-deployment-friction-ko-20260629.md` | 한국어 underuse/friction 챕터 |
+| `docs/paper/cm-underuse-and-deployment-friction-en-20260629.md` | 영어 underuse/friction 챕터 |
+
+핵심 내용:
+
+- CM이 덜 쓰이는 이유를 "구현이 아예 없음"으로 단순화하지 않는다.
+- 구현체 survey 기준 18개 구현체 중 active migration API `yes`는 8개, passive migration `yes`는 14개, tests `yes`는 14개다.
+- 실제 배포에서는 browser runtime policy, HTTP/3 discovery, active path proof, session attribution, CID-aware load balancing, proxy/CDN termination, middlebox/manageability, security risk, workload recovery, observability, performance/QoE 비용이 함께 작동한다.
+- 논문에서는 "HTTP/3 지원 = CM 지원" 또는 "tuple 변화 = browser CM 성공"이라고 쓰지 않는다.
