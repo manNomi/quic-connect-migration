@@ -751,6 +751,19 @@ wrapper를 사용할 때는 같은 의미로 다음 환경변수를 켠다.
 ALLOW_LATENT_SECONDARY_PATH=1 bash harness/scripts/controlled-public-preflight.sh
 ```
 
+final browser handover readiness도 같은 claim boundary를 유지한다. 공개 repo에 올릴 readiness 파일을 만들 때는 sensitive 값을 redaction한다.
+
+```bash
+python3 tools/check_final_browser_handover_readiness.py \
+  --allow-latent-secondary-path \
+  --network-change-cmd "networksetup -setairportpower 'en0' off" \
+  --check-public-origin \
+  --redact-sensitive \
+  --output docs/results/final-browser-handover-readiness-latent-iphone-usb-20260629.md
+```
+
+이 명령에서 `desktop path-change ready=yes`가 나오더라도 의미는 "latent Wi-Fi-loss-to-iPhone-USB cellular failover trigger가 준비됨"이다. QUIC CM 성공 여부는 이후 Chrome/Server/qlog artifact로 따로 판정한다.
+
 Server side:
 
 ```bash

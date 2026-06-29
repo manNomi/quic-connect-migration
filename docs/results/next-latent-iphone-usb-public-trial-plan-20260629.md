@@ -22,6 +22,16 @@ Preflight artifact:
 
 `repro/quic-go-min-repro/artifacts/controlled-public-preflight-latent-iphone-usb-with-cmd-fixed-20260629/results/controlled-public-experiment-readiness.md`
 
+Latest local OS-level failover evidence:
+
+| artifact | result |
+| --- | --- |
+| `data/iphone-usb-latent-failover-live-20260629.json` | Wi-Fi off trigger observed iPhone USB as default route at `584` ms |
+| `docs/results/iphone-usb-latent-failover-live-20260629.md` | repeated Markdown check observed iPhone USB as default route at `548` ms |
+| `docs/results/final-browser-handover-readiness-latent-iphone-usb-20260629.md` | final readiness accepts latent iPhone USB only with explicit `--allow-latent-secondary-path` |
+
+Interpretation: the client path-change trigger is now locally reproducible. This still does not prove QUIC Connection Migration because no controlled public Chrome trial has yet tied the path change to a single QUIC session, qlog path validation, server tuple evidence, and workload completion.
+
 ## Current Server Diagnosis
 
 Public-safe local checks show:

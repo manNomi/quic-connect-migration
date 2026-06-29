@@ -18,6 +18,7 @@ from check_handover_readiness import build_readiness as build_handover_readiness
 from check_public_origin_readiness import build_result as build_public_origin_readiness
 from report_artifact_storage import build_report as build_storage_report
 from report_artifact_storage import human_size
+from suggest_active_path_change_commands import collect_plan
 
 
 DEFAULT_CONFIG = "harness/config/controlled-public-origin.env"
@@ -103,6 +104,74 @@ def baseline_ready(path: str) -> dict[str, Any]:
     }
 
 
+def desktop_path_change_status(
+    *,
+    secondary_path_ready: bool,
+    allow_latent_secondary_path: bool,
+    latent_iphone_usb_candidate_ready: bool,
+) -> dict[str, Any]:
+    if secondary_path_ready:
+        return {
+            "ready": True,
+            "mode": "active-secondary-path",
+            "claim_boundary": "alternate client path was active before the trigger",
+        }
+    if allow_latent_secondary_path and latent_iphone_usb_candidate_ready:
+        return {
+            "ready": True,
+            "mode": "latent-iphone-usb-failover",
+            "claim_boundary": "iPhone USB activates after Wi-Fi loss; report as delayed OS failover, not simultaneous active-path migration",
+        }
+    return {
+        "ready": False,
+        "mode": "not-ready",
+        "claim_boundary": "no desktop client path-change trigger is currently ready",
+    }
+
+
+def active_interface_summary(items: list[dict[str, Any]], redact_sensitive: bool = False) -> str:
+    summaries: list[str] = []
+    for item in items:
+        name = str(item.get("name") or "-")
+        ipv4 = item.get("ipv4")
+        addresses = [str(address) for address in ipv4] if isinstance(ipv4, list) else []
+        if redact_sensitive:
+            count = len(addresses)
+            suffix = "es" if count != 1 else ""
+            address_text = f"<redacted:{count} address{suffix}>" if count else "-"
+        else:
+            address_text = ",".join(addresses)
+        summaries.append(f"{name}({address_text})")
+    return ", ".join(summaries) or "-"
+
+
+def redact_public_origin(public_origin: dict[str, Any] | None) -> dict[str, Any] | None:
+    if public_origin is None:
+        return None
+    redacted = dict(public_origin)
+    for key in ["url", "host", "tls_subject", "tls_issuer", "alt_svc_headers"]:
+        if redacted.get(key):
+            redacted[key] = f"<redacted-{key.replace('_', '-')}>"
+    if isinstance(redacted.get("dns_addresses"), list):
+        redacted["dns_addresses"] = ["<redacted-address>"] if redacted["dns_addresses"] else []
+    if isinstance(redacted.get("errors"), list):
+        redacted["errors"] = ["<redacted-error>" for _ in redacted["errors"]]
+    redacted["redacted"] = True
+    return redacted
+
+
+def redact_payload(readiness: dict[str, Any]) -> dict[str, Any]:
+    payload = json.loads(json.dumps(readiness))
+    interfaces = payload.get("handover", {}).get("active_ipv4_interfaces")
+    if isinstance(interfaces, list):
+        for item in interfaces:
+            if isinstance(item, dict) and isinstance(item.get("ipv4"), list):
+                item["ipv4"] = ["<redacted-address>" for _ in item["ipv4"]]
+    payload["public_origin"] = redact_public_origin(payload.get("public_origin"))
+    payload["redacted"] = True
+    return payload
+
+
 def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     overrides = {
         "PUBLIC_ORIGIN_URL": args.public_origin_url,
@@ -114,6 +183,15 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     config, values = config_readiness(Path(args.config), overrides)
     final_trials = build_final_trial_audit(Path(args.required_trials), Path(args.experiments))
     handover = build_handover_readiness(args.chrome_bin)
+    command_plan = collect_plan(include_commands=False)
+    latent_iphone_usb_candidate_ready = bool(
+        command_plan.get("summary", {}).get("latent_iphone_usb_candidate_ready")
+    )
+    desktop_path_change = desktop_path_change_status(
+        secondary_path_ready=handover.secondary_path_ready,
+        allow_latent_secondary_path=args.allow_latent_secondary_path,
+        latent_iphone_usb_candidate_ready=latent_iphone_usb_candidate_ready,
+    )
     observability = build_observability_readiness(args.chrome_bin, args.safari_bin, args.safari_tp_bin)
     storage = build_storage_report(["repro/quic-go-min-repro/artifacts", "harness/results"], max_entries=5)
     baseline = baseline_ready(values.get("CONTROLLED_PUBLIC_BASELINE_SUMMARY", ""))
@@ -133,7 +211,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     disk_ready = float(storage["disk"]["free_gib"]) >= args.min_disk_gib
     chrome_protocol_ready = (
         handover.chrome_found
-        and handover.secondary_path_ready
+        and desktop_path_change["ready"]
         and config.network_change_command_present
         and baseline["ready"]
         and disk_ready
@@ -165,8 +243,8 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         blockers.append("controlled public baseline summary is missing or not PASS/PASS_FEASIBILITY")
     if not config.network_change_command_present:
         blockers.append("NETWORK_CHANGE_CMD is not configured")
-    if not handover.secondary_path_ready:
-        blockers.append("desktop active secondary path is not ready")
+    if not desktop_path_change["ready"]:
+        blockers.append("desktop path-change trigger is not ready")
     if not handover.android_ready:
         blockers.append("Android device is not connected over ADB")
     if not disk_ready:
@@ -191,6 +269,11 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
             "desktop_handover_ready": handover.desktop_handover_ready,
             "android_ready": handover.android_ready,
             "secondary_path_ready": handover.secondary_path_ready,
+            "allow_latent_secondary_path": args.allow_latent_secondary_path,
+            "latent_iphone_usb_candidate_ready": latent_iphone_usb_candidate_ready,
+            "desktop_path_change_ready": desktop_path_change["ready"],
+            "desktop_path_change_mode": desktop_path_change["mode"],
+            "desktop_path_change_claim_boundary": desktop_path_change["claim_boundary"],
             "active_ipv4_interfaces": [asdict(item) for item in handover.active_ipv4_interfaces],
         },
         "observability": {
@@ -215,11 +298,8 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
-def emit_markdown(readiness: dict[str, Any]) -> str:
-    active = ", ".join(
-        f"{item['name']}({','.join(item['ipv4'])})"
-        for item in readiness["handover"]["active_ipv4_interfaces"]
-    ) or "-"
+def emit_markdown(readiness: dict[str, Any], redact_sensitive: bool = False) -> str:
+    active = active_interface_summary(readiness["handover"]["active_ipv4_interfaces"], redact_sensitive)
     protocol = readiness["protocol_ready"]
     config = readiness["config"]
     baseline = readiness["baseline"]
@@ -252,6 +332,10 @@ def emit_markdown(readiness: dict[str, Any]) -> str:
         f"| Android network-change command present | `{'yes' if config['android_network_change_command_present'] else 'no'}` |",
         f"| active IPv4 interfaces | `{active}` |",
         f"| secondary path ready | `{'yes' if readiness['handover']['secondary_path_ready'] else 'no'}` |",
+        f"| latent iPhone USB candidate ready | `{'yes' if readiness['handover']['latent_iphone_usb_candidate_ready'] else 'no'}` |",
+        f"| allow latent secondary path | `{'yes' if readiness['handover']['allow_latent_secondary_path'] else 'no'}` |",
+        f"| desktop path-change ready | `{'yes' if readiness['handover']['desktop_path_change_ready'] else 'no'}` |",
+        f"| desktop path-change mode | `{readiness['handover']['desktop_path_change_mode']}` |",
         f"| Android ready | `{'yes' if readiness['handover']['android_ready'] else 'no'}` |",
         f"| Safari WebDriver ready | `{'yes' if readiness['observability']['safari_webdriver_ready'] else 'no'}` |",
         f"| disk ready | `{'yes' if readiness['disk']['ready'] else 'no'}` |",
@@ -283,12 +367,23 @@ def main() -> int:
     parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--check-public-origin", action="store_true")
+    parser.add_argument(
+        "--allow-latent-secondary-path",
+        action="store_true",
+        help="allow delayed Wi-Fi-to-iPhone-USB failover as the desktop path-change trigger",
+    )
+    parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output")
     args = parser.parse_args()
 
     readiness = build_readiness(args)
-    text = json.dumps(readiness, indent=2, ensure_ascii=False) + "\n" if args.format == "json" else emit_markdown(readiness)
+    output_readiness = redact_payload(readiness) if args.redact_sensitive else readiness
+    text = (
+        json.dumps(output_readiness, indent=2, ensure_ascii=False) + "\n"
+        if args.format == "json"
+        else emit_markdown(output_readiness, redact_sensitive=args.redact_sensitive)
+    )
     if args.output:
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)

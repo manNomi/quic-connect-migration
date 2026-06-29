@@ -1,0 +1,102 @@
+{
+  "check_date": "2026-06-29",
+  "config": {
+    "path": "harness/config/controlled-public-origin.env",
+    "exists": true,
+    "public_origin_url_present": true,
+    "public_origin_network_change_url_present": true,
+    "baseline_summary_present": true,
+    "network_change_command_present": true,
+    "android_network_change_command_present": false,
+    "public_origin_url_preview": "<configured>",
+    "network_change_command_preview": "<configured>",
+    "android_network_change_command_preview": ""
+  },
+  "baseline": {
+    "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json",
+    "exists": true,
+    "status": "PASS",
+    "classification": "controlled_public_application_h3_confirmed",
+    "ready": true,
+    "error": ""
+  },
+  "disk": {
+    "free_gib": 34.27,
+    "min_required_gib": 7.0,
+    "ready": true,
+    "artifact_total_bytes": 28551300639,
+    "artifact_total_human": "26.6 GiB"
+  },
+  "handover": {
+    "desktop_handover_ready": false,
+    "android_ready": false,
+    "secondary_path_ready": false,
+    "allow_latent_secondary_path": true,
+    "latent_iphone_usb_candidate_ready": true,
+    "desktop_path_change_ready": true,
+    "desktop_path_change_mode": "latent-iphone-usb-failover",
+    "desktop_path_change_claim_boundary": "iPhone USB activates after Wi-Fi loss; report as delayed OS failover, not simultaneous active-path migration",
+    "active_ipv4_interfaces": [
+      {
+        "name": "en0",
+        "active": true,
+        "ipv4": [
+          "<redacted-address>"
+        ]
+      }
+    ]
+  },
+  "observability": {
+    "chrome_netlog_ready": true,
+    "safari_webdriver_ready": true,
+    "packet_capture_tooling_ready": true
+  },
+  "public_origin": {
+    "check_date": "2026-06-29",
+    "url": "<redacted-url>",
+    "host": "<redacted-host>",
+    "port": 443,
+    "dns_addresses": [
+      "<redacted-address>"
+    ],
+    "tcp_tls_ok": false,
+    "python_tls_ok": false,
+    "curl_https_ok": false,
+    "tls_version": "",
+    "tls_cipher": "",
+    "tls_subject": "",
+    "tls_issuer": "",
+    "curl_exit": 7,
+    "final_status": "",
+    "has_h3_alt_svc": false,
+    "alt_svc_headers": "",
+    "errors": [
+      "<redacted-error>",
+      "<redacted-error>"
+    ],
+    "ok": false,
+    "redacted": true
+  },
+  "final_trials": {
+    "complete": false,
+    "complete_count": 3,
+    "requirement_count": 6,
+    "blockers": [
+      "chrome-downlink-noheartbeat-active-cm: 0/3",
+      "chrome-downlink-heartbeat-active-cm: 0/3",
+      "p1-safari-or-android-feasibility: 0/1"
+    ]
+  },
+  "protocol_ready": {
+    "chrome": false,
+    "safari": false,
+    "android_chrome": false
+  },
+  "can_finish_goal_now": false,
+  "blockers": [
+    "Android device is not connected over ADB",
+    "final browser handover trial protocol is not complete",
+    "controlled public origin readiness check failed"
+  ],
+  "redacted": true
+}

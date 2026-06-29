@@ -808,6 +808,13 @@ python3 tools/check_iphone_usb_latent_failover.py \
 
 이 도구는 OS-level path activation evidence만 제공한다. QUIC single-connection migration 근거는 network-change trial의 qlog, server tuple, Chrome NetLog, workload completion을 함께 확인해야 한다.
 
+2026-06-29 현재 Mac+iPhone USB 연결에서 같은 trigger가 반복 재현되었다.
+
+| artifact | 결과 |
+| --- | --- |
+| `data/iphone-usb-latent-failover-live-20260629.json` | Wi-Fi off 이후 `584` ms에 iPhone USB가 default route가 됨 |
+| `docs/results/iphone-usb-latent-failover-live-20260629.md` | 별도 Markdown 측정에서 `548` ms에 iPhone USB가 default route가 됨 |
+
 ## 19. 실험 실행 코드
 
 핵심 코드는 [repro/quic-go-min-repro](../repro/quic-go-min-repro)에 있다.
@@ -1059,6 +1066,17 @@ python3 tools/check_final_browser_handover_readiness.py \
 python3 tools/check_final_browser_handover_readiness.py \
   --check-public-origin \
   --output /tmp/final-browser-handover-readiness.md
+```
+
+Mac+iPhone USB처럼 secondary path가 동시에 active가 아니라 Wi-Fi loss 뒤 지연 활성화되는 환경은 기본 strict gate에서 통과시키지 않는다. 이 모드를 실험 trigger로 사용할 때만 아래처럼 명시적으로 허용하고, 공개용 결과는 `--redact-sensitive`로 저장한다.
+
+```bash
+python3 tools/check_final_browser_handover_readiness.py \
+  --allow-latent-secondary-path \
+  --network-change-cmd "networksetup -setairportpower 'en0' off" \
+  --check-public-origin \
+  --redact-sensitive \
+  --output docs/results/final-browser-handover-readiness-latent-iphone-usb-20260629.md
 ```
 
 현재 환경처럼 준비가 덜 된 상태에서는 exit 1을 반환한다. 이 실패는 본 실험 blocker를 드러내는 정상적인 readiness 결과다.
