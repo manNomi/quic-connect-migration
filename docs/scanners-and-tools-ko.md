@@ -2847,3 +2847,28 @@ python3 tools/build_cross_browser_feasibility_readiness.py
 - Safari는 WebDriver와 packet capture tooling이 준비되어 있어 Android보다 local tooling은 가깝지만, Chrome NetLog-equivalent가 없으므로 server/qlog/client-path 중심의 `PASS_FEASIBILITY` boundary로만 쓴다.
 - Android Chrome은 ADB는 있지만 device가 연결되어 있지 않아 P1 feasibility를 아직 실행할 수 없다.
 - 현재 iPhone USB latent path도 live check에서는 준비되지 않았으므로, public origin 복구와 함께 active path-change trigger를 다시 확인해야 한다.
+
+## 79. `tools/build_literature_claim_positioning.py`
+
+최신 QUIC Connection Migration 문헌을 현재 실험 주장과 연결하는 matrix를 생성하는 도구다. 각 문헌을 `supports`, `does_not_support`, `experiment_gap`으로 분리해, 논문이 결론을 먼저 정하고 문헌을 끼워 맞추는 구조가 되지 않도록 한다.
+
+실행:
+
+```bash
+python3 tools/build_literature_claim_positioning.py
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `data/literature-claim-positioning-20260629.csv` | source별 claim axis, paper use, supports, does_not_support, experiment_gap matrix |
+| `docs/results/literature-claim-positioning-20260629.md` | 한국어 문헌-주장-실험 gap synthesis |
+| `docs/paper/literature-claim-positioning-en-20260629.md` | 영어 논문용 literature positioning 초안 |
+
+현재 해석:
+
+- CM은 RFC 9000, IETF multipath, SwiftShift, AWS NLB 등으로 볼 때 버려진 기능이 아니라 계속 확장되는 active path-management topic이다.
+- 하지만 이 사실은 Chrome/Safari HTTP/3 single-session browser handover success를 증명하지 않는다.
+- `왜 안 쓰이는가`는 구현 부재 하나가 아니라 browser runtime policy, deployment routing, middlebox manageability, security concern, application recovery가 겹친 문제로 잡는 것이 더 안전하다.
+- 다음 실험은 public origin 복구 후 Chrome no-heartbeat/heartbeat active downlink rows이며, streaming은 QoE-aware workload로 후순위 확장한다.
