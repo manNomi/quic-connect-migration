@@ -48,13 +48,15 @@ Completed local checks:
 
 ## Current Execution Gate
 
-Later iPhone USB checks showed that this Mac+iPhone setup is a latent failover environment:
+Earlier iPhone USB checks showed that this Mac+iPhone setup can behave as a latent failover environment:
 
 - With Wi-Fi on, `en0` is the only active usable IPv4 path and `iPhone USB (en8)` is present but inactive.
 - With Wi-Fi off, `en8` becomes active and default route moves to iPhone USB/cellular.
 - `tools/check_iphone_usb_latent_failover.py --measure` observed `latent_iphone_usb_failover_observed` with `ready_at_ms=575`.
 
 Therefore the next experiment should use `ALLOW_LATENT_SECONDARY_PATH=1`, `NETWORK_CHANGE_CMD="networksetup -setairportpower 'en0' off"`, and should report the environment as delayed Wi-Fi-loss-to-iPhone-USB failover rather than simultaneous active-secondary-path migration.
+
+Current rerun note: `docs/results/iphone-usb-current-detection-20260629.md` recorded `iphone_usb_not_detected`. Do not run the page-ready active public rows until macOS again exposes `iPhone USB (en8)` as a present network interface and `tools/check_iphone_usb_latent_failover.py --measure --restore-wifi` returns `latent_iphone_usb_failover_observed`.
 
 ## Next Experiment
 
