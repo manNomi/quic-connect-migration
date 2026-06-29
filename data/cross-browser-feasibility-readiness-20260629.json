@@ -1,0 +1,187 @@
+{
+  "generated": "2026-06-29",
+  "public_safe": true,
+  "source_files": {
+    "experiments": "data/experiment-results.csv",
+    "requirements": "data/final-browser-handover-required-trials.csv",
+    "recovery_plan": "data/public-origin-recovery-plan-20260629.json"
+  },
+  "final_protocol": {
+    "complete": false,
+    "complete_count": 3,
+    "requirement_count": 6,
+    "blockers": [
+      "chrome-downlink-noheartbeat-active-cm: 0/3",
+      "chrome-downlink-heartbeat-active-cm: 0/3",
+      "p1-safari-or-android-feasibility: 0/1"
+    ]
+  },
+  "current_gates": {
+    "baseline": "PASS; controlled_public_application_h3_confirmed",
+    "public_origin": "not_ready; h3_alt_svc=no",
+    "aws_identity": "invalid_client_token",
+    "active_path": "macos_wifi_power_cutover: blocked: no active secondary non-loopback IPv4 path was detected; macos_wifi_to_iphone_usb_latent_failover: blocked: iPhone USB interface was not present in ifconfig output; macos_service_order_cutover: blocked: no active secondary service was detected; android_wifi_to_cellular_cutover: blocked: no ADB device is connected",
+    "safari_webdriver_ready": true,
+    "android_ready": false,
+    "disk_available_gib": 25.91
+  },
+  "observability": {
+    "check_date": "2026-06-29",
+    "chrome": {
+      "name": "Chrome",
+      "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      "found": true,
+      "executable": true,
+      "version": "149.0.7827.199"
+    },
+    "safari": {
+      "name": "Safari",
+      "path": "/Applications/Safari.app/Contents/MacOS/Safari",
+      "found": true,
+      "executable": true,
+      "version": "26.2"
+    },
+    "safari_technology_preview": {
+      "name": "Safari Technology Preview",
+      "path": "/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview",
+      "found": false,
+      "executable": false,
+      "version": ""
+    },
+    "safaridriver": {
+      "command": [
+        "safaridriver",
+        "--version"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "tcpdump": {
+      "command": [
+        "tcpdump",
+        "--version"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "rvictl": {
+      "command": [
+        "rvictl",
+        "-h"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "networksetup": {
+      "command": [
+        "networksetup",
+        "-listallnetworkservices"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "route": {
+      "command": [
+        "route",
+        "-n",
+        "get",
+        "default"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "ifconfig": {
+      "command": [
+        "ifconfig"
+      ],
+      "found": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "chrome_netlog_ready": true,
+    "safari_webdriver_ready": true,
+    "packet_capture_tooling_ready": true,
+    "ios_remote_capture_candidate": true,
+    "blockers": [
+      "Safari does not provide a Chrome NetLog-equivalent artifact in this harness; use packet capture and server-side qlog"
+    ]
+  },
+  "handover": {
+    "check_date": "2026-06-29",
+    "chrome_found": true,
+    "adb_found": true,
+    "adb_device_count": 0,
+    "android_ready": false,
+    "active_ipv4_interfaces": [
+      {
+        "name": "en0",
+        "active": true,
+        "ipv4_count": 1
+      }
+    ],
+    "secondary_path_ready": false,
+    "aws_found": true,
+    "aws_identity_ok": false,
+    "disk_available_gib": 25.91,
+    "blockers": [
+      "Need at least two active usable IPv4 interfaces for desktop path-change experiments",
+      "No Android device connected over ADB",
+      "AWS caller identity is not available for automated public-origin provisioning"
+    ]
+  },
+  "path_plan_summary": {
+    "active_ipv4_interface_count": 1,
+    "active_ipv4_interfaces": [
+      "en0"
+    ],
+    "default_interface": "en0",
+    "secondary_path_ready": false,
+    "latent_iphone_usb_candidate_ready": false,
+    "ready_candidate_count": 0,
+    "ready_candidates": []
+  },
+  "rows": [
+    {
+      "candidate": "Chrome active public handover",
+      "paper_role": "Main browser CM claim gate",
+      "local_tooling": "Chrome NetLog=yes; Chrome binary=yes",
+      "path_change_gate": "desktop_path_ready=no; blocked: no active secondary non-loopback IPv4 path was detected; latent=blocked: iPhone USB interface was not present in ifconfig output",
+      "public_origin_gate": "not_ready; h3_alt_svc=no",
+      "protocol_gap": "noheartbeat=0/3; heartbeat=0/3",
+      "claim_boundary": "Only counts as browser CM if application H3, client path change, server tuple change, qlog path validation, one Chrome target QUIC session, and task completion align in the same row.",
+      "next_action": "Recover public origin, restore a ready desktop path-change trigger, rerun fresh baseline, then run 3 no-heartbeat and 3 heartbeat rows."
+    },
+    {
+      "candidate": "Safari P1 feasibility",
+      "paper_role": "Cross-browser feasibility with weaker browser-internal observability",
+      "local_tooling": "Safari WebDriver=yes; packet capture=yes; iOS rvictl=yes",
+      "path_change_gate": "desktop_path_ready=no; latent=blocked: iPhone USB interface was not present in ifconfig output",
+      "public_origin_gate": "not_ready; h3_alt_svc=no",
+      "protocol_gap": "p1=0/1",
+      "claim_boundary": "Safari lacks Chrome NetLog-equivalent evidence in this harness, so a PASS_FEASIBILITY row must be described as server/qlog/client-path evidence, not full browser-internal session proof.",
+      "next_action": "After public origin and Mac path-change are ready, run the Safari network-change wrapper and classify with missing-browser-netlog boundary."
+    },
+    {
+      "candidate": "Android Chrome P1 feasibility",
+      "paper_role": "True mobile-platform feasibility beyond Mac+iPhone tethered failover",
+      "local_tooling": "ADB found=yes; Android device connected=no",
+      "path_change_gate": "android_path_ready=no; blocked: no ADB device is connected",
+      "public_origin_gate": "not_ready; h3_alt_svc=no",
+      "protocol_gap": "p1=0/1",
+      "claim_boundary": "Android Chrome rows need Android before/after route snapshots plus server/qlog evidence; without browser-internal NetLog they remain feasibility evidence unless stronger telemetry is added.",
+      "next_action": "Connect an Android device over ADB, verify cellular fallback, then run Android network-change wrapper after public origin recovery."
+    }
+  ],
+  "safe_conclusion": "Safari is currently closer than Android on local tooling, but neither can fill the P1 feasibility gate until the public origin and an active client path-change trigger are ready. Android additionally needs a connected ADB device."
+}

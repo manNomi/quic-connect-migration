@@ -21,21 +21,21 @@
     "error": ""
   },
   "disk": {
-    "free_gib": 34.27,
+    "free_gib": 25.91,
     "min_required_gib": 7.0,
     "ready": true,
-    "artifact_total_bytes": 28551300639,
-    "artifact_total_human": "26.6 GiB"
+    "artifact_total_bytes": 36026966084,
+    "artifact_total_human": "33.6 GiB"
   },
   "handover": {
     "desktop_handover_ready": false,
     "android_ready": false,
     "secondary_path_ready": false,
     "allow_latent_secondary_path": true,
-    "latent_iphone_usb_candidate_ready": true,
-    "desktop_path_change_ready": true,
-    "desktop_path_change_mode": "latent-iphone-usb-failover",
-    "desktop_path_change_claim_boundary": "iPhone USB activates after Wi-Fi loss; report as delayed OS failover, not simultaneous active-path migration",
+    "latent_iphone_usb_candidate_ready": false,
+    "desktop_path_change_ready": false,
+    "desktop_path_change_mode": "not-ready",
+    "desktop_path_change_claim_boundary": "no desktop client path-change trigger is currently ready",
     "active_ipv4_interfaces": [
       {
         "name": "en0",
@@ -94,6 +94,7 @@
   },
   "can_finish_goal_now": false,
   "blockers": [
+    "desktop path-change trigger is not ready",
     "Android device is not connected over ADB",
     "final browser handover trial protocol is not complete",
     "controlled public origin readiness check failed"

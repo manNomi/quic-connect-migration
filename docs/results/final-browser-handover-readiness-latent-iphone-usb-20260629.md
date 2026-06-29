@@ -24,17 +24,18 @@ Generated: `2026-06-29`
 | Android network-change command present | `no` |
 | active IPv4 interfaces | `en0(<redacted:1 address>)` |
 | secondary path ready | `no` |
-| latent iPhone USB candidate ready | `yes` |
+| latent iPhone USB candidate ready | `no` |
 | allow latent secondary path | `yes` |
-| desktop path-change ready | `yes` |
-| desktop path-change mode | `latent-iphone-usb-failover` |
+| desktop path-change ready | `no` |
+| desktop path-change mode | `not-ready` |
 | Android ready | `no` |
 | Safari WebDriver ready | `yes` |
 | disk ready | `yes` |
-| disk free GiB | `34.27` |
+| disk free GiB | `25.91` |
 
 ## Blockers
 
+- desktop path-change trigger is not ready
 - Android device is not connected over ADB
 - final browser handover trial protocol is not complete
 - controlled public origin readiness check failed

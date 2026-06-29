@@ -2811,3 +2811,39 @@ python3 tools/build_threats_and_reviewer_defense.py
 - upload/download retry success와 streaming completion은 task continuity evidence일 수 있으나 transport CM success evidence가 아니다.
 - public origin이 `connection_refused`인 상태의 실패는 browser CM 실패가 아니라 origin readiness failure로 분류한다.
 - third-party H3 site는 discovery/control로만 쓰고, controlled origin의 qlog/tuple/workload evidence를 대체하지 않는다.
+
+## 78. `tools/build_cross_browser_feasibility_readiness.py`
+
+final browser handover protocol에서 Chrome, Safari, Android Chrome이 각각 어떤 readiness gate 때문에 막혀 있는지 한 표로 생성하는 도구다. 새 실험을 실행하지 않고, 기존 audit/recovery JSON과 live local tooling check를 조합해 cross-browser feasibility의 claim boundary를 정리한다.
+
+실행:
+
+```bash
+python3 tools/build_cross_browser_feasibility_readiness.py
+```
+
+입력:
+
+| artifact/check | 역할 |
+| --- | --- |
+| `data/experiment-results.csv` | final protocol requirement completion 계산 |
+| `data/final-browser-handover-required-trials.csv` | Chrome active row와 Safari/Android P1 requirement 정의 |
+| `data/public-origin-recovery-plan-20260629.json` | public origin, AWS, baseline gate 상태 |
+| `tools/check_browser_cm_observability.py` | Chrome NetLog, Safari WebDriver, packet capture tooling readiness |
+| `tools/check_handover_readiness.py` | ADB device, active IPv4 path, AWS identity, disk readiness |
+| `tools/suggest_active_path_change_commands.py` | read-only active path-change 후보 판정 |
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/results/cross-browser-feasibility-readiness-20260629.md` | Chrome/Safari/Android readiness matrix와 safe conclusion |
+| `data/cross-browser-feasibility-readiness-20260629.csv` | candidate별 local tooling, path gate, public-origin gate, protocol gap |
+| `data/cross-browser-feasibility-readiness-20260629.json` | machine-readable readiness snapshot |
+
+현재 판정:
+
+- Chrome active public handover는 `noheartbeat=0/3`, `heartbeat=0/3`이고 public origin과 active client path-change가 모두 필요하다.
+- Safari는 WebDriver와 packet capture tooling이 준비되어 있어 Android보다 local tooling은 가깝지만, Chrome NetLog-equivalent가 없으므로 server/qlog/client-path 중심의 `PASS_FEASIBILITY` boundary로만 쓴다.
+- Android Chrome은 ADB는 있지만 device가 연결되어 있지 않아 P1 feasibility를 아직 실행할 수 없다.
+- 현재 iPhone USB latent path도 live check에서는 준비되지 않았으므로, public origin 복구와 함께 active path-change trigger를 다시 확인해야 한다.

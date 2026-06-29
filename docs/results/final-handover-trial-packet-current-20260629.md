@@ -17,6 +17,7 @@ Generated: `2026-06-29`
 
 ## Missing Required Gates
 
+- desktop_path_change_ready
 - public_origin_live_ready
 
 ## Final Protocol Blockers

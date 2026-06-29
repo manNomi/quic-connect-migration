@@ -76,6 +76,16 @@ def evaluate_required_gates(required: list[str], gates: dict[str, bool]) -> tupl
     return not blockers, blockers
 
 
+def active_interface_payload(items: list[Any], redact_sensitive: bool) -> list[dict[str, Any]]:
+    payload: list[dict[str, Any]] = []
+    for item in items:
+        row = asdict(item)
+        if redact_sensitive:
+            row["ipv4"] = ["<redacted-address>" for _ in row.get("ipv4", [])]
+        payload.append(row)
+    return payload
+
+
 def valid_config_key(values: dict[str, str], key: str) -> bool:
     return check_key(key, values).valid
 
@@ -198,7 +208,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
             "desktop_path_change_ready": desktop_path_change_ready,
             "desktop_path_change_mode": desktop_path_change_mode,
             "android_ready": handover.android_ready,
-            "active_ipv4_interfaces": [asdict(item) for item in handover.active_ipv4_interfaces],
+            "active_ipv4_interfaces": active_interface_payload(handover.active_ipv4_interfaces, redact_sensitive),
         },
         "observability": {
             "safari_webdriver_ready": observability.safari_webdriver_ready,

@@ -20,6 +20,7 @@
   },
   "next_trial_ready": false,
   "missing_required_gates": [
+    "desktop_path_change_ready",
     "public_origin_live_ready"
   ],
   "required_gates": [
@@ -48,9 +49,9 @@
     "safari_webdriver_ready": true,
     "android_adb_ready": false,
     "desktop_secondary_path_ready": false,
-    "latent_iphone_usb_candidate_ready": true,
+    "latent_iphone_usb_candidate_ready": false,
     "allow_latent_secondary_path": true,
-    "desktop_path_change_ready": true,
+    "desktop_path_change_ready": false,
     "baseline_summary_ready": true,
     "network_change_command_present": true,
     "android_network_change_command_present": false,

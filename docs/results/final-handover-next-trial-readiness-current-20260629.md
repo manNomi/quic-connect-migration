@@ -14,9 +14,9 @@ Generated: `2026-06-29`
 | next phase | `active-network-change` |
 | next browser | `Chrome` |
 | final completion | `3/6` |
-| disk free GiB | `26.0` |
+| disk free GiB | `25.91` |
 | active IPv4 interfaces | `en0(<redacted:1 address>)` |
-| desktop path-change mode | `latent-iphone-usb-failover` |
+| desktop path-change mode | `not-ready` |
 | public origin URL | `<configured>` |
 
 ## Required Gates
@@ -35,9 +35,9 @@ Generated: `2026-06-29`
 | `safari_webdriver_ready` | `yes` | `no` |
 | `android_adb_ready` | `no` | `no` |
 | `desktop_secondary_path_ready` | `no` | `no` |
-| `latent_iphone_usb_candidate_ready` | `yes` | `no` |
+| `latent_iphone_usb_candidate_ready` | `no` | `no` |
 | `allow_latent_secondary_path` | `yes` | `no` |
-| `desktop_path_change_ready` | `yes` | `yes` |
+| `desktop_path_change_ready` | `no` | `yes` |
 | `baseline_summary_ready` | `yes` | `yes` |
 | `network_change_command_present` | `yes` | `yes` |
 | `android_network_change_command_present` | `no` | `no` |
@@ -45,6 +45,7 @@ Generated: `2026-06-29`
 
 ## Missing Required Gates
 
+- desktop_path_change_ready
 - public_origin_live_ready
 
 ## Next Trial Commands
@@ -75,7 +76,7 @@ cd repro/quic-go-min-repro
 RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
-CONTROLLED_PUBLIC_BASELINE_SUMMARY=repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
 PUBLIC_ORIGIN_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \
 CONTROLLED_PUBLIC_EXPECTED_REQUESTS=2 \
 REQUIRE_H3_ALT_SVC=1 \

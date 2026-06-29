@@ -1,6 +1,6 @@
 # Final Handover Next Trial Readiness
 
-Generated: `2026-06-26`
+Generated: `2026-06-29`
 
 ## Summary
 
@@ -14,8 +14,9 @@ Generated: `2026-06-26`
 | next phase | `active-network-change` |
 | next browser | `Chrome` |
 | final completion | `3/6` |
-| disk free GiB | `27.97` |
-| active IPv4 interfaces | `en0(192.168.0.212)` |
+| disk free GiB | `25.93` |
+| active IPv4 interfaces | `en0(<redacted:1 address>)` |
+| desktop path-change mode | `not-ready` |
 | public origin URL | `<configured>` |
 
 ## Required Gates
@@ -33,15 +34,17 @@ Generated: `2026-06-26`
 | `chrome_ready` | `yes` | `yes` |
 | `safari_webdriver_ready` | `yes` | `no` |
 | `android_adb_ready` | `no` | `no` |
-| `desktop_secondary_path_ready` | `no` | `yes` |
+| `desktop_secondary_path_ready` | `no` | `no` |
+| `latent_iphone_usb_candidate_ready` | `no` | `no` |
+| `allow_latent_secondary_path` | `yes` | `no` |
+| `desktop_path_change_ready` | `no` | `yes` |
 | `baseline_summary_ready` | `yes` | `yes` |
-| `network_change_command_present` | `no` | `yes` |
+| `network_change_command_present` | `yes` | `yes` |
 | `android_network_change_command_present` | `no` | `no` |
 
 ## Missing Required Gates
 
-- network_change_command_present
-- desktop_secondary_path_ready
+- desktop_path_change_ready
 
 ## Next Trial Commands
 
@@ -51,10 +54,10 @@ Server/origin terminal:
 cd repro/quic-go-min-repro
 RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
-PUBLIC_ORIGIN_HOST=h3.example.com \
+PUBLIC_ORIGIN_HOST=<redacted-public-origin-host> \
 PUBLIC_ORIGIN_PORT=443 \
-TLS_CERT_FILE=/etc/letsencrypt/live/h3.example.com/fullchain.pem \
-TLS_KEY_FILE=/etc/letsencrypt/live/h3.example.com/privkey.pem \
+TLS_CERT_FILE=<redacted-tls-cert-file> \
+TLS_KEY_FILE=<redacted-tls-key-file> \
 LISTEN_ADDR=0.0.0.0:443 \
 TCP_ADDR=0.0.0.0:443 \
 ALT_SVC='h3=":443"; ma=60' \
@@ -72,7 +75,7 @@ RUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 CONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \
 CONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \
-PUBLIC_ORIGIN_URL='https://h3.example.com/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \
+PUBLIC_ORIGIN_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \
 CONTROLLED_PUBLIC_EXPECTED_REQUESTS=2 \
 REQUIRE_H3_ALT_SVC=1 \
 REQUIRE_CONTROLLED_PUBLIC_BASELINE=1 \
