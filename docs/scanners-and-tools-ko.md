@@ -2518,3 +2518,25 @@ python3 tools/summarize_chrome_rebinding_range_matrix.py \
 - 6000ms no-retry Range download는 `1/3 PASS`였다.
 - 6000ms retry2 Range download는 `3/3 PASS`였고, 그중 `2/3`은 실제 byte-range retry를 사용했다.
 - 완료 row는 모두 `nat_rebinding_multiple_quic_sessions`이므로, Range 결과는 resumable application-level continuity evidence로 보고하고 single-session browser CM 성공으로 쓰지 않는다.
+
+## 69. `tools/summarize_chrome_rebinding_buffered_media_matrix.py`
+
+Chrome local UDP rebinding buffered-media playback artifact를 CSV와 논문용 Markdown 표로 요약한다. 이 실험은 segment fetch 성공 여부가 아니라 playback-level QoE, 즉 startup delay와 rebuffer event를 분리해 보기 위한 local control이다.
+
+실행:
+
+```bash
+python3 tools/summarize_chrome_rebinding_buffered_media_matrix.py \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-buffered-media-low-rep1-drop3000-retry0-hold35-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-buffered-media-high-rep1-drop3000-retry0-hold35-20260629 \
+  --profile buffered-media-playback \
+  --output docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md \
+  --csv-output data/chrome-h3-rebinding-buffered-media-control-20260629.csv
+```
+
+현재 결과:
+
+- corrected 3000ms buffered-media rows는 `12/12 PASS`였다.
+- low buffer `startup/max=1/1`은 빠르게 시작하지만 rebuffer event가 많다.
+- high buffer `startup/max=4/6`은 rebuffer event가 없지만 startup delay가 약 15초로 길다.
+- 모든 row가 `nat_rebinding_multiple_quic_sessions`이므로, 이 결과는 playback-level continuity/QoE evidence로 보고하고 browser single-session CM 성공으로 쓰지 않는다.

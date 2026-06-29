@@ -13,7 +13,7 @@ The current evidence says the answer is workload-dependent. Upload and long down
 | large upload | photo/video/field-record upload | public Chrome iPhone USB handover | retry0 failed 3/3; retry1 succeeded 3/3 | application retry/reconnect, not single-session CM | highest |
 | large download | long file/export download | public Chrome iPhone USB handover + local Range resume control | timeout-only failed 3/3; timeout+retry succeeded 3/3; Range retry2 completed 3/3 | application timeout/retry or byte-range resume, not single-session CM | high |
 | polling dashboard | repeated dashboard fetch | one valid public failure row plus local controls | public no-retry failed; retry public rows need page-ready rerun | incomplete public retry evidence | medium |
-| media segments | live/low-latency video-like segment fetch | local UDP rebinding pilot + 3x replication | 3000ms and 6000ms replicated 3/3 PASS without explicit app retry | multiple sessions/replacement behavior, not single-session CM | medium |
+| media segments | live/low-latency video-like segment fetch | local UDP rebinding pilot + replication + buffered playback control | segment replication completed; buffered playback completed 12/12 but shifted between startup delay and rebuffering | multiple sessions/replacement behavior, not single-session CM | medium |
 | music-like buffered media | small low-bitrate buffered segments | local UDP rebinding retry control | 6000ms no-retry failed 3/3; retry1 completed 3/3 | application retry/reconnect, not single-session CM | medium/control |
 
 ## Main Interpretation
@@ -25,6 +25,8 @@ The Range/resumable-download control refines the download result. Under 6000ms l
 Streaming is still important, but not because it always proves QUIC CM. Segment-based video or music can survive disruption through request granularity, buffering, retry, and browser session churn. This means streaming can be used to show why CM adoption is hard to evaluate: user-visible continuity may be preserved even when single-session transport continuity is absent.
 
 The media segment pilot and replication are the clearest examples. The original 500-6000ms local transient outage pilot completed with `MEDIA_RETRY_ATTEMPTS=0`, and the repeated 3000ms/6000ms runs also completed 3/3 each. Every replication row was classified as `nat_rebinding_multiple_quic_sessions`, so this is user-visible continuity, not browser single-session CM success.
+
+The buffered playback control adds a quality-of-experience layer. Under 3000ms return-path loss, all 12 corrected buffered-media rows completed playback, but low buffer (`startup/max=1/1`) produced repeated rebuffering, while high buffer (`startup/max=4/6`) had zero rebuffer events and about 15s startup delay. Every row still used multiple Chrome QUIC sessions. This means streaming continuity should be reported with startup delay and rebuffer events, not just completion.
 
 The music-like control sharpened the finding. Smaller 8192-byte segments with a longer 1000ms interval were not automatically tolerant: at 6000ms return-path loss, no-retry failed 3/3 after the first segment. Adding one segment retry converted the same profile to 3/3 completion, but all retry rows used three Chrome QUIC sessions. This supports the argument that streaming continuity is governed by segment cadence, retry timing, buffering, and session churn, not by QUIC CM alone.
 
@@ -41,8 +43,8 @@ This framing avoids overclaiming. It also answers why a good transport feature m
 1. Public page-ready polling handover once iPhone USB has active IPv4.
 2. Public page-ready media segment handover once iPhone USB has active IPv4.
 3. Run public page-ready Range handover after the controlled origin is reachable.
-4. Add a larger buffer-depth media model if the paper needs a deeper streaming section.
-5. Compare public iPhone USB media rows against these local proxy controls.
+4. Compare public iPhone USB media rows against these local proxy controls.
+5. If streaming becomes central, add adaptive-bitrate or larger buffer-depth variants.
 
 ## Data
 
@@ -53,4 +55,5 @@ This framing avoids overclaiming. It also answers why a good transport feature m
 - Polling source: `docs/results/iphone-usb-polling-runner-diagnostic-20260626.md`
 - Media pilot source: `docs/results/chrome-h3-rebinding-media-segment-pilot-20260629.md`
 - Media replication source: `docs/results/chrome-h3-rebinding-media-segment-replication-20260629.md`
+- Buffered media source: `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md`
 - Music-like control source: `docs/results/chrome-h3-rebinding-music-like-media-control-20260629.md`

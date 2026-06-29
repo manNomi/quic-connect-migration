@@ -66,6 +66,30 @@ func TestBuildBrowserMediaSegmentsHTMLIncludesSegmentRetryControls(t *testing.T)
 	}
 }
 
+func TestBuildBrowserBufferedMediaHTMLIncludesBufferControls(t *testing.T) {
+	html := buildBrowserBufferedMediaHTML("buffered media", 8, 32768, 100, 2, 1000, 2, 4, 1, 750)
+
+	wantSubstrings := []string{
+		"Chrome H3 buffered media",
+		"media-segment",
+		"startupBuffer=2",
+		"maxBuffer=4",
+		"playbackInterval=1000",
+		"retryAttempts=1",
+		"fetchLoop",
+		"playbackLoop",
+		"bufferedMediaBufferDepth",
+		"bufferedMediaRebufferEvents",
+		"bufferedMediaComplete",
+		"mediaComplete",
+	}
+	for _, want := range wantSubstrings {
+		if !strings.Contains(html, want) {
+			t.Fatalf("browser buffered media HTML missing %q in:\n%s", want, html)
+		}
+	}
+}
+
 func TestBuildBrowserRangeDownloadHTMLIncludesRangeRetryControls(t *testing.T) {
 	html := buildBrowserRangeDownloadHTML("range retry", 1048576, 131072, 250, 2, 1, 750)
 

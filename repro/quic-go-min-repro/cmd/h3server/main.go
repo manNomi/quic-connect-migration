@@ -481,6 +481,55 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseBytes = len(html)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-buffered-media":
+		record.Workload = "browser-buffered-media"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		count := queryInt(r, "count", 8)
+		if count > 200 {
+			count = 200
+		}
+		size := queryInt(r, "bytes", 32768)
+		if size > 16*1024*1024 {
+			size = 16 * 1024 * 1024
+		}
+		segmentDurationMillis := queryInt(r, "segment_duration_ms", 100)
+		if segmentDurationMillis > 60000 {
+			segmentDurationMillis = 60000
+		}
+		segmentChunks := queryInt(r, "segment_chunks", 2)
+		if segmentChunks > 100 {
+			segmentChunks = 100
+		}
+		playbackIntervalMillis := queryInt(r, "playback_interval_ms", 1000)
+		if playbackIntervalMillis > 60000 {
+			playbackIntervalMillis = 60000
+		}
+		startupBufferSegments := queryInt(r, "startup_buffer_segments", 2)
+		if startupBufferSegments > count {
+			startupBufferSegments = count
+		}
+		maxBufferSegments := queryInt(r, "max_buffer_segments", 4)
+		if maxBufferSegments > count {
+			maxBufferSegments = count
+		}
+		if maxBufferSegments < startupBufferSegments {
+			maxBufferSegments = startupBufferSegments
+		}
+		retryAttempts := queryInt(r, "retry_attempts", 0)
+		if retryAttempts > 5 {
+			retryAttempts = 5
+		}
+		retryDelayMillis := queryInt(r, "retry_delay_ms", 500)
+		if retryDelayMillis > 60000 {
+			retryDelayMillis = 60000
+		}
+		if label == "" {
+			label = "browser-buffered-media"
+		}
+		html := buildBrowserBufferedMediaHTML(label, count, size, segmentDurationMillis, segmentChunks, playbackIntervalMillis, startupBufferSegments, maxBufferSegments, retryAttempts, retryDelayMillis)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
 	case r.Method == http.MethodGet && r.URL.Path == "/media-segment":
 		record.Workload = "media-segment"
 		record.ResponseContentType = "application/octet-stream"
@@ -874,6 +923,32 @@ func buildBrowserMediaSegmentsHTML(label string, count, intervalMillis, size, se
 	body += "async function segmentWithRetry(i){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{return {attempt,result:await fetchSegment(i,attempt)};}catch(error){lastError=String(error);document.body.dataset.mediaLastError=lastError;document.body.dataset.mediaLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'media segment failed');}"
 	body += "async function run(){let totalRetries=0,totalBytes=0;for(let i=1;i<=count;i++){const item=await segmentWithRetry(i);totalRetries+=item.attempt-1;totalBytes+=item.result.bytes;document.body.dataset.mediaCompletedCount=String(i);document.body.dataset.mediaRetriesUsed=String(totalRetries);document.body.dataset.mediaBytes=String(totalBytes);const li=document.createElement('li');li.textContent=`segment:${i}:status:${item.result.status}:bytes:${item.result.bytes}:attempt:${item.attempt}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.mediaElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaComplete='true';}"
 	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.mediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaError=String(error);});"
+	body += "</script>"
+	body += "</body></html>"
+	return body
+}
+
+func buildBrowserBufferedMediaHTML(label string, count, size, segmentDurationMillis, segmentChunks, playbackIntervalMillis, startupBufferSegments, maxBufferSegments, retryAttempts, retryDelayMillis int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	segmentURLPrefix := fmt.Sprintf("/media-segment?bytes=%d&duration_ms=%d&chunks=%d&label=%s", size, segmentDurationMillis, segmentChunks, queryLabel)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 buffered media</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Chrome H3 buffered media</h1><div id=\"status\" data-label=\"%s\">pending</div><ol id=\"events\"></ol>", escapedLabel)
+	body += "<script>"
+	body += fmt.Sprintf("const count=%d,segmentUrlPrefix=%q,playbackInterval=%d,startupBuffer=%d,maxBuffer=%d,retryAttempts=%d,retryDelayMs=%d;", count, segmentURLPrefix, playbackIntervalMillis, startupBufferSegments, maxBufferSegments, retryAttempts, retryDelayMillis)
+	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
+	body += "const events=document.getElementById('events');"
+	body += "const startedAt=performance.now();"
+	body += "const buffered=new Map();let nextFetch=1,played=0,totalRetries=0,totalBytes=0,rebufferEvents=0,fetchDone=false,fetchError='';"
+	body += "function note(line){const li=document.createElement('li');li.textContent=line;events.appendChild(li);}"
+	body += "function updateBufferDataset(){document.body.dataset.bufferedMediaBufferDepth=String(buffered.size);document.body.dataset.bufferedMediaPlayedCount=String(played);document.body.dataset.bufferedMediaFetchedCount=String(nextFetch-1);document.body.dataset.bufferedMediaRebufferEvents=String(rebufferEvents);document.body.dataset.bufferedMediaRetriesUsed=String(totalRetries);document.body.dataset.bufferedMediaBytes=String(totalBytes);document.body.dataset.mediaCompletedCount=String(played);document.body.dataset.mediaRetriesUsed=String(totalRetries);document.body.dataset.mediaBytes=String(totalBytes);}"
+	body += "async function fetchSegment(i,attempt){const res=await fetch(segmentUrlPrefix+'-'+i+'&segment='+i+'&attempt='+attempt+'&ts='+Date.now(),{cache:'no-store'});const buf=await res.arrayBuffer();if(!res.ok){throw new Error('segment status '+res.status);}return {status:res.status,bytes:buf.byteLength};}"
+	body += "async function segmentWithRetry(i){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{return {attempt,result:await fetchSegment(i,attempt)};}catch(error){lastError=String(error);document.body.dataset.bufferedMediaLastError=lastError;document.body.dataset.bufferedMediaLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaLastError=lastError;document.body.dataset.mediaLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'buffered media segment failed');}"
+	body += "async function fetchLoop(){try{while(nextFetch<=count){while(buffered.size>=maxBuffer){await sleep(20);}const current=nextFetch++;const item=await segmentWithRetry(current);totalRetries+=item.attempt-1;totalBytes+=item.result.bytes;buffered.set(current,item.result.bytes);updateBufferDataset();note(`fetch:${current}:bytes:${item.result.bytes}:attempt:${item.attempt}:buffer:${buffered.size}`);}fetchDone=true;updateBufferDataset();}catch(error){fetchError=String(error);document.body.dataset.bufferedMediaError=fetchError;document.body.dataset.bufferedMediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaError=fetchError;document.body.dataset.mediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));note('fetch-error:'+fetchError);}}"
+	body += "async function waitForStartup(){while(buffered.size<startupBuffer&&!fetchDone&&!fetchError){await sleep(20);}}"
+	body += "async function playbackLoop(){await waitForStartup();document.body.dataset.bufferedMediaStartupElapsedMs=String(Math.round(performance.now()-startedAt));while(played<count){const next=played+1;if(buffered.has(next)){buffered.delete(next);played=next;updateBufferDataset();note(`play:${played}:buffer:${buffered.size}`);await sleep(playbackInterval);continue;}rebufferEvents+=1;updateBufferDataset();note('rebuffer:'+rebufferEvents+':at:'+next);if(fetchError){throw new Error(fetchError);}await sleep(playbackInterval);}document.getElementById('status').textContent='complete';document.body.dataset.bufferedMediaElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.bufferedMediaComplete='true';document.body.dataset.mediaElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaComplete='true';}"
+	body += "async function run(){updateBufferDataset();const fetchPromise=fetchLoop();await playbackLoop();await fetchPromise;}"
+	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.bufferedMediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.bufferedMediaError=String(error);document.body.dataset.mediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaError=String(error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body

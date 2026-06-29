@@ -72,6 +72,7 @@ Replication artifacts:
 
 - `docs/results/chrome-h3-rebinding-media-segment-replication-20260629.md`
 - `docs/results/chrome-h3-rebinding-music-like-media-control-20260629.md`
+- `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md`
 
 Video-like segment profile:
 
@@ -88,6 +89,17 @@ Music-like smaller-segment profile:
 | 6000ms | 1 | 3/3 | 3/3 | 3-3 | `nat_rebinding_multiple_quic_sessions` |
 
 The replication changes the earlier expectation: smaller or lower-bitrate segment fetches are not automatically tolerant. The no-retry music-like profile repeatedly failed after the first segment under the same 6000ms return-path loss. One retry recovered visible completion, but the observed mechanism was still multiple Chrome QUIC sessions rather than single-session CM.
+
+Buffered playback profile:
+
+| drop window | retry | startup/max buffer | PASS/runs | playback complete | startup/rebuffer result | classification |
+| --- | ---: | --- | ---: | ---: | --- | --- |
+| 3000ms | 0 | 1/1 | 3/3 | 3/3 | fast startup, 14 rebuffer events each | `nat_rebinding_multiple_quic_sessions` |
+| 3000ms | 0 | 4/6 | 3/3 | 3/3 | ~15s startup, 0 rebuffer events | `nat_rebinding_multiple_quic_sessions` |
+| 3000ms | 2 | 1/1 | 3/3 | 3/3 | fast startup, 3-14 rebuffer events | `nat_rebinding_multiple_quic_sessions` |
+| 3000ms | 2 | 4/6 | 3/3 | 3/3 | ~15s startup, 0 rebuffer events | `nat_rebinding_multiple_quic_sessions` |
+
+This adds an important paper point: streaming continuity is not a binary task-completion result. Buffer depth can trade startup delay against rebuffering, while the underlying browser behavior is still replacement/multiple-session continuity rather than single-session QUIC CM.
 
 ## Next Public Handover Trials
 
