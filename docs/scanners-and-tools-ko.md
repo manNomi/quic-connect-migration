@@ -775,6 +775,7 @@ python3 tools/suggest_active_path_change_commands.py \
 ## 18.2. `tools/check_iphone_usb_latent_failover.py`
 
 macOS에서 iPhone USB tethering이 Wi-Fi active 상태에서는 inactive로 있다가 Wi-Fi off 뒤 default route로 올라오는지 측정한다.
+현재 버전은 `ifconfig`만 보지 않고 `networksetup -listnetworkserviceorder`, `networksetup -listallhardwareports`, `ifconfig -l`을 함께 확인해 saved network service와 실제 hardware/interface presence를 분리한다.
 
 읽기 전용 snapshot:
 
@@ -803,17 +804,21 @@ python3 tools/check_iphone_usb_latent_failover.py \
 | 항목 | 의미 |
 | --- | --- |
 | `classification=latent_iphone_usb_failover_observed` | Wi-Fi off 뒤 iPhone USB가 default route가 됨 |
+| `classification=iphone_usb_service_configured_hardware_absent` | macOS network service에는 iPhone USB가 저장되어 있지만 실제 hardware port/interface가 현재 올라오지 않음 |
+| `classification=iphone_usb_service_configured_interface_absent` | iPhone USB service는 configured/hardware 후보가 있으나 live `ifconfig -l` interface로는 보이지 않음 |
 | `ready_at_ms` | Wi-Fi off trigger 이후 iPhone USB default route 관찰 시간 |
 | `before.default_interface` / `after.default_interface` | client path 변화의 OS-level evidence |
+| `before.iphone_usb.service_configured` / `hardware_port_present` / `device_listed` | iPhone USB가 saved service인지, 실제 hardware port인지, live interface인지 분리한 readiness evidence |
 
 이 도구는 OS-level path activation evidence만 제공한다. QUIC single-connection migration 근거는 network-change trial의 qlog, server tuple, Chrome NetLog, workload completion을 함께 확인해야 한다.
 
-2026-06-29 현재 Mac+iPhone USB 연결에서 같은 trigger가 반복 재현되었다.
+2026-06-29 이전 live run에서는 Mac+iPhone USB trigger가 반복 재현되었다.
 
 | artifact | 결과 |
 | --- | --- |
 | `data/iphone-usb-latent-failover-live-20260629.json` | Wi-Fi off 이후 `584` ms에 iPhone USB가 default route가 됨 |
 | `docs/results/iphone-usb-latent-failover-live-20260629.md` | 별도 Markdown 측정에서 `548` ms에 iPhone USB가 default route가 됨 |
+| `docs/results/iphone-usb-current-detection-20260629.md` | 현재 snapshot은 `iphone_usb_service_configured_hardware_absent`로, saved service는 있으나 live hardware/interface가 없어서 active public rows를 실행하지 않도록 gate 처리 |
 
 ## 19. 실험 실행 코드
 

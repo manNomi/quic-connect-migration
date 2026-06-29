@@ -4,15 +4,22 @@
   "mode": "snapshot",
   "wifi_device": "en0",
   "iphone_device": "en8",
+  "iphone_service": "iPhone USB",
   "measured": false,
   "ready": false,
   "ready_at_ms": null,
-  "classification": "iphone_usb_not_detected",
+  "classification": "iphone_usb_service_configured_hardware_absent",
+  "next_actions": [
+    "Reconnect the USB-C cable and unlock the iPhone.",
+    "Enable Personal Hotspot on the iPhone and keep the screen awake for the next check.",
+    "Check macOS System Settings > Network and confirm the iPhone USB service is physically present, not only remembered as a saved service.",
+    "Rerun this checker before running a browser handover trial."
+  ],
   "network_change_exit": null,
   "restore_wifi": false,
   "restore_exit": null,
   "before": {
-    "captured_ms": 31,
+    "captured_ms": 52,
     "wifi_power": "Wi-Fi Power (en0): On",
     "default_interface": "en0",
     "iphone_usb": {
@@ -20,11 +27,16 @@
       "present": false,
       "active": false,
       "ipv4": [],
+      "service_configured": true,
+      "service_device": "en8",
+      "hardware_port_present": false,
+      "hardware_device": "",
+      "device_listed": false,
       "usable_ipv4": []
     }
   },
   "after": {
-    "captured_ms": 61,
+    "captured_ms": 111,
     "wifi_power": "Wi-Fi Power (en0): On",
     "default_interface": "en0",
     "iphone_usb": {
@@ -32,12 +44,17 @@
       "present": false,
       "active": false,
       "ipv4": [],
+      "service_configured": true,
+      "service_device": "en8",
+      "hardware_port_present": false,
+      "hardware_device": "",
+      "device_listed": false,
       "usable_ipv4": []
     }
   },
   "events": [
     {
-      "captured_ms": 31,
+      "captured_ms": 52,
       "wifi_power": "Wi-Fi Power (en0): On",
       "default_interface": "en0",
       "iphone_usb": {
@@ -45,11 +62,16 @@
         "present": false,
         "active": false,
         "ipv4": [],
+        "service_configured": true,
+        "service_device": "en8",
+        "hardware_port_present": false,
+        "hardware_device": "",
+        "device_listed": false,
         "usable_ipv4": []
       }
     },
     {
-      "captured_ms": 61,
+      "captured_ms": 111,
       "wifi_power": "Wi-Fi Power (en0): On",
       "default_interface": "en0",
       "iphone_usb": {
@@ -57,6 +79,11 @@
         "present": false,
         "active": false,
         "ipv4": [],
+        "service_configured": true,
+        "service_device": "en8",
+        "hardware_port_present": false,
+        "hardware_device": "",
+        "device_listed": false,
         "usable_ipv4": []
       }
     }
