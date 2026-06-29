@@ -197,6 +197,8 @@ def dump_application_complete(dump: str, workload: str) -> bool:
         return 'data-downlink-complete="true"' in dump
     if "poll" in workload:
         return 'data-poll-complete="true"' in dump
+    if "media" in workload:
+        return 'data-media-complete="true"' in dump
     if "slow" in workload:
         return 'data-slow-complete="true"' in dump or "slowComplete = 'true'" in dump
     return True
@@ -226,6 +228,8 @@ def dump_task_timing(dump: str, workload: str) -> dict[str, int | None]:
         prefix = "downlink"
     elif "poll" in workload:
         prefix = "poll"
+    elif "media" in workload:
+        prefix = "media"
     elif "slow" in workload:
         prefix = "slow"
     else:

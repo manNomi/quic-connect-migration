@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from classify_chrome_h3_artifacts import classify, dump_task_timing
+from classify_chrome_h3_artifacts import classify, dump_application_complete, dump_task_timing
 
 
 def base_summary(
@@ -135,6 +135,15 @@ def test_dump_task_timing_reads_elapsed_attributes() -> None:
     }
 
 
+def test_media_completion_and_timing_are_detected() -> None:
+    dump = '<body data-media-complete="true" data-media-elapsed-ms="8938"></body>'
+    assert dump_application_complete(dump, "rebinding-proxy-media") is True
+    assert dump_task_timing(dump, "rebinding-proxy-media") == {
+        "elapsed_ms": 8938,
+        "error_elapsed_ms": None,
+    }
+
+
 def main() -> int:
     test_rebinding_path_validation_without_tuple_change_gets_nat_label()
     test_rebinding_probe_without_response_is_not_validation()
@@ -143,6 +152,7 @@ def main() -> int:
     test_rebinding_single_session_tuple_change_is_only_possible_continuity()
     test_browser_application_failure_overrides_transport_evidence()
     test_dump_task_timing_reads_elapsed_attributes()
+    test_media_completion_and_timing_are_detected()
     print("classify_chrome_h3_artifacts=ok")
     return 0
 

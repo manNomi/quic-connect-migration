@@ -53,6 +53,19 @@ This is intentionally a segment-fetch model, not a codec/decoder test. It models
 
 Important caveat: even without network change, this short segment workload used two Chrome target QUIC sessions / two local source ports. This is useful evidence for the paper because segment-style media workloads can naturally involve multiple sessions. Therefore, media task completion must not be interpreted as single-session QUIC Connection Migration unless session attribution, server tuple change, client path change, and qlog path validation align.
 
+## Local Rebinding Pilot
+
+The first transient return-path pilot was added in `docs/results/chrome-h3-rebinding-media-segment-pilot-20260629.md`.
+
+Summary:
+
+- 500ms, 1500ms, 3000ms, and 6000ms local A+B return-path drop windows all completed.
+- All rows used `MEDIA_RETRY_ATTEMPTS=0`.
+- All rows were classified as `nat_rebinding_multiple_quic_sessions`.
+- The 6000ms row completed with three target Chrome QUIC sessions and a duplicate segment request.
+
+This strengthens the workload-dependent framing: media segment continuity can survive disruption, but the observed mechanism is not single-session browser CM.
+
 ## Next Public Handover Trials
 
 Use the page-ready trigger added in `docs/results/page-ready-network-change-runner-20260629.md`.
