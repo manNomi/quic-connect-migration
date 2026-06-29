@@ -32,14 +32,26 @@ Public-safe local checks show:
 | TCP 443 from client | `connection refused` |
 | local TLS cert file | `missing on this Mac` |
 | local TLS key file | `missing on this Mac` |
+| SSH probe as `ec2-user` | `auth_failed` |
+| SSH probe as `ubuntu` | `auth_failed` |
 | AWS caller identity | `invalid_client_token` |
 
-Interpretation: the public host exists, but the controlled origin server is not currently listening on 443. The WebPKI cert/key paths are not available on this Mac, so the server likely needs to be restarted on the origin host where the cert/key live, or AWS credentials need to be refreshed to provision/recover a new origin.
+Interpretation: the public host exists, but the controlled origin server is not currently listening on 443. The WebPKI cert/key paths are not available on this Mac, and SSH auth to the origin host is not available from the current machine. The server likely needs to be restarted on the origin host where the cert/key live, or AWS credentials need to be refreshed to provision/recover a new origin.
 
 Prepared package/deploy packet:
 
 - `harness/results/packages/quic-go-min-repro-20260629T052407Z.tar.gz`
 - `docs/results/controlled-public-origin-deploy-packet-20260629.md`
+
+## External Input Needed
+
+One of the following is needed before Codex can run the final Chrome public handover trial end-to-end:
+
+| option | needed value | why |
+| --- | --- | --- |
+| origin host SSH | SSH key/user that can access the public origin host | restart `run-controlled-public-h3-server.sh` where WebPKI cert/key are installed |
+| refreshed AWS credentials | valid local AWS identity with EC2/security-group/DNS or equivalent provisioning rights | provision or recover a controlled public origin with TCP/UDP 443 |
+| local cert/key copy | readable WebPKI cert/key for the configured public host on this Mac | run the controlled public origin directly from this machine if DNS/port forwarding points here |
 
 ## Required Next Inputs
 
