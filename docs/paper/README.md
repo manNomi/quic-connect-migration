@@ -16,9 +16,13 @@ This folder contains paper-facing drafts generated from the current research evi
    - Korean title/abstract/contribution/structure skeleton.
 5. `current-evidence-paper-skeleton-en-20260629.md`
    - English title/abstract/contribution/structure skeleton.
-6. `current-evidence-methods-results-ko-20260629.md`
+6. `workload-prioritized-experiment-design-ko-20260629.md`
+   - Korean next-experiment design prioritizing upload/download, Range, video, music, Safari, and Android.
+7. `workload-prioritized-experiment-design-en-20260629.md`
+   - English next-experiment design prioritizing upload/download, Range, video, music, Safari, and Android.
+8. `current-evidence-methods-results-ko-20260629.md`
    - Korean Methods/Results draft based on current artifacts.
-7. `current-evidence-methods-results-en-20260629.md`
+9. `current-evidence-methods-results-en-20260629.md`
    - English Methods/Results draft based on current artifacts.
 
 ## Claim Boundary
@@ -42,4 +46,5 @@ python3 tools/build_paper_claim_readiness_audit.py \
 python3 tools/build_current_evidence_manuscript_sections.py
 python3 tools/build_cm_underuse_chapter.py
 python3 tools/build_current_paper_skeleton.py
+python3 tools/build_workload_prioritized_experiment_design.py
 ```

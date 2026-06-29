@@ -2652,3 +2652,35 @@ python3 tools/build_current_paper_skeleton.py
 - 현재 주요 결과에는 iPhone USB trigger `en0 -> en8, 1321ms`, public origin `connection_refused`, AWS `invalid_client_token`, workload별 recovery 결과가 포함된다.
 - Chrome single-session browser CM은 `not-supported-yet`로 유지한다.
 - 다음 실험 gap은 fresh public baseline, Chrome no-heartbeat/heartbeat active rows, public Range/media, Safari 또는 Android feasibility다.
+
+## 74. `tools/build_workload_prioritized_experiment_design.py`
+
+현재 workload evidence를 바탕으로 다음 실험 우선순위를 논문용 decision matrix로 생성한다. 사용자가 제안한 동영상, 음악, 대용량 upload/download 방향을 현재 증거 체인에 맞춰 정리하고, streaming completion을 single-session CM 성공으로 오해하지 않도록 evidence ladder와 판정 규칙을 포함한다.
+
+실행:
+
+```bash
+python3 tools/build_workload_prioritized_experiment_design.py
+```
+
+입력:
+
+| input | 역할 |
+| --- | --- |
+| `data/workload-sensitivity-synthesis-20260629.csv` | upload/download/polling/media workload별 현재 결과 |
+| `data/streaming-workload-case-analysis-20260629.csv` | large transfer, live video, VOD, music case 분해 |
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `data/workload-prioritized-next-experiments-20260629.csv` | 다음 실험 matrix |
+| `docs/paper/workload-prioritized-experiment-design-ko-20260629.md` | 한국어 workload 우선순위 실험 설계 |
+| `docs/paper/workload-prioritized-experiment-design-en-20260629.md` | 영어 workload 우선순위 실험 설계 |
+
+핵심 결론:
+
+- 실험 우선순위는 fresh public H3 baseline, Chrome downlink no-heartbeat, Chrome downlink heartbeat, upload retry boundary, Range download, buffered media, Safari/Android feasibility 순서다.
+- streaming은 중요하지만, buffer와 segment retry가 transport failure를 숨길 수 있으므로 upload/download로 transport continuity gap을 먼저 잡고 streaming은 QoE/session churn tradeoff로 해석한다.
+- evidence ladder를 `L0 HTTP/3 capability`부터 `L3 single-session browser CM`, `L4 workload/QoE impact`까지 분리한다.
+- third-party public site는 H3 discovery/control로만 쓰고, server qlog/tuple이 없으면 CM success claim에는 쓰지 않는다.
