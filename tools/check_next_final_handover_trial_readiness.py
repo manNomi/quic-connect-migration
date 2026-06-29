@@ -18,6 +18,7 @@ from check_public_origin_readiness import build_result as build_public_origin_re
 from check_public_origin_readiness import payload as public_origin_payload
 from report_artifact_storage import build_report as build_storage_report
 from select_next_final_handover_trial import DEFAULT_EXPERIMENTS, build_selection
+from suggest_active_path_change_commands import collect_plan
 
 
 DEFAULT_CONFIG = "harness/config/controlled-public-origin.env"
@@ -58,13 +59,13 @@ def required_gate_names(next_trial: dict[str, Any] | None, check_local_files: bo
     if browser == "Chrome":
         gates.append("chrome_ready")
     if browser == "Safari":
-        gates.extend(["safari_webdriver_ready", "desktop_secondary_path_ready"])
+        gates.extend(["safari_webdriver_ready", "desktop_path_change_ready"])
     if browser == "Android Chrome":
         gates.append("android_adb_ready")
     if phase in {"active-network-change", "p1-feasibility"}:
         gates.extend(["baseline_summary_ready", "network_change_command_present"])
         if browser == "Chrome":
-            gates.append("desktop_secondary_path_ready")
+            gates.append("desktop_path_change_ready")
         if browser == "Android Chrome":
             gates.append("android_network_change_command_present")
     return gates
@@ -94,7 +95,26 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     next_trial = selection["next_trial"]
 
     values = parse_env_file(Path(args.config))
+    overrides = {
+        "NETWORK_CHANGE_CMD": getattr(args, "network_change_cmd", ""),
+        "ANDROID_NETWORK_CHANGE_CMD": getattr(args, "android_network_change_cmd", ""),
+    }
+    values.update({key: value for key, value in overrides.items() if value})
     handover = build_handover_readiness(args.chrome_bin)
+    command_plan = collect_plan(include_commands=False)
+    latent_iphone_usb_candidate_ready = bool(
+        command_plan.get("summary", {}).get("latent_iphone_usb_candidate_ready")
+    )
+    allow_latent_secondary_path = bool(getattr(args, "allow_latent_secondary_path", False))
+    desktop_path_change_ready = handover.secondary_path_ready or (
+        allow_latent_secondary_path and latent_iphone_usb_candidate_ready
+    )
+    if handover.secondary_path_ready:
+        desktop_path_change_mode = "active-secondary-path"
+    elif allow_latent_secondary_path and latent_iphone_usb_candidate_ready:
+        desktop_path_change_mode = "latent-iphone-usb-failover"
+    else:
+        desktop_path_change_mode = "not-ready"
     observability = build_observability_readiness(args.chrome_bin, args.safari_bin, args.safari_tp_bin)
     storage = build_storage_report(["repro/quic-go-min-repro/artifacts", "harness/results"], max_entries=5)
     baseline = baseline_ready(values.get("CONTROLLED_PUBLIC_BASELINE_SUMMARY", ""))
@@ -130,6 +150,9 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         "safari_webdriver_ready": observability.safari_webdriver_ready,
         "android_adb_ready": handover.android_ready,
         "desktop_secondary_path_ready": handover.secondary_path_ready,
+        "latent_iphone_usb_candidate_ready": latent_iphone_usb_candidate_ready,
+        "allow_latent_secondary_path": allow_latent_secondary_path,
+        "desktop_path_change_ready": desktop_path_change_ready,
         "baseline_summary_ready": baseline["ready"],
         "network_change_command_present": valid_config_key(values, "NETWORK_CHANGE_CMD"),
         "android_network_change_command_present": valid_config_key(values, "ANDROID_NETWORK_CHANGE_CMD"),
@@ -144,6 +167,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
 
     return {
         "generated": utc_date_iso(),
+        "redact_sensitive": redact_sensitive,
         "config_path": args.config,
         "config_exists": Path(args.config).exists(),
         "check_local_files": args.check_local_files,
@@ -169,6 +193,10 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
         "handover": {
             "chrome_found": handover.chrome_found,
             "secondary_path_ready": handover.secondary_path_ready,
+            "latent_iphone_usb_candidate_ready": latent_iphone_usb_candidate_ready,
+            "allow_latent_secondary_path": allow_latent_secondary_path,
+            "desktop_path_change_ready": desktop_path_change_ready,
+            "desktop_path_change_mode": desktop_path_change_mode,
             "android_ready": handover.android_ready,
             "active_ipv4_interfaces": [asdict(item) for item in handover.active_ipv4_interfaces],
         },
@@ -185,10 +213,16 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
 def emit_markdown(readiness: dict[str, Any]) -> str:
     next_trial = readiness["next_trial"]
     missing = readiness["missing_required_gates"] or ["-"]
-    active = ", ".join(
-        f"{item['name']}({','.join(item['ipv4'])})"
-        for item in readiness["handover"]["active_ipv4_interfaces"]
-    ) or "-"
+    if readiness.get("redact_sensitive"):
+        active = ", ".join(
+            f"{item['name']}(<redacted:{len(item['ipv4'])} address{'es' if len(item['ipv4']) != 1 else ''}>)"
+            for item in readiness["handover"]["active_ipv4_interfaces"]
+        ) or "-"
+    else:
+        active = ", ".join(
+            f"{item['name']}({','.join(item['ipv4'])})"
+            for item in readiness["handover"]["active_ipv4_interfaces"]
+        ) or "-"
     lines = [
         "# Final Handover Next Trial Readiness",
         "",
@@ -208,6 +242,7 @@ def emit_markdown(readiness: dict[str, Any]) -> str:
         f"| final completion | `{readiness['selection']['complete_count']}/{readiness['selection']['requirement_count']}` |",
         f"| disk free GiB | `{readiness['disk']['free_gib']}` |",
         f"| active IPv4 interfaces | `{active}` |",
+        f"| desktop path-change mode | `{readiness['handover']['desktop_path_change_mode']}` |",
         f"| public origin URL | `{readiness['public_origin_url_preview'] or '-'}` |",
         "",
         "## Required Gates",
@@ -260,6 +295,9 @@ def main() -> int:
         help="require TLS files to exist on the machine running this checker; use on the public origin host",
     )
     parser.add_argument("--check-public-origin", action="store_true")
+    parser.add_argument("--allow-latent-secondary-path", action="store_true")
+    parser.add_argument("--network-change-cmd", default="")
+    parser.add_argument("--android-network-change-cmd", default="")
     parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")

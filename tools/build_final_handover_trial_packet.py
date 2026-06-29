@@ -114,6 +114,9 @@ def build_readiness_args(args: argparse.Namespace) -> argparse.Namespace:
         min_disk_gib=args.min_disk_gib,
         check_local_files=args.check_local_files,
         check_public_origin=args.check_public_origin,
+        allow_latent_secondary_path=getattr(args, "allow_latent_secondary_path", False),
+        network_change_cmd=getattr(args, "network_change_cmd", ""),
+        android_network_change_cmd=getattr(args, "android_network_change_cmd", ""),
         timeout=args.timeout,
         redact_sensitive=redact_sensitive,
     )
@@ -128,6 +131,12 @@ def option_flags(args: argparse.Namespace) -> str:
         flags.append("--redact-sensitive")
     if args.check_public_origin:
         flags.append("--check-public-origin")
+    if getattr(args, "allow_latent_secondary_path", False):
+        flags.append("--allow-latent-secondary-path")
+    if getattr(args, "network_change_cmd", ""):
+        flags.append("--network-change-cmd <configured>")
+    if getattr(args, "android_network_change_cmd", ""):
+        flags.append("--android-network-change-cmd <configured>")
     if args.check_local_files:
         flags.append("--check-local-files")
     if args.repetitions != 3:
@@ -152,6 +161,19 @@ def build_preflight_commands(args: argparse.Namespace) -> list[str]:
         checklist_flags.append("--redact-sensitive")
     if args.check_public_origin:
         readiness_flags.append("--check-public-origin")
+    if getattr(args, "allow_latent_secondary_path", False):
+        readiness_flags.append("--allow-latent-secondary-path")
+    if getattr(args, "network_change_cmd", ""):
+        readiness_flags.extend(
+            ["--network-change-cmd", "'<redacted-network-change-cmd>'" if redact_sensitive else args.network_change_cmd]
+        )
+    if getattr(args, "android_network_change_cmd", ""):
+        readiness_flags.extend(
+            [
+                "--android-network-change-cmd",
+                "'<redacted-android-network-change-cmd>'" if redact_sensitive else args.android_network_change_cmd,
+            ]
+        )
     if args.check_local_files:
         readiness_flags.append("--check-local-files")
         checklist_flags.append("--check-local-files")
@@ -342,6 +364,9 @@ def main() -> int:
     parser.add_argument("--min-disk-gib", type=float, default=7.0)
     parser.add_argument("--check-local-files", action="store_true")
     parser.add_argument("--check-public-origin", action="store_true")
+    parser.add_argument("--allow-latent-secondary-path", action="store_true")
+    parser.add_argument("--network-change-cmd", default="")
+    parser.add_argument("--android-network-change-cmd", default="")
     parser.add_argument("--redact-sensitive", action="store_true")
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")

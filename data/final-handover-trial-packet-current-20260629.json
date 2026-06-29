@@ -1,0 +1,117 @@
+{
+  "generated": "2026-06-29",
+  "state": "blocked_by_readiness",
+  "public_safe_default": true,
+  "redact_sensitive": true,
+  "option_flags": "--use-local-config --redact-sensitive --check-public-origin --allow-latent-secondary-path --network-change-cmd <configured>",
+  "next_trial": {
+    "requirement_id": "chrome-downlink-noheartbeat-active-cm",
+    "trial_id": "controlled-public-chrome-downlink-noheartbeat-network-change-001",
+    "phase": "active-network-change",
+    "browser": "Chrome",
+    "workload": "browser-downlink active path change",
+    "heartbeat": "false",
+    "expected_requests": 2,
+    "artifact_dir": "artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001",
+    "claim_gate": "classification possible_connection_migration; client_active_path_changed; server tuple changed; qlog path validation true",
+    "server_command": "cd repro/quic-go-min-repro\nRUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nPUBLIC_ORIGIN_HOST=<redacted-public-origin-host> \\\nPUBLIC_ORIGIN_PORT=443 \\\nTLS_CERT_FILE=<redacted-tls-cert-file> \\\nTLS_KEY_FILE=<redacted-tls-key-file> \\\nLISTEN_ADDR=0.0.0.0:443 \\\nTCP_ADDR=0.0.0.0:443 \\\nALT_SVC='h3=\":443\"; ma=60' \\\nEXPECTED_REQUESTS=2 \\\nTIMEOUT=300s \\\nCOMPLETION_GRACE=2s \\\n./scripts/run-controlled-public-h3-server.sh",
+    "client_command": "cd repro/quic-go-min-repro\nRUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nCONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nCONTROLLED_PUBLIC_BASELINE_SUMMARY=repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \\\nPUBLIC_ORIGIN_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \\\nCONTROLLED_PUBLIC_EXPECTED_REQUESTS=2 \\\nREQUIRE_H3_ALT_SVC=1 \\\nREQUIRE_CONTROLLED_PUBLIC_BASELINE=1 \\\nCHROME_RUNNER=cdp \\\nCHROME_HOLD_SECONDS=18 \\\nCHROME_TIMEOUT_SECONDS=30 \\\nCHROME_NET_LOG_CAPTURE_MODE=Default \\\nNETWORK_CHANGE_AFTER_SECONDS=3 \\\nNETWORK_CHANGE_CMD=... \\\n./scripts/run-controlled-public-h3-network-change.sh",
+    "registration_hint": "Reject as CM success if classifier reports reconnect_or_multiple_sessions or no_path_change_after_trigger."
+  },
+  "next_trial_ready": false,
+  "missing_required_gates": [
+    "public_origin_live_ready"
+  ],
+  "required_gates": [
+    "next_trial_selected",
+    "controlled_public_config_present",
+    "public_origin_host_configured",
+    "public_origin_url_configured",
+    "tls_config_present",
+    "disk_ready",
+    "chrome_ready",
+    "baseline_summary_ready",
+    "network_change_command_present",
+    "desktop_path_change_ready",
+    "public_origin_live_ready"
+  ],
+  "gate_values": {
+    "next_trial_selected": true,
+    "controlled_public_config_present": true,
+    "public_origin_host_configured": true,
+    "public_origin_url_configured": true,
+    "tls_config_present": true,
+    "tls_cert_file_exists": false,
+    "tls_key_file_exists": false,
+    "disk_ready": true,
+    "chrome_ready": true,
+    "safari_webdriver_ready": true,
+    "android_adb_ready": false,
+    "desktop_secondary_path_ready": false,
+    "latent_iphone_usb_candidate_ready": true,
+    "allow_latent_secondary_path": true,
+    "desktop_path_change_ready": true,
+    "baseline_summary_ready": true,
+    "network_change_command_present": true,
+    "android_network_change_command_present": false,
+    "public_origin_live_ready": false
+  },
+  "preflight_commands": [
+    "python3 tools/check_controlled_public_config.py --require-baseline-ready",
+    "python3 tools/select_next_final_handover_trial.py --use-local-config --redact-sensitive --output docs/results/final-handover-next-trial-20260624.md",
+    "python3 tools/check_next_final_handover_trial_readiness.py --use-local-config-for-plan --redact-sensitive --check-public-origin --allow-latent-secondary-path --network-change-cmd '<redacted-network-change-cmd>' --output docs/results/final-handover-next-trial-readiness-20260624.md",
+    "python3 tools/build_final_handover_operator_checklist.py --use-local-config-for-plan --redact-sensitive --output docs/results/final-handover-operator-checklist-20260624.md"
+  ],
+  "server_command": "cd repro/quic-go-min-repro\nRUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nPUBLIC_ORIGIN_HOST=<redacted-public-origin-host> \\\nPUBLIC_ORIGIN_PORT=443 \\\nTLS_CERT_FILE=<redacted-tls-cert-file> \\\nTLS_KEY_FILE=<redacted-tls-key-file> \\\nLISTEN_ADDR=0.0.0.0:443 \\\nTCP_ADDR=0.0.0.0:443 \\\nALT_SVC='h3=\":443\"; ma=60' \\\nEXPECTED_REQUESTS=2 \\\nTIMEOUT=300s \\\nCOMPLETION_GRACE=2s \\\n./scripts/run-controlled-public-h3-server.sh",
+  "client_command": "cd repro/quic-go-min-repro\nRUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nCONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nCONTROLLED_PUBLIC_BASELINE_SUMMARY=repro/quic-go-min-repro/artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \\\nPUBLIC_ORIGIN_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \\\nCONTROLLED_PUBLIC_EXPECTED_REQUESTS=2 \\\nREQUIRE_H3_ALT_SVC=1 \\\nREQUIRE_CONTROLLED_PUBLIC_BASELINE=1 \\\nCHROME_RUNNER=cdp \\\nCHROME_HOLD_SECONDS=18 \\\nCHROME_TIMEOUT_SECONDS=30 \\\nCHROME_NET_LOG_CAPTURE_MODE=Default \\\nNETWORK_CHANGE_AFTER_SECONDS=3 \\\nNETWORK_CHANGE_CMD=... \\\n./scripts/run-controlled-public-h3-network-change.sh",
+  "expected_artifacts": [
+    {
+      "role": "server result",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/server.json"
+    },
+    {
+      "role": "server qlog directory",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/qlog"
+    },
+    {
+      "role": "public origin readiness",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/public-origin-readiness.json"
+    },
+    {
+      "role": "classifier summary",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/controlled-public-h3-network-change-summary.json"
+    },
+    {
+      "role": "network-change command record",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/network-change.json"
+    },
+    {
+      "role": "client path-change summary",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/results/client-path-change-summary.json"
+    },
+    {
+      "role": "Chrome network-change NetLog",
+      "path": "repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001/chrome/network-change-netlog.json"
+    }
+  ],
+  "post_trial_registration_commands": [
+    "python3 tools/check_final_handover_trial_artifact_bundle.py --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 --require-final-countable --require-complete",
+    "python3 tools/validate_final_handover_trial_artifact.py --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 --require-final-countable",
+    "python3 tools/append_final_handover_result_row.py --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 --require-final-countable --require-artifact-bundle --output /tmp/final-handover-append-dry-run.md",
+    "python3 tools/append_final_handover_result_row.py --trial-id controlled-public-chrome-downlink-noheartbeat-network-change-001 --artifact-dir repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 --require-final-countable --require-artifact-bundle --apply",
+    "python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md",
+    "python3 tools/build_paper_tables.py --output docs/results/paper-tables-20260624.md",
+    "python3 tools/audit_research_bundle.py --output docs/results/research-bundle-audit-20260624.md",
+    "python3 tools/verify_research_bundle.py --output docs/results/research-verification-report-20260624.md"
+  ],
+  "final_completion": {
+    "complete_count": 3,
+    "requirement_count": 6,
+    "protocol_complete": false,
+    "blockers": [
+      "chrome-downlink-noheartbeat-active-cm: 0/3",
+      "chrome-downlink-heartbeat-active-cm: 0/3",
+      "p1-safari-or-android-feasibility: 0/1"
+    ]
+  }
+}
