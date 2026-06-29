@@ -14,7 +14,7 @@ Generated: `2026-06-29`
 | next phase | `active-network-change` |
 | next browser | `Chrome` |
 | final completion | `3/6` |
-| disk free GiB | `25.91` |
+| disk free GiB | `25.27` |
 | active IPv4 interfaces | `en0(<redacted:1 address>)` |
 | desktop path-change mode | `not-ready` |
 | public origin URL | `<configured>` |
@@ -47,6 +47,27 @@ Generated: `2026-06-29`
 
 - desktop_path_change_ready
 - public_origin_live_ready
+
+## iPhone USB Diagnostic
+
+| field | value |
+| --- | --- |
+| classification | `iphone_usb_service_configured_hardware_absent` |
+| ready | `no` |
+| service | `iPhone USB` |
+| device | `en8` |
+| before default interface | `en0` |
+| after default interface | `en0` |
+| service configured | `yes` |
+| hardware port present | `no` |
+| ifconfig listed | `no` |
+
+Next actions:
+
+- Reconnect the USB-C cable and unlock the iPhone.
+- Enable Personal Hotspot on the iPhone and keep the screen awake for the next check.
+- Check macOS System Settings > Network and confirm the iPhone USB service is physically present, not only remembered as a saved service.
+- Rerun this checker before running a browser handover trial.
 
 ## Next Trial Commands
 

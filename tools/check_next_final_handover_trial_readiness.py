@@ -14,6 +14,8 @@ from check_browser_cm_observability import build_readiness as build_observabilit
 from check_controlled_public_config import check_key
 from check_final_browser_handover_readiness import baseline_ready, command_preview, parse_env_file
 from check_handover_readiness import build_readiness as build_handover_readiness
+from check_iphone_usb_latent_failover import build_report as build_iphone_usb_report
+from check_iphone_usb_latent_failover import redact_ipv4 as redact_iphone_usb_ipv4
 from check_public_origin_readiness import build_result as build_public_origin_readiness
 from check_public_origin_readiness import payload as public_origin_payload
 from report_artifact_storage import build_report as build_storage_report
@@ -115,6 +117,22 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
     latent_iphone_usb_candidate_ready = bool(
         command_plan.get("summary", {}).get("latent_iphone_usb_candidate_ready")
     )
+    latent_candidate = next(
+        (item for item in command_plan.get("candidates", []) if item.get("id") == "macos_wifi_to_iphone_usb_latent_failover"),
+        {},
+    )
+    latent_detected = latent_candidate.get("detected") if isinstance(latent_candidate.get("detected"), dict) else {}
+    iphone_usb = build_iphone_usb_report(
+        wifi_device=str(latent_detected.get("wifi_device") or "en0"),
+        iphone_device=str(latent_detected.get("iphone_device") or "en8"),
+        iphone_service=str(latent_detected.get("iphone_service") or "iPhone USB"),
+        measure=False,
+        timeout_seconds=args.timeout,
+        poll_interval_ms=250,
+        restore_wifi=False,
+    )
+    if redact_sensitive:
+        iphone_usb = redact_iphone_usb_ipv4(iphone_usb)  # type: ignore[assignment]
     allow_latent_secondary_path = bool(getattr(args, "allow_latent_secondary_path", False))
     desktop_path_change_ready = handover.secondary_path_ready or (
         allow_latent_secondary_path and latent_iphone_usb_candidate_ready
@@ -210,6 +228,7 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
             "android_ready": handover.android_ready,
             "active_ipv4_interfaces": active_interface_payload(handover.active_ipv4_interfaces, redact_sensitive),
         },
+        "iphone_usb": iphone_usb,
         "observability": {
             "safari_webdriver_ready": observability.safari_webdriver_ready,
             "chrome_netlog_ready": observability.chrome_netlog_ready,
@@ -223,6 +242,16 @@ def build_readiness(args: argparse.Namespace) -> dict[str, Any]:
 def emit_markdown(readiness: dict[str, Any]) -> str:
     next_trial = readiness["next_trial"]
     missing = readiness["missing_required_gates"] or ["-"]
+    iphone_usb = readiness.get("iphone_usb") if isinstance(readiness.get("iphone_usb"), dict) else {}
+    iphone_before = iphone_usb.get("before", {}) if isinstance(iphone_usb.get("before"), dict) else {}
+    iphone_after = iphone_usb.get("after", {}) if isinstance(iphone_usb.get("after"), dict) else {}
+    iphone_before_state = (
+        iphone_before.get("iphone_usb", {}) if isinstance(iphone_before.get("iphone_usb"), dict) else {}
+    )
+    iphone_after_state = (
+        iphone_after.get("iphone_usb", {}) if isinstance(iphone_after.get("iphone_usb"), dict) else {}
+    )
+    iphone_actions = iphone_usb.get("next_actions") if isinstance(iphone_usb.get("next_actions"), list) else []
     if readiness.get("redact_sensitive"):
         active = ", ".join(
             f"{item['name']}(<redacted:{len(item['ipv4'])} address{'es' if len(item['ipv4']) != 1 else ''}>)"
@@ -265,6 +294,29 @@ def emit_markdown(readiness: dict[str, Any]) -> str:
         lines.append(f"| `{name}` | `{'yes' if value else 'no'}` | `{'yes' if name in required else 'no'}` |")
     lines.extend(["", "## Missing Required Gates", ""])
     lines.extend(f"- {item}" for item in missing)
+    if iphone_usb:
+        lines.extend(
+            [
+                "",
+                "## iPhone USB Diagnostic",
+                "",
+                "| field | value |",
+                "| --- | --- |",
+                f"| classification | `{iphone_usb.get('classification', '-')}` |",
+                f"| ready | `{'yes' if iphone_usb.get('ready') else 'no'}` |",
+                f"| service | `{iphone_usb.get('iphone_service', '-')}` |",
+                f"| device | `{iphone_usb.get('iphone_device', '-')}` |",
+                f"| before default interface | `{iphone_before.get('default_interface') or '-'}` |",
+                f"| after default interface | `{iphone_after.get('default_interface') or '-'}` |",
+                f"| service configured | `{'yes' if iphone_before_state.get('service_configured') or iphone_after_state.get('service_configured') else 'no'}` |",
+                f"| hardware port present | `{'yes' if iphone_before_state.get('hardware_port_present') or iphone_after_state.get('hardware_port_present') else 'no'}` |",
+                f"| ifconfig listed | `{'yes' if iphone_before_state.get('device_listed') or iphone_after_state.get('device_listed') else 'no'}` |",
+                "",
+                "Next actions:",
+                "",
+            ]
+        )
+        lines.extend(f"- {item}" for item in iphone_actions or ["-"])
     if next_trial:
         lines.extend(
             [
