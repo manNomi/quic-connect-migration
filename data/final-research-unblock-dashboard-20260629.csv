@@ -1,0 +1,13 @@
+priority,gate_id,status,owner,evidence,why_it_matters,next_action,success_gate
+P0,aws_identity_or_manual_origin_access,blocked,operator,aws=invalid_client_token; ssh_ready=no; local_tls_ready=no,The controlled public origin cannot be restarted or redeployed without an access path.,"python3 tools/import_aws_credentials_csv.py ~/Downloads/YOUR_AWS_CREDENTIALS.csv
+python3 tools/import_aws_credentials_csv.py ~/Downloads/YOUR_AWS_CREDENTIALS.csv \
+  --profile default \
+  --region ap-northeast-2 \
+  --write \
+  --validate
+bash harness/scripts/aws-preflight.sh","AWS identity ready, SSH recovery ready, or local TLS/origin material ready."
+P0,public_origin_live_h3,blocked,operator+codex,public_origin=not_ready; tcp=connection_refused; h3_alt_svc=no,Browser CM rows are invalid until the controlled origin accepts HTTPS and advertises HTTP/3.,"Recover/restart the controlled public origin, then rerun public origin readiness.",check_public_origin_readiness ok=true and has_h3_alt_svc=true.
+P0,desktop_path_change_ready,blocked,operator+codex,mode=not-ready; iphone=iphone_usb_service_configured_hardware_absent; secondary=no,The selected Chrome active row requires a real client path change during the HTTP/3 workload.,Reconnect the USB-C cable and unlock the iPhone.,desktop_path_change_ready=yes or latent_iphone_usb_failover_observed with --allow-latent-secondary-path.
+P1,fresh_public_h3_baseline,waiting,codex,historical_baseline=PASS; public_origin_ok=no,A fresh no-change browser H3 baseline prevents origin recovery artifacts from being mistaken for CM results.,Rerun the controlled public Chrome H3 no-change baseline after origin recovery.,new controlled-public baseline summary status PASS with application HTTP/3 confirmed.
+P1,next_chrome_active_row,waiting,codex,"next_trial=controlled-public-chrome-downlink-noheartbeat-network-change-001; missing=desktop_path_change_ready,public_origin_live_ready; final=3/6",This is the first missing final-protocol row for the paper's browser CM evidence chain.,Run the selected Chrome no-heartbeat active public row only after all P0 gates are ready.,artifact bundle validates and final trial audit count increases for no-heartbeat active CM.
+P2,p1_cross_browser_feasibility,waiting,codex,safari_webdriver=yes; android_adb=no,The final paper should not rely only on Chrome if Safari or Android feasibility can be captured.,"After Chrome active rows, run Safari feasibility first unless an Android ADB device is connected.",At least one Safari or Android feasibility row is countable in final audit.

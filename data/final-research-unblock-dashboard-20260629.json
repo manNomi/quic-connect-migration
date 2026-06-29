@@ -1,0 +1,204 @@
+{
+  "generated": "2026-06-29",
+  "public_safe": true,
+  "next_trial": {
+    "requirement_id": "chrome-downlink-noheartbeat-active-cm",
+    "trial_id": "controlled-public-chrome-downlink-noheartbeat-network-change-001",
+    "phase": "active-network-change",
+    "browser": "Chrome",
+    "workload": "browser-downlink active path change",
+    "heartbeat": "false",
+    "expected_requests": 2,
+    "artifact_dir": "artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001",
+    "claim_gate": "classification possible_connection_migration; client_active_path_changed; server tuple changed; qlog path validation true",
+    "server_command": "cd repro/quic-go-min-repro\nRUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nPUBLIC_ORIGIN_HOST=<redacted-public-origin-host> \\\nPUBLIC_ORIGIN_PORT=443 \\\nTLS_CERT_FILE=<redacted-tls-cert-file> \\\nTLS_KEY_FILE=<redacted-tls-key-file> \\\nLISTEN_ADDR=0.0.0.0:443 \\\nTCP_ADDR=0.0.0.0:443 \\\nALT_SVC='h3=\":443\"; ma=60' \\\nEXPECTED_REQUESTS=2 \\\nTIMEOUT=300s \\\nCOMPLETION_GRACE=2s \\\n./scripts/run-controlled-public-h3-server.sh",
+    "client_command": "cd repro/quic-go-min-repro\nRUN_ID=controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nCONTROLLED_PUBLIC_SERVER_ARTIFACT_DIR=artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-001 \\\nCONTROLLED_PUBLIC_BASELINE_SUMMARY=artifacts/controlled-public-chrome-h3-baseline-001/results/controlled-public-h3-baseline-summary.json \\\nPUBLIC_ORIGIN_URL='https://<redacted-public-origin-host>/browser-downlink?duration_ms=15000&chunks=15&bytes=65536&heartbeat=false&heartbeat_delay_ms=5000&label=public-downlink-noheartbeat' \\\nCONTROLLED_PUBLIC_EXPECTED_REQUESTS=2 \\\nREQUIRE_H3_ALT_SVC=1 \\\nREQUIRE_CONTROLLED_PUBLIC_BASELINE=1 \\\nCHROME_RUNNER=cdp \\\nCHROME_HOLD_SECONDS=18 \\\nCHROME_TIMEOUT_SECONDS=30 \\\nCHROME_NET_LOG_CAPTURE_MODE=Default \\\nNETWORK_CHANGE_AFTER_SECONDS=3 \\\nNETWORK_CHANGE_CMD=... \\\n./scripts/run-controlled-public-h3-network-change.sh",
+    "registration_hint": "Reject as CM success if classifier reports reconnect_or_multiple_sessions or no_path_change_after_trigger."
+  },
+  "next_trial_ready": false,
+  "missing_required_gates": [
+    "desktop_path_change_ready",
+    "public_origin_live_ready"
+  ],
+  "p0_blockers": [
+    "aws_identity_or_manual_origin_access",
+    "public_origin_live_h3",
+    "desktop_path_change_ready"
+  ],
+  "final_protocol": {
+    "complete": false,
+    "complete_count": 3,
+    "requirement_count": 6,
+    "blockers": [
+      "chrome-downlink-noheartbeat-active-cm: 0/3",
+      "chrome-downlink-heartbeat-active-cm: 0/3",
+      "p1-safari-or-android-feasibility: 0/1"
+    ]
+  },
+  "public_origin": {
+    "attempted": true,
+    "ok": false,
+    "classification": "not_ready",
+    "tcp_tls_ok": false,
+    "curl_https_ok": false,
+    "has_h3_alt_svc": false,
+    "curl_exit": 7,
+    "final_status": "",
+    "error_count": 2
+  },
+  "iphone_usb": {
+    "check_date": "2026-06-29",
+    "tool": "check_iphone_usb_latent_failover",
+    "mode": "snapshot",
+    "wifi_device": "en0",
+    "iphone_device": "en8",
+    "iphone_service": "iPhone USB",
+    "measured": false,
+    "ready": false,
+    "ready_at_ms": null,
+    "classification": "iphone_usb_service_configured_hardware_absent",
+    "next_actions": [
+      "Reconnect the USB-C cable and unlock the iPhone.",
+      "Enable Personal Hotspot on the iPhone and keep the screen awake for the next check.",
+      "Check macOS System Settings > Network and confirm the iPhone USB service is physically present, not only remembered as a saved service.",
+      "Rerun this checker before running a browser handover trial."
+    ],
+    "network_change_exit": null,
+    "restore_wifi": false,
+    "restore_exit": null,
+    "before": {
+      "captured_ms": 52,
+      "wifi_power": "Wi-Fi Power (en0): On",
+      "default_interface": "en0",
+      "iphone_usb": {
+        "name": "en8",
+        "present": false,
+        "active": false,
+        "ipv4": [],
+        "service_configured": true,
+        "service_device": "en8",
+        "hardware_port_present": false,
+        "hardware_device": "",
+        "device_listed": false,
+        "usable_ipv4": []
+      }
+    },
+    "after": {
+      "captured_ms": 102,
+      "wifi_power": "Wi-Fi Power (en0): On",
+      "default_interface": "en0",
+      "iphone_usb": {
+        "name": "en8",
+        "present": false,
+        "active": false,
+        "ipv4": [],
+        "service_configured": true,
+        "service_device": "en8",
+        "hardware_port_present": false,
+        "hardware_device": "",
+        "device_listed": false,
+        "usable_ipv4": []
+      }
+    },
+    "events": [
+      {
+        "captured_ms": 52,
+        "wifi_power": "Wi-Fi Power (en0): On",
+        "default_interface": "en0",
+        "iphone_usb": {
+          "name": "en8",
+          "present": false,
+          "active": false,
+          "ipv4": [],
+          "service_configured": true,
+          "service_device": "en8",
+          "hardware_port_present": false,
+          "hardware_device": "",
+          "device_listed": false,
+          "usable_ipv4": []
+        }
+      },
+      {
+        "captured_ms": 102,
+        "wifi_power": "Wi-Fi Power (en0): On",
+        "default_interface": "en0",
+        "iphone_usb": {
+          "name": "en8",
+          "present": false,
+          "active": false,
+          "ipv4": [],
+          "service_configured": true,
+          "service_device": "en8",
+          "hardware_port_present": false,
+          "hardware_device": "",
+          "device_listed": false,
+          "usable_ipv4": []
+        }
+      }
+    ],
+    "claim_boundary": "This measures OS-level delayed Wi-Fi-to-iPhone-USB failover. It can validate a real client path change trigger, but by itself it does not prove single-connection QUIC migration."
+  },
+  "actions": [
+    {
+      "priority": "P0",
+      "gate_id": "aws_identity_or_manual_origin_access",
+      "status": "blocked",
+      "owner": "operator",
+      "evidence": "aws=invalid_client_token; ssh_ready=no; local_tls_ready=no",
+      "why_it_matters": "The controlled public origin cannot be restarted or redeployed without an access path.",
+      "next_action": "python3 tools/import_aws_credentials_csv.py ~/Downloads/YOUR_AWS_CREDENTIALS.csv\npython3 tools/import_aws_credentials_csv.py ~/Downloads/YOUR_AWS_CREDENTIALS.csv \\\n  --profile default \\\n  --region ap-northeast-2 \\\n  --write \\\n  --validate\nbash harness/scripts/aws-preflight.sh",
+      "success_gate": "AWS identity ready, SSH recovery ready, or local TLS/origin material ready."
+    },
+    {
+      "priority": "P0",
+      "gate_id": "public_origin_live_h3",
+      "status": "blocked",
+      "owner": "operator+codex",
+      "evidence": "public_origin=not_ready; tcp=connection_refused; h3_alt_svc=no",
+      "why_it_matters": "Browser CM rows are invalid until the controlled origin accepts HTTPS and advertises HTTP/3.",
+      "next_action": "Recover/restart the controlled public origin, then rerun public origin readiness.",
+      "success_gate": "check_public_origin_readiness ok=true and has_h3_alt_svc=true."
+    },
+    {
+      "priority": "P0",
+      "gate_id": "desktop_path_change_ready",
+      "status": "blocked",
+      "owner": "operator+codex",
+      "evidence": "mode=not-ready; iphone=iphone_usb_service_configured_hardware_absent; secondary=no",
+      "why_it_matters": "The selected Chrome active row requires a real client path change during the HTTP/3 workload.",
+      "next_action": "Reconnect the USB-C cable and unlock the iPhone.",
+      "success_gate": "desktop_path_change_ready=yes or latent_iphone_usb_failover_observed with --allow-latent-secondary-path."
+    },
+    {
+      "priority": "P1",
+      "gate_id": "fresh_public_h3_baseline",
+      "status": "waiting",
+      "owner": "codex",
+      "evidence": "historical_baseline=PASS; public_origin_ok=no",
+      "why_it_matters": "A fresh no-change browser H3 baseline prevents origin recovery artifacts from being mistaken for CM results.",
+      "next_action": "Rerun the controlled public Chrome H3 no-change baseline after origin recovery.",
+      "success_gate": "new controlled-public baseline summary status PASS with application HTTP/3 confirmed."
+    },
+    {
+      "priority": "P1",
+      "gate_id": "next_chrome_active_row",
+      "status": "waiting",
+      "owner": "codex",
+      "evidence": "next_trial=controlled-public-chrome-downlink-noheartbeat-network-change-001; missing=desktop_path_change_ready,public_origin_live_ready; final=3/6",
+      "why_it_matters": "This is the first missing final-protocol row for the paper's browser CM evidence chain.",
+      "next_action": "Run the selected Chrome no-heartbeat active public row only after all P0 gates are ready.",
+      "success_gate": "artifact bundle validates and final trial audit count increases for no-heartbeat active CM."
+    },
+    {
+      "priority": "P2",
+      "gate_id": "p1_cross_browser_feasibility",
+      "status": "waiting",
+      "owner": "codex",
+      "evidence": "safari_webdriver=yes; android_adb=no",
+      "why_it_matters": "The final paper should not rely only on Chrome if Safari or Android feasibility can be captured.",
+      "next_action": "After Chrome active rows, run Safari feasibility first unless an Android ADB device is connected.",
+      "success_gate": "At least one Safari or Android feasibility row is countable in final audit."
+    }
+  ],
+  "claim_boundary": "This dashboard is an execution/unblock artifact. It is not QUIC migration evidence; only validated final trial artifacts can support browser CM claims."
+}

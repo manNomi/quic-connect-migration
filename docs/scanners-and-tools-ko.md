@@ -2877,3 +2877,33 @@ python3 tools/build_literature_claim_positioning.py
 - 하지만 이 사실은 Chrome/Safari HTTP/3 single-session browser handover success를 증명하지 않는다.
 - `왜 안 쓰이는가`는 구현 부재 하나가 아니라 browser runtime policy, deployment routing, middlebox manageability, security concern, application recovery가 겹친 문제로 잡는 것이 더 안전하다.
 - 다음 실험은 public origin 복구 후 Chrome no-heartbeat/heartbeat active downlink rows이며, streaming은 QoE-aware workload로 후순위 확장한다.
+
+## 80. `tools/build_final_research_unblock_dashboard.py`
+
+final browser handover protocol을 계속 진행하기 위한 현재 P0/P1 blocker를 한 장으로 합치는 도구다. `public-origin recovery plan`, `next final trial readiness`, `iPhone USB diagnostic`을 조합해서, 지금 당장 풀어야 할 gate와 그 다음 실험 row를 분리한다.
+
+실행:
+
+```bash
+python3 tools/build_final_research_unblock_dashboard.py
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/results/final-research-unblock-dashboard-20260629.md` | 사람이 보는 P0/P1 unblock dashboard |
+| `data/final-research-unblock-dashboard-20260629.csv` | gate별 priority/status/owner/evidence/next_action matrix |
+| `data/final-research-unblock-dashboard-20260629.json` | machine-readable dashboard snapshot |
+
+현재 P0 blocker:
+
+- `aws_identity_or_manual_origin_access`: AWS identity가 `invalid_client_token`이고 SSH/local TLS recovery path도 준비되지 않았다.
+- `public_origin_live_h3`: public origin은 `not_ready`, TCP는 `connection_refused`, H3 Alt-Svc는 `no`다.
+- `desktop_path_change_ready`: iPhone USB는 `iphone_usb_service_configured_hardware_absent`라 saved service만 있고 live hardware/interface가 없다.
+
+실행 규칙:
+
+- P0 gate가 모두 `ready`가 되기 전에는 Chrome active public row를 실행하지 않는다.
+- P0 gate가 준비되면 fresh public H3 baseline을 먼저 다시 얻고, 그 다음 `controlled-public-chrome-downlink-noheartbeat-network-change-001`로 간다.
+- 이 dashboard는 readiness artifact이며 QUIC CM success evidence가 아니다.
