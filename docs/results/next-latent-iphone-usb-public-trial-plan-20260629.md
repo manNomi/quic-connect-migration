@@ -61,6 +61,7 @@ Prepared package/deploy packet:
 
 - `harness/results/packages/quic-go-min-repro-20260629T052407Z.tar.gz`
 - `docs/results/controlled-public-origin-deploy-packet-20260629.md`
+- `docs/results/public-origin-recovery-queue-20260629.md`
 
 ## External Input Needed
 
