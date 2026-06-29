@@ -1,0 +1,66 @@
+{
+  "check_date": "2026-06-29",
+  "public_safe": true,
+  "config_path": "harness/config/controlled-public-origin.env",
+  "config_exists": true,
+  "host_configured": true,
+  "port_configured": true,
+  "tls_cert": {
+    "configured": true,
+    "exists": false,
+    "readable": false
+  },
+  "tls_key": {
+    "configured": true,
+    "exists": false,
+    "readable": false
+  },
+  "dns": {
+    "attempted": true,
+    "configured": true,
+    "resolved": true,
+    "address_count": 1,
+    "classification": "resolved"
+  },
+  "tcp": {
+    "attempted": true,
+    "configured": true,
+    "connected": false,
+    "classification": "connection_refused"
+  },
+  "ssh": [
+    {
+      "attempted": true,
+      "user_label": "ec2-user",
+      "ok": false,
+      "classification": "auth_failed"
+    },
+    {
+      "attempted": true,
+      "user_label": "ubuntu",
+      "ok": false,
+      "classification": "auth_failed"
+    }
+  ],
+  "aws": {
+    "attempted": true,
+    "aws_cli_found": true,
+    "identity_ok": false,
+    "classification": "invalid_client_token",
+    "region": "ap-northeast-2",
+    "profile_state": "default-or-shared-config"
+  },
+  "recovery_paths": {
+    "remote_ssh_ready": false,
+    "aws_identity_ready": false,
+    "local_tls_material_ready": false,
+    "any_recovery_path_ready": false
+  },
+  "blockers": [
+    "public origin TCP 443 is not accepting connections: connection_refused",
+    "configured WebPKI cert/key are not readable on this machine",
+    "SSH access to configured public origin was not available with probed users",
+    "AWS identity is not available for recovery/provisioning: invalid_client_token"
+  ],
+  "claim_boundary": "This is an origin access diagnostic, not QUIC migration evidence."
+}

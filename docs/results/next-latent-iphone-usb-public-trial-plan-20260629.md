@@ -36,6 +36,11 @@ Public-safe local checks show:
 | SSH probe as `ubuntu` | `auth_failed` |
 | AWS caller identity | `invalid_client_token` |
 
+Generated report:
+
+- `docs/results/controlled-public-origin-access-check-20260629.md`
+- `data/controlled-public-origin-access-check-20260629.json`
+
 Interpretation: the public host exists, but the controlled origin server is not currently listening on 443. The WebPKI cert/key paths are not available on this Mac, and SSH auth to the origin host is not available from the current machine. The server likely needs to be restarted on the origin host where the cert/key live, or AWS credentials need to be refreshed to provision/recover a new origin.
 
 Prepared package/deploy packet:

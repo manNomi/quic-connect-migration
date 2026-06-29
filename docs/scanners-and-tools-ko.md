@@ -566,6 +566,31 @@ python3 tools/check_browser_cm_observability.py --format json --output data/brow
 
 기본 출력은 raw command stdout/stderr를 비운다. 공개 repo에 넣지 않는 로컬 디버깅 때만 `--include-command-output`을 사용한다.
 
+## 14.1. `tools/check_controlled_public_origin_access.py`
+
+controlled public origin이 왜 실행 불가능한지 public-safe하게 분리 진단한다. 실제 hostname, IP address, certificate path, private key path, SSH target, AWS account 값은 출력하지 않는다.
+
+실행:
+
+```bash
+python3 tools/check_controlled_public_origin_access.py \
+  --format markdown \
+  --output docs/results/controlled-public-origin-access-check-20260629.md
+```
+
+주요 output:
+
+| 항목 | 의미 |
+| --- | --- |
+| `DNS classification` | public origin host가 해석되는지 |
+| `TCP classification` | client에서 443 연결이 되는지 |
+| `TLS cert/key local readable` | 이 Mac에서 서버를 직접 띄울 수 있는 cert/key가 있는지 |
+| `SSH recovery ready` | origin host에 SSH로 접근해 서버를 재기동할 수 있는지 |
+| `AWS identity ready` | AWS 기반 복구/재프로비저닝이 가능한지 |
+| `any recovery path ready` | 위 복구 경로 중 하나라도 준비됐는지 |
+
+이 도구는 origin access diagnostic이며 QUIC migration evidence가 아니다. `can_run_network_change=false`일 때 외부 입력이 SSH인지, AWS credential인지, cert/key인지 좁히는 용도로 사용한다.
+
 ## 15. `tools/run_safari_webdriver_navigation.py`
 
 Safari를 WebDriver HTTP protocol로 controlled public URL에 navigate하고 결과 JSON을 남긴다.

@@ -509,6 +509,7 @@ classifier:
 관련 파일:
 
 - `tools/check_public_origin_readiness.py`
+- `tools/check_controlled_public_origin_access.py`
 - `tools/check_controlled_public_experiment_readiness.py`
 - `tools/check_browser_cm_observability.py`
 - `tools/check_iphone_usb_latent_failover.py`
