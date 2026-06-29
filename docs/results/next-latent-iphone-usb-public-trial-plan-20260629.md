@@ -14,13 +14,32 @@ Latest local preflight with `ALLOW_LATENT_SECONDARY_PATH=1`:
 | strict active secondary path | `not ready` |
 | latent iPhone USB candidate | `ready` |
 | desktop path-change mode | `latent-iphone-usb-failover` |
-| `NETWORK_CHANGE_CMD` | `missing` |
+| `NETWORK_CHANGE_CMD` | `present when provided via env` |
 | controlled public origin readiness | `failed in current preflight` |
 | active server artifact | `missing` |
 
 Preflight artifact:
 
-`repro/quic-go-min-repro/artifacts/controlled-public-preflight-latent-iphone-usb-20260629/results/controlled-public-experiment-readiness.md`
+`repro/quic-go-min-repro/artifacts/controlled-public-preflight-latent-iphone-usb-with-cmd-fixed-20260629/results/controlled-public-experiment-readiness.md`
+
+## Current Server Diagnosis
+
+Public-safe local checks show:
+
+| check | result |
+| --- | --- |
+| public origin DNS | `resolves` |
+| TCP 443 from client | `connection refused` |
+| local TLS cert file | `missing on this Mac` |
+| local TLS key file | `missing on this Mac` |
+| AWS caller identity | `invalid_client_token` |
+
+Interpretation: the public host exists, but the controlled origin server is not currently listening on 443. The WebPKI cert/key paths are not available on this Mac, so the server likely needs to be restarted on the origin host where the cert/key live, or AWS credentials need to be refreshed to provision/recover a new origin.
+
+Prepared package/deploy packet:
+
+- `harness/results/packages/quic-go-min-repro-20260629T052407Z.tar.gz`
+- `docs/results/controlled-public-origin-deploy-packet-20260629.md`
 
 ## Required Next Inputs
 

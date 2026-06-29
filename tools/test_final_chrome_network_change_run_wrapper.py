@@ -92,6 +92,10 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
             "printf '%s\\n' \"$RUN_ID\" > \"$ARTIFACT_DIR/results/run-id.txt\"\n"
             "printf '%s\\n' \"$MIN_ARTIFACT_FREE_GIB\" > \"$ARTIFACT_DIR/results/min-free.txt\"\n"
             "printf '%s\\n' \"$PUBLIC_ORIGIN_BOOTSTRAP_URL\" > \"$ARTIFACT_DIR/results/bootstrap-url.txt\"\n"
+            "printf '%s\\n' \"$NETWORK_CHANGE_CMD\" > \"$ARTIFACT_DIR/results/network-change-cmd.txt\"\n"
+            "printf '%s\\n' \"$NETWORK_CHANGE_READY_EXPR\" > \"$ARTIFACT_DIR/results/network-change-ready-expr.txt\"\n"
+            "printf '%s\\n' \"$NETWORK_CHANGE_READY_TIMEOUT_SECONDS\" > \"$ARTIFACT_DIR/results/network-change-ready-timeout.txt\"\n"
+            "printf '%s\\n' \"$NETWORK_CHANGE_READY_POLL_INTERVAL_MS\" > \"$ARTIFACT_DIR/results/network-change-ready-poll.txt\"\n"
             f"touch {marker.as_posix()!r}\n",
             encoding="utf-8",
         )
@@ -105,6 +109,10 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
                 "NETWORK_CHANGE_RUNNER": runner.as_posix(),
                 "CHECK_BASELINE_UNLOCK": "0",
                 "RUN_POSTCHECKS": "0",
+                "NETWORK_CHANGE_CMD": "printf env-override-network-change",
+                "NETWORK_CHANGE_READY_EXPR": "Number(document.body.dataset.downlinkBytes || '0') > 0",
+                "NETWORK_CHANGE_READY_TIMEOUT_SECONDS": "17",
+                "NETWORK_CHANGE_READY_POLL_INTERVAL_MS": "125",
             }
         )
         proc = run_wrapper(env)
@@ -123,6 +131,14 @@ def test_wrapper_runs_network_change_runner_after_active_config_ready() -> None:
         assert (artifact_dir / "results" / "bootstrap-url.txt").read_text(encoding="utf-8").strip() == (
             "https://h3.test.local/browser-slow?duration_ms=6000&chunks=6&label=public-slow"
         )
+        assert (artifact_dir / "results" / "network-change-cmd.txt").read_text(encoding="utf-8").strip() == (
+            "printf env-override-network-change"
+        )
+        assert (artifact_dir / "results" / "network-change-ready-expr.txt").read_text(encoding="utf-8").strip() == (
+            "Number(document.body.dataset.downlinkBytes || '0') > 0"
+        )
+        assert (artifact_dir / "results" / "network-change-ready-timeout.txt").read_text(encoding="utf-8").strip() == "17"
+        assert (artifact_dir / "results" / "network-change-ready-poll.txt").read_text(encoding="utf-8").strip() == "125"
         assert "AKIA" not in combined
         assert "PRIVATE_KEY" not in combined
 
