@@ -73,6 +73,8 @@ Build a CDP runner mode that waits for a page readiness signal before executing 
 - `document.body.dataset.pollCompletedCount >= "1"` for active mid-loop handover, or
 - a generic user-provided JavaScript predicate such as `document.body.dataset.pollCompletedCount`.
 
+Update: the page-ready runner was implemented and smoke-tested in `docs/results/page-ready-network-change-runner-20260629.md`. The remaining gate is an active iPhone USB IPv4 interface for the public handover run.
+
 Then rerun:
 
 - no-retry polling: `count=6`, `interval_ms=1000`, trigger after first poll completion

@@ -71,6 +71,13 @@ async function pollJSON(url, timeoutMillis) {
   throw lastError || new Error(`timed out polling ${url}`);
 }
 
+async function writeJSONFile(filePath, data) {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  const tmpPath = `${filePath}.tmp-${process.pid}`;
+  await fs.writeFile(tmpPath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+  await fs.rename(tmpPath, filePath);
+}
+
 function createCDPClient(wsURL) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(wsURL);
@@ -191,6 +198,70 @@ async function waitForExit(child, timeoutMillis) {
   });
 }
 
+async function evaluateReadyExpression(client, expression) {
+  const wrappedExpression = `(async () => {
+    try {
+      const value = await (${expression});
+      return JSON.stringify({ ok: Boolean(value), value: String(value) });
+    } catch (error) {
+      return JSON.stringify({
+        ok: false,
+        error: error && error.message ? error.message : String(error)
+      });
+    }
+  })()`;
+  const evaluation = await client.send("Runtime.evaluate", {
+    expression: wrappedExpression,
+    returnByValue: true,
+    awaitPromise: true,
+  });
+  const raw = evaluation.result && evaluation.result.value ? evaluation.result.value : "{}";
+  return JSON.parse(raw);
+}
+
+async function waitForReadyExpression(client, options) {
+  const deadline = Date.now() + options.timeoutSeconds * 1000;
+  const startedAt = new Date().toISOString();
+  let attempts = 0;
+  let lastEvaluation = null;
+
+  while (Date.now() <= deadline) {
+    attempts += 1;
+    lastEvaluation = await evaluateReadyExpression(client, options.expression);
+    if (lastEvaluation.ok) {
+      const result = {
+        ok: true,
+        expression: options.expression,
+        attempts,
+        started_at: startedAt,
+        matched_at: new Date().toISOString(),
+        last_evaluation: lastEvaluation,
+      };
+      if (options.outputPath) {
+        await writeJSONFile(options.outputPath, result);
+      }
+      return result;
+    }
+    await sleep(options.pollIntervalMillis);
+  }
+
+  const result = {
+    ok: false,
+    expression: options.expression,
+    attempts,
+    started_at: startedAt,
+    timed_out_at: new Date().toISOString(),
+    timeout_seconds: options.timeoutSeconds,
+    last_evaluation: lastEvaluation,
+  };
+  if (options.outputPath) {
+    await writeJSONFile(options.outputPath, result);
+  }
+  const error = new Error(`ready expression did not match within ${options.timeoutSeconds}s`);
+  error.readyResult = result;
+  throw error;
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const chromeBin = requireArg(args, "chrome-bin");
@@ -200,6 +271,9 @@ async function main() {
   const dumpName = requireArg(args, "dump-name");
   const timeoutSeconds = Number(args["timeout-seconds"]);
   const holdSeconds = Number(args["hold-seconds"]);
+  const readyExpression = args["ready-expression"] || "";
+  const readyTimeoutSeconds = Number(args["ready-timeout-seconds"] || timeoutSeconds);
+  const readyPollIntervalMillis = Number(args["ready-poll-interval-ms"] || "250");
   const profileDirName = args["profile-dir-name"] || "profile-cdp";
   const port = await freePort();
 
@@ -234,6 +308,16 @@ async function main() {
     remote_debugging_port: port,
     navigation_loaded: false,
     evaluation_ok: false,
+    ready: readyExpression
+      ? {
+          enabled: true,
+          expression: readyExpression,
+          timeout_seconds: readyTimeoutSeconds,
+          poll_interval_ms: readyPollIntervalMillis,
+          output: args["ready-output"] || null,
+          ok: false,
+        }
+      : { enabled: false },
     chrome_exit: null,
   };
 
@@ -252,6 +336,20 @@ async function main() {
     await client.send("Page.navigate", { url });
     const loadEvent = await loadPromise;
     summary.navigation_loaded = Boolean(loadEvent);
+
+    if (readyExpression) {
+      const ready = await waitForReadyExpression(client, {
+        expression: readyExpression,
+        timeoutSeconds: readyTimeoutSeconds,
+        pollIntervalMillis: readyPollIntervalMillis,
+        outputPath: args["ready-output"] || "",
+      });
+      summary.ready = {
+        ...summary.ready,
+        ...ready,
+      };
+    }
+
     await sleep(Math.max(0, holdSeconds) * 1000);
 
     const expression = `(() => JSON.stringify({
@@ -286,6 +384,12 @@ async function main() {
       child.kill("SIGTERM");
     }
   } catch (error) {
+    if (error.readyResult) {
+      summary.ready = {
+        ...summary.ready,
+        ...error.readyResult,
+      };
+    }
     summary.error = error.message;
     child.kill("SIGTERM");
     await fs.writeFile(dumpPath, `CDP_ERROR: ${error.message}\n`, "utf8");

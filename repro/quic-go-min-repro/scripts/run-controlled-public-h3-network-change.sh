@@ -27,6 +27,10 @@ PUBLIC_ORIGIN_BOOTSTRAP_URL="${PUBLIC_ORIGIN_BOOTSTRAP_URL:-}"
 NODE_BIN="${NODE_BIN:-node}"
 SERVER_RESULT_WAIT_SECONDS="${SERVER_RESULT_WAIT_SECONDS:-15}"
 MIN_ARTIFACT_FREE_GIB="${MIN_ARTIFACT_FREE_GIB:-7}"
+NETWORK_CHANGE_READY_EXPR="${NETWORK_CHANGE_READY_EXPR:-}"
+NETWORK_CHANGE_READY_TIMEOUT_SECONDS="${NETWORK_CHANGE_READY_TIMEOUT_SECONDS:-60}"
+NETWORK_CHANGE_READY_POLL_INTERVAL_MS="${NETWORK_CHANGE_READY_POLL_INTERVAL_MS:-250}"
+NETWORK_CHANGE_READY_FILE="${NETWORK_CHANGE_READY_FILE:-$ARTIFACT_DIR/results/network-change-ready.json}"
 
 if [[ -z "${CHROME_PROFILE_DIR_NAME:-}" ]]; then
   if [[ "$CHROME_RUNNER" == "cdp" ]]; then
@@ -42,6 +46,11 @@ mkdir -p "$ARTIFACT_DIR/chrome" "$ARTIFACT_DIR/results" "$ARTIFACT_DIR/logs"
 
 if [[ ! -x "$CHROME_BIN" ]]; then
   echo "Chrome binary not found or not executable: $CHROME_BIN" >&2
+  exit 2
+fi
+
+if [[ -n "$NETWORK_CHANGE_READY_EXPR" && "$CHROME_RUNNER" != "cdp" ]]; then
+  echo "NETWORK_CHANGE_READY_EXPR requires CHROME_RUNNER=cdp" >&2
   exit 2
 fi
 
@@ -144,7 +153,76 @@ python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
   --url "$PUBLIC_ORIGIN_URL" \
   --output "$ARTIFACT_DIR/results/client-path-before.json" || true
 
+if [[ -n "$NETWORK_CHANGE_READY_EXPR" ]]; then
+  rm -f "$NETWORK_CHANGE_READY_FILE"
+fi
+
 (
+  TRIGGER_MODE="time-after-start"
+  READY_FILE_FOR_RECORD=""
+  if [[ -n "$NETWORK_CHANGE_READY_EXPR" ]]; then
+    TRIGGER_MODE="page-ready"
+    READY_FILE_FOR_RECORD="$NETWORK_CHANGE_READY_FILE"
+    READY_EXIT=0
+    python3 - "$NETWORK_CHANGE_READY_FILE" "$NETWORK_CHANGE_READY_TIMEOUT_SECONDS" <<'PY' || READY_EXIT=$?
+import json
+import pathlib
+import sys
+import time
+
+ready_file = pathlib.Path(sys.argv[1])
+timeout_seconds = float(sys.argv[2])
+deadline = time.time() + timeout_seconds
+last_error = None
+
+while time.time() <= deadline:
+    if ready_file.exists():
+        try:
+            data = json.loads(ready_file.read_text(encoding="utf-8"))
+        except Exception as exc:  # pragma: no cover - defensive shell guard
+            last_error = str(exc)
+        else:
+            if data.get("ok") is True:
+                raise SystemExit(0)
+            print(f"ready signal did not pass: {data}", file=sys.stderr)
+            raise SystemExit(3)
+    time.sleep(0.25)
+
+if last_error:
+    print(f"timed out waiting for ready signal; last parse error: {last_error}", file=sys.stderr)
+else:
+    print("timed out waiting for ready signal", file=sys.stderr)
+raise SystemExit(4)
+PY
+    if [[ "$READY_EXIT" != "0" ]]; then
+      READY_FAILED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      python3 - \
+        "$ARTIFACT_DIR/results/network-change.json" \
+        "$READY_EXIT" \
+        "$READY_FAILED_AT" \
+        "$TRIGGER_MODE" \
+        "$READY_FILE_FOR_RECORD" \
+        "$NETWORK_CHANGE_AFTER_SECONDS" <<'PY'
+import json
+import sys
+
+output, exit_code, failed_at, trigger_mode, ready_file, ready_offset_seconds = sys.argv[1:]
+data = {
+    "command_present": True,
+    "exit": int(exit_code),
+    "error": "ready_signal_failed",
+    "failed_at": failed_at,
+    "trigger_mode": trigger_mode,
+    "ready_file": ready_file,
+    "ready_offset_seconds": float(ready_offset_seconds),
+}
+with open(output, "w", encoding="utf-8") as fp:
+    json.dump(data, fp, indent=2)
+    fp.write("\n")
+PY
+      exit "$READY_EXIT"
+    fi
+  fi
   sleep "$NETWORK_CHANGE_AFTER_SECONDS"
   STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
@@ -172,11 +250,24 @@ python3 "$PROJECT_ROOT/tools/capture_network_path_snapshot.py" \
     "$STARTED_AT" \
     "$COMPLETED_AT" \
     "$NETWORK_CHANGE_AFTER_SNAPSHOT_COUNT" \
-    "$NETWORK_CHANGE_AFTER_SNAPSHOT_INTERVAL_SECONDS" <<'PY'
+    "$NETWORK_CHANGE_AFTER_SNAPSHOT_INTERVAL_SECONDS" \
+    "$TRIGGER_MODE" \
+    "$READY_FILE_FOR_RECORD" \
+    "$NETWORK_CHANGE_AFTER_SECONDS" <<'PY'
 import json
 import sys
 
-output, exit_code, started_at, completed_at, after_snapshot_count, after_snapshot_interval_seconds = sys.argv[1:]
+(
+    output,
+    exit_code,
+    started_at,
+    completed_at,
+    after_snapshot_count,
+    after_snapshot_interval_seconds,
+    trigger_mode,
+    ready_file,
+    ready_offset_seconds,
+) = sys.argv[1:]
 data = {
     "command_present": True,
     "exit": int(exit_code),
@@ -184,7 +275,11 @@ data = {
     "completed_at": completed_at,
     "after_snapshot_count": int(after_snapshot_count),
     "after_snapshot_interval_seconds": int(after_snapshot_interval_seconds),
+    "trigger_mode": trigger_mode,
+    "ready_offset_seconds": float(ready_offset_seconds),
 }
+if ready_file:
+    data["ready_file"] = ready_file
 with open(output, "w", encoding="utf-8") as fp:
     json.dump(data, fp, indent=2)
     fp.write("\n")
@@ -195,7 +290,8 @@ NETWORK_CHANGE_PID=$!
 
 CHROME_EXIT=0
 if [[ "$CHROME_RUNNER" == "cdp" ]]; then
-  "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js" \
+  CDP_ARGS=(
+    "$NODE_BIN" "$PROJECT_ROOT/tools/run_chrome_cdp_navigation.js"
     --chrome-bin "$CHROME_BIN" \
     --artifact-dir "$ARTIFACT_DIR" \
     --url "$PUBLIC_ORIGIN_URL" \
@@ -204,7 +300,17 @@ if [[ "$CHROME_RUNNER" == "cdp" ]]; then
     --dump-name "network-change-dump-dom.txt" \
     --net-log-capture-mode "$CHROME_NET_LOG_CAPTURE_MODE" \
     --timeout-seconds "$CHROME_TIMEOUT_SECONDS" \
-    --hold-seconds "$CHROME_HOLD_SECONDS" || CHROME_EXIT=$?
+    --hold-seconds "$CHROME_HOLD_SECONDS"
+  )
+  if [[ -n "$NETWORK_CHANGE_READY_EXPR" ]]; then
+    CDP_ARGS+=(
+      --ready-expression "$NETWORK_CHANGE_READY_EXPR"
+      --ready-timeout-seconds "$NETWORK_CHANGE_READY_TIMEOUT_SECONDS"
+      --ready-poll-interval-ms "$NETWORK_CHANGE_READY_POLL_INTERVAL_MS"
+      --ready-output "$NETWORK_CHANGE_READY_FILE"
+    )
+  fi
+  "${CDP_ARGS[@]}" || CHROME_EXIT=$?
 elif [[ "$CHROME_RUNNER" == "dump-dom" ]]; then
   run_chrome_dump_dom "$PUBLIC_ORIGIN_URL" "network-change-netlog.json" "network-change-dump-dom.txt" || CHROME_EXIT=$?
 else
