@@ -2684,3 +2684,47 @@ python3 tools/build_workload_prioritized_experiment_design.py
 - streaming은 중요하지만, buffer와 segment retry가 transport failure를 숨길 수 있으므로 upload/download로 transport continuity gap을 먼저 잡고 streaming은 QoE/session churn tradeoff로 해석한다.
 - evidence ladder를 `L0 HTTP/3 capability`부터 `L3 single-session browser CM`, `L4 workload/QoE impact`까지 분리한다.
 - third-party public site는 H3 discovery/control로만 쓰고, server qlog/tuple이 없으면 CM success claim에는 쓰지 않는다.
+
+## 75. `tools/import_aws_credentials_csv.py`
+
+AWS credential CSV를 로컬 AWS shared credentials/config 파일에 안전하게 반영하는 helper다. 기본 실행은 dry-run이며 secret access key나 session token을 출력하지 않는다. `--write`를 명시해야 `~/.aws/credentials`와 `~/.aws/config`를 갱신한다.
+
+실행:
+
+```bash
+python3 tools/import_aws_credentials_csv.py ~/Downloads/YOUR_AWS_CREDENTIALS.csv
+```
+
+실제 반영:
+
+```bash
+python3 tools/import_aws_credentials_csv.py ~/Downloads/YOUR_AWS_CREDENTIALS.csv \
+  --profile default \
+  --region ap-northeast-2 \
+  --write \
+  --validate
+```
+
+검증:
+
+```bash
+python3 tools/check_aws_identity_readiness.py --require-ok
+```
+
+지원 CSV header:
+
+- `Access key ID`, `Secret access key`, `Session token`
+- AWS env-style access/secret/session token headers
+- `AWSAccessKeyId`, `AWSSecretAccessKey`, `AWSSessionToken`
+
+생성/관련 문서:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/results/aws-credential-csv-import-guide-20260629.md` | 사용자가 credential CSV를 안전하게 넣는 절차 |
+| `tools/test_import_aws_credentials_csv.py` | synthetic credential CSV 기반 parser/write test |
+
+주의:
+
+- AWS CSV는 commit하지 않는다.
+- public origin이 `connection_refused`이면 final Chrome CM trial을 돌리지 않는다. 먼저 AWS identity와 origin service를 복구한다.
