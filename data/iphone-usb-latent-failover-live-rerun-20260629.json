@@ -1,0 +1,125 @@
+{
+  "check_date": "2026-06-29",
+  "tool": "check_iphone_usb_latent_failover",
+  "mode": "measure",
+  "wifi_device": "en0",
+  "iphone_device": "en8",
+  "measured": true,
+  "ready": true,
+  "ready_at_ms": 1321,
+  "classification": "latent_iphone_usb_failover_observed",
+  "network_change_exit": 0,
+  "restore_wifi": true,
+  "restore_exit": 0,
+  "before": {
+    "captured_ms": 23,
+    "wifi_power": "Wi-Fi Power (en0): On",
+    "default_interface": "en0",
+    "iphone_usb": {
+      "name": "en8",
+      "present": true,
+      "active": false,
+      "ipv4": [],
+      "usable_ipv4": []
+    }
+  },
+  "after": {
+    "captured_ms": 1420,
+    "wifi_power": "Wi-Fi Power (en0): Off",
+    "default_interface": "en8",
+    "iphone_usb": {
+      "name": "en8",
+      "present": true,
+      "active": true,
+      "ipv4": [
+        "<redacted-address>"
+      ],
+      "usable_ipv4": [
+        "<redacted-address>"
+      ]
+    }
+  },
+  "events": [
+    {
+      "captured_ms": 23,
+      "wifi_power": "Wi-Fi Power (en0): On",
+      "default_interface": "en0",
+      "iphone_usb": {
+        "name": "en8",
+        "present": true,
+        "active": false,
+        "ipv4": [],
+        "usable_ipv4": []
+      }
+    },
+    {
+      "captured_ms": 262,
+      "wifi_power": "Wi-Fi Power (en0): Off",
+      "default_interface": "en0",
+      "iphone_usb": {
+        "name": "en8",
+        "present": true,
+        "active": false,
+        "ipv4": [],
+        "usable_ipv4": []
+      }
+    },
+    {
+      "captured_ms": 578,
+      "wifi_power": "Wi-Fi Power (en0): Off",
+      "default_interface": "",
+      "iphone_usb": {
+        "name": "en8",
+        "present": true,
+        "active": false,
+        "ipv4": [],
+        "usable_ipv4": []
+      }
+    },
+    {
+      "captured_ms": 861,
+      "wifi_power": "Wi-Fi Power (en0): Off",
+      "default_interface": "",
+      "iphone_usb": {
+        "name": "en8",
+        "present": true,
+        "active": false,
+        "ipv4": [],
+        "usable_ipv4": []
+      }
+    },
+    {
+      "captured_ms": 1321,
+      "wifi_power": "Wi-Fi Power (en0): Off",
+      "default_interface": "en8",
+      "iphone_usb": {
+        "name": "en8",
+        "present": true,
+        "active": true,
+        "ipv4": [
+          "<redacted-address>"
+        ],
+        "usable_ipv4": [
+          "<redacted-address>"
+        ]
+      }
+    },
+    {
+      "captured_ms": 1420,
+      "wifi_power": "Wi-Fi Power (en0): Off",
+      "default_interface": "en8",
+      "iphone_usb": {
+        "name": "en8",
+        "present": true,
+        "active": true,
+        "ipv4": [
+          "<redacted-address>"
+        ],
+        "usable_ipv4": [
+          "<redacted-address>"
+        ]
+      }
+    }
+  ],
+  "claim_boundary": "This measures OS-level delayed Wi-Fi-to-iPhone-USB failover. It can validate a real client path change trigger, but by itself it does not prove single-connection QUIC migration."
+}
