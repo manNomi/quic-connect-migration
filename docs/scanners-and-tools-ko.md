@@ -696,6 +696,14 @@ EXPECTED_REQUESTS=5 \
 harness/scripts/run-aws-controlled-public-chrome-trial.sh
 ```
 
+page-ready trigger를 쓰려면 CDP runner가 평가할 expression을 넘긴다.
+
+```bash
+NETWORK_CHANGE_READY_EXPR='Number(document.body.dataset.downlinkBytes || "0") > 0' \
+NETWORK_CHANGE_AFTER_SECONDS=0.5 \
+harness/scripts/run-aws-controlled-public-chrome-trial.sh
+```
+
 동작:
 
 | 항목 | 의미 |
