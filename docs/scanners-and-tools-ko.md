@@ -2728,3 +2728,34 @@ python3 tools/check_aws_identity_readiness.py --require-ok
 
 - AWS CSV는 commit하지 않는다.
 - public origin이 `connection_refused`이면 final Chrome CM trial을 돌리지 않는다. 먼저 AWS identity와 origin service를 복구한다.
+
+## 76. `tools/plan_public_origin_recovery.py`
+
+controlled public origin 복구를 위한 다음 행동을 live gate 기준으로 선택하는 planner다. AWS identity, DNS/TCP, public H3 readiness, baseline summary, final browser trial audit을 묶어서 `aws-credentials`, `public-origin-reachable`, `fresh-public-baseline`, `active-browser-trials` 단계의 상태와 다음 명령을 생성한다.
+
+실행:
+
+```bash
+python3 tools/plan_public_origin_recovery.py
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/results/public-origin-recovery-plan-20260629.md` | public-safe 복구 계획과 다음 명령 |
+| `data/public-origin-recovery-plan-20260629.json` | machine-readable 복구 gate 상태 |
+
+현재 판정:
+
+- DNS는 `resolved`지만 TCP 443은 `connection_refused`다.
+- AWS identity는 `invalid_client_token`이다.
+- SSH recovery와 local TLS material recovery가 준비되지 않았다.
+- 다음 행동은 AWS credential CSV import 후 `bash harness/scripts/aws-preflight.sh` 실행이다.
+- final active browser rows는 origin readiness와 fresh baseline이 통과하기 전까지 실행하지 않는다.
+
+검증:
+
+```bash
+python3 tools/test_plan_public_origin_recovery.py
+```
