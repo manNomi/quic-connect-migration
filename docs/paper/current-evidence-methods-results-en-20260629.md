@@ -22,7 +22,7 @@ The study separates three evidence layers.
 
 | item | value |
 | --- | --- |
-| experiment status | PASS=32; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=58 |
+| experiment status | PASS=32; PASS_FEASIBILITY=6; PASS_NEGATIVE_CONTROL=59 |
 | final browser protocol | 3/6 requirements complete |
 | final blockers | chrome-downlink-noheartbeat-active-cm: 0/3; chrome-downlink-heartbeat-active-cm: 0/3; p1-safari-or-android-feasibility: 0/1 |
 | iPhone USB trigger | classification=latent_iphone_usb_failover_observed; ready=True; ready_at_ms=1321; path=en0->en8 |
