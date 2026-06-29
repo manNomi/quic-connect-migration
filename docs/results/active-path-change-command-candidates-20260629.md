@@ -1,0 +1,29 @@
+# Active Path-Change Command Candidates
+
+Generated: `2026-06-29`
+
+This report is read-only. It does not execute network-change commands.
+
+## Summary
+
+| field | value |
+| --- | --- |
+| active IPv4 interfaces | `en0` |
+| default interface | `en0` |
+| secondary path ready | `no` |
+| latent iPhone USB candidate ready | `yes` |
+| ready candidates | `macos_wifi_to_iphone_usb_latent_failover` |
+| commands included | `yes` |
+
+## Candidates
+
+| candidate | ready | reason | command form | restore form |
+| --- | --- | --- | --- | --- |
+| `macos_wifi_power_cutover` | `no` | blocked: no active secondary non-loopback IPv4 path was detected | `networksetup -setairportpower 'en0' off` | `networksetup -setairportpower 'en0' on` |
+| `macos_wifi_to_iphone_usb_latent_failover` | `yes` | ready: Wi-Fi is active and iPhone USB is present but latent/inactive | `networksetup -setairportpower 'en0' off` | `networksetup -setairportpower 'en0' on` |
+| `macos_service_order_cutover` | `no` | blocked: no active secondary service was detected | `networksetup -ordernetworkservices <secondary-service> <primary-service> <remaining-services...>` | `networksetup -ordernetworkservices <primary-service> <secondary-service> <remaining-services...>` |
+| `android_wifi_to_cellular_cutover` | `no` | blocked: no ADB device is connected | `adb shell svc wifi disable` | `adb shell svc wifi enable` |
+
+## Claim Boundary
+
+A candidate command is not migration evidence; count a trial only after before/after client path snapshots and server/qlog/NetLog artifacts validate it.
