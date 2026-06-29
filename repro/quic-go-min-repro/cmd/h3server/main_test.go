@@ -44,3 +44,24 @@ func TestBuildBrowserPollHTMLIncludesRetryControls(t *testing.T) {
 		}
 	}
 }
+
+func TestBuildBrowserMediaSegmentsHTMLIncludesSegmentRetryControls(t *testing.T) {
+	html := buildBrowserMediaSegmentsHTML("media retry", 6, 1000, 32768, 250, 2, 2, 750)
+
+	wantSubstrings := []string{
+		"media-segment",
+		"retryAttempts=2",
+		"retryDelayMs=750",
+		"segmentWithRetry",
+		"mediaCompletedCount",
+		"mediaRetriesUsed",
+		"mediaBytes",
+		"mediaComplete",
+		"mediaErrorElapsedMs",
+	}
+	for _, want := range wantSubstrings {
+		if !strings.Contains(html, want) {
+			t.Fatalf("browser media HTML missing %q in:\n%s", want, html)
+		}
+	}
+}

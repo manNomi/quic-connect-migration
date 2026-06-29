@@ -441,6 +441,83 @@ func handleWorkloadRequest(r *http.Request) (requestRecord, int, []byte) {
 		record.ResponseBytes = len(body)
 		record.DecodeSuccessful = true
 		return record, http.StatusOK, body
+	case r.Method == http.MethodGet && r.URL.Path == "/browser-media-segments":
+		record.Workload = "browser-media-segments"
+		record.ResponseContentType = "text/html; charset=utf-8"
+		count := queryInt(r, "count", 8)
+		if count > 200 {
+			count = 200
+		}
+		intervalMillis := queryInt(r, "interval_ms", 1000)
+		if intervalMillis > 60000 {
+			intervalMillis = 60000
+		}
+		size := queryInt(r, "bytes", 32768)
+		if size > 16*1024*1024 {
+			size = 16 * 1024 * 1024
+		}
+		segmentDurationMillis := queryInt(r, "segment_duration_ms", 0)
+		if segmentDurationMillis > 60000 {
+			segmentDurationMillis = 60000
+		}
+		segmentChunks := queryInt(r, "segment_chunks", 1)
+		if segmentChunks > 100 {
+			segmentChunks = 100
+		}
+		retryAttempts := queryInt(r, "retry_attempts", 0)
+		if retryAttempts > 5 {
+			retryAttempts = 5
+		}
+		retryDelayMillis := queryInt(r, "retry_delay_ms", 500)
+		if retryDelayMillis > 60000 {
+			retryDelayMillis = 60000
+		}
+		if label == "" {
+			label = "browser-media"
+		}
+		html := buildBrowserMediaSegmentsHTML(label, count, intervalMillis, size, segmentDurationMillis, segmentChunks, retryAttempts, retryDelayMillis)
+		record.ResponseBytes = len(html)
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, []byte(html)
+	case r.Method == http.MethodGet && r.URL.Path == "/media-segment":
+		record.Workload = "media-segment"
+		record.ResponseContentType = "application/octet-stream"
+		size := queryInt(r, "bytes", 32768)
+		if size > 16*1024*1024 {
+			size = 16 * 1024 * 1024
+		}
+		durationMillis := queryInt(r, "duration_ms", 0)
+		if durationMillis > 60000 {
+			durationMillis = 60000
+		}
+		chunks := queryInt(r, "chunks", 1)
+		if chunks > 100 {
+			chunks = 100
+		}
+		if label == "" {
+			label = "media-segment"
+		}
+		msg, header, err := common.BuildMessage(label, size)
+		if err != nil {
+			return record, http.StatusInternalServerError, []byte(err.Error())
+		}
+		record.Label = header.Label
+		record.ResponseBytes = header.PayloadBytes
+		record.ResponseSHA256 = header.SHA256
+		record.StreamResponse = durationMillis > 0 || queryBool(r, "stream", false)
+		record.ChunkBytes = len(msg) / chunks
+		if record.ChunkBytes <= 0 {
+			record.ChunkBytes = 1
+		}
+		if chunks > 0 {
+			delayMillis := durationMillis / chunks
+			if durationMillis > 0 && delayMillis <= 0 {
+				delayMillis = 1
+			}
+			record.ChunkDelayMillis = int64(delayMillis)
+		}
+		record.DecodeSuccessful = true
+		return record, http.StatusOK, msg
 	case r.Method == http.MethodGet && r.URL.Path == "/browser-slow":
 		record.Workload = "browser-slow"
 		record.ResponseContentType = "text/html; charset=utf-8"
@@ -690,6 +767,26 @@ func buildBrowserPollHTML(label string, count, intervalMillis, retryAttempts, re
 	body += "const startedAt=performance.now();"
 	body += "async function run(){let totalRetries=0;for(let i=1;i<=count;i++){const item=await pollWithRetry(i);totalRetries+=item.attempt-1;document.body.dataset.pollCompletedCount=String(i);document.body.dataset.pollRetriesUsed=String(totalRetries);const li=document.createElement('li');li.textContent=`${item.result.label}:${item.result.status}:attempt:${item.attempt}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.pollElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.pollComplete='true';}"
 	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.pollErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.pollError=String(error);});"
+	body += "</script>"
+	body += "</body></html>"
+	return body
+}
+
+func buildBrowserMediaSegmentsHTML(label string, count, intervalMillis, size, segmentDurationMillis, segmentChunks, retryAttempts, retryDelayMillis int) string {
+	escapedLabel := html.EscapeString(label)
+	queryLabel := url.QueryEscape(label)
+	segmentURLPrefix := fmt.Sprintf("/media-segment?bytes=%d&duration_ms=%d&chunks=%d&label=%s", size, segmentDurationMillis, segmentChunks, queryLabel)
+	body := "<!doctype html><html><head><meta charset=\"utf-8\"><title>Chrome H3 media segments</title><link rel=\"icon\" href=\"data:,\"></head><body>"
+	body += fmt.Sprintf("<h1>Chrome H3 media segments</h1><div id=\"status\" data-label=\"%s\">pending</div><ol id=\"events\"></ol>", escapedLabel)
+	body += "<script>"
+	body += fmt.Sprintf("const count=%d,interval=%d,segmentUrlPrefix=%q,retryAttempts=%d,retryDelayMs=%d;", count, intervalMillis, segmentURLPrefix, retryAttempts, retryDelayMillis)
+	body += "const sleep=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));"
+	body += "const events=document.getElementById('events');"
+	body += "const startedAt=performance.now();"
+	body += "async function fetchSegment(i,attempt){const res=await fetch(segmentUrlPrefix+'-'+i+'&segment='+i+'&attempt='+attempt+'&ts='+Date.now(),{cache:'no-store'});const buf=await res.arrayBuffer();if(!res.ok){throw new Error('segment status '+res.status);}return {status:res.status,bytes:buf.byteLength};}"
+	body += "async function segmentWithRetry(i){let lastError='';for(let attempt=1;attempt<=retryAttempts+1;attempt++){try{return {attempt,result:await fetchSegment(i,attempt)};}catch(error){lastError=String(error);document.body.dataset.mediaLastError=lastError;document.body.dataset.mediaLastErrorElapsedMs=String(Math.round(performance.now()-startedAt));if(attempt>retryAttempts){break;}await sleep(retryDelayMs);}}throw new Error(lastError||'media segment failed');}"
+	body += "async function run(){let totalRetries=0,totalBytes=0;for(let i=1;i<=count;i++){const item=await segmentWithRetry(i);totalRetries+=item.attempt-1;totalBytes+=item.result.bytes;document.body.dataset.mediaCompletedCount=String(i);document.body.dataset.mediaRetriesUsed=String(totalRetries);document.body.dataset.mediaBytes=String(totalBytes);const li=document.createElement('li');li.textContent=`segment:${i}:status:${item.result.status}:bytes:${item.result.bytes}:attempt:${item.attempt}`;events.appendChild(li);await sleep(interval);}document.getElementById('status').textContent='complete';document.body.dataset.mediaElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaComplete='true';}"
+	body += "run().catch((error)=>{document.getElementById('status').textContent='error';document.body.dataset.mediaErrorElapsedMs=String(Math.round(performance.now()-startedAt));document.body.dataset.mediaError=String(error);});"
 	body += "</script>"
 	body += "</body></html>"
 	return body

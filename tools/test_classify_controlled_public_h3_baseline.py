@@ -78,6 +78,23 @@ def test_poll_error_marks_application_failure(tmp_path: Path) -> None:
     assert summary["terminal_error_keys"] == ["pollError"]
 
 
+def test_media_complete_marks_application_success(tmp_path: Path) -> None:
+    write_cdp_summary(tmp_path, {"mediaComplete": "true", "mediaCompletedCount": "6"})
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "media"
+    assert summary["complete"] is True
+    assert summary["success"] is True
+
+
+def test_media_error_marks_application_failure(tmp_path: Path) -> None:
+    write_cdp_summary(tmp_path, {"mediaCompletedCount": "2", "mediaError": "TypeError: Failed to fetch"})
+    summary = application_summary(tmp_path)
+    assert summary["workload"] == "media"
+    assert summary["complete"] is False
+    assert summary["success"] is False
+    assert summary["terminal_error_keys"] == ["mediaError"]
+
+
 def main() -> int:
     from tempfile import TemporaryDirectory
 
@@ -91,6 +108,10 @@ def main() -> int:
         test_poll_complete_marks_application_success(Path(fourth))
     with TemporaryDirectory() as fifth:
         test_poll_error_marks_application_failure(Path(fifth))
+    with TemporaryDirectory() as sixth:
+        test_media_complete_marks_application_success(Path(sixth))
+    with TemporaryDirectory() as seventh:
+        test_media_error_marks_application_failure(Path(seventh))
     return 0
 
 

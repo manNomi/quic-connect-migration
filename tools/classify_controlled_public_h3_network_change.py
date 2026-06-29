@@ -21,6 +21,8 @@ TARGET_H3_WORKLOADS = {
     "upload-sink",
     "browser-poll",
     "poll",
+    "browser-media-segments",
+    "media-segment",
     "upload",
     "download",
 }
