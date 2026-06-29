@@ -24,6 +24,10 @@ This folder contains paper-facing drafts generated from the current research evi
    - Korean Methods/Results draft based on current artifacts.
 9. `current-evidence-methods-results-en-20260629.md`
    - English Methods/Results draft based on current artifacts.
+10. `threats-to-validity-and-reviewer-defense-ko-20260629.md`
+    - Korean limitations and reviewer-defense chapter that separates supported claims from overclaims.
+11. `threats-to-validity-and-reviewer-defense-en-20260629.md`
+    - English limitations and reviewer-defense chapter that separates supported claims from overclaims.
 
 ## Claim Boundary
 
@@ -37,7 +41,7 @@ The final browser handover protocol remains incomplete until:
 
 ## Regeneration
 
-Regenerate the Methods/Results drafts after adding new experiment rows:
+Regenerate the paper-facing drafts after adding new experiment rows:
 
 ```bash
 python3 tools/build_paper_claim_readiness_audit.py \
@@ -47,4 +51,5 @@ python3 tools/build_current_evidence_manuscript_sections.py
 python3 tools/build_cm_underuse_chapter.py
 python3 tools/build_current_paper_skeleton.py
 python3 tools/build_workload_prioritized_experiment_design.py
+python3 tools/build_threats_and_reviewer_defense.py
 ```

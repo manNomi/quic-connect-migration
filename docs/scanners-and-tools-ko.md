@@ -2776,3 +2776,38 @@ python3 tools/plan_public_origin_recovery.py
 ```bash
 python3 tools/test_plan_public_origin_recovery.py
 ```
+
+## 77. `tools/build_threats_and_reviewer_defense.py`
+
+논문 심사자가 물을 가능성이 높은 질문을 reviewer-defense matrix로 고정하고, 현재 증거가 허용하는 주장과 금지해야 할 overclaim을 한계 장으로 생성하는 도구다. 실험 결과를 강하게 포장하기보다 `single-session browser CM`, `replacement-session continuity`, `application-level recovery`, `origin-readiness failure`를 분리해 쓰도록 한다.
+
+실행:
+
+```bash
+python3 tools/build_threats_and_reviewer_defense.py
+```
+
+입력:
+
+| artifact | 역할 |
+| --- | --- |
+| `data/paper-claim-readiness-audit-20260629.csv` | claim별 readiness와 금지 표현 |
+| `data/workload-sensitivity-synthesis-20260629.csv` | upload/download/polling/media workload별 현재 결과 |
+| `data/final-handover-trial-packet-current-20260629.json` | final browser handover protocol gate 상태 |
+| `data/public-origin-recovery-plan-20260629.json` | public origin/AWS 복구 gate 상태 |
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `data/reviewer-defense-matrix-20260629.csv` | reviewer question, current answer, claim boundary, next action matrix |
+| `docs/paper/threats-to-validity-and-reviewer-defense-ko-20260629.md` | 한국어 threats to validity 및 reviewer-defense 장 |
+| `docs/paper/threats-to-validity-and-reviewer-defense-en-20260629.md` | 영어 threats to validity 및 reviewer-defense 장 |
+
+현재 방어선:
+
+- Chrome single-session browser CM success는 아직 증명하지 않는다.
+- iPhone USB failover는 실제 client path-change trigger지만 일반 mobile handover 전체를 대표하지 않는다.
+- upload/download retry success와 streaming completion은 task continuity evidence일 수 있으나 transport CM success evidence가 아니다.
+- public origin이 `connection_refused`인 상태의 실패는 browser CM 실패가 아니라 origin readiness failure로 분류한다.
+- third-party H3 site는 discovery/control로만 쓰고, controlled origin의 qlog/tuple/workload evidence를 대체하지 않는다.
