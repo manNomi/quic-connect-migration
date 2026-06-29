@@ -2462,3 +2462,34 @@ python3 tools/check_aws_identity_readiness.py --require-ok
 - final browser handover baseline은 수동 public origin으로도 진행 가능하다.
 - AWS 자동 provisioning은 이 스캐너가 `identity_ok=yes`가 된 뒤 실행한다.
 - 출력은 AWS account ID, ARN, access key, secret key, session token, profile name을 공개하지 않는다.
+
+## 67. `tools/summarize_chrome_rebinding_media_matrix.py`
+
+Chrome local UDP rebinding media-segment artifact를 CSV와 논문용 Markdown 표로 요약한다.
+
+실행:
+
+```bash
+python3 tools/summarize_chrome_rebinding_media_matrix.py \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-media-rep1-drop3000-retry0-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-media-rep2-drop3000-retry0-20260629 \
+  repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-media-rep3-drop3000-retry0-20260629 \
+  --profile video-like-segments \
+  --output docs/results/chrome-h3-rebinding-media-segment-replication-20260629.md \
+  --csv-output data/chrome-h3-rebinding-media-segment-replication-20260629.csv
+```
+
+읽는 artifact:
+
+| 파일 | 용도 |
+| --- | --- |
+| `results/chrome-summary.json` | classification, Chrome QUIC session count, qlog count |
+| `results/rebinding-proxy.json` | drop window, dropped packet count |
+| `results/server.json` | media segment request와 duplicate segment count |
+| `chrome/dump-dom.txt` | `mediaComplete`, `mediaCompletedCount`, `mediaRetriesUsed`, elapsed/error timing |
+
+현재 결과:
+
+- video-like 3000ms/6000ms no-retry replication은 각각 `3/3 PASS`였지만 모두 `nat_rebinding_multiple_quic_sessions`다.
+- music-like 6000ms no-retry는 `0/3 PASS`, retry1은 `3/3 PASS`다.
+- 따라서 media continuity는 single-session QUIC CM으로 바로 해석하지 않고 segment cadence, retry, buffering, session churn evidence로 분리해서 보고한다.

@@ -66,6 +66,29 @@ Summary:
 
 This strengthens the workload-dependent framing: media segment continuity can survive disruption, but the observed mechanism is not single-session browser CM.
 
+## Local Rebinding Replication
+
+Replication artifacts:
+
+- `docs/results/chrome-h3-rebinding-media-segment-replication-20260629.md`
+- `docs/results/chrome-h3-rebinding-music-like-media-control-20260629.md`
+
+Video-like segment profile:
+
+| drop window | retry | PASS/runs | media complete | Chrome sessions | classification |
+| --- | ---: | ---: | ---: | --- | --- |
+| 3000ms | 0 | 3/3 | 3/3 | 2-2 | `nat_rebinding_multiple_quic_sessions` |
+| 6000ms | 0 | 3/3 | 3/3 | 2-3 | `nat_rebinding_multiple_quic_sessions` |
+
+Music-like smaller-segment profile:
+
+| drop window | retry | PASS/runs | media complete | Chrome sessions | classification |
+| --- | ---: | ---: | ---: | --- | --- |
+| 6000ms | 0 | 0/3 | 0/3 | 2-2 | `browser_h3_request_failed` |
+| 6000ms | 1 | 3/3 | 3/3 | 3-3 | `nat_rebinding_multiple_quic_sessions` |
+
+The replication changes the earlier expectation: smaller or lower-bitrate segment fetches are not automatically tolerant. The no-retry music-like profile repeatedly failed after the first segment under the same 6000ms return-path loss. One retry recovered visible completion, but the observed mechanism was still multiple Chrome QUIC sessions rather than single-session CM.
+
 ## Next Public Handover Trials
 
 Use the page-ready trigger added in `docs/results/page-ready-network-change-runner-20260629.md`.
@@ -99,4 +122,5 @@ The expected contribution is not simply "CM helps streaming." A more defensible 
 ## Data
 
 - Workload case matrix: `data/streaming-workload-case-analysis-20260629.csv`
+- Workload sensitivity matrix: `data/workload-sensitivity-synthesis-20260629.csv`
 - Local smoke artifact: `repro/quic-go-min-repro/artifacts/chrome-h3-media-segment-smoke-20260629`
