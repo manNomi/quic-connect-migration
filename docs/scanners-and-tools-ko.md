@@ -679,6 +679,43 @@ classification:
 | `path_snapshot_missing` | client path snapshot이 없어 active handover evidence 부족 |
 | `controlled_public_network_change_workload_failed` | workload expected request count 미달 |
 
+## 16.1. `harness/scripts/run-aws-controlled-public-chrome-trial.sh`
+
+AWS EC2 direct origin을 fresh server run으로 띄우고, Chrome controlled-public
+baseline 또는 active network-change trial을 실행한 뒤, 원격 server artifact를
+수집해 classifier와 validation까지 수행하는 반복 실행 wrapper다.
+
+실행 예시:
+
+```bash
+CONTROLLED_PUBLIC_BASELINE_SUMMARY=repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-nochange-20260629-003/results/controlled-public-h3-baseline-summary.json \
+TRIAL_ID=controlled-public-chrome-downlink-noheartbeat-network-change-20260629-002 \
+MODE=network-change \
+VARIANT=noheartbeat \
+EXPECTED_REQUESTS=5 \
+harness/scripts/run-aws-controlled-public-chrome-trial.sh
+```
+
+동작:
+
+| 항목 | 의미 |
+| --- | --- |
+| AWS state | ignored `harness/results/aws-origin-20260629/state.env`에서 SSH target, key, current sslip host를 읽음 |
+| local config | ignored `harness/config/controlled-public-origin.env`에서 Chrome/origin 기본값을 읽음 |
+| fresh server | systemd transient unit으로 remote quic-go H3 server를 trial별 artifact dir에 실행 |
+| browser run | Chrome CDP runner로 baseline 또는 network-change workload를 실행 |
+| restore | network-change mode 후 `networksetup -setairportpower en0 on`을 실행 |
+| collection | remote server artifact를 local ignored artifact dir로 내려받음 |
+| classification | `classify_controlled_public_h3_baseline.py` 또는 `classify_controlled_public_h3_network_change.py` 실행 |
+| validation | tracked `docs/results/<trial-id>-validation.md` 생성 |
+
+주의:
+
+- 이 wrapper는 실제 Wi-Fi를 끄는 `NETWORK_CHANGE_CMD`를 실행할 수 있다.
+- public-safe 문서에는 raw hostname, IP, SSH target, TLS path를 넣지 않는다.
+- active trial에서 `PASS_NEGATIVE_CONTROL`은 CM 성공이 아니라 반복 가능한
+  음성 evidence다.
+
 ## 17. `tools/capture_network_path_snapshot.py`, `tools/compare_network_path_snapshots.py`, `tools/compare_android_path_snapshots.py`
 
 browser network-change 실험에서 client 측 route/interface 변화가 실제로 있었는지 기록한다.

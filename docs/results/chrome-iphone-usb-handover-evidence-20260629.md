@@ -52,22 +52,37 @@ multipath. Therefore, trial claims should say "delayed OS failover" instead of
 | `controlled-public-chrome-downlink-noheartbeat-nochange-20260629-003` | no-change baseline | no | n/a | yes | yes | no | yes | `controlled_public_application_h3_confirmed` |
 | `controlled-public-chrome-downlink-heartbeat-nochange-20260629-001` | no-change baseline | yes | n/a | yes | yes | no | yes | `controlled_public_application_h3_confirmed` |
 | `controlled-public-chrome-downlink-noheartbeat-network-change-20260629-001` | active network-change | no | yes | yes | yes | no | no | `application_task_failed_without_quic_path_validation` |
+| `controlled-public-chrome-downlink-noheartbeat-network-change-20260629-002` | active network-change | no | yes | yes | yes | no | no | `application_task_failed_without_quic_path_validation` |
+| `controlled-public-chrome-downlink-noheartbeat-network-change-20260629-003` | active network-change | no | yes | yes | yes | no | no | `application_task_failed_without_quic_path_validation` |
 | `controlled-public-chrome-downlink-heartbeat-network-change-20260629-001` | active network-change | yes | no | yes | yes | no | no | `no_client_active_path_change_observed` |
 
 ## Key Findings
 
 1. The fresh AWS direct origin is capable of serving browser-observed H3.
 2. Both no-change baselines completed the downlink application task over H3.
-3. In the no-heartbeat active trial, the client path changed from Wi-Fi to
-   iPhone USB, Chrome used H3, and the application task still failed.
-4. The no-heartbeat active trial did not show server qlog path validation events
-   (`PATH_CHALLENGE`/`PATH_RESPONSE`), and the target H3 server remote address
-   count stayed at one.
+3. In all three no-heartbeat active trials, the client path changed from Wi-Fi
+   to iPhone USB, Chrome used H3, and the application task still failed.
+4. The no-heartbeat active trials did not show server qlog path validation
+   events (`PATH_CHALLENGE`/`PATH_RESPONSE`), and the target H3 server remote
+   address count stayed at one in each run.
 5. The heartbeat active trial failed earlier at the OS failover layer: the
    command changed interface availability, but the captured default route did
    not move to iPhone USB during the measured window.
 6. These active trials are negative-control evidence, not positive CM success
    evidence.
+
+## Repeated No-Heartbeat Active Runs
+
+| trial | client path change | downlink bytes before failure | error elapsed | target H3 remote address count | qlog path validation | application success |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| `001` | `client_active_path_changed` | 13143 | 17023 ms | 1 | no | no |
+| `002` | `client_active_path_changed` | 13143 | 16044 ms | 1 | no | no |
+| `003` | `client_active_path_changed` | 13143 | 17019 ms | 1 | no | no |
+
+The repeated pattern strengthens the negative finding: the active path-change
+trigger is not merely failing to fire, and the failure is not a one-off Chrome
+run artifact. The browser reaches the H3 downlink workload, the OS path changes,
+and the task fails without server-side path validation evidence.
 
 ## Interpretation
 
@@ -77,11 +92,11 @@ The current evidence supports a conservative claim:
 > successful no-change H3 operation did not imply web-task continuity under a
 > Wi-Fi to iPhone USB path-change trigger.
 
-The strongest active trial is the no-heartbeat run, because it proves a client
-path change occurred. That trial still ended with a downlink application failure
-and no server-side QUIC path validation evidence. This suggests the experiment
-is currently observing browser/session breakage or path-loss behavior rather
-than successful QUIC connection migration.
+The strongest active evidence is the no-heartbeat repetition set, because each
+run proves a client path change occurred. All three runs still ended with a
+downlink application failure and no server-side QUIC path validation evidence.
+This suggests the experiment is currently observing browser/session breakage or
+path-loss behavior rather than successful QUIC connection migration.
 
 ## Claim Boundary
 
@@ -106,7 +121,9 @@ Raw artifacts are intentionally ignored by git.
 | --- | --- |
 | no-heartbeat no-change | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-nochange-20260629-003` |
 | heartbeat no-change | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-heartbeat-nochange-20260629-001` |
-| no-heartbeat active network-change | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-001` |
+| no-heartbeat active network-change 001 | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-001` |
+| no-heartbeat active network-change 002 | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-002` |
+| no-heartbeat active network-change 003 | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-003` |
 | heartbeat active network-change | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-heartbeat-network-change-20260629-001` |
 
 Tracked validation summaries:
@@ -114,18 +131,20 @@ Tracked validation summaries:
 - `docs/results/controlled-public-chrome-downlink-noheartbeat-nochange-20260629-003-validation.md`
 - `docs/results/controlled-public-chrome-downlink-heartbeat-nochange-20260629-001-validation.md`
 - `docs/results/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-001-validation.md`
+- `docs/results/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-002-validation.md`
+- `docs/results/controlled-public-chrome-downlink-noheartbeat-network-change-20260629-003-validation.md`
 - `docs/results/controlled-public-chrome-downlink-heartbeat-network-change-20260629-001-validation.md`
 - `docs/results/iphone-usb-failover-measurement-20260629.md`
 - `docs/results/active-path-change-command-candidates-20260629.md`
 
 ## Next Research Actions
 
-1. Repeat the no-heartbeat active trial at least two more times to distinguish
-   Chrome behavior from iPhone USB failover variance.
-2. Add a page-ready network-change trigger so the path cut happens after
+1. Add a page-ready network-change trigger so the path cut happens after
    `/downlink-stream` is definitely active.
-3. Run the same workload in Safari and Android Chrome, because browser network
+2. Run the same workload in Safari and Android Chrome, because browser network
    stack policy may dominate the outcome.
-4. Add retry/resume workloads for media segments, range download, and upload to
+3. Add retry/resume workloads for media segments, range download, and upload to
    test whether application-level recovery can compensate when transport-level
    migration is not observed.
+4. Package the repeated negative-control evidence into the paper's evaluation
+   section as "H3 availability is insufficient for task continuity".
