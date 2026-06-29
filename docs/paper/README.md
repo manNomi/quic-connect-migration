@@ -12,9 +12,13 @@ This folder contains paper-facing drafts generated from the current research evi
    - Korean chapter explaining why QUIC CM is underused or conservatively deployed.
 3. `cm-underuse-and-deployment-friction-en-20260629.md`
    - English chapter explaining why QUIC CM is underused or conservatively deployed.
-4. `current-evidence-methods-results-ko-20260629.md`
+4. `current-evidence-paper-skeleton-ko-20260629.md`
+   - Korean title/abstract/contribution/structure skeleton.
+5. `current-evidence-paper-skeleton-en-20260629.md`
+   - English title/abstract/contribution/structure skeleton.
+6. `current-evidence-methods-results-ko-20260629.md`
    - Korean Methods/Results draft based on current artifacts.
-5. `current-evidence-methods-results-en-20260629.md`
+7. `current-evidence-methods-results-en-20260629.md`
    - English Methods/Results draft based on current artifacts.
 
 ## Claim Boundary
@@ -37,4 +41,5 @@ python3 tools/build_paper_claim_readiness_audit.py \
 
 python3 tools/build_current_evidence_manuscript_sections.py
 python3 tools/build_cm_underuse_chapter.py
+python3 tools/build_current_paper_skeleton.py
 ```

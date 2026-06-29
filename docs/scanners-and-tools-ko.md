@@ -2628,3 +2628,27 @@ python3 tools/build_cm_underuse_chapter.py
 - 구현체 survey 기준 18개 구현체 중 active migration API `yes`는 8개, passive migration `yes`는 14개, tests `yes`는 14개다.
 - 실제 배포에서는 browser runtime policy, HTTP/3 discovery, active path proof, session attribution, CID-aware load balancing, proxy/CDN termination, middlebox/manageability, security risk, workload recovery, observability, performance/QoE 비용이 함께 작동한다.
 - 논문에서는 "HTTP/3 지원 = CM 지원" 또는 "tuple 변화 = browser CM 성공"이라고 쓰지 않는다.
+
+## 73. `tools/build_current_paper_skeleton.py`
+
+현재 evidence bundle에서 논문 skeleton을 한국어/영어로 생성한다. 제목 후보, 초록 초안, 핵심 기여, 현재 주요 결과, 권장 논문 구조, 표/그림 후보, 지금 쓰면 안 되는 문장, 남은 실험 gap을 한 문서로 묶는다.
+
+실행:
+
+```bash
+python3 tools/build_current_paper_skeleton.py
+```
+
+생성물:
+
+| artifact | 역할 |
+| --- | --- |
+| `docs/paper/current-evidence-paper-skeleton-ko-20260629.md` | 한국어 논문 skeleton |
+| `docs/paper/current-evidence-paper-skeleton-en-20260629.md` | 영어 논문 skeleton |
+
+현재 skeleton의 결론:
+
+- 추천 제목은 "QUIC Connection Migration Maturity and Web Task Continuity" 방향이다.
+- 현재 주요 결과에는 iPhone USB trigger `en0 -> en8, 1321ms`, public origin `connection_refused`, AWS `invalid_client_token`, workload별 recovery 결과가 포함된다.
+- Chrome single-session browser CM은 `not-supported-yet`로 유지한다.
+- 다음 실험 gap은 fresh public baseline, Chrome no-heartbeat/heartbeat active rows, public Range/media, Safari 또는 Android feasibility다.
