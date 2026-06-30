@@ -270,7 +270,25 @@ s2n-quic은 AWS 연구와 연결성이 높다.
 
 > s2n-quic은 AWS/NLB/CID-aware deployment 연구로 이어질 수 있는 후보군이다.
 
-### 7.5 Chromium/Cronet
+### 7.5 MsQuic
+
+MsQuic은 Microsoft ecosystem과 production deployment relevance가 큰 구현체다.
+
+확인한 것:
+
+- `MigrationEnabled` setting
+- `LoadBalancingMode` deployment setting
+- NAT port rebind gtest
+- NAT address rebind gtest
+- path validation timeout gtest
+- last path close gtest
+- v4/v6 selected tests PASS
+
+해석:
+
+> MsQuic은 구현체 수준의 NAT rebinding/path-validation 성숙도 근거가 강하다. 다만 문서가 명시하듯 load balancer 경로에서는 QUIC-aware CID routing이 필요하므로, 이 결과를 managed LB 환경의 end-to-end CM 보장으로 확대하면 안 된다.
+
+### 7.6 Chromium/Cronet
 
 Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상이다.
 
@@ -291,9 +309,9 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 | 항목 | 결과 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test/demo까지 실행한 구현체 | 9 |
-| 2026-06-30 fresh rerun/demo artifact 확보 | 9 |
-| source inspected only | 6 |
+| local test/demo까지 실행한 구현체 | 10 |
+| 2026-06-30 fresh rerun/demo artifact 확보 | 10 |
+| source inspected only | 5 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |

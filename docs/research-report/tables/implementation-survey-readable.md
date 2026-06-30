@@ -27,9 +27,9 @@
 | 항목 | 값 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test까지 실행한 구현체 | 9 |
-| 2026-06-30 fresh rerun artifact 확보 | 9 |
-| source inspected only | 6 |
+| local test/demo까지 실행한 구현체 | 10 |
+| 2026-06-30 fresh rerun/demo artifact 확보 | 10 |
+| source inspected only | 5 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |
@@ -46,7 +46,7 @@
 | 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `fresh_rerun_20260630` | Verify custom CID generator and NLB 8-byte Server ID compatibility |
 | 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4` | `fresh_rerun_20260630` | Use as C library primitive/path-validation comparison |
 | 5 | LiteSpeed lsquic | server | O | O | O | `logs` | O | `likely` | `L4_L5_candidate` | `source_inspected` | Check OpenLiteSpeed/lsquic instrumentation and setup cost |
-| 6 | MsQuic | library/server | O | O | ? check | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `source_inspected` | Confirm active migration sample/API and LB assumptions |
+| 6 | MsQuic | library/server | O | O | ? check | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `fresh_rerun_20260630` | Use as production-relevant NAT rebinding/path-validation evidence; still verify QUIC-aware LB deployment assumptions |
 | 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Rust migration/rebind comparison |
 | 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Firefox-adjacent broad migration test evidence |
 | 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; retry full run_tests on Linux because macOS AppleClang Werror blocks QPACK unit build |
@@ -70,13 +70,14 @@
 | Cloudflare quiche | PathEvent/log/qlog로 migration lifecycle 설명에 좋음 |
 | picoquic | migration edge-case test가 풍부함 |
 | s2n-quic | AWS/NLB/CID-aware deployment 연구와 연결성이 좋음 |
+| MsQuic | production-relevant NAT rebind/path validation gtest가 v4/v6에서 통과함 |
 | XQUIC | NAT rebinding demo가 실제 client/server로 통과했지만 full suite는 Linux 재실행 필요 |
 
 ### 2. production/deployment 논의 후보
 
 | 후보 | 이유 |
 | --- | --- |
-| MsQuic | production deployment relevance가 높지만 API/LB assumption 확인 필요 |
+| MsQuic | NAT rebinding/path validation은 fresh rerun 통과, LB deployment assumption은 별도 검증 필요 |
 | mvfst | 대규모 deployment 후보이나 build/test cost가 큼 |
 | lsquic/nginx QUIC | 실제 server deployment와 연결 가능 |
 | AWS NLB + s2n-quic | CID-aware routing 실험으로 이어짐 |
@@ -94,7 +95,7 @@
 ## 이 표에서 바로 말할 수 있는 결론
 
 1. 조사 대상 18개 중 다수가 RFC primitive와 passive migration 근거를 갖고 있다.
-2. active migration API가 명확한 구현체는 더 적지만, quic-go/quiche/picoquic/Neqo 등에서 실험 후보가 확인됐다.
+2. active migration API가 명확한 구현체는 더 적지만, quic-go/quiche/picoquic/Neqo 등에서 실험 후보가 확인됐고 MsQuic은 NAT rebind/path-validation 테스트 근거가 보강됐다.
 3. qlog, PathEvent, NetLog, tracing 등 관찰성이 구현체별로 다르다.
 4. HTTP/3 지원과 Connection Migration 지원은 같은 말이 아니다.
 5. L4 library maturity는 browser 또는 CDN deployment maturity와 다르다.

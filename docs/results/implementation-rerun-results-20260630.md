@@ -35,6 +35,7 @@ quic-go를 먼저 고른 이유는 다음과 같다.
 | Cloudflare quiche | `c4c0b978461aa153399a90217d85bebd1800f84d` | library migration tests, sample client/server migration, qlog | PASS | strong implementation positive control |
 | picoquic | `d3a80307200d28c53a6470d257bdd0801fad7971` | NAT rebinding, migration, loss, failure, preferred address, disabled migration | PASS | broad edge-case maturity evidence |
 | s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `connection_migration` test suite, PathChallenge/PathResponse/event evidence | PASS | AWS-relevant library evidence |
+| MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | selected NAT rebind and path-validation gtests, v4/v6 | PASS | production-relevant library evidence with LB caveat |
 | ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | C library migration/path-validation/frame tests | PASS | primitive/API evidence |
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE and transport parameter tests | PASS | passive/path-validation reference |
 | Quinn | `953b466747e667a9dfda0596b8051a0644f8333d` | `quinn-proto` migration, `quinn` endpoint rebind | PASS | Rust stack migration/rebind evidence |
@@ -128,7 +129,54 @@ Interpretation:
 
 s2n-quic은 AWS 연구 흐름과 연결성이 높다. 이 결과는 s2n-quic library가 migration/path validation primitive를 테스트한다는 근거지만, AWS NLB나 CloudFront 같은 managed path에서 end-to-end CM이 보장된다는 뜻은 아니다.
 
-### 3.4 ngtcp2
+### 3.4 MsQuic
+
+Source:
+
+- [microsoft/msquic](https://github.com/microsoft/msquic)
+- [MsQuic docs](https://microsoft.github.io/msquic/)
+- [MsQuic deployment docs](https://microsoft.github.io/msquic/msquicdocs/docs/Deployment.html)
+
+Commands:
+
+```bash
+git submodule update --init --depth 1 submodules/googletest
+cmake -S . -B build-local -G Ninja \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DQUIC_BUILD_TEST=ON \
+  -DQUIC_BUILD_TOOLS=ON \
+  -DQUIC_BUILD_SHARED=OFF \
+  -DQUIC_TLS_LIB=openssl \
+  -DQUIC_USE_EXTERNAL_OPENSSL=ON \
+  -DQUIC_OPENSSL_ROOT_DIR=/opt/homebrew/opt/openssl@3 \
+  -DQUIC_OPENSSL_INCLUDE_DIR=/opt/homebrew/opt/openssl@3/include \
+  -DQUIC_OPENSSL_LIB_DIR=/opt/homebrew/opt/openssl@3/lib \
+  -DQUIC_ENABLE_LOGGING=OFF
+cmake --build build-local --target msquictest -j 4
+
+./build-local/bin/Debug/msquictest \
+  --gtest_filter='Basic/WithFamilyArgs.RebindPort/0:Basic/WithFamilyArgs.RebindAddr/0:Basic/WithFamilyArgs.PathValidationTimeout/0:Basic/WithFamilyArgs.PathValidationLastPathClose/0'
+
+./build-local/bin/Debug/msquictest \
+  --gtest_filter='Basic/WithFamilyArgs.RebindPort/1:Basic/WithFamilyArgs.RebindAddr/1:Basic/WithFamilyArgs.PathValidationTimeout/1:Basic/WithFamilyArgs.PathValidationLastPathClose/1'
+```
+
+Evidence:
+
+| 항목 | 결과 |
+| --- | --- |
+| build target | `msquictest` PASS |
+| selected v4 tests | `4 tests` PASS |
+| selected v6 tests | `4 tests` PASS |
+| covered cases | NAT port rebind, NAT address rebind, path validation timeout, last path close |
+| deployment setting evidence | `MigrationEnabled`, `LoadBalancingMode` documented |
+| local logs | `harness/results/impl-rerun-20260630T070249Z/logs/msquic-*.log` |
+
+Interpretation:
+
+MsQuic은 production relevance가 큰 구현체 중 처음으로 fresh gtest evidence를 확보했다. NAT rebinding과 path-validation selected tests가 v4/v6에서 모두 통과했으므로 source-only가 아니라 implementation-level maturity evidence로 쓸 수 있다. 다만 공식 deployment 문서는 load balancer 경로에서 QUIC-aware CID routing이 필요하다고 명시하므로, 이 결과를 AWS NLB/CloudFront 같은 managed path의 end-to-end CM 보장으로 확대하면 안 된다.
+
+### 3.5 ngtcp2
 
 Source:
 
@@ -162,7 +210,7 @@ Interpretation:
 
 ngtcp2는 C library-level primitive 비교군으로 적합하다. 직접 웹 애플리케이션 continuity를 말하기보다는 RFC primitive 구현 성숙도 근거로 사용하는 편이 안전하다.
 
-### 3.5 aioquic
+### 3.6 aioquic
 
 Source:
 
@@ -199,7 +247,7 @@ Interpretation:
 
 aioquic은 readable Python implementation이라 path-validation behavior를 설명하기 좋다. 하지만 active migration public API 실험 후보로는 quic-go/quiche보다 약하므로 보조 근거로 분리한다.
 
-### 3.6 Quinn
+### 3.7 Quinn
 
 Source:
 
@@ -226,7 +274,7 @@ Interpretation:
 
 Quinn은 Rust application stack 관점에서 migration and endpoint rebind behavior를 확인하는 비교군이다. quic-go처럼 현재 repo의 custom application payload harness까지 연결한 것은 아니지만, path validation event와 rebind receive path가 fresh rerun으로 확인되었다.
 
-### 3.7 Neqo
+### 3.8 Neqo
 
 Source:
 
@@ -251,7 +299,7 @@ Interpretation:
 
 Neqo는 Firefox-adjacent transport stack으로서 migration test breadth가 가장 넓은 편에 속한다. 논문에서는 browser product behavior가 아니라 browser-adjacent implementation maturity evidence로 사용하는 것이 안전하다.
 
-### 3.8 XQUIC
+### 3.9 XQUIC
 
 Source:
 
@@ -304,11 +352,11 @@ XQUIC은 source inspection에서 확인했던 NAT rebinding path가 실제 clien
 
 안전한 결론:
 
-> Connection Migration is not merely a paper feature. Fresh local reruns across quic-go, quiche, picoquic, s2n-quic, ngtcp2, aioquic, Quinn, and Neqo, plus a successful XQUIC NAT rebinding demo, show that path validation and migration-related primitives are implemented and tested in multiple QUIC stacks. However, implementation-level maturity does not imply browser-level or managed-deployment continuity.
+> Connection Migration is not merely a paper feature. Fresh local reruns across quic-go, quiche, picoquic, s2n-quic, MsQuic, ngtcp2, aioquic, Quinn, and Neqo, plus a successful XQUIC NAT rebinding demo, show that path validation and migration-related primitives are implemented and tested in multiple QUIC stacks. However, implementation-level maturity does not imply browser-level or managed-deployment continuity.
 
 한국어 표현:
 
-> QUIC Connection Migration은 구현되지 않은 기술이 아니다. 주요 구현체들은 path validation, NAT rebinding, active/passive migration, preferred address, disable-active-migration 같은 primitive를 테스트하고 있고, XQUIC도 실제 NAT rebinding demo가 통과했다. 다만 이러한 transport-level 성숙도는 Chrome/Safari/Android 브라우저 또는 CDN/LB 환경에서 웹 작업 연속성이 보장된다는 뜻은 아니다.
+> QUIC Connection Migration은 구현되지 않은 기술이 아니다. 주요 구현체들은 path validation, NAT rebinding, active/passive migration, preferred address, disable-active-migration 같은 primitive를 테스트하고 있고, MsQuic selected gtest와 XQUIC NAT rebinding demo도 통과했다. 다만 이러한 transport-level 성숙도는 Chrome/Safari/Android 브라우저 또는 CDN/LB 환경에서 웹 작업 연속성이 보장된다는 뜻은 아니다.
 
 ## 5. 남은 한계
 
@@ -316,5 +364,5 @@ XQUIC은 source inspection에서 확인했던 NAT rebinding path가 실제 clien
 | --- | --- | --- |
 | raw logs는 ignored path | 로그가 크고 local address/path가 섞여 있어 공개 repo에는 요약만 둔다. | 제출 전 sanitized evidence bundle 생성 |
 | 동일 깊이의 app-level 테스트는 아님 | quic-go/quiche는 sample client/server, 나머지는 library tests 중심이다. | 후보 1-2개를 골라 동일 workload harness로 재실험 |
-| production-scale stack fresh rerun 미반영 | MsQuic, mvfst, lsquic은 빌드/운영 cost가 더 크다. XQUIC은 NAT rebinding demo까지는 통과했지만 full suite는 Linux 재실행이 필요하다. | 필요 시 별도 chapter 또는 appendix로 분리 |
+| production-scale stack fresh rerun 미반영 | mvfst, lsquic은 빌드/운영 cost가 더 크다. MsQuic은 selected gtest가 통과했고, XQUIC은 NAT rebinding demo까지는 통과했지만 full suite는 Linux 재실행이 필요하다. | 필요 시 별도 chapter 또는 appendix로 분리 |
 | browser CM claim은 별도 검증 필요 | browser policy, OS route, certificate, Alt-Svc, NetLog attribution이 개입한다. | Chapter 7 이후 controlled public browser handover 실험으로 분리 |
