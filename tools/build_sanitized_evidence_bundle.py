@@ -540,6 +540,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence, final paper acceptance, public browser CM success, live AWS+s2n success, or Safari handover success.",
         next_gap="Use the wording guard while drafting the paper, especially before writing guarantee, mobile, browser, AWS, and streaming claims.",
     ),
+    EvidenceItem(
+        id="noniphone-paper-section-scaffold",
+        chapter="12",
+        category="paper-section-synthesis",
+        implementation="cross-layer evidence corpus",
+        evidence_doc="docs/results/noniphone-paper-section-scaffold-20260701.md",
+        runner_or_tool="tools/build_noniphone_paper_section_scaffold.py",
+        local_artifact_id="noniphone-paper-section-scaffold-20260701",
+        claim_strength="paper_synthesis",
+        supports="A paper-section scaffold that maps sanitized evidence and bilingual wording guard rules into abstract, introduction, method, results, and limitations sections.",
+        do_not_claim="New runtime evidence, final paper text, public browser CM success, live AWS+s2n success, or Safari handover success.",
+        next_gap="Use the scaffold to draft the conservative maturity/gap paper or revise it after external positive-result gates open.",
+    ),
 ]
 
 

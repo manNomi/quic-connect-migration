@@ -1,0 +1,186 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "source_paths": {
+    "evidence_bundle": "data/sanitized-evidence-bundle-20260630.json",
+    "wording_guard": "data/noniphone-paper-wording-guard-20260701.json"
+  },
+  "source_exists": {
+    "evidence_bundle": true,
+    "wording_guard": true
+  },
+  "summary": {
+    "section_count": 9,
+    "paper_sections": [
+      "Abstract",
+      "Introduction",
+      "Limitations",
+      "Method",
+      "Results"
+    ],
+    "missing_evidence_ids": {},
+    "missing_wording_sections": {},
+    "bundle_item_count": 40,
+    "scaffold_decision": "Use this scaffold to draft a conservative maturity/gap paper before opening public browser or AWS positive-result gates."
+  },
+  "sections": [
+    {
+      "id": "abstract_positioning",
+      "section": "Abstract",
+      "purpose": "State the paper as a conservative maturity/gap evaluation instead of a guarantee claim.",
+      "use_en": "We assess how QUIC/HTTP/3 migration primitives, deployment routing, browser behavior, and workload design shape application-level continuity.",
+      "use_ko": "QUIC/HTTP/3 migration primitive, 배포 라우팅, 브라우저 동작, workload 설계가 애플리케이션 수준 작업 연속성에 만드는 경계를 평가한다고 쓴다.",
+      "evidence_ids": [
+        "noniphone-paper-wording-guard",
+        "noniphone-reviewer-risk-audit"
+      ],
+      "wording_sections": [
+        "abstract"
+      ],
+      "do_not_claim": "Do not claim that HTTP/3 CM guarantees seamless continuity.",
+      "next_gap": "If a stronger abstract is desired, open public Chrome or AWS positive-result gates first."
+    },
+    {
+      "id": "introduction_problem_framing",
+      "section": "Introduction",
+      "purpose": "Separate path change, local rebinding, deployment routing, browser policy, and app recovery terminology.",
+      "use_en": "Motivate the problem as a layer-boundary question: transport migration support does not automatically imply browser-visible task continuity.",
+      "use_ko": "문제 제기는 계층 경계 문제로 잡는다. transport migration 지원이 곧 browser-visible task continuity를 뜻하지 않는다고 설명한다.",
+      "evidence_ids": [
+        "noniphone-paper-wording-guard",
+        "noniphone-reviewer-risk-audit"
+      ],
+      "wording_sections": [
+        "introduction"
+      ],
+      "do_not_claim": "Do not use broad unstable mobile network wording without defining the tested path-change class.",
+      "next_gap": "Finalize terminology with the professor before writing the abstract and introduction."
+    },
+    {
+      "id": "method_implementation_maturity",
+      "section": "Method",
+      "purpose": "Explain implementation maturity as evidence-level classification rather than a binary support label.",
+      "use_en": "Classify implementation evidence into runtime controls, app demos, source/test audits, deployment gates, and negative controls.",
+      "use_ko": "구현체 근거를 runtime control, app demo, source/test audit, deployment gate, negative control로 나누어 설명한다.",
+      "evidence_ids": [
+        "cross-implementation-fresh-rerun",
+        "quiche-path-event-observability",
+        "nginx-active-client-migration-runtime",
+        "haproxy-http3-negative-control"
+      ],
+      "wording_sections": [
+        "method"
+      ],
+      "do_not_claim": "Do not state that all surveyed implementations are equally mature.",
+      "next_gap": "Run large production-stack focused tests only if the appendix needs more implementation depth."
+    },
+    {
+      "id": "method_public_cm_acceptance",
+      "section": "Method",
+      "purpose": "Define conservative strong-CM acceptance criteria for public Chrome rows.",
+      "use_en": "Require application completion, client active path change, target tuple change, qlog path validation, and one Chrome target QUIC session in the same active row.",
+      "use_ko": "동일 active row에서 application completion, client active path change, target tuple change, qlog path validation, Chrome target QUIC session 1개를 모두 요구한다.",
+      "evidence_ids": [
+        "noniphone-public-workload-trial-packet",
+        "controlled-public-origin-workload-deploy-packet",
+        "controlled-public-chrome-bridge-synthesis"
+      ],
+      "wording_sections": [
+        "method"
+      ],
+      "do_not_claim": "Do not count task completion alone as Connection Migration success.",
+      "next_gap": "Open public H3 origin and non-iPhone desktop path gates before claiming public Chrome CM success."
+    },
+    {
+      "id": "results_implementation_layer",
+      "section": "Results",
+      "purpose": "Report that implementation primitives exist across stacks while behavior and deployability differ.",
+      "use_en": "Implementation evidence shows CM-related primitives are present across multiple stacks, but API exposure, observability, and deployment readiness differ.",
+      "use_ko": "여러 구현체에 CM 관련 primitive는 존재하지만 API 노출, 관찰성, 배포 readiness는 구현체마다 다르다고 보고한다.",
+      "evidence_ids": [
+        "cross-implementation-fresh-rerun",
+        "lsquic-preferred-address-app-demo",
+        "lsquic-nat-rebinding-app-demo",
+        "s2n-active-migration-api-audit",
+        "mvfst-source-audit"
+      ],
+      "wording_sections": [
+        "results"
+      ],
+      "do_not_claim": "Do not generalize a quic-go positive control to all stacks or browser behavior.",
+      "next_gap": "Use implementation evidence as foundation, not as final web-continuity proof."
+    },
+    {
+      "id": "results_deployment_boundary",
+      "section": "Results",
+      "purpose": "Report CID-aware deployment and proxy negative-control boundaries.",
+      "use_en": "Deployment results should distinguish CID-aware routing, proxy termination boundaries, local prerequisites, and blocked live AWS execution.",
+      "use_ko": "배포 결과는 CID-aware routing, proxy termination boundary, local prerequisite, blocked live AWS execution을 분리해 쓴다.",
+      "evidence_ids": [
+        "aws-nlb-cid-aware-positive-control",
+        "aws-nlb-negative-controls",
+        "aws-nlb-http3-workload",
+        "s2n-nlb-cid-provider-proof",
+        "s2n-nlb-live-readiness",
+        "aws-s2n-nlb-live-runner"
+      ],
+      "wording_sections": [
+        "results"
+      ],
+      "do_not_claim": "Do not claim live AWS NLB+s2n forwarding or active migration success yet.",
+      "next_gap": "Refresh AWS credentials to run live forwarding before any AWS positive claim."
+    },
+    {
+      "id": "results_browser_workloads",
+      "section": "Results",
+      "purpose": "Use local Chrome controls to prioritize workloads while avoiding public handover overclaim.",
+      "use_en": "Local Chrome forced-H3 controls show that range/download and upload provide cleaner single-session local evidence than streaming-like workloads.",
+      "use_ko": "Local Chrome forced-H3 control에서는 range/download와 upload가 streaming형 workload보다 단일 session local evidence가 더 선명하다고 쓴다.",
+      "evidence_ids": [
+        "chrome-local-rebinding-workload-controls",
+        "chrome-desktop-noniphone-range-local-refresh",
+        "chrome-desktop-noniphone-upload-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "wording_sections": [
+        "results"
+      ],
+      "do_not_claim": "Do not call local rebinding a public Wi-Fi/LTE or desktop-interface handover result.",
+      "next_gap": "Run controlled-public range/upload trials first once public-origin and path-change gates open."
+    },
+    {
+      "id": "results_streaming_qoe",
+      "section": "Results",
+      "purpose": "Frame streaming as QoE/session-attribution evidence rather than zero-impact continuity.",
+      "use_en": "Streaming outcomes must include rebuffering, startup delay, retry behavior, and Chrome target session count.",
+      "use_ko": "Streaming 결과는 rebuffering, startup delay, retry behavior, Chrome target session count를 함께 보고한다.",
+      "evidence_ids": [
+        "chrome-desktop-noniphone-musiclike-local-refresh",
+        "chrome-desktop-noniphone-buffered-media-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "wording_sections": [
+        "results"
+      ],
+      "do_not_claim": "Do not treat playback completion alone as continuity or single-session CM.",
+      "next_gap": "Public streaming trials need QoE metrics and session attribution together."
+    },
+    {
+      "id": "limitations_future_work",
+      "section": "Limitations",
+      "purpose": "Make blocked public Chrome, AWS, Safari, and terminology gaps explicit.",
+      "use_en": "Limitations should state that no tracked active public Chrome row satisfies strong CM success, live AWS+s2n is credential-blocked, and Safari remains feasibility-only.",
+      "use_ko": "한계에서는 tracked active public Chrome strong CM success가 없고, live AWS+s2n은 credential-blocked이며, Safari는 feasibility-only라고 명시한다.",
+      "evidence_ids": [
+        "noniphone-claim-readiness-dashboard",
+        "noniphone-professor-decision-packet",
+        "noniphone-reviewer-risk-audit"
+      ],
+      "wording_sections": [
+        "limitations"
+      ],
+      "do_not_claim": "Do not hide the absence of public/browser positive rows.",
+      "next_gap": "Professor decision should choose maturity/gap scope or external positive-result gate work."
+    }
+  ]
+}

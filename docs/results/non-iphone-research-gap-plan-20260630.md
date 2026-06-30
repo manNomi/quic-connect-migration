@@ -357,6 +357,20 @@
 
 > 논문 초록과 서론에서는 "HTTP/3 Connection Migration이 작업 연속성을 보장한다"가 아니라 "QUIC/HTTP/3 migration primitive, deployment routing, browser behavior, workload design이 application-level continuity에 만드는 경계를 평가한다"라고 써야 한다. 결과 섹션에서는 local Chrome rebinding control, AWS readiness, streaming QoE를 각각 분리해 쓰고, 한계 섹션에는 public Chrome strong CM success와 Safari handover가 아직 없다는 점을 명시한다.
 
+### P15. 2026-07-01 paper section scaffold
+
+목표:
+
+> 지금까지 만든 evidence bundle과 wording guard를 실제 논문 구조로 배치한다. abstract, introduction, method, results, limitations에 어떤 claim/evidence/금지 문장을 넣을지 고정한다.
+
+상태:
+
+> 완료. `tools/build_noniphone_paper_section_scaffold.py`와 regression test를 추가했고, `docs/results/noniphone-paper-section-scaffold-20260701.md` 및 `data/noniphone-paper-section-scaffold-20260701.json`을 생성했다. scaffold는 9개 section row를 포함하며, missing evidence ID와 missing wording section이 없도록 검증한다.
+
+해석:
+
+> 논문 작성 순서는 이제 보수적으로 정리됐다. 초록/서론은 boundary framing, 방법은 evidence level과 strong-CM acceptance, 결과는 implementation/deployment/browser workload/streaming QoE를 분리, 한계는 public Chrome/live AWS/Safari gap을 명시하는 구조가 가장 방어 가능하다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -376,7 +390,8 @@
 | 13 | non-iPhone professor decision packet | 완료. 교수님께 받을 scope/positive-result/Safari appendix decision을 한국어 보고용 packet으로 압축 |
 | 14 | non-iPhone reviewer risk audit | 완료. 리뷰어 공격 지점과 방어 가능한 wording, 남은 evidence gap을 validity audit으로 정리 |
 | 15 | non-iPhone paper wording guard | 완료. 논문 abstract/introduction/method/results/limitations에 넣을 safe bilingual wording과 금지 문장을 정리 |
+| 16 | non-iPhone paper section scaffold | 완료. 현재 evidence를 abstract/introduction/method/results/limitations에 배치하는 논문 구조 scaffold 생성 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold는 확보됐다.

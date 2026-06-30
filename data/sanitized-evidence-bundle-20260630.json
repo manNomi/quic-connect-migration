@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 39,
+  "item_count": 40,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -16,7 +16,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "paper_synthesis": 5,
+    "paper_synthesis": 6,
     "readiness_blocked": 10,
     "run_plan": 2,
     "server_runtime_positive": 1,
@@ -51,6 +51,7 @@
     "implementation-observability": 1,
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
+    "paper-section-synthesis": 1,
     "paper-wording-synthesis": 1,
     "professor-decision-synthesis": 1,
     "public-origin-deploy-plan": 1,
@@ -684,6 +685,22 @@
       "supports": "A bilingual paper wording guard that maps reviewer risks to safe abstract, introduction, method, results, limitations, and artifact-policy wording.",
       "do_not_claim": "New runtime evidence, final paper acceptance, public browser CM success, live AWS+s2n success, or Safari handover success.",
       "next_gap": "Use the wording guard while drafting the paper, especially before writing guarantee, mobile, browser, AWS, and streaming claims.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "noniphone-paper-section-scaffold",
+      "chapter": "12",
+      "category": "paper-section-synthesis",
+      "implementation": "cross-layer evidence corpus",
+      "evidence_doc": "docs/results/noniphone-paper-section-scaffold-20260701.md",
+      "runner_or_tool": "tools/build_noniphone_paper_section_scaffold.py",
+      "local_artifact_id": "noniphone-paper-section-scaffold-20260701",
+      "claim_strength": "paper_synthesis",
+      "supports": "A paper-section scaffold that maps sanitized evidence and bilingual wording guard rules into abstract, introduction, method, results, and limitations sections.",
+      "do_not_claim": "New runtime evidence, final paper text, public browser CM success, live AWS+s2n success, or Safari handover success.",
+      "next_gap": "Use the scaffold to draft the conservative maturity/gap paper or revise it after external positive-result gates open.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

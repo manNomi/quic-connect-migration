@@ -64,6 +64,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["noniphone_reviewer_risk_audit_json"]["exists"] is True
     assert paths["noniphone_paper_wording_guard"]["exists"] is True
     assert paths["noniphone_paper_wording_guard_json"]["exists"] is True
+    assert paths["noniphone_paper_section_scaffold"]["exists"] is True
+    assert paths["noniphone_paper_section_scaffold_json"]["exists"] is True
     assert paths["chrome_desktop_noniphone_range_local_refresh"]["exists"] is True
     assert paths["chrome_desktop_noniphone_range_local_refresh_csv"]["exists"] is True
     assert paths["chrome_desktop_noniphone_upload_local_refresh"]["exists"] is True
@@ -91,7 +93,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "noniphone-paper-wording-guard"
+    assert manifest["experiment_matrix"]["latest_item"] == "noniphone-paper-section-scaffold"
 
 
 def test_generated_date_uses_utc_day() -> None:
