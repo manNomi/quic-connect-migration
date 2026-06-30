@@ -1,0 +1,131 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "scope": "firefox_desktop_runtime_trial_packet",
+  "source_boundary_doc": "docs/results/firefox-neqo-browser-boundary-audit-20260701.md",
+  "neqo_local_recipe_url": "https://github.com/mozilla/neqo/blob/3ba227d37f46a5684e984ead831b73344d9fec63/README.md#L154",
+  "local_tools": {
+    "firefox": {
+      "name": "Firefox",
+      "command": "/Applications/Firefox.app/Contents/MacOS/firefox",
+      "found": false,
+      "executable": false,
+      "version": "",
+      "path": ""
+    },
+    "geckodriver": {
+      "name": "geckodriver",
+      "command": "geckodriver",
+      "found": false,
+      "executable": false,
+      "version": "",
+      "path": ""
+    },
+    "tcpdump": {
+      "name": "tcpdump",
+      "command": "tcpdump",
+      "found": true,
+      "executable": true,
+      "version": "tcpdump version 4.99.1 -- Apple version 148",
+      "path": "/usr/sbin/tcpdump"
+    },
+    "route": {
+      "name": "route",
+      "command": "route",
+      "found": true,
+      "executable": true,
+      "version": "route to: default",
+      "path": "/sbin/route"
+    }
+  },
+  "gates": {
+    "firefox_binary_ready": false,
+    "geckodriver_ready": false,
+    "packet_capture_ready": true,
+    "noniphone_desktop_path_ready": false,
+    "firefox_runtime_rows_executed": false
+  },
+  "blockers": [
+    "Firefox binary is not installed or not executable on the current host",
+    "geckodriver is not installed, so automation would be manual or require another driver",
+    "no active non-iPhone desktop path-change gate is open"
+  ],
+  "desktop_path_readiness_source": "data/noniphone-desktop-path-change-readiness-20260701.json",
+  "desktop_path_readiness_exists": true,
+  "firefox_user_js_snippet": "user_pref(\"network.http.http3.enabled\", true);\nuser_pref(\"network.http.http3.alt-svc-mapping-for-testing\", \"localhost;h3=\\\":12345\\\"\");\nuser_pref(\"network.http.http3.disable_when_third_party_roots_found\", false);",
+  "trials": [
+    {
+      "rank": 1,
+      "trial_id": "firefox-local-neqo-h3-baseline",
+      "phase": "local-baseline",
+      "target": "Firefox -> local neqo-server",
+      "prerequisite": "Firefox binary, local Neqo checkout, temporary Firefox profile with HTTP/3 testing preferences.",
+      "command_template": "NEQO_CHECKOUT=/private/tmp/quic-cm-scan-repos/neqo\ncd \"$NEQO_CHECKOUT\"\nQLOGDIR=/tmp/firefox-neqo-qlog cargo run --bin neqo-server -- 'localhost:12345'\nFIREFOX_PROFILE=/tmp/firefox-cm-profile\nmkdir -p \"$FIREFOX_PROFILE\"\n# write the documented HTTP/3 test prefs to $FIREFOX_PROFILE/user.js, then launch Firefox to https://localhost:12345/",
+      "required_artifacts": [
+        "neqo-server qlog directory",
+        "Firefox profile preferences used for the run",
+        "browser navigation result or WebDriver/manual timestamp",
+        "server access/log evidence for HTTP/3 request"
+      ],
+      "acceptance_gate": "baseline_only: Firefox reaches the local H3 target and server qlog confirms HTTP/3.",
+      "safe_interpretation": "Firefox can be connected to the local Neqo H3 test target.",
+      "do_not_claim": "Connection Migration, public-origin behavior, or browser handover."
+    },
+    {
+      "rank": 2,
+      "trial_id": "firefox-controlled-public-h3-baseline",
+      "phase": "public-baseline",
+      "target": "Firefox -> controlled public H3 origin",
+      "prerequisite": "Firefox binary, controlled public origin with WebPKI TLS and Alt-Svc h3, packet/server qlog capture enabled.",
+      "command_template": "PUBLIC_ORIGIN_BASE=${PUBLIC_ORIGIN_BASE:?set controlled H3 origin}\nFIREFOX_BIN=${FIREFOX_BIN:-/Applications/Firefox.app/Contents/MacOS/firefox}\nFIREFOX_PROFILE=/tmp/firefox-public-h3-profile\n\"$FIREFOX_BIN\" --new-instance --profile \"$FIREFOX_PROFILE\" \"$PUBLIC_ORIGIN_BASE/browser-slow?duration_ms=3000&chunks=3&label=firefox-public-baseline\"",
+      "required_artifacts": [
+        "public origin readiness with Alt-Svc h3",
+        "server qlog or H3 access evidence",
+        "Firefox version/profile metadata",
+        "packet capture if browser-internal logging is unavailable"
+      ],
+      "acceptance_gate": "baseline_only: public H3 request completes and server-side H3 evidence is present.",
+      "safe_interpretation": "Firefox public H3 baseline is usable for a later active path-change row.",
+      "do_not_claim": "Network-change migration or same-session continuity."
+    },
+    {
+      "rank": 3,
+      "trial_id": "firefox-controlled-public-range-active-001",
+      "phase": "active-network-change",
+      "target": "Firefox -> controlled public byte-range workload",
+      "prerequisite": "Firefox public baseline PASS, non-iPhone desktop path-change command, before/after route snapshots, server qlog, and packet capture.",
+      "command_template": "PUBLIC_ORIGIN_BASE=${PUBLIC_ORIGIN_BASE:?set controlled H3 origin}\nNETWORK_CHANGE_CMD=${NETWORK_CHANGE_CMD:?set non-iPhone desktop path-change command}\npython3 tools/capture_network_path_snapshot.py --label firefox-before --url \"$PUBLIC_ORIGIN_BASE\" --output /tmp/firefox-before.json\n# launch Firefox to /browser-range-download and trigger NETWORK_CHANGE_CMD after first range completes\n$NETWORK_CHANGE_CMD\npython3 tools/capture_network_path_snapshot.py --label firefox-after --url \"$PUBLIC_ORIGIN_BASE\" --output /tmp/firefox-after.json",
+      "required_artifacts": [
+        "before/after route snapshots",
+        "server qlog PATH_CHALLENGE/PATH_RESPONSE or equivalent path validation evidence",
+        "server remote tuple/path evidence",
+        "workload completion state",
+        "Firefox logging/profile/profiler artifact if available"
+      ],
+      "acceptance_gate": "feasibility_or_strong_with_extra_browser_logs: task completion + client path change + server path validation; strong browser claim additionally needs Firefox/Necko/Neqo same-connection attribution.",
+      "safe_interpretation": "Firefox range workload survived or failed under a controlled active path-change attempt.",
+      "do_not_claim": "Chrome-equivalent NetLog proof or Firefox single-session CM without same-connection browser/runtime attribution."
+    },
+    {
+      "rank": 4,
+      "trial_id": "firefox-controlled-public-upload-active-001",
+      "phase": "active-network-change",
+      "target": "Firefox -> controlled public upload workload",
+      "prerequisite": "Same as range active row, but with upload endpoint and client-sending workload evidence.",
+      "command_template": "PUBLIC_ORIGIN_BASE=${PUBLIC_ORIGIN_BASE:?set controlled H3 origin}\nNETWORK_CHANGE_CMD=${NETWORK_CHANGE_CMD:?set non-iPhone desktop path-change command}\n# launch Firefox to /browser-upload, trigger NETWORK_CHANGE_CMD mid-upload, then classify server/qlog/workload artifacts",
+      "required_artifacts": [
+        "before/after route snapshots",
+        "server qlog path validation evidence",
+        "upload completion and received byte count",
+        "server tuple/path evidence",
+        "Firefox logging/profile/profiler artifact if available"
+      ],
+      "acceptance_gate": "same as range active row, with upload byte-count continuity.",
+      "safe_interpretation": "Firefox upload continuity can be compared with Chrome upload local/public evidence.",
+      "do_not_claim": "Application upload success as pure QUIC CM unless the same-session chain is proven."
+    }
+  ],
+  "safe_claim": "This packet makes Firefox runtime evidence reproducible and fail-closed; it does not add a Firefox runtime result until a trial row with artifacts exists.",
+  "unsafe_claim": "Neqo transport tests, this packet, or a Firefox H3 baseline prove Firefox single-session Connection Migration across an active path change.",
+  "next_non_iphone_gate": "Install Firefox/geckodriver or run a manual Firefox profile, open a non-iPhone desktop path-change gate, then start with local Neqo H3 baseline before any active public row."
+}

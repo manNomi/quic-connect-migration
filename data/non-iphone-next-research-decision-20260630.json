@@ -3,16 +3,16 @@
   "public_safe": true,
   "source_bundle": "data/sanitized-evidence-bundle-20260630.json",
   "source_bundle_exists": true,
-  "source_bundle_item_count": 47,
-  "track_count": 6,
+  "source_bundle_item_count": 56,
+  "track_count": 7,
   "runnable_now": [],
-  "blocked_track_count": 6,
+  "blocked_track_count": 7,
   "missing_evidence_ids": {},
   "recommendation": {
     "main": "Do not keep expanding generic implementation survey now; the next paper-critical gain is a deployment/browser bridge.",
     "first": "Refresh AWS credentials and run AWS NLB + s2n-quic live forwarding echo.",
     "second": "If AWS remains blocked, prepare a controlled public Chrome origin for media/range/upload page-ready trials.",
-    "third": "Use Safari only as PASS_FEASIBILITY after Allow remote automation is enabled."
+    "third": "Use Firefox/Safari only as PASS_FEASIBILITY after their browser-specific gates are open."
   },
   "tracks": [
     {
@@ -97,6 +97,32 @@
     },
     {
       "rank": 3,
+      "id": "firefox-desktop-runtime-trial",
+      "label": "Firefox desktop runtime feasibility packet",
+      "current_state": "trial_packet_ready_binary_and_path_blocked",
+      "can_run_now": false,
+      "blocker": "Firefox/geckodriver are not installed on the current host and no non-iPhone desktop path-change gate is open.",
+      "needed_from_user_or_environment": "Install Firefox and geckodriver or run a manual Firefox profile; then open a non-iPhone desktop path-change gate.",
+      "paper_value": "Medium-high: turns Neqo Firefox-adjacent implementation evidence into a falsifiable browser-runtime gate without iPhone.",
+      "risk": "Firefox lacks Chrome NetLog-equivalent evidence in this harness, so rows remain feasibility evidence unless Firefox/Necko/Neqo same-connection attribution is captured.",
+      "next_command_or_action": "Start with `python3 tools/build_firefox_desktop_runtime_trial_packet.py`, then execute `firefox-local-neqo-h3-baseline` before any active public row.",
+      "supporting_evidence_ids": [
+        "firefox-neqo-browser-boundary-audit",
+        "firefox-desktop-runtime-trial-packet",
+        "noniphone-desktop-path-change-readiness",
+        "controlled-public-origin-workload-deploy-packet"
+      ],
+      "decision": "Useful cross-browser follow-up after installing Firefox/geckodriver; do not let Neqo tests stand in for a runtime row.",
+      "supporting_evidence_found": [
+        "firefox-neqo-browser-boundary-audit",
+        "firefox-desktop-runtime-trial-packet",
+        "noniphone-desktop-path-change-readiness",
+        "controlled-public-origin-workload-deploy-packet"
+      ],
+      "supporting_evidence_missing": []
+    },
+    {
+      "rank": 4,
       "id": "nginx-quic-bpf-linux",
       "label": "nginx `quic_bpf` Linux production-routing check",
       "current_state": "linux_runner_ready_local_host_blocked",
@@ -120,7 +146,7 @@
       "supporting_evidence_missing": []
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "openlitespeed-production-like",
       "label": "OpenLiteSpeed production-like active-migration runtime",
       "current_state": "runner_ready_local_binary_disk_blocked",
@@ -144,7 +170,7 @@
       "supporting_evidence_missing": []
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "safari-desktop-baseline",
       "label": "Safari desktop controlled-public baseline",
       "current_state": "binary_ready_session_blocked",
@@ -166,7 +192,7 @@
       "supporting_evidence_missing": []
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "mvfst-focused-tests",
       "label": "mvfst focused migration tests on Linux/Buck",
       "current_state": "source_test_map_ready_build_blocked",

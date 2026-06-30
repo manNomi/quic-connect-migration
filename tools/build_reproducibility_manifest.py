@@ -183,6 +183,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "chromium_cronet_policy_boundary_audit_json": "data/chromium-cronet-policy-boundary-audit-20260701.json",
         "firefox_neqo_browser_boundary_audit": "docs/results/firefox-neqo-browser-boundary-audit-20260701.md",
         "firefox_neqo_browser_boundary_audit_json": "data/firefox-neqo-browser-boundary-audit-20260701.json",
+        "firefox_desktop_runtime_trial_packet": "docs/results/firefox-desktop-runtime-trial-packet-20260701.md",
+        "firefox_desktop_runtime_trial_packet_json": "data/firefox-desktop-runtime-trial-packet-20260701.json",
         "cdn_edge_cm_boundary_audit": "docs/results/cdn-edge-cm-boundary-audit-20260701.md",
         "cdn_edge_cm_boundary_audit_json": "data/cdn-edge-cm-boundary-audit-20260701.json",
         "openlitespeed_source_feasibility": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",

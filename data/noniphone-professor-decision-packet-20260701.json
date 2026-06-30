@@ -92,7 +92,7 @@
     "main": "Do not keep expanding generic implementation survey now; the next paper-critical gain is a deployment/browser bridge.",
     "first": "Refresh AWS credentials and run AWS NLB + s2n-quic live forwarding echo.",
     "second": "If AWS remains blocked, prepare a controlled public Chrome origin for media/range/upload page-ready trials.",
-    "third": "Use Safari only as PASS_FEASIBILITY after Allow remote automation is enabled."
+    "third": "Use Firefox/Safari only as PASS_FEASIBILITY after their browser-specific gates are open."
   },
   "professor_questions": [
     "현재 논문을 CM implementation/deployment/browser maturity gap 분석으로 scope를 확정해도 되는가?",

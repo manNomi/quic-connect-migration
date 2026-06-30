@@ -88,6 +88,25 @@ TRACKS = [
     ),
     Track(
         rank=3,
+        id="firefox-desktop-runtime-trial",
+        label="Firefox desktop runtime feasibility packet",
+        current_state="trial_packet_ready_binary_and_path_blocked",
+        can_run_now=False,
+        blocker="Firefox/geckodriver are not installed on the current host and no non-iPhone desktop path-change gate is open.",
+        needed_from_user_or_environment="Install Firefox and geckodriver or run a manual Firefox profile; then open a non-iPhone desktop path-change gate.",
+        paper_value="Medium-high: turns Neqo Firefox-adjacent implementation evidence into a falsifiable browser-runtime gate without iPhone.",
+        risk="Firefox lacks Chrome NetLog-equivalent evidence in this harness, so rows remain feasibility evidence unless Firefox/Necko/Neqo same-connection attribution is captured.",
+        next_command_or_action="Start with `python3 tools/build_firefox_desktop_runtime_trial_packet.py`, then execute `firefox-local-neqo-h3-baseline` before any active public row.",
+        supporting_evidence_ids=(
+            "firefox-neqo-browser-boundary-audit",
+            "firefox-desktop-runtime-trial-packet",
+            "noniphone-desktop-path-change-readiness",
+            "controlled-public-origin-workload-deploy-packet",
+        ),
+        decision="Useful cross-browser follow-up after installing Firefox/geckodriver; do not let Neqo tests stand in for a runtime row.",
+    ),
+    Track(
+        rank=4,
         id="nginx-quic-bpf-linux",
         label="nginx `quic_bpf` Linux production-routing check",
         current_state="linux_runner_ready_local_host_blocked",
@@ -105,7 +124,7 @@ TRACKS = [
         decision="Good EC2/Linux follow-up if AWS is available but s2n live is deferred.",
     ),
     Track(
-        rank=4,
+        rank=5,
         id="openlitespeed-production-like",
         label="OpenLiteSpeed production-like active-migration runtime",
         current_state="runner_ready_local_binary_disk_blocked",
@@ -123,7 +142,7 @@ TRACKS = [
         decision="Useful, but lower priority than AWS NLB+s2n for the professor's current decision.",
     ),
     Track(
-        rank=5,
+        rank=6,
         id="safari-desktop-baseline",
         label="Safari desktop controlled-public baseline",
         current_state="binary_ready_session_blocked",
@@ -137,7 +156,7 @@ TRACKS = [
         decision="Worth doing after one settings toggle, but not enough as the main paper contribution.",
     ),
     Track(
-        rank=6,
+        rank=7,
         id="mvfst-focused-tests",
         label="mvfst focused migration tests on Linux/Buck",
         current_state="source_test_map_ready_build_blocked",
@@ -195,7 +214,7 @@ def build_decision(evidence_bundle_path: Path) -> dict[str, Any]:
             "main": "Do not keep expanding generic implementation survey now; the next paper-critical gain is a deployment/browser bridge.",
             "first": "Refresh AWS credentials and run AWS NLB + s2n-quic live forwarding echo.",
             "second": "If AWS remains blocked, prepare a controlled public Chrome origin for media/range/upload page-ready trials.",
-            "third": "Use Safari only as PASS_FEASIBILITY after Allow remote automation is enabled.",
+            "third": "Use Firefox/Safari only as PASS_FEASIBILITY after their browser-specific gates are open.",
         },
         "tracks": rows,
     }
@@ -274,7 +293,7 @@ def emit_markdown(decision: dict[str, Any]) -> str:
             "2. The next missing proof is whether the mature primitives survive a realistic deployment or browser public-origin boundary.",
             "3. AWS NLB+s2n is the most valuable non-iPhone path because it directly addresses the professor's AWS deployment decision, but it is blocked by credentials on this host.",
             "4. Chrome controlled-public workload trials are the best browser-facing fallback because local media/range/upload controls already define the artifact contract.",
-            "5. Safari is worth adding for cross-browser feasibility only after WebDriver session creation is enabled, and its claim ceiling must stay below Chrome NetLog-based evidence.",
+            "5. Firefox and Safari are worth adding for cross-browser feasibility only after their browser-specific gates are open, and their claim ceiling must stay below Chrome NetLog-based evidence unless same-connection runtime attribution is captured.",
             "",
         ]
     )

@@ -23,7 +23,7 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     decision = build_decision(Path("data/sanitized-evidence-bundle-20260630.json"))
     assert decision["public_safe"] is True
     assert decision["source_bundle_exists"] is True
-    assert decision["track_count"] == 6
+    assert decision["track_count"] == 7
     assert decision["missing_evidence_ids"] == {}
     tracks = {row["id"]: row for row in decision["tracks"]}
     assert decision["tracks"][0]["id"] == "aws-s2n-nlb-live-forwarding"
@@ -43,6 +43,10 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     assert "noniphone-desktop-path-change-readiness" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "noniphone-public-workload-trial-packet" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-upload-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
+    assert tracks["firefox-desktop-runtime-trial"]["rank"] == 3
+    assert tracks["firefox-desktop-runtime-trial"]["current_state"] == "trial_packet_ready_binary_and_path_blocked"
+    assert "firefox-neqo-browser-boundary-audit" in tracks["firefox-desktop-runtime-trial"]["supporting_evidence_found"]
+    assert "firefox-desktop-runtime-trial-packet" in tracks["firefox-desktop-runtime-trial"]["supporting_evidence_found"]
     assert tracks["safari-desktop-baseline"]["current_state"] == "binary_ready_session_blocked"
 
 

@@ -88,6 +88,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["chromium_cronet_policy_boundary_audit_json"]["exists"] is True
     assert paths["firefox_neqo_browser_boundary_audit"]["exists"] is True
     assert paths["firefox_neqo_browser_boundary_audit_json"]["exists"] is True
+    assert paths["firefox_desktop_runtime_trial_packet"]["exists"] is True
+    assert paths["firefox_desktop_runtime_trial_packet_json"]["exists"] is True
     assert paths["cdn_edge_cm_boundary_audit"]["exists"] is True
     assert paths["cdn_edge_cm_boundary_audit_json"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
@@ -129,7 +131,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["xquic_full_suite_linux_audit"]["exists"] is True
     assert paths["xquic_full_suite_linux_audit_json"]["exists"] is True
     assert paths["xquic_full_suite_linux_runner"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "firefox-neqo-browser-boundary-audit"
+    assert manifest["experiment_matrix"]["latest_item"] == "firefox-desktop-runtime-trial-packet"
 
 
 def test_generated_date_uses_utc_day() -> None:

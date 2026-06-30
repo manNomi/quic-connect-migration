@@ -48,7 +48,7 @@
       "video-like segment"
     ],
     "next_decision_runnable_now": [],
-    "next_decision_blocked_track_count": 6
+    "next_decision_blocked_track_count": 7
   },
   "summary": {
     "claim_count": 8,
@@ -66,7 +66,7 @@
       "aws_s2n_live_claim",
       "safari_cross_browser_claim"
     ],
-    "bundle_item_count": 55,
+    "bundle_item_count": 56,
     "missing_evidence_by_claim": {},
     "paper_decision": "The current corpus is ready for a conservative maturity/gap report, but not for Chrome public CM success or live AWS+s2n success claims."
   },

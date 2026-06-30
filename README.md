@@ -109,6 +109,7 @@
 97. Chromium/Cronet policy-boundary audit를 추가했다. Chromium client session에는 socket migration hook과 network-change/path-degrading callback이 있고 NetLog에는 migration trigger/success/failure/probing event family가 있지만, Cronet은 QUIC enabled 경로에서 network-change migration을 명시적으로 disable하므로 Chrome/Cronet handover 성공은 runtime row 없이 주장하지 않는다.
 98. CDN edge CM boundary audit를 추가했다. CloudFront 공식 문서는 viewer-CloudFront HTTP/3 connection migration을 지지하지만 origin end-to-end QUIC CM을 증명하지 않고, Cloudflare 공식 문서는 HTTP/3를 user-Cloudflare 구간으로 제한하므로 CDN H3 support는 edge-level continuity로만 해석한다.
 99. Firefox/Neqo browser-boundary audit를 추가했다. Neqo는 Firefox-adjacent 구현체이고 `migrate`, passive rebinding, preferred-address, disable-migration, qlog transport parameter, ECN/PMTUD migration test evidence가 강하지만, standalone Neqo rerun은 Firefox browser HTTP/3 handover proof가 아니므로 Firefox runtime row를 별도 gate로 남긴다.
+100. Firefox desktop runtime trial packet을 추가했다. 현재 호스트에는 Firefox/geckodriver와 non-iPhone desktop path-change gate가 없어 런타임 결과는 없지만, local Neqo H3 baseline, controlled-public H3 baseline, range active, upload active row의 필요 artifact와 claim boundary를 fail-closed로 고정했다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -321,6 +322,7 @@
 - [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)
 - [Non-iPhone next research decision brief](docs/results/non-iphone-next-research-decision-20260630.md)
 - [Non-iPhone gate rerun report](docs/results/non-iphone-gate-rerun-20260701.md)
+- [Firefox desktop runtime trial packet](docs/results/firefox-desktop-runtime-trial-packet-20260701.md)
 - [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
 - [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
 - [Chrome H3 local transient downlink fine boundary](docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)

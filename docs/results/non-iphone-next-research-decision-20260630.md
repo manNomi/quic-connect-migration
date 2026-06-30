@@ -10,10 +10,10 @@ This document chooses the next research step using only public-safe committed ev
 | --- | --- |
 | source bundle | `data/sanitized-evidence-bundle-20260630.json` |
 | source bundle exists | `True` |
-| source bundle item count | `47` |
-| candidate tracks | `6` |
+| source bundle item count | `56` |
+| candidate tracks | `7` |
 | runnable now | `[]` |
-| blocked track count | `6` |
+| blocked track count | `7` |
 | missing evidence IDs | `{}` |
 
 ## Recommendation
@@ -22,7 +22,7 @@ This document chooses the next research step using only public-safe committed ev
 | ---: | --- |
 | 1 | Refresh AWS credentials and run AWS NLB + s2n-quic live forwarding echo. |
 | 2 | If AWS remains blocked, prepare a controlled public Chrome origin for media/range/upload page-ready trials. |
-| 3 | Use Safari only as PASS_FEASIBILITY after Allow remote automation is enabled. |
+| 3 | Use Firefox/Safari only as PASS_FEASIBILITY after their browser-specific gates are open. |
 
 > Do not keep expanding generic implementation survey now; the next paper-critical gain is a deployment/browser bridge.
 
@@ -32,10 +32,11 @@ This document chooses the next research step using only public-safe committed ev
 | ---: | --- | --- | --- | --- | --- | --- |
 | 1 | `aws-s2n-nlb-live-forwarding`<br>AWS NLB + s2n-quic live forwarding echo | `runner_ready_but_credential_blocked` | `false` | AWS identity still classifies as invalid_client_token on the current host. | Highest: directly answers the deployment/AWS part of the professor decision without needing iPhone. | Primary next step once AWS credentials are valid. |
 | 2 | `chrome-controlled-public-workloads`<br>Chrome desktop controlled-public media/range/upload handover | `local_controls_pass_public_bridge_gap_origin_and_desktop_path_blocked` | `false` | Tracked controlled-public Chrome rows are H3 baseline or negative-control evidence, not CM success; the user-provided public HTTPS origin currently has no `Alt-Svc: h3`, and this host has no active non-iPhone secondary desktop path. | High: bridges local browser evidence to real public-origin web workload continuity without iPhone. | Best browser-facing next step after public origin is available. |
-| 3 | `nginx-quic-bpf-linux`<br>nginx `quic_bpf` Linux production-routing check | `linux_runner_ready_local_host_blocked` | `false` | Current host is macOS; Linux/root/writable `/sys/fs/bpf` gate is required. | Medium-high: strengthens production server routing discussion and separates loopback runtime from deployment routing. | Good EC2/Linux follow-up if AWS is available but s2n live is deferred. |
-| 4 | `openlitespeed-production-like`<br>OpenLiteSpeed production-like active-migration runtime | `runner_ready_local_binary_disk_blocked` | `false` | Local OpenLiteSpeed binary is missing and current macOS/disk conditions are not the right runtime environment. | Medium: upgrades LSQUIC example app evidence toward a production-like server stack. | Useful, but lower priority than AWS NLB+s2n for the professor's current decision. |
-| 5 | `safari-desktop-baseline`<br>Safari desktop controlled-public baseline | `binary_ready_session_blocked` | `false` | Safari `Allow remote automation` is not enabled, so real WebDriver session creation fails. | Medium: adds cross-browser feasibility, but claim ceiling remains lower than Chrome because there is no NetLog-equivalent artifact. | Worth doing after one settings toggle, but not enough as the main paper contribution. |
-| 6 | `mvfst-focused-tests`<br>mvfst focused migration tests on Linux/Buck | `source_test_map_ready_build_blocked` | `false` | Current host lacks the expected Buck/getdeps/disk setup for focused mvfst test execution. | Medium-low for immediate paper direction: it strengthens implementation maturity, which is already fairly well covered. | Defer unless the paper needs one more large-scale implementation appendix. |
+| 3 | `firefox-desktop-runtime-trial`<br>Firefox desktop runtime feasibility packet | `trial_packet_ready_binary_and_path_blocked` | `false` | Firefox/geckodriver are not installed on the current host and no non-iPhone desktop path-change gate is open. | Medium-high: turns Neqo Firefox-adjacent implementation evidence into a falsifiable browser-runtime gate without iPhone. | Useful cross-browser follow-up after installing Firefox/geckodriver; do not let Neqo tests stand in for a runtime row. |
+| 4 | `nginx-quic-bpf-linux`<br>nginx `quic_bpf` Linux production-routing check | `linux_runner_ready_local_host_blocked` | `false` | Current host is macOS; Linux/root/writable `/sys/fs/bpf` gate is required. | Medium-high: strengthens production server routing discussion and separates loopback runtime from deployment routing. | Good EC2/Linux follow-up if AWS is available but s2n live is deferred. |
+| 5 | `openlitespeed-production-like`<br>OpenLiteSpeed production-like active-migration runtime | `runner_ready_local_binary_disk_blocked` | `false` | Local OpenLiteSpeed binary is missing and current macOS/disk conditions are not the right runtime environment. | Medium: upgrades LSQUIC example app evidence toward a production-like server stack. | Useful, but lower priority than AWS NLB+s2n for the professor's current decision. |
+| 6 | `safari-desktop-baseline`<br>Safari desktop controlled-public baseline | `binary_ready_session_blocked` | `false` | Safari `Allow remote automation` is not enabled, so real WebDriver session creation fails. | Medium: adds cross-browser feasibility, but claim ceiling remains lower than Chrome because there is no NetLog-equivalent artifact. | Worth doing after one settings toggle, but not enough as the main paper contribution. |
+| 7 | `mvfst-focused-tests`<br>mvfst focused migration tests on Linux/Buck | `source_test_map_ready_build_blocked` | `false` | Current host lacks the expected Buck/getdeps/disk setup for focused mvfst test execution. | Medium-low for immediate paper direction: it strengthens implementation maturity, which is already fairly well covered. | Defer unless the paper needs one more large-scale implementation appendix. |
 
 ## Evidence Trace
 
@@ -43,6 +44,7 @@ This document chooses the next research step using only public-safe committed ev
 | --- | --- | --- | --- |
 | `aws-s2n-nlb-live-forwarding` | `s2n-nlb-cid-provider-proof`, `s2n-nlb-live-readiness`, `aws-s2n-nlb-live-runner`, `s2n-active-migration-api-audit`, `aws-s2n-phase2-rebinding-runner-audit`, `aws-s2n-phase2-artifact-classifier-contract`, `non-iphone-gate-rerun-20260701` | - | Refresh AWS credentials, run `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`, then run it again with `PATH_CHANGE_MODE=rebinding_proxy PAYLOAD_CHUNKS=8 CHUNK_DELAY_MS=250` if forwarding echo passes; classify resulting summaries with `tools/classify_aws_s2n_phase2_artifact.py --require-accepted`. |
 | `chrome-controlled-public-workloads` | `chromium-cronet-policy-evidence`, `user-provided-public-origin-readiness`, `non-iphone-gate-rerun-20260701`, `controlled-public-chrome-bridge-synthesis`, `controlled-public-chrome-artifact-classifier-contract`, `controlled-public-chrome-contract-application-audit`, `chrome-desktop-noniphone-media-local-refresh`, `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh`, `noniphone-workload-qoe-synthesis`, `controlled-public-origin-workload-deploy-packet`, `noniphone-desktop-path-change-readiness`, `noniphone-public-workload-trial-packet` | - | Prepare public origin, run the controlled public Chrome media/range/upload wrappers, then classify each row with the controlled-public Chrome artifact classifier contract before using it in the paper. |
+| `firefox-desktop-runtime-trial` | `firefox-neqo-browser-boundary-audit`, `firefox-desktop-runtime-trial-packet`, `noniphone-desktop-path-change-readiness`, `controlled-public-origin-workload-deploy-packet` | - | Start with `python3 tools/build_firefox_desktop_runtime_trial_packet.py`, then execute `firefox-local-neqo-h3-baseline` before any active public row. |
 | `nginx-quic-bpf-linux` | `nginx-active-client-migration-runtime`, `nginx-quic-bpf-readiness`, `nginx-quic-bpf-linux-runner` | - | Run `harness/scripts/run-nginx-quic-bpf-linux-demo.sh` on a suitable Linux host. |
 | `openlitespeed-production-like` | `lsquic-preferred-address-app-demo`, `lsquic-nat-rebinding-app-demo`, `openlitespeed-runtime-runner` | - | Run `harness/scripts/run-openlitespeed-active-migration-demo.sh` on Linux/EC2. |
 | `safari-desktop-baseline` | `safari-webdriver-session-readiness`, `non-iphone-gate-rerun-20260701` | - | Rerun `tools/check_browser_cm_observability.py --safari-session-smoke`, then controlled-public Safari baseline. |
@@ -54,4 +56,4 @@ This document chooses the next research step using only public-safe committed ev
 2. The next missing proof is whether the mature primitives survive a realistic deployment or browser public-origin boundary.
 3. AWS NLB+s2n is the most valuable non-iPhone path because it directly addresses the professor's AWS deployment decision, but it is blocked by credentials on this host.
 4. Chrome controlled-public workload trials are the best browser-facing fallback because local media/range/upload controls already define the artifact contract.
-5. Safari is worth adding for cross-browser feasibility only after WebDriver session creation is enabled, and its claim ceiling must stay below Chrome NetLog-based evidence.
+5. Firefox and Safari are worth adding for cross-browser feasibility only after their browser-specific gates are open, and their claim ceiling must stay below Chrome NetLog-based evidence unless same-connection runtime attribution is captured.

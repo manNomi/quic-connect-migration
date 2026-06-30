@@ -64,6 +64,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "chrome-desktop-noniphone-upload-local-refresh" in ids
     assert "chromium-cronet-policy-boundary-audit" in ids
     assert "firefox-neqo-browser-boundary-audit" in ids
+    assert "firefox-desktop-runtime-trial-packet" in ids
     assert "cdn-edge-cm-boundary-audit" in ids
     for item in bundle["items"]:
         assert item["supports"]

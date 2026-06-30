@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 55,
+  "item_count": 56,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -11,6 +11,7 @@
     "claim_boundary_audit": 1,
     "deployment_positive": 1,
     "experiment_design": 1,
+    "fail_closed_browser_runtime_packet": 1,
     "focused_e2e_positive": 1,
     "focused_positive_with_linux_full_e2e_gate": 1,
     "focused_positive_with_linux_replay_gate": 1,
@@ -52,6 +53,7 @@
     "browser-policy-source": 1,
     "browser-readiness": 1,
     "browser-runtime-boundary": 1,
+    "browser-runtime-trial-packet": 1,
     "cdn-edge-boundary": 1,
     "claim-readiness-synthesis": 1,
     "cross-gate-readiness": 1,
@@ -568,6 +570,22 @@
       "supports": "Neqo is Firefox-adjacent and has explicit migration API/source support, rebinding handling, preferred-address coverage, qlog transport-parameter observability, and fresh local migration test evidence.",
       "do_not_claim": "Firefox desktop/mobile live single-session HTTP/3 handover, browser workload continuity, or Firefox runtime policy success.",
       "next_gap": "Run Firefox desktop against a controlled H3 origin or local neqo-server with Firefox/Necko logging plus server qlog/tuple evidence.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "firefox-desktop-runtime-trial-packet",
+      "chapter": "5/7",
+      "category": "browser-runtime-trial-packet",
+      "implementation": "Firefox desktop + Neqo/controlled public H3",
+      "evidence_doc": "docs/results/firefox-desktop-runtime-trial-packet-20260701.md",
+      "runner_or_tool": "tools/build_firefox_desktop_runtime_trial_packet.py",
+      "local_artifact_id": "firefox-desktop-runtime-trial-packet-20260701",
+      "claim_strength": "fail_closed_browser_runtime_packet",
+      "supports": "Firefox desktop runtime promotion is now framed as a reproducible gate: local Neqo H3 baseline, controlled-public H3 baseline, range active, and upload active rows define the required artifacts and acceptance boundaries.",
+      "do_not_claim": "Firefox runtime Connection Migration success, Firefox single-session handover, or Chrome-equivalent NetLog proof.",
+      "next_gap": "Install Firefox/geckodriver or run a manual Firefox profile, open a non-iPhone desktop path-change gate, then execute the local Neqo H3 baseline first.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
