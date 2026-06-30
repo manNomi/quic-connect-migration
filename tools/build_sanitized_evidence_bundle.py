@@ -527,6 +527,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence, reviewer acceptance, public browser CM success, live AWS+s2n success, or Safari handover success.",
         next_gap="Use the audit to revise the paper abstract/introduction/method wording before deciding whether external positive-result gates must be opened.",
     ),
+    EvidenceItem(
+        id="noniphone-paper-wording-guard",
+        chapter="12",
+        category="paper-wording-synthesis",
+        implementation="cross-layer evidence corpus",
+        evidence_doc="docs/results/noniphone-paper-wording-guard-20260701.md",
+        runner_or_tool="tools/build_noniphone_paper_wording_guard.py",
+        local_artifact_id="noniphone-paper-wording-guard-20260701",
+        claim_strength="paper_synthesis",
+        supports="A bilingual paper wording guard that maps reviewer risks to safe abstract, introduction, method, results, limitations, and artifact-policy wording.",
+        do_not_claim="New runtime evidence, final paper acceptance, public browser CM success, live AWS+s2n success, or Safari handover success.",
+        next_gap="Use the wording guard while drafting the paper, especially before writing guarantee, mobile, browser, AWS, and streaming claims.",
+    ),
 ]
 
 

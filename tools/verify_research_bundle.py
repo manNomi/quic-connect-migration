@@ -131,6 +131,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     noniphone_professor_decision_packet_json = "data/noniphone-professor-decision-packet-20260701.json"
     noniphone_reviewer_risk_audit = "docs/results/noniphone-reviewer-risk-audit-20260701.md"
     noniphone_reviewer_risk_audit_json = "data/noniphone-reviewer-risk-audit-20260701.json"
+    noniphone_paper_wording_guard = "docs/results/noniphone-paper-wording-guard-20260701.md"
+    noniphone_paper_wording_guard_json = "data/noniphone-paper-wording-guard-20260701.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
@@ -203,6 +205,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         noniphone_professor_decision_packet_json = str(generated_dir / "noniphone-professor-decision-packet.json")
         noniphone_reviewer_risk_audit = str(generated_dir / "noniphone-reviewer-risk-audit.md")
         noniphone_reviewer_risk_audit_json = str(generated_dir / "noniphone-reviewer-risk-audit.json")
+        noniphone_paper_wording_guard = str(generated_dir / "noniphone-paper-wording-guard.md")
+        noniphone_paper_wording_guard_json = str(generated_dir / "noniphone-paper-wording-guard.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
@@ -253,6 +257,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_noniphone_claim_readiness_dashboard.py",
                 "tools/build_noniphone_professor_decision_packet.py",
                 "tools/build_noniphone_reviewer_risk_audit.py",
+                "tools/build_noniphone_paper_wording_guard.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
@@ -314,6 +319,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_noniphone_claim_readiness_dashboard.py",
                 "tools/test_build_noniphone_professor_decision_packet.py",
                 "tools/test_build_noniphone_reviewer_risk_audit.py",
+                "tools/test_build_noniphone_paper_wording_guard.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
@@ -1057,6 +1063,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 noniphone_reviewer_risk_audit,
                 "--json-output",
                 noniphone_reviewer_risk_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_paper_wording_guard_regression",
+            [python_bin, "tools/test_build_noniphone_paper_wording_guard.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_paper_wording_guard",
+            [
+                python_bin,
+                "tools/build_noniphone_paper_wording_guard.py",
+                "--output",
+                noniphone_paper_wording_guard,
+                "--json-output",
+                noniphone_paper_wording_guard_json,
             ],
             {0},
             30,

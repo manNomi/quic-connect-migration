@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `219c4ad` |
+| source commit at generation | `a4c5f4b` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `142` |
-| latest experiment matrix item | `noniphone-reviewer-risk-audit` |
+| experiment matrix items | `143` |
+| latest experiment matrix item | `noniphone-paper-wording-guard` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -87,6 +87,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `noniphone_professor_decision_packet_json` | `data/noniphone-professor-decision-packet-20260701.json` | `yes` |
 | `noniphone_reviewer_risk_audit` | `docs/results/noniphone-reviewer-risk-audit-20260701.md` | `yes` |
 | `noniphone_reviewer_risk_audit_json` | `data/noniphone-reviewer-risk-audit-20260701.json` | `yes` |
+| `noniphone_paper_wording_guard` | `docs/results/noniphone-paper-wording-guard-20260701.md` | `yes` |
+| `noniphone_paper_wording_guard_json` | `data/noniphone-paper-wording-guard-20260701.json` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh` | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh_csv` | `data/chrome-desktop-noniphone-range-local-refresh-20260630.csv` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh` | `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | `yes` |

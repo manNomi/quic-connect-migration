@@ -146,6 +146,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "noniphone_professor_decision_packet_json": "data/noniphone-professor-decision-packet-20260701.json",
         "noniphone_reviewer_risk_audit": "docs/results/noniphone-reviewer-risk-audit-20260701.md",
         "noniphone_reviewer_risk_audit_json": "data/noniphone-reviewer-risk-audit-20260701.json",
+        "noniphone_paper_wording_guard": "docs/results/noniphone-paper-wording-guard-20260701.md",
+        "noniphone_paper_wording_guard_json": "data/noniphone-paper-wording-guard-20260701.json",
         "chrome_desktop_noniphone_range_local_refresh": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
         "chrome_desktop_noniphone_range_local_refresh_csv": "data/chrome-desktop-noniphone-range-local-refresh-20260630.csv",
         "chrome_desktop_noniphone_upload_local_refresh": "docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md",

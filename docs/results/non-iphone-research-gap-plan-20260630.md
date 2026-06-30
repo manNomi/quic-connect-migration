@@ -343,6 +343,20 @@
 
 > 현재 논문은 critical overclaim을 피하면 conservative maturity/gap analysis로 방어 가능하다. 반대로 Chrome public CM 성공, live AWS+s2n 성공, Safari handover 성공을 main claim에 넣으면 현재 evidence로는 리뷰어 공격을 막기 어렵다. Introduction/abstract에서는 "guarantee" 대신 evaluate/assess/classify 표현을 써야 하고, local rebinding은 public handover proof가 아니라 controlled probe로 표시해야 한다.
 
+### P14. 2026-07-01 paper wording guard
+
+목표:
+
+> reviewer risk audit을 실제 논문 문장 규칙으로 바꾼다. abstract, introduction, method, results, limitations, artifact policy에서 피해야 할 문장과 대신 사용할 한국어/영어 문장을 정리한다.
+
+상태:
+
+> 완료. `tools/build_noniphone_paper_wording_guard.py`와 regression test를 추가했고, `docs/results/noniphone-paper-wording-guard-20260701.md` 및 `data/noniphone-paper-wording-guard-20260701.json`을 생성했다. guard는 9개 bilingual wording rule을 포함하며, `guarantee`, `validated`, `works`, public Chrome success, live AWS success, streaming zero-impact continuity 같은 표현을 피하도록 고정한다.
+
+해석:
+
+> 논문 초록과 서론에서는 "HTTP/3 Connection Migration이 작업 연속성을 보장한다"가 아니라 "QUIC/HTTP/3 migration primitive, deployment routing, browser behavior, workload design이 application-level continuity에 만드는 경계를 평가한다"라고 써야 한다. 결과 섹션에서는 local Chrome rebinding control, AWS readiness, streaming QoE를 각각 분리해 쓰고, 한계 섹션에는 public Chrome strong CM success와 Safari handover가 아직 없다는 점을 명시한다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -361,7 +375,8 @@
 | 12 | non-iPhone claim readiness dashboard | 완료. 허용 가능한 논문 claim과 금지해야 할 public/browser/AWS claim을 evidence ID 기준으로 분리 |
 | 13 | non-iPhone professor decision packet | 완료. 교수님께 받을 scope/positive-result/Safari appendix decision을 한국어 보고용 packet으로 압축 |
 | 14 | non-iPhone reviewer risk audit | 완료. 리뷰어 공격 지점과 방어 가능한 wording, 남은 evidence gap을 validity audit으로 정리 |
+| 15 | non-iPhone paper wording guard | 완료. 논문 abstract/introduction/method/results/limitations에 넣을 safe bilingual wording과 금지 문장을 정리 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit은 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard는 확보됐다.
