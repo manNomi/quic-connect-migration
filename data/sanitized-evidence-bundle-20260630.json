@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 26,
+  "item_count": 27,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -13,7 +13,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "readiness_blocked": 7,
+    "readiness_blocked": 8,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -40,6 +40,7 @@
     "implementation-observability": 1,
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
+    "public-origin-readiness": 1,
     "server-runtime-positive-control": 1,
     "source-audit": 1
   },
@@ -394,6 +395,22 @@
       "supports": "Safari and safaridriver binaries are present and packet-capture tooling is available, but real WebDriver session creation currently fails because Safari Allow remote automation is not enabled.",
       "do_not_claim": "Safari controlled-public baseline execution, Safari network-change execution, or Safari browser-internal QUIC session continuity.",
       "next_gap": "Enable Safari Allow remote automation, rerun session smoke, then run controlled-public Safari baseline.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "user-provided-public-origin-readiness",
+      "chapter": "7",
+      "category": "public-origin-readiness",
+      "implementation": "user-provided public HTTPS origin",
+      "evidence_doc": "docs/results/user-provided-public-origin-readiness-20260630.md",
+      "runner_or_tool": "tools/check_public_origin_readiness.py",
+      "local_artifact_id": "user-provided-public-origin-readiness-20260630",
+      "claim_strength": "readiness_blocked",
+      "supports": "The user-provided public HTTPS origin is reachable over HTTPS but does not currently advertise `Alt-Svc: h3`, so it is not a ready controlled-public H3 target.",
+      "do_not_claim": "Chrome controlled-public H3 baseline, browser Connection Migration, or usable public-origin workload continuity.",
+      "next_gap": "Configure a controlled H3 origin with WebPKI TLS, Alt-Svc, and workload endpoints, then rerun readiness with `--require-h3-alt-svc`.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

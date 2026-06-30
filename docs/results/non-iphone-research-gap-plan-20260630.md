@@ -173,6 +173,10 @@
 
 > `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md`로 fresh local Chrome forced-H3 upload control을 추가했다. `chrome-desktop-noniphone-upload-drop3000-retry0-20260630`은 `PASS`, `nat_rebinding_path_validation_without_observed_tuple_change`, upload complete `true`, retry used `0`, upload bytes `131072`, Chrome target QUIC session `1`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet A/B `29/110`이었다. server request-level remote tuple은 `1`개로 유지되어 upload에서는 request log만으로 packet-level rebinding을 판단하면 안 된다는 기존 2026-06-24 결과를 fresh row로 재확인했다.
 
+2026-06-30 user-provided public origin readiness:
+
+> 사용자가 제안한 public HTTPS origin 후보를 `tools/check_public_origin_readiness.py`로 redacted 검사했다. 결과는 HTTPS reachability `true`, final status `HTTP/2 200`, `h3 Alt-Svc=false`였다. 따라서 이 후보는 그대로 controlled-public H3 workload target이 아니며, 해당 도메인을 쓰려면 WebPKI TLS, HTTP/3 listener, `Alt-Svc: h3`, workload endpoint를 우리가 통제하도록 설정해야 한다. 결과는 `docs/results/user-provided-public-origin-readiness-20260630.md`와 `data/user-provided-public-origin-readiness-20260630.json`에 기록했다.
+
 실행 방향:
 
 1. 완료: 기존 Chrome local forced-H3 matrix 재사용
@@ -212,7 +216,7 @@
 
 상태:
 
-> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 18개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
+> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 27개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
 
 해석:
 
@@ -241,6 +245,20 @@
 
 > Safari WebDriver session이 열려도 Chrome NetLog-equivalent가 없으므로 Safari 결과는 server/qlog/client-path 중심 `PASS_FEASIBILITY`로만 해석한다.
 
+### P9. Non-iPhone next research decision brief
+
+목표:
+
+> 현재 확보된 evidence bundle과 readiness blocker를 기준으로, iPhone 없이 다음에 진행할 연구 트랙을 우선순위화한다.
+
+상태:
+
+> 완료. `tools/build_non_iphone_next_research_decision.py`와 regression test를 추가했고, `docs/results/non-iphone-next-research-decision-20260630.md` 및 `data/non-iphone-next-research-decision-20260630.json`을 생성했다. 이 decision brief는 6개 후보 트랙을 비교한다: AWS NLB+s2n live forwarding, Chrome controlled-public media/range/upload, nginx `quic_bpf` Linux, OpenLiteSpeed production-like runtime, Safari desktop baseline, mvfst focused tests. Chrome 트랙은 user-provided public origin readiness 결과를 반영해, 현재 후보 origin이 H3-ready가 아니라는 blocker를 포함한다.
+
+해석:
+
+> 구현체 성숙도 조사는 더 늘리는 것보다, 이제 deployment/browser bridge를 열어야 논문 기여가 커진다. 현재 1순위는 AWS credential refresh 후 AWS NLB+s2n live forwarding echo이고, 2순위는 controlled public Chrome media/range/upload trial이다. Safari는 `Allow remote automation`을 켠 뒤 cross-browser `PASS_FEASIBILITY` 보강으로 진행하는 것이 적절하다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -253,7 +271,8 @@
 | 6 | sanitized evidence bundle 생성 | 완료. evidence item에 대해 supports/do-not-claim/next-gap boundary를 public-safe로 고정 |
 | 7 | Chrome desktop upload local refresh | 완료. media/range에 이어 upload fresh local control까지 추가해 streaming/large-transfer workload 비교 근거를 보강 |
 | 8 | Safari WebDriver session readiness | 완료. binary readiness와 session creation readiness를 분리했고 현재 host의 Safari blocker를 `Allow remote automation`으로 좁힘 |
+| 9 | non-iPhone next research decision brief | 완료. AWS NLB+s2n live forwarding을 1순위, Chrome controlled-public workload를 2순위, Safari feasibility를 설정 의존 보강으로 정리 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, Safari session readiness split, sanitized evidence-to-claim bundle은 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload page-ready trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, Safari session readiness split, sanitized evidence-to-claim bundle, non-iPhone next research decision brief는 확보됐다.

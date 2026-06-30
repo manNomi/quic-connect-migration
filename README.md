@@ -91,6 +91,8 @@
 79. Chrome desktop non-iPhone range local refresh를 추가했다. 1MiB byte-range workload 2회가 retry 없이 2/2 PASS였고, 두 row 모두 Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐다. 이 역시 local UDP rebinding control이지 public handover claim은 아니다.
 80. Chrome desktop non-iPhone upload local refresh를 추가했다. 128KiB upload workload는 retry 없이 PASS였고 Chrome target QUIC session `1`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet A/B `29/110`이 관찰됐다. 다만 server request-level remote tuple은 `1`개라서 upload에서는 request log만으로 path change를 판단하면 안 된다.
 81. Safari WebDriver readiness를 binary readiness와 session readiness로 분리했다. 현재 장비는 Safari `26.2`, `safaridriver exit=0`, packet capture tooling ready이지만 실제 WebDriver session creation은 Safari Settings의 `Allow remote automation` 미활성화로 실패하므로 Safari controlled-public trial은 아직 실행할 수 없다.
+82. user-provided public origin readiness를 redacted로 확인했다. HTTPS reachability는 있지만 현재 `HTTP/2 200`이고 `h3 Alt-Svc=false`라서, 그대로는 controlled-public Chrome H3/CM 실험 타깃이 아니다.
+83. non-iPhone next research decision brief를 추가했다. 현재 구현체 성숙도 조사를 더 늘리기보다 deployment/browser bridge를 열어야 하며, 1순위는 AWS credential refresh 후 AWS NLB+s2n live forwarding echo, 2순위는 controlled public Chrome media/range/upload trial, Safari는 `PASS_FEASIBILITY` 보강으로 정리된다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -276,6 +278,8 @@
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
 - [Chrome desktop non-iPhone upload local refresh](docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md)
 - [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
+- [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)
+- [Non-iPhone next research decision brief](docs/results/non-iphone-next-research-decision-20260630.md)
 - [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
 - [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
 - [Chrome H3 local transient downlink fine boundary](docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)

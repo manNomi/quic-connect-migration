@@ -60,9 +60,13 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["browser_cm_observability_refresh"]["exists"] is True
     assert paths["browser_cm_observability_refresh_json"]["exists"] is True
     assert paths["safari_webdriver_session_readiness"]["exists"] is True
+    assert paths["user_provided_public_origin_readiness"]["exists"] is True
+    assert paths["user_provided_public_origin_readiness_json"]["exists"] is True
+    assert paths["non_iphone_next_research_decision"]["exists"] is True
+    assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "safari-webdriver-session-readiness"
+    assert manifest["experiment_matrix"]["latest_item"] == "non-iphone-next-research-decision"
 
 
 def test_generated_date_uses_utc_day() -> None:

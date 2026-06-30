@@ -150,6 +150,10 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "browser_cm_observability_refresh": "docs/results/browser-cm-observability-readiness-refresh-20260630.md",
         "browser_cm_observability_refresh_json": "data/browser-cm-observability-refresh-20260630.json",
         "safari_webdriver_session_readiness": "docs/results/safari-webdriver-session-readiness-20260630.md",
+        "user_provided_public_origin_readiness": "docs/results/user-provided-public-origin-readiness-20260630.md",
+        "user_provided_public_origin_readiness_json": "data/user-provided-public-origin-readiness-20260630.json",
+        "non_iphone_next_research_decision": "docs/results/non-iphone-next-research-decision-20260630.md",
+        "non_iphone_next_research_decision_json": "data/non-iphone-next-research-decision-20260630.json",
         "research_report_index": "docs/research-report/README.md",
     }
 

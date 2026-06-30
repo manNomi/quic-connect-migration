@@ -34,6 +34,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "mvfst-migration-test-readiness" in ids
     assert "nginx-quic-bpf-linux-runner" in ids
     assert "safari-webdriver-session-readiness" in ids
+    assert "user-provided-public-origin-readiness" in ids
     assert "chrome-desktop-noniphone-media-local-refresh" in ids
     assert "chrome-desktop-noniphone-range-local-refresh" in ids
     assert "chrome-desktop-noniphone-upload-local-refresh" in ids
