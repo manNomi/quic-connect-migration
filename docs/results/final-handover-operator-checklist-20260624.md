@@ -12,7 +12,7 @@ Generated: `2026-06-30`
 | baseline config ready | `yes` |
 | active config ready | `no` |
 | Android config ready | `no` |
-| current disk free | `12.4 GiB` |
+| current disk free | `12.1 GiB` |
 | target free GiB | `7.0` |
 | storage target met by artifact cleanup | `yes` |
 | remaining external cleanup gap | `0 B` |

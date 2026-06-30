@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "fcc0d74",
+    "commit": "63dfe4b",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -55,16 +55,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 160,
+    "total_items": 161,
     "status_counts": {
-      "done": 156,
+      "done": 157,
       "planned": 4
     },
-    "latest_item": "firefox-desktop-runtime-trial-packet"
+    "latest_item": "quinn-migration-api-boundary-audit"
   },
   "verification": {
-    "checks": "149",
-    "passed": "149",
+    "checks": "151",
+    "passed": "151",
     "ok": "yes"
   },
   "research_audit": {
@@ -272,6 +272,14 @@
     },
     "msquic_migration_api_boundary_audit_json": {
       "path": "data/msquic-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "quinn_migration_api_boundary_audit": {
+      "path": "docs/results/quinn-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "quinn_migration_api_boundary_audit_json": {
+      "path": "data/quinn-migration-api-boundary-audit-20260701.json",
       "exists": true
     },
     "xquic_full_suite_linux_audit": {

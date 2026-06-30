@@ -761,6 +761,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="quic-go-style AddPath/Probe/Switch control, managed-LB continuity, browser handover success, or new runtime payload continuity beyond existing MsQuic tests.",
         next_gap="Build a focused MsQuic runtime harness only if reviewers require a second production-oriented active-control artifact.",
     ),
+    EvidenceItem(
+        id="quinn-migration-api-boundary-audit",
+        chapter="1",
+        category="implementation-api-boundary",
+        implementation="Quinn",
+        evidence_doc="docs/results/quinn-migration-api-boundary-audit-20260701.md",
+        runner_or_tool="tools/build_quinn_migration_api_boundary_audit.py",
+        local_artifact_id="quinn-migration-api-boundary-audit-20260701",
+        claim_strength="source_linked_api_boundary",
+        supports="Quinn exposes server migration policy, endpoint-wide socket rebind, preferred-address support, path-validation machinery, frame stats, and fresh local migration/rebind tests.",
+        do_not_claim="quic-go-style per-connection AddPath/Probe/Switch control, HTTP/3 browser workload continuity, managed deployment continuity, or a custom Quinn runtime row beyond the referenced tests.",
+        next_gap="Build a focused Quinn echo or HTTP workload harness using Endpoint::rebind only if reviewers require a Rust-stack runtime row.",
+    ),
 ]
 
 

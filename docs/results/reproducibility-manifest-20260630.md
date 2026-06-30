@@ -8,15 +8,15 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `fcc0d74` |
+| source commit at generation | `63dfe4b` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
-| experiment matrix items | `160` |
-| latest experiment matrix item | `firefox-desktop-runtime-trial-packet` |
-| verification | `149/149 passed; ok=yes` |
+| experiment matrix items | `161` |
+| latest experiment matrix item | `quinn-migration-api-boundary-audit` |
+| verification | `151/151 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
@@ -98,6 +98,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `non_quicgo_execution_depth_audit_csv` | `data/non-quicgo-execution-depth-audit-20260701.csv` | `yes` |
 | `msquic_migration_api_boundary_audit` | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | `yes` |
 | `msquic_migration_api_boundary_audit_json` | `data/msquic-migration-api-boundary-audit-20260701.json` | `yes` |
+| `quinn_migration_api_boundary_audit` | `docs/results/quinn-migration-api-boundary-audit-20260701.md` | `yes` |
+| `quinn_migration_api_boundary_audit_json` | `data/quinn-migration-api-boundary-audit-20260701.json` | `yes` |
 | `xquic_full_suite_linux_audit` | `docs/results/xquic-full-suite-linux-audit-20260701.md` | `yes` |
 | `xquic_full_suite_linux_audit_json` | `data/xquic-full-suite-linux-audit-20260701.json` | `yes` |
 | `xquic_full_suite_linux_runner` | `harness/scripts/run-xquic-full-suite-linux.sh` | `yes` |

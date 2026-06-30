@@ -110,6 +110,7 @@
 98. CDN edge CM boundary audit를 추가했다. CloudFront 공식 문서는 viewer-CloudFront HTTP/3 connection migration을 지지하지만 origin end-to-end QUIC CM을 증명하지 않고, Cloudflare 공식 문서는 HTTP/3를 user-Cloudflare 구간으로 제한하므로 CDN H3 support는 edge-level continuity로만 해석한다.
 99. Firefox/Neqo browser-boundary audit를 추가했다. Neqo는 Firefox-adjacent 구현체이고 `migrate`, passive rebinding, preferred-address, disable-migration, qlog transport parameter, ECN/PMTUD migration test evidence가 강하지만, standalone Neqo rerun은 Firefox browser HTTP/3 handover proof가 아니므로 Firefox runtime row를 별도 gate로 남긴다.
 100. Firefox desktop runtime trial packet을 추가했다. 현재 호스트에는 Firefox/geckodriver와 non-iPhone desktop path-change gate가 없어 런타임 결과는 없지만, local Neqo H3 baseline, controlled-public H3 baseline, range active, upload active row의 필요 artifact와 claim boundary를 fail-closed로 고정했다.
+101. Quinn migration API boundary audit를 추가했다. Quinn은 server migration policy, endpoint-wide socket rebind, preferred-address, PATH_CHALLENGE/PATH_RESPONSE, fresh migration/rebind tests가 강하지만 public control surface는 quic-go식 per-connection `AddPath -> Probe -> Switch`가 아니라 endpoint rebind 중심이라고 고정했다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -306,6 +307,7 @@
 - [Non-quic-go implementation findings](docs/results/non-quicgo-implementation-findings-20260701.md)
 - [Non-quic-go execution depth audit](docs/results/non-quicgo-execution-depth-audit-20260701.md)
 - [MsQuic migration API boundary audit](docs/results/msquic-migration-api-boundary-audit-20260701.md)
+- [Quinn migration API boundary audit](docs/results/quinn-migration-api-boundary-audit-20260701.md)
 - [XQUIC full-suite Linux audit](docs/results/xquic-full-suite-linux-audit-20260701.md)
 - [mvfst focused Linux runner audit](docs/results/mvfst-focused-linux-runner-audit-20260701.md)
 - [quicly full-e2e Linux runner audit](docs/results/quicly-full-e2e-linux-audit-20260701.md)
