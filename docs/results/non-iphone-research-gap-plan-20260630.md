@@ -118,7 +118,7 @@
 
 상태:
 
-> 완료. `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md`에 nginx QUIC source/official-doc 기반 server-side passive migration evidence와 HAProxy official-doc/source/local negative-control evidence를 분리해 정리했다. 추가로 `harness/scripts/run-nginx-quic-active-migration-demo.sh`와 `docs/results/nginx-quic-active-migration-runtime-20260630.md`를 추가해 nginx HTTP/3 server runtime demo를 확보했다. 최신 nginx run `nginx-quic-active-migration-20260630T104724Z`는 `validation=ok`, `client_response_bytes=1048576`, `server_path_seq1_created_count=1`, `server_path_seq1_validated_count=2`, server/client PATH_CHALLENGE/PATH_RESPONSE evidence를 기록했다. 이어서 `harness/scripts/run-haproxy-http3-negative-control.sh`와 `docs/results/haproxy-http3-negative-control-rerun-20260630.md`를 추가해 HAProxy fresh negative-control도 확보했다. 최신 HAProxy run `haproxy-http3-negative-control-20260630T110201Z`는 ordinary H3 baseline PASS, quiche no-migration PASS, active migration path validation FAIL, qlog `path_challenge=3`, `path_response=0`을 기록했다. 마지막으로 `harness/scripts/check-nginx-quic-bpf-readiness.sh`와 `docs/results/nginx-quic-bpf-readiness-20260630.md`를 추가해 Linux `quic_bpf` deployment claim을 local runtime claim과 분리했고, 현재 macOS local run은 `can_run_linux_quic_bpf_now=no`, `blocked_reason=linux_required`로 닫혔다.
+> 완료. `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md`에 nginx QUIC source/official-doc 기반 server-side passive migration evidence와 HAProxy official-doc/source/local negative-control evidence를 분리해 정리했다. 추가로 `harness/scripts/run-nginx-quic-active-migration-demo.sh`와 `docs/results/nginx-quic-active-migration-runtime-20260630.md`를 추가해 nginx HTTP/3 server runtime demo를 확보했다. 최신 nginx run `nginx-quic-active-migration-20260630T104724Z`는 `validation=ok`, `client_response_bytes=1048576`, `server_path_seq1_created_count=1`, `server_path_seq1_validated_count=2`, server/client PATH_CHALLENGE/PATH_RESPONSE evidence를 기록했다. 이어서 `harness/scripts/run-haproxy-http3-negative-control.sh`와 `docs/results/haproxy-http3-negative-control-rerun-20260630.md`를 추가해 HAProxy fresh negative-control도 확보했다. 최신 HAProxy run `haproxy-http3-negative-control-20260630T110201Z`는 ordinary H3 baseline PASS, quiche no-migration PASS, active migration path validation FAIL, qlog `path_challenge=3`, `path_response=0`을 기록했다. 마지막으로 `harness/scripts/check-nginx-quic-bpf-readiness.sh`와 `docs/results/nginx-quic-bpf-readiness-20260630.md`를 추가해 Linux `quic_bpf` deployment claim을 local runtime claim과 분리했고, `harness/scripts/run-nginx-quic-bpf-linux-demo.sh`와 `docs/results/nginx-quic-bpf-linux-runner-20260630.md`를 추가해 Linux/root/`/sys/fs/bpf` gate가 열리면 `quic_bpf on;`과 `listen ... reuseport`로 같은 active migration workload를 실행할 수 있게 했다. 현재 macOS local run은 `validation=blocked`, `blocked_reason=linux_required`로 닫혔다.
 
 실행 방향:
 
@@ -128,7 +128,8 @@
 4. 완료: nginx HTTP/3 runtime demo에서 quiche active source-port migration, server path seq:1 validation, 1MiB response completion 확인
 5. 완료: HAProxy fresh negative-control runner로 ordinary H3 PASS와 active migration FAIL 재현
 6. 완료: Linux `quic_bpf` readiness gate로 현재 local blocker와 claim boundary 고정
-7. 남음: Linux `quic_bpf` 기반 packet routing 또는 production-like nginx deployment 검증
+7. 완료: Linux `quic_bpf` active migration runner 추가 및 macOS local blocked artifact 고정
+8. 남음: Linux `quic_bpf` 기반 packet routing 또는 production-like nginx deployment 검증
 
 논문 기여:
 

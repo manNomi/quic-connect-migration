@@ -1,19 +1,65 @@
 {
-  "generated": "2026-06-26",
+  "generated": "2026-06-30",
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "7c3f0b6",
-    "branch": "main"
+    "commit": "3ff7e6d",
+    "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
-    "total_trials": 71,
+    "total_trials": 99,
     "status_counts": {
-      "PASS": 28,
+      "PASS": 33,
       "PASS_FEASIBILITY": 6,
-      "PASS_NEGATIVE_CONTROL": 37
+      "PASS_NEGATIVE_CONTROL": 60
     },
     "final_required_rows": 6
+  },
+  "implementation_corpus": {
+    "total_implementations": 18,
+    "evidence_status_counts": {
+      "fresh_app_demo_20260630": 1,
+      "fresh_focused_e2e_20260630": 1,
+      "fresh_negative_control_20260630": 1,
+      "fresh_rebind_demo_20260630": 1,
+      "fresh_rerun_20260630": 9,
+      "fresh_runtime_20260630": 1,
+      "partial_deferred": 2,
+      "source_and_local_browser_baseline": 1,
+      "source_inspected": 1
+    },
+    "current_level_counts": {
+      "L1_L2": 1,
+      "L2_L3": 1,
+      "L3_L4": 2,
+      "L3_L4_focused_e2e": 1,
+      "L3_L4_partial": 1,
+      "L4": 3,
+      "L4_AWS_L5_candidate": 1,
+      "L4_L5": 1,
+      "L4_L5_candidate": 1,
+      "L4_L5_caveat": 1,
+      "L4_client_runtime_policy_dependent": 1,
+      "L4_server_runtime": 1,
+      "L5_candidate": 1,
+      "L5_deployment_candidate": 1,
+      "L5_edge": 1
+    },
+    "top_priority_names": [
+      "quic-go",
+      "Cloudflare quiche",
+      "AWS s2n-quic",
+      "ngtcp2",
+      "LiteSpeed lsquic"
+    ]
+  },
+  "experiment_matrix": {
+    "total_items": 126,
+    "status_counts": {
+      "done": 122,
+      "planned": 4
+    },
+    "latest_item": "nginx-quic-bpf-linux-runner"
   },
   "verification": {
     "checks": "109",
@@ -61,5 +107,111 @@
     "controlled_public_package_smoke": "docs/results/controlled-public-package-smoke-20260625.md",
     "aws_identity_readiness": "docs/results/aws-identity-readiness-20260625.md",
     "active_path_cookbook": "docs/results/active-path-change-operator-cookbook-20260624.md"
+  },
+  "evidence_paths_20260630": {
+    "implementation_rerun_results": {
+      "path": "docs/results/implementation-rerun-results-20260630.md",
+      "exists": true
+    },
+    "implementation_survey_csv": {
+      "path": "data/implementation-survey.csv",
+      "exists": true
+    },
+    "experiment_matrix": {
+      "path": "harness/manifests/experiment-matrix.csv",
+      "exists": true
+    },
+    "sanitized_evidence_bundle": {
+      "path": "docs/results/sanitized-evidence-bundle-20260630.md",
+      "exists": true
+    },
+    "sanitized_evidence_bundle_json": {
+      "path": "data/sanitized-evidence-bundle-20260630.json",
+      "exists": true
+    },
+    "non_iphone_gap_plan": {
+      "path": "docs/results/non-iphone-research-gap-plan-20260630.md",
+      "exists": true
+    },
+    "nginx_haproxy_boundary": {
+      "path": "docs/results/nginx-haproxy-quic-cm-boundary-20260630.md",
+      "exists": true
+    },
+    "nginx_runtime_demo": {
+      "path": "docs/results/nginx-quic-active-migration-runtime-20260630.md",
+      "exists": true
+    },
+    "nginx_quic_bpf_readiness": {
+      "path": "docs/results/nginx-quic-bpf-readiness-20260630.md",
+      "exists": true
+    },
+    "nginx_quic_bpf_linux_runner": {
+      "path": "docs/results/nginx-quic-bpf-linux-runner-20260630.md",
+      "exists": true
+    },
+    "haproxy_negative_control": {
+      "path": "docs/results/haproxy-http3-negative-control-rerun-20260630.md",
+      "exists": true
+    },
+    "lsquic_preferred_address_demo": {
+      "path": "docs/results/lsquic-preferred-address-app-demo-20260630.md",
+      "exists": true
+    },
+    "lsquic_nat_rebinding_demo": {
+      "path": "docs/results/lsquic-nat-rebinding-app-demo-20260630.md",
+      "exists": true
+    },
+    "quicly_e2e_path_migration": {
+      "path": "docs/results/quicly-e2e-path-migration-20260630.md",
+      "exists": true
+    },
+    "openlitespeed_source_feasibility": {
+      "path": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",
+      "exists": true
+    },
+    "openlitespeed_runtime_preflight": {
+      "path": "docs/results/openlitespeed-runtime-preflight-20260630.md",
+      "exists": true
+    },
+    "openlitespeed_runtime_runner": {
+      "path": "docs/results/openlitespeed-active-migration-runner-20260630.md",
+      "exists": true
+    },
+    "mvfst_source_audit": {
+      "path": "docs/results/mvfst-cm-source-audit-20260630.md",
+      "exists": true
+    },
+    "mvfst_migration_test_readiness": {
+      "path": "docs/results/mvfst-migration-test-readiness-20260630.md",
+      "exists": true
+    },
+    "mvfst_migration_test_readiness_json": {
+      "path": "data/mvfst-migration-test-readiness-20260630.json",
+      "exists": true
+    },
+    "s2n_nlb_cid_provider_rerun": {
+      "path": "docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md",
+      "exists": true
+    },
+    "s2n_nlb_live_readiness": {
+      "path": "docs/results/s2n-nlb-live-readiness-20260630.md",
+      "exists": true
+    },
+    "aws_s2n_nlb_live_runner": {
+      "path": "docs/results/aws-s2n-nlb-live-runner-20260630.md",
+      "exists": true
+    },
+    "s2n_active_migration_api_audit": {
+      "path": "docs/results/s2n-active-migration-api-audit-20260630.md",
+      "exists": true
+    },
+    "s2n_active_migration_api_audit_json": {
+      "path": "data/s2n-active-migration-api-audit-20260630.json",
+      "exists": true
+    },
+    "research_report_index": {
+      "path": "docs/research-report/README.md",
+      "exists": true
+    }
   }
 }

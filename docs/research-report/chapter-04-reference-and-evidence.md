@@ -22,6 +22,7 @@
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
 | HAProxy negative-control runner | [harness/scripts/run-haproxy-http3-negative-control.sh](../../harness/scripts/run-haproxy-http3-negative-control.sh) | HAProxy ordinary H3 baseline과 active migration failure를 재현 |
 | nginx quic_bpf readiness gate | [harness/scripts/check-nginx-quic-bpf-readiness.sh](../../harness/scripts/check-nginx-quic-bpf-readiness.sh) | local nginx runtime demo와 Linux/eBPF production-routing claim을 분리 |
+| nginx quic_bpf Linux runner | [harness/scripts/run-nginx-quic-bpf-linux-demo.sh](../../harness/scripts/run-nginx-quic-bpf-linux-demo.sh) | Linux/root/`/sys/fs/bpf` gate가 열릴 때 `quic_bpf on;` active migration workload를 실행 |
 | OpenLiteSpeed runtime preflight | [harness/scripts/openlitespeed-runtime-preflight.sh](../../harness/scripts/openlitespeed-runtime-preflight.sh) | OpenLiteSpeed production-like runtime demo를 실행하기 전 local gate 확인 |
 | OpenLiteSpeed active migration runner | [harness/scripts/run-openlitespeed-active-migration-demo.sh](../../harness/scripts/run-openlitespeed-active-migration-demo.sh) | Linux/EC2에서 OpenLiteSpeed minimal server root, quiche active migration, server/client path evidence 검증 |
 | Artifact storage report | [tools/report_artifact_storage.py](../../tools/report_artifact_storage.py) | ignored raw artifact roots와 현재 free space를 삭제 없이 측정 |
@@ -65,6 +66,7 @@
 | [docs/results/haproxy-http3-negative-control-rerun-20260630.md](../results/haproxy-http3-negative-control-rerun-20260630.md) | HAProxy HTTP/3 negative-control fresh rerun with reproducible runner |
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | [docs/results/nginx-quic-bpf-readiness-20260630.md](../results/nginx-quic-bpf-readiness-20260630.md) | nginx local runtime demo와 Linux `quic_bpf` production-routing 검증을 분리하는 readiness gate |
+| [docs/results/nginx-quic-bpf-linux-runner-20260630.md](../results/nginx-quic-bpf-linux-runner-20260630.md) | Linux `quic_bpf on;` active migration runner와 current macOS `linux_required` blocked artifact |
 | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | OpenLiteSpeed source-level production-like follow-up feasibility; runtime CM proof는 아직 아님 |
 | [docs/results/openlitespeed-runtime-preflight-20260630.md](../results/openlitespeed-runtime-preflight-20260630.md) | OpenLiteSpeed runtime demo readiness gate; latest local result `runtime_ready=no` |
 | [docs/results/openlitespeed-active-migration-runner-20260630.md](../results/openlitespeed-active-migration-runner-20260630.md) | OpenLiteSpeed Linux/EC2 runtime runner와 현재 macOS local `missing-openlitespeed-binary` blocked result |
@@ -135,6 +137,7 @@ nginx/HAProxy boundary:
 | HAProxy official docs | HTTP/3 support가 있어도 HAProxy current docs는 connection migration 미지원 boundary를 명시 |
 | HAProxy source handler/counter | 관련 코드 primitive는 있으므로 "구현 코드가 전혀 없음"이 아니라 "지원 claim을 제한해야 함"으로 해석 |
 | nginx `quic_bpf` readiness `linux_required` | local runtime success와 Linux/eBPF production packet-routing claim을 분리 |
+| nginx `quic_bpf` Linux runner `blocked` | 현재 host에서는 Linux workload를 실행하지 않고, Linux/root/`/sys/fs/bpf` 조건이 열릴 때만 `quic_bpf on;` migration workload를 실행하도록 fail-closed |
 
 ## 5. Claim Boundary
 

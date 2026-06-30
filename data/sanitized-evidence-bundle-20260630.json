@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 21,
+  "item_count": 22,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -12,7 +12,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "readiness_blocked": 5,
+    "readiness_blocked": 6,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -27,6 +27,7 @@
     "deployment-positive-control": 1,
     "deployment-prerequisite": 1,
     "deployment-readiness": 3,
+    "deployment-runtime-readiness": 1,
     "implementation-api-audit": 1,
     "implementation-app-demo": 2,
     "implementation-focused-e2e": 1,
@@ -180,6 +181,22 @@
       "supports": "Current repo separates nginx local runtime evidence from Linux/eBPF quic_bpf production-routing claim.",
       "do_not_claim": "quic_bpf production deployment success on macOS.",
       "next_gap": "Rerun on Linux with suitable eBPF/root or capability setup.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "nginx-quic-bpf-linux-runner",
+      "chapter": "4",
+      "category": "deployment-runtime-readiness",
+      "implementation": "nginx QUIC",
+      "evidence_doc": "docs/results/nginx-quic-bpf-linux-runner-20260630.md",
+      "runner_or_tool": "harness/scripts/run-nginx-quic-bpf-linux-demo.sh",
+      "local_artifact_id": "nginx-quic-bpf-linux-demo-local-blocked-20260630",
+      "claim_strength": "readiness_blocked",
+      "supports": "The repo has a Linux fail-closed runner that enables nginx `quic_bpf on;` with `listen ... reuseport` and reuses the active migration HTTP/3 workload when host gates are open.",
+      "do_not_claim": "Linux/eBPF quic_bpf migration success on the current macOS host.",
+      "next_gap": "Run the Linux runner on EC2 or another Linux host with root/capability and writable /sys/fs/bpf.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

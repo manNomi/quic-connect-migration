@@ -96,7 +96,9 @@
 | `harness/scripts/run-quicly-e2e-path-migration-check.sh` | Chapter 3 quicly focused e2e path-migration check |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
+| `harness/scripts/run-nginx-quic-bpf-linux-demo.sh` | Chapter 4 nginx Linux `quic_bpf on;` active migration runner |
 | `docs/results/nginx-quic-bpf-readiness-20260630.md` | Chapter 4 nginx local runtime demo와 Linux `quic_bpf` 검증 경계 |
+| `docs/results/nginx-quic-bpf-linux-runner-20260630.md` | Chapter 4 nginx `quic_bpf` Linux runner와 macOS `linux_required` blocked result |
 | `harness/scripts/openlitespeed-runtime-preflight.sh` | Chapter 4 OpenLiteSpeed production-like runtime readiness gate |
 | `harness/scripts/run-openlitespeed-active-migration-demo.sh` | Chapter 4 OpenLiteSpeed Linux/EC2 active-migration runtime runner |
 | `tools/report_artifact_storage.py` | Chapter 4 OpenLiteSpeed runtime 전 local artifact/disk usage report |

@@ -10,6 +10,7 @@ OPENSSL_BIN="${OPENSSL_BIN:-/opt/local/bin/openssl}"
 RUN_ID="${RUN_ID:-nginx-quic-active-migration-$(date -u +%Y%m%dT%H%M%SZ)}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-$ROOT_DIR/harness/results/$RUN_ID}"
 PAYLOAD_BYTES="${PAYLOAD_BYTES:-1048576}"
+NGINX_QUIC_BPF="${NGINX_QUIC_BPF:-0}"
 
 NGINX_BIN="$NGINX_BUILD_DIR/nginx"
 HOST="127.0.0.1"
@@ -56,6 +57,7 @@ PY
   printf 'quiche_client=%s\n' "$QUICHE_CLIENT"
   printf 'openssl_bin=%s\n' "$OPENSSL_BIN"
   printf 'payload_bytes=%s\n' "$PAYLOAD_BYTES"
+  printf 'nginx_quic_bpf=%s\n' "$NGINX_QUIC_BPF"
   printf 'source_commit=%s\n' "$(git -C "$NGINX_DIR" rev-parse HEAD)"
   printf 'source_date=%s\n' "$(git -C "$NGINX_DIR" show -s --format=%cI HEAD)"
   printf 'source_subject=%s\n' "$(git -C "$NGINX_DIR" show -s --format=%s HEAD)"
@@ -104,10 +106,18 @@ with open(path, "wb") as fh:
         written += len(chunk)
 PY
 
+MAIN_QUIC_BPF_DIRECTIVE=""
+LISTEN_REUSEPORT=""
+if [[ "$NGINX_QUIC_BPF" == "1" ]]; then
+  MAIN_QUIC_BPF_DIRECTIVE="quic_bpf on;"
+  LISTEN_REUSEPORT=" reuseport"
+fi
+
 cat >"$ARTIFACT_DIR/conf/nginx.conf" <<EOF
 worker_processes 1;
 error_log $ARTIFACT_DIR/logs/error.log debug;
 pid $ARTIFACT_DIR/logs/nginx.pid;
+$MAIN_QUIC_BPF_DIRECTIVE
 
 events {
     worker_connections 1024;
@@ -117,7 +127,7 @@ http {
     access_log $ARTIFACT_DIR/logs/access.log combined;
 
     server {
-        listen $HOST:$PORT quic;
+        listen $HOST:$PORT quic$LISTEN_REUSEPORT;
         http3 on;
         quic_retry off;
 
@@ -201,11 +211,13 @@ CLIENT_MIGRATION_LOG_COUNT="$(count_matches "performing migration|migration" "$A
 CLIENT_ACTIVE_TRUE_COUNT="$(count_matches "active=true" "$ARTIFACT_DIR/logs/client.stderr")"
 CLIENT_ACTIVE_FALSE_COUNT="$(count_matches "active=false" "$ARTIFACT_DIR/logs/client.stderr")"
 SERVER_DISABLE_ACTIVE_MIGRATION_ZERO_COUNT="$(count_matches "quic tp disable active migration: 0" "$ARTIFACT_DIR/logs/error.log")"
+SERVER_QUIC_BPF_LOG_COUNT="$(count_matches "quic_bpf" "$ARTIFACT_DIR/logs/error.log" "$ARTIFACT_DIR/logs/nginx.stderr")"
 
 rg --no-ignore --text -n \
-  "disable active migration|quic path seq:1|PATH_CHALLENGE|PATH_RESPONSE|successfully validated|is now validated|active=true|active=false|migration" \
+  "disable active migration|quic path seq:1|PATH_CHALLENGE|PATH_RESPONSE|successfully validated|is now validated|active=true|active=false|migration|quic_bpf" \
   "$ARTIFACT_DIR/logs/error.log" \
   "$ARTIFACT_DIR/logs/client.stderr" \
+  "$ARTIFACT_DIR/logs/nginx.stderr" \
   >"$ARTIFACT_DIR/logs/migration-grep.log" || true
 
 {
@@ -213,6 +225,7 @@ rg --no-ignore --text -n \
   printf 'artifact_dir=%s\n' "$ARTIFACT_DIR"
   printf 'host=%s\n' "$HOST"
   printf 'port=%s\n' "$PORT"
+  printf 'nginx_quic_bpf=%s\n' "$NGINX_QUIC_BPF"
   printf 'client_exit=%s\n' "$CLIENT_EXIT"
   printf 'payload_bytes=%s\n' "$PAYLOAD_BYTES"
   printf 'client_response_bytes=%s\n' "$CLIENT_RESPONSE_BYTES"
@@ -228,6 +241,7 @@ rg --no-ignore --text -n \
   printf 'client_migration_log_count=%s\n' "$CLIENT_MIGRATION_LOG_COUNT"
   printf 'client_active_true_count=%s\n' "$CLIENT_ACTIVE_TRUE_COUNT"
   printf 'client_active_false_count=%s\n' "$CLIENT_ACTIVE_FALSE_COUNT"
+  printf 'server_quic_bpf_log_count=%s\n' "$SERVER_QUIC_BPF_LOG_COUNT"
 } | tee "$ARTIFACT_DIR/result.env"
 
 if [[ "$CLIENT_EXIT" != 0 ]]; then

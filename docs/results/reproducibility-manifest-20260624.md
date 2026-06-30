@@ -1,6 +1,6 @@
 # Reproducibility Manifest
 
-Generated: `2026-06-26`
+Generated: `2026-06-30`
 
 This manifest is public-safe. It summarizes reproducibility state without printing domains, credentials, private keys, device IDs, qlogs, keylogs, pcaps, or NetLogs.
 
@@ -8,10 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `7c3f0b6` |
-| branch | `main` |
-| total trials | `71` |
-| status counts | `{'PASS': 28, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 37}` |
+| source commit at generation | `3ff7e6d` |
+| branch | `docs/quinn-neqo-rerun-20260630` |
+| total trials | `99` |
+| status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
+| implementation survey rows | `18` |
+| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
+| experiment matrix items | `126` |
+| latest experiment matrix item | `nginx-quic-bpf-linux-runner` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -48,6 +52,37 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `controlled_public_package_smoke` | `docs/results/controlled-public-package-smoke-20260625.md` |
 | `aws_identity_readiness` | `docs/results/aws-identity-readiness-20260625.md` |
 | `active_path_cookbook` | `docs/results/active-path-change-operator-cookbook-20260624.md` |
+
+## 2026-06-30 Evidence Paths
+
+| item | path | exists |
+| --- | --- | --- |
+| `implementation_rerun_results` | `docs/results/implementation-rerun-results-20260630.md` | `yes` |
+| `implementation_survey_csv` | `data/implementation-survey.csv` | `yes` |
+| `experiment_matrix` | `harness/manifests/experiment-matrix.csv` | `yes` |
+| `sanitized_evidence_bundle` | `docs/results/sanitized-evidence-bundle-20260630.md` | `yes` |
+| `sanitized_evidence_bundle_json` | `data/sanitized-evidence-bundle-20260630.json` | `yes` |
+| `non_iphone_gap_plan` | `docs/results/non-iphone-research-gap-plan-20260630.md` | `yes` |
+| `nginx_haproxy_boundary` | `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md` | `yes` |
+| `nginx_runtime_demo` | `docs/results/nginx-quic-active-migration-runtime-20260630.md` | `yes` |
+| `nginx_quic_bpf_readiness` | `docs/results/nginx-quic-bpf-readiness-20260630.md` | `yes` |
+| `nginx_quic_bpf_linux_runner` | `docs/results/nginx-quic-bpf-linux-runner-20260630.md` | `yes` |
+| `haproxy_negative_control` | `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | `yes` |
+| `lsquic_preferred_address_demo` | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | `yes` |
+| `lsquic_nat_rebinding_demo` | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | `yes` |
+| `quicly_e2e_path_migration` | `docs/results/quicly-e2e-path-migration-20260630.md` | `yes` |
+| `openlitespeed_source_feasibility` | `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md` | `yes` |
+| `openlitespeed_runtime_preflight` | `docs/results/openlitespeed-runtime-preflight-20260630.md` | `yes` |
+| `openlitespeed_runtime_runner` | `docs/results/openlitespeed-active-migration-runner-20260630.md` | `yes` |
+| `mvfst_source_audit` | `docs/results/mvfst-cm-source-audit-20260630.md` | `yes` |
+| `mvfst_migration_test_readiness` | `docs/results/mvfst-migration-test-readiness-20260630.md` | `yes` |
+| `mvfst_migration_test_readiness_json` | `data/mvfst-migration-test-readiness-20260630.json` | `yes` |
+| `s2n_nlb_cid_provider_rerun` | `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | `yes` |
+| `s2n_nlb_live_readiness` | `docs/results/s2n-nlb-live-readiness-20260630.md` | `yes` |
+| `aws_s2n_nlb_live_runner` | `docs/results/aws-s2n-nlb-live-runner-20260630.md` | `yes` |
+| `s2n_active_migration_api_audit` | `docs/results/s2n-active-migration-api-audit-20260630.md` | `yes` |
+| `s2n_active_migration_api_audit_json` | `data/s2n-active-migration-api-audit-20260630.json` | `yes` |
+| `research_report_index` | `docs/research-report/README.md` | `yes` |
 
 ## Interpretation
 

@@ -26,6 +26,14 @@ runner가 확인하는 항목:
 | Linux host | `quic_bpf` 검증이 Linux/eBPF deployment claim인지 분리 |
 | host capability | root/capability와 `/sys/fs/bpf` readiness |
 
+2026-06-30 추가 runner:
+
+```bash
+harness/scripts/run-nginx-quic-bpf-linux-demo.sh
+```
+
+이 runner는 Linux/root/`/sys/fs/bpf` gate가 열릴 때만 기존 nginx active migration demo를 `NGINX_QUIC_BPF=1`로 실행한다. 이때 nginx config에는 `quic_bpf on;`과 `listen ... quic reuseport`가 추가된다. 현재 macOS local run은 `nginx-quic-bpf-linux-demo-local-blocked-20260630`에서 `validation=blocked`, `blocked_reason=linux_required`로 닫혔다.
+
 ## 3. 최신 로컬 실행
 
 Command:
@@ -101,3 +109,7 @@ blocked_reason=linux_required
 | 3 | `/sys/fs/bpf` mount/writable 확인 | `sys_fs_bpf_ready=yes` |
 | 4 | nginx `quic_bpf on;` config test와 runtime demo 확장 | config test, access log, path validation, response completion |
 | 5 | local runtime result와 Linux `quic_bpf` result 분리 보고 | claim boundary 유지 |
+
+추가 문서:
+
+- [nginx-quic-bpf-linux-runner-20260630.md](nginx-quic-bpf-linux-runner-20260630.md)
