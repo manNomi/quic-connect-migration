@@ -111,9 +111,10 @@ s2n-quic은 AWS NLB와의 연결성이 높은 구현체지만, quic-go 기반 NL
 | AWS identity | `aws_identity_ok=no`, `aws_identity_classification=invalid_client_token` | 현재 live AWS resource 생성 금지 |
 | local s2n CID proof | `local_proof_status=PASS`, `local_proof_echo_matches=yes` | custom CID provider와 local s2n echo 전제 조건은 통과 |
 | existing NLB runner | `existing_quic_go_nlb_runner_ready=yes` | 기존 live runner는 quic-go 경로를 커버 |
-| dedicated s2n live runner | `s2n_live_nlb_runner_ready=no` | s2n target A/B용 live runner는 후속 구현 필요 |
+| dedicated s2n live runner | `s2n_live_nlb_runner_ready=yes` | s2n target A/B용 live runner는 준비됨 |
+| fail-closed live run | `validation=blocked`, `blocked_reason=aws_identity_invalid_client_token` | runner가 AWS resource 생성 전에 안전하게 중단됨 |
 
-따라서 현재 s2n NLB claim은 "local provider prerequisite ready"까지다. AWS NLB 뒤에서 s2n target이 migrated packet을 같은 backend로 받는지는 아직 검증하지 않았다.
+따라서 현재 s2n NLB claim은 "local provider prerequisite ready"와 "dedicated live runner ready"까지다. AWS NLB 뒤에서 s2n target이 packet을 받는지는 현재 credential 때문에 아직 검증하지 않았다. 또한 지금 live runner의 1단계 목표는 forwarding echo이며, active migration/path-change variant는 그 다음 단계다.
 
 ## 7. HAProxy Negative Control
 

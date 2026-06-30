@@ -25,7 +25,7 @@
 | LSQUIC OpenLiteSpeed production-like migration demo | preferred-address와 NAT rebinding example app demo는 확보했지만 production-like OpenLiteSpeed 경로는 아직 없음 | 가능 |
 | mvfst fresh build/test or focused source audit | 대규모 deployment 구현체인데 아직 source inspection 중심 | 가능하나 빌드 비용 큼 |
 | nginx QUIC production/Linux `quic_bpf` | nginx local runtime은 확보됐지만 production packet routing은 아직 약함 | 가능 |
-| AWS NLB + s2n-quic CID routing 검증 | 교수님 decision의 AWS 구축 검수와 직접 연결 | 가능 |
+| AWS NLB + s2n-quic CID routing 검증 | 교수님 decision의 AWS 구축 검수와 직접 연결. dedicated runner는 준비됐고 live 실행은 AWS identity 갱신 필요 | 가능 |
 | Chrome desktop public-origin simulation | iPhone 없이 browser/runtime policy의 한계를 보강 | 가능 |
 | sanitized evidence bundle | raw log가 ignored path에 있어 심사/보고 시 재현 근거가 약해질 수 있음 | 완료 |
 
@@ -74,21 +74,27 @@
 
 상태:
 
-> 부분 완료. `experiments/s2n-quic-nlb-cid-provider` proof crate를 복원했고, `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md`에 `cargo test` 3개 PASS와 local s2n-quic echo proof PASS를 정리했다. 추가로 `harness/scripts/check-s2n-nlb-live-readiness.sh`와 `docs/results/s2n-nlb-live-readiness-20260630.md`를 추가해 live AWS NLB+s2n 실험 전제 조건을 fail-closed로 고정했다. AWS live NLB target A/B forwarding은 아직 후속이다.
+> 부분 완료. `experiments/s2n-quic-nlb-cid-provider` proof crate를 복원했고, `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md`에 `cargo test` 3개 PASS와 local s2n-quic echo proof PASS를 정리했다. 추가로 `harness/scripts/check-s2n-nlb-live-readiness.sh`와 `docs/results/s2n-nlb-live-readiness-20260630.md`를 추가해 live AWS NLB+s2n 실험 전제 조건을 fail-closed로 고정했다. 이번 보강에서 `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`, `nlb_live_server`, `nlb_live_client`, `generate_localhost_cert`를 추가해 dedicated live runner까지 준비했다. AWS live NLB target A/B forwarding은 현재 credential 때문에 아직 후속이다.
 
 2026-06-30 추가 확인:
 
-> `./harness/scripts/aws-preflight.sh` 실행 결과 현재 local AWS credential은 `invalid_client_token`으로 분류됐다. 이어서 `RUN_ID=s2n-nlb-live-readiness-local-20260630 harness/scripts/check-s2n-nlb-live-readiness.sh`를 실행했고, 결과는 `aws_identity_ok=no`, `aws_identity_classification=invalid_client_token`, `local_proof_status=PASS`, `local_proof_echo_matches=yes`, `existing_quic_go_nlb_runner_ready=yes`, `s2n_live_nlb_runner_ready=no`, `can_run_live_s2n_nlb_now=no`, `blocked_reason=aws_identity_invalid_client_token`이었다. 따라서 live AWS NLB 재실행은 credential refresh와 dedicated s2n live runner 구현 이후 진행한다.
+> `./harness/scripts/aws-preflight.sh` 실행 결과 현재 local AWS credential은 `invalid_client_token`으로 분류됐다. 이후 `RUN_ID=s2n-nlb-live-readiness-after-runner-proof-20260630 harness/scripts/check-s2n-nlb-live-readiness.sh`를 실행했고, 결과는 `aws_identity_ok=no`, `aws_identity_classification=invalid_client_token`, `local_proof_status=PASS`, `local_proof_echo_matches=yes`, `existing_quic_go_nlb_runner_ready=yes`, `s2n_live_nlb_runner_ready=yes`, `can_run_live_s2n_nlb_now=no`, `blocked_reason=aws_identity_invalid_client_token`이었다. 또한 `RUN_ID=aws-s2n-nlb-live-local-blocked-20260630 harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`는 `crate_ready=yes`, `server_binary_source_ready=yes`, `client_binary_source_ready=yes`, `validation=blocked`, `blocked_reason=aws_identity_invalid_client_token`으로 AWS resource 생성 전에 닫혔다. 따라서 live AWS NLB 재실행은 credential refresh 이후 진행한다.
+
+2026-06-30 live binary smoke:
+
+> 새 `nlb_live_server`와 `nlb_live_client`는 AWS 없이 loopback에서 `payload_bytes=2048`, `echo_matches=true`, server `received_bytes=2048`, `echoed_bytes=2048`로 PASS했다. 이 smoke는 NLB routing proof가 아니라 dedicated live runner에 들어가는 s2n binary들이 같은 TLS/CID-provider 전제로 동작한다는 검증이다.
 
 실행 방향:
 
 1. 완료: s2n-quic custom CID provider local proof 복원 및 rerun
 2. 완료: live AWS NLB+s2n readiness gate 추가 및 현재 blocker 고정
-3. 후속: dedicated s2n live NLB data-plane runner 구현
-4. 후속: EC2 server에서 s2n-quic target A/B 구동
-5. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
-6. 후속: desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
-7. 후속: NLB가 같은 backend로 보냈는지 server log/qlog로 확인
+3. 완료: dedicated s2n live NLB data-plane runner 구현
+4. 완료: live server/client source와 local binary smoke 검증
+5. 후속: credential refresh 후 EC2 server에서 s2n-quic target A/B 구동
+6. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
+7. 후속: NLB forwarding echo에서 target A/B 중 하나만 PASS하는지 확인
+8. 후속: desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
+9. 후속: NLB가 같은 backend로 보냈는지 server log/qlog로 확인
 
 핵심 질문:
 
@@ -192,11 +198,11 @@
 | ---: | --- | --- |
 | 1 | nginx/HAProxy negative-control source+doc appendix + nginx runtime demo | 완료. HTTP/3 support와 CM support의 경계를 강화했고 nginx server runtime positive control 확보 |
 | 2 | OpenLiteSpeed production-like runtime demo | source feasibility/preflight/cleanup dry-run/runtime runner는 완료. 현재는 Linux/EC2 환경 또는 referenced raw artifact archive 정책이 필요 |
-| 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | readiness gate 완료. 현재 credential refresh와 dedicated s2n live runner 구현 필요 |
+| 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | readiness gate와 dedicated live runner 완료. 현재 credential refresh 후 live forwarding echo와 active path-change variant 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | readiness gate 완료. Linux/eBPF host에서 packet-routing runtime 검증 필요 |
 | 5 | quicly focused e2e path-migration | 완료. path-migration subtest는 PASS, full e2e caveat는 유지 |
 | 6 | sanitized evidence bundle 생성 | 완료. 18개 evidence item에 대해 supports/do-not-claim/next-gap boundary를 public-safe로 고정 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 dedicated s2n live NLB runner를 구현/실행해 target A/B forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, sanitized evidence-to-claim bundle은 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, sanitized evidence-to-claim bundle은 확보됐다.

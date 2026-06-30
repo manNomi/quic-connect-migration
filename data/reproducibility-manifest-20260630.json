@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "8b77fc4",
+    "commit": "75f0bbb",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 122,
+    "total_items": 123,
     "status_counts": {
-      "done": 118,
+      "done": 119,
       "planned": 4
     },
-    "latest_item": "sanitized-evidence-bundle-20260630"
+    "latest_item": "aws-s2n-nlb-live-runner"
   },
   "verification": {
     "checks": "109",
@@ -183,6 +183,10 @@
     },
     "s2n_nlb_live_readiness": {
       "path": "docs/results/s2n-nlb-live-readiness-20260630.md",
+      "exists": true
+    },
+    "aws_s2n_nlb_live_runner": {
+      "path": "docs/results/aws-s2n-nlb-live-runner-20260630.md",
       "exists": true
     },
     "research_report_index": {

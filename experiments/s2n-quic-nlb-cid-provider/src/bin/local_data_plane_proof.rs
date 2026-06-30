@@ -88,9 +88,12 @@ async fn run_echo(connection_id: AwsNlbCidFormat) -> Result<QuicEchoResult, AnyE
             .await?
             .ok_or_else(|| "server closed before accepting connection".to_string())?;
         let server_observed_remote_addr = connection.remote_addr()?.to_string();
-        let mut stream = timeout(Duration::from_secs(10), connection.accept_bidirectional_stream())
-            .await??
-            .ok_or_else(|| "client did not open stream".to_string())?;
+        let mut stream = timeout(
+            Duration::from_secs(10),
+            connection.accept_bidirectional_stream(),
+        )
+        .await??
+        .ok_or_else(|| "client did not open stream".to_string())?;
 
         if let Some(data) = timeout(Duration::from_secs(10), stream.receive()).await?? {
             stream.send(data).await?;
@@ -109,7 +112,11 @@ async fn run_echo(connection_id: AwsNlbCidFormat) -> Result<QuicEchoResult, AnyE
     let mut connection = timeout(Duration::from_secs(10), client.connect(connect)).await??;
     connection.keep_alive(true)?;
 
-    let mut stream = timeout(Duration::from_secs(10), connection.open_bidirectional_stream()).await??;
+    let mut stream = timeout(
+        Duration::from_secs(10),
+        connection.open_bidirectional_stream(),
+    )
+    .await??;
     let payload = b"s2n-quic nlb cid proof echo";
     stream.send(payload.as_slice().into()).await?;
     stream.finish()?;

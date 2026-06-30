@@ -29,6 +29,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "quicly-focused-e2e-path-migration" in ids
     assert "haproxy-http3-negative-control" in ids
     assert "s2n-nlb-live-readiness" in ids
+    assert "aws-s2n-nlb-live-runner" in ids
     for item in bundle["items"]:
         assert item["supports"]
         assert item["do_not_claim"]

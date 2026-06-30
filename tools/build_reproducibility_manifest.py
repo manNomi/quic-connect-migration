@@ -135,6 +135,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "mvfst_source_audit": "docs/results/mvfst-cm-source-audit-20260630.md",
         "s2n_nlb_cid_provider_rerun": "docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md",
         "s2n_nlb_live_readiness": "docs/results/s2n-nlb-live-readiness-20260630.md",
+        "aws_s2n_nlb_live_runner": "docs/results/aws-s2n-nlb-live-runner-20260630.md",
         "research_report_index": "docs/research-report/README.md",
     }
 
