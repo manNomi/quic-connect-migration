@@ -27,9 +27,10 @@
 | 항목 | 값 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test/demo까지 실행한 구현체 | 10 |
+| local test/demo까지 실행한 구현체 | 11 |
 | 2026-06-30 fresh rerun/demo artifact 확보 | 10 |
-| source inspected only | 5 |
+| fresh partial build/test artifact 확보 | 1 |
+| source inspected only | 4 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |
@@ -56,7 +57,7 @@
 | 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use as large-scale implementation maturity evidence; not first experiment |
 | 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |
 | 15 | nginx QUIC | server | O | O | X | `logs` | ? test | `server_deploy` | `L3_L4` | `source_inspected` | Use as server-side passive migration and web-server deployment evidence |
-| 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4` | `source_inspected` | Use as RFC primitive and C implementation comparison |
+| 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4_partial` | `fresh_build_partial_20260630` | Use as partial primitive evidence; isolate migration-only unit test or install Perl deps for e2e path-migration before upgrading to fresh rerun |
 | 17 | aioquic | library/tooling | O | △ | X | `logs_tests` | O | `manual` | `L2_L3` | `fresh_rerun_20260630` | Use as readable passive path-validation reference, not primary experiment |
 | 18 | HAProxy QUIC | proxy | △ | △ | X | `stats` | ? | `deployment_constraint` | `L1_L2` | `source_inspected` | Use as evidence that HTTP/3 support does not imply Connection Migration support |
 
@@ -72,6 +73,7 @@
 | s2n-quic | AWS/NLB/CID-aware deployment 연구와 연결성이 좋음 |
 | MsQuic | production-relevant NAT rebind/path validation gtest가 v4/v6에서 통과함 |
 | XQUIC | NAT rebinding demo가 실제 client/server로 통과했지만 full suite는 Linux 재실행 필요 |
+| quicly | unit test 안의 migration/path stats subtest는 확인됐지만 전체 test/e2e는 아직 partial |
 
 ### 2. production/deployment 논의 후보
 
@@ -95,7 +97,7 @@
 ## 이 표에서 바로 말할 수 있는 결론
 
 1. 조사 대상 18개 중 다수가 RFC primitive와 passive migration 근거를 갖고 있다.
-2. active migration API가 명확한 구현체는 더 적지만, quic-go/quiche/picoquic/Neqo 등에서 실험 후보가 확인됐고 MsQuic은 NAT rebind/path-validation 테스트 근거가 보강됐다.
+2. active migration API가 명확한 구현체는 더 적지만, quic-go/quiche/picoquic/Neqo 등에서 실험 후보가 확인됐고 MsQuic은 NAT rebind/path-validation 테스트 근거가 보강됐다. quicly는 partial build/test evidence로 분리한다.
 3. qlog, PathEvent, NetLog, tracing 등 관찰성이 구현체별로 다르다.
 4. HTTP/3 지원과 Connection Migration 지원은 같은 말이 아니다.
 5. L4 library maturity는 browser 또는 CDN deployment maturity와 다르다.

@@ -302,6 +302,22 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 
 > Chromium/Cronet에는 migration 관련 policy와 observability 근거가 있지만, 이것이 Chrome browser에서 실제 Wi-Fi/cellular handover 중 single-session CM이 성공했다는 뜻은 아니다.
 
+### 7.7 quicly
+
+quicly는 H2O 계열의 C QUIC library로, path validation과 path promotion internals를 확인하기 좋은 비교군이다.
+
+확인한 것:
+
+- `PATH_CHALLENGE` / `PATH_RESPONSE` frame encode/decode
+- `disable_active_migration` transport parameter
+- path migration elicited/promoted stats
+- `migration-during-handshake` unit subtest `ok`
+- e2e `path-migration` test 존재
+
+해석:
+
+> quicly는 migration primitive와 path promotion 내부 구조가 확인되지만, 이번 macOS fresh attempt에서는 전체 `test.t`가 unrelated `lossy` subtest에서 실패했고 e2e는 Perl dependency 부족으로 실행 전 실패했다. 따라서 fresh PASS가 아니라 partial build/test evidence로 분리한다.
+
 ## 8. 결과 요약
 
 `data/implementation-survey.csv` 기준으로 요약하면 다음과 같다.
@@ -309,9 +325,10 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 | 항목 | 결과 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test/demo까지 실행한 구현체 | 10 |
+| local test/demo까지 실행한 구현체 | 11 |
 | 2026-06-30 fresh rerun/demo artifact 확보 | 10 |
-| source inspected only | 5 |
+| fresh partial build/test artifact 확보 | 1 |
+| source inspected only | 4 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |

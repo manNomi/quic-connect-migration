@@ -41,6 +41,7 @@ quic-go를 먼저 고른 이유는 다음과 같다.
 | Quinn | `953b466747e667a9dfda0596b8051a0644f8333d` | `quinn-proto` migration, `quinn` endpoint rebind | PASS | Rust stack migration/rebind evidence |
 | Neqo | `3ba227d37f46a5684e984ead831b73344d9fec63` | `neqo-transport` migration suite | PASS | Firefox-adjacent broad migration evidence |
 | XQUIC | `96155cffbde7f062fe45ac3f6899f47e25709d30` | `test_client`/`test_server` NAT rebinding demo on loopback | PASS demo, full suite partial | NAT rebinding implementation evidence with macOS build caveat |
+| quicly | `ed83c7c7d545a01650651c9523466f561ec5d4bb` | build `test.t`/`cli`/`udpfw`, unit migration/path stats evidence | PARTIAL | migration primitive evidence; full test/e2e not clean on this host |
 
 ## 3. 구현체별 실행 상세
 
@@ -348,15 +349,50 @@ Interpretation:
 
 XQUIC은 source inspection에서 확인했던 NAT rebinding path가 실제 client/server demo에서도 통과했다. 다만 macOS AppleClang 환경에서는 full unit test target이 QPACK test의 `-Werror` 컴파일 이슈로 막혔기 때문에, XQUIC에 대해서는 "full suite PASS"가 아니라 "NAT rebinding demo PASS, full suite는 Linux 재실행 필요"라고 쓰는 것이 안전하다.
 
+### 3.10 quicly
+
+Source:
+
+- [h2o/quicly](https://github.com/h2o/quicly)
+
+Commands:
+
+```bash
+git submodule update --init --recursive --depth 1
+PKG_CONFIG_PATH=/opt/homebrew/opt/openssl@3/lib/pkgconfig cmake -S . -B build-local -G Ninja \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DWITH_DTRACE=OFF \
+  -DWITH_FUSION=OFF
+cmake --build build-local --target test.t cli udpfw -j 4
+./build-local/test.t
+env BINARY_DIR=<quicly-source>/build-local WITH_DTRACE=OFF PERL5LIB=<quicly-source> \
+  prove --exec "sh -c" -v t/e2e.t
+```
+
+Evidence:
+
+| 항목 | 결과 |
+| --- | --- |
+| build targets | `test.t`, `cli`, `udpfw` PASS |
+| unit migration evidence | `migration-during-handshake` subtest `ok` |
+| unit path stats evidence | `num-frames-sent.path_challenge`, `num-frames-sent.path_response`, `num-paths.validated`, `num-paths.migration-elicited`, `num-paths.promoted` subtests `ok` |
+| full `test.t` result | PARTIAL: unrelated `lossy` subtest failed on this host |
+| e2e `path-migration` result | BLOCKED before execution: missing Perl module `Net::EmptyPort` |
+| local logs | `harness/results/impl-rerun-20260630T070249Z/logs/quicly-*.log` |
+
+Interpretation:
+
+quicly는 path validation, migration elicitation, path promotion, PATH_CHALLENGE/PATH_RESPONSE stats에 대한 구현 근거가 강하고, 이번 fresh attempt에서도 migration-related unit subtest는 `ok`로 확인됐다. 그러나 전체 unit binary는 unrelated `lossy` subtest에서 실패했고 e2e `path-migration`은 Perl dependency 부족으로 실행되지 않았다. 따라서 quicly는 fresh rerun PASS가 아니라 partial fresh build/test evidence로만 사용한다.
+
 ## 4. 논문에서 사용할 결론
 
 안전한 결론:
 
-> Connection Migration is not merely a paper feature. Fresh local reruns across quic-go, quiche, picoquic, s2n-quic, MsQuic, ngtcp2, aioquic, Quinn, and Neqo, plus a successful XQUIC NAT rebinding demo, show that path validation and migration-related primitives are implemented and tested in multiple QUIC stacks. However, implementation-level maturity does not imply browser-level or managed-deployment continuity.
+> Connection Migration is not merely a paper feature. Fresh local reruns across quic-go, quiche, picoquic, s2n-quic, MsQuic, ngtcp2, aioquic, Quinn, and Neqo, plus a successful XQUIC NAT rebinding demo and partial quicly build/unit evidence, show that path validation and migration-related primitives are implemented and tested in multiple QUIC stacks. However, implementation-level maturity does not imply browser-level or managed-deployment continuity.
 
 한국어 표현:
 
-> QUIC Connection Migration은 구현되지 않은 기술이 아니다. 주요 구현체들은 path validation, NAT rebinding, active/passive migration, preferred address, disable-active-migration 같은 primitive를 테스트하고 있고, MsQuic selected gtest와 XQUIC NAT rebinding demo도 통과했다. 다만 이러한 transport-level 성숙도는 Chrome/Safari/Android 브라우저 또는 CDN/LB 환경에서 웹 작업 연속성이 보장된다는 뜻은 아니다.
+> QUIC Connection Migration은 구현되지 않은 기술이 아니다. 주요 구현체들은 path validation, NAT rebinding, active/passive migration, preferred address, disable-active-migration 같은 primitive를 테스트하고 있고, MsQuic selected gtest와 XQUIC NAT rebinding demo도 통과했다. quicly도 partial fresh build/unit evidence를 확보했다. 다만 이러한 transport-level 성숙도는 Chrome/Safari/Android 브라우저 또는 CDN/LB 환경에서 웹 작업 연속성이 보장된다는 뜻은 아니다.
 
 ## 5. 남은 한계
 
@@ -364,5 +400,5 @@ XQUIC은 source inspection에서 확인했던 NAT rebinding path가 실제 clien
 | --- | --- | --- |
 | raw logs는 ignored path | 로그가 크고 local address/path가 섞여 있어 공개 repo에는 요약만 둔다. | 제출 전 sanitized evidence bundle 생성 |
 | 동일 깊이의 app-level 테스트는 아님 | quic-go/quiche는 sample client/server, 나머지는 library tests 중심이다. | 후보 1-2개를 골라 동일 workload harness로 재실험 |
-| production-scale stack fresh rerun 미반영 | mvfst, lsquic은 빌드/운영 cost가 더 크다. MsQuic은 selected gtest가 통과했고, XQUIC은 NAT rebinding demo까지는 통과했지만 full suite는 Linux 재실행이 필요하다. | 필요 시 별도 chapter 또는 appendix로 분리 |
+| production-scale stack fresh rerun 미반영 | mvfst, lsquic은 빌드/운영 cost가 더 크다. MsQuic은 selected gtest가 통과했고, XQUIC은 NAT rebinding demo까지는 통과했지만 full suite는 Linux 재실행이 필요하다. quicly는 partial evidence라 e2e dependency 정리가 필요하다. | 필요 시 별도 chapter 또는 appendix로 분리 |
 | browser CM claim은 별도 검증 필요 | browser policy, OS route, certificate, Alt-Svc, NetLog attribution이 개입한다. | Chapter 7 이후 controlled public browser handover 실험으로 분리 |
