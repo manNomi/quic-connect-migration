@@ -33,6 +33,10 @@
 | Chapter 7 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-07-reference-and-evidence.md` |
 | Chapter 7 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-07-scanner-trigger-map-20260630.md` |
 | Chapter 7 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-07-external-link-check-20260630.md` |
+| Chapter 8. Full-Response Downlink Public Handover | 작성 완료 | `chapter-08-full-response-downlink-handover.md` |
+| Chapter 8 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-08-reference-and-evidence.md` |
+| Chapter 8 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-08-scanner-trigger-map-20260630.md` |
+| Chapter 8 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-08-external-link-check-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -67,6 +71,12 @@
 | `repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh` | Chapter 6 local Chrome H3 rebinding harness |
 | `tools/check_public_origin_readiness.py` | Chapter 7 public origin readiness scanner |
 | `tools/classify_controlled_public_h3_baseline.py` | Chapter 7 controlled public application H3 baseline classifier |
+| `repro/quic-go-min-repro/scripts/run-controlled-public-h3-network-change.sh` | Chapter 8 public-origin active network-change runner |
+| `tools/capture_network_path_snapshot.py` | Chapter 8 client path snapshot collector |
+| `tools/compare_network_path_snapshots.py` | Chapter 8 client path-change comparator |
+| `tools/classify_controlled_public_h3_network_change.py` | Chapter 8 controlled public active network-change classifier |
+| `tools/validate_final_handover_trial_artifact.py` | Chapter 8 final/negative-control claim-strength validator |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
+| `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
