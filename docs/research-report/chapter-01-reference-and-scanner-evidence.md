@@ -45,6 +45,7 @@ Apple/Safari는 실험 대상 browser로는 볼 수 있지만, Apple QUIC implem
 scanner 결과는 별도 표로 분리했다.
 
 - scanner 결과 표: [tables/scanner-trigger-summary-20260630.md](tables/scanner-trigger-summary-20260630.md)
+- 외부 링크 검수 표: [tables/chapter-01-external-link-check-20260630.md](tables/chapter-01-external-link-check-20260630.md)
 - scanner source: [tools/scan_implementation_evidence.py](../../tools/scan_implementation_evidence.py)
 
 이번 재실행에서는 다음 15개 공개 repository를 shallow clone하고 같은 scanner를 돌렸다.

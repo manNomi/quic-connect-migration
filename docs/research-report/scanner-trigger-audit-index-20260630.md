@@ -9,8 +9,9 @@
 | layer | code family | 주 역할 | 상세 trigger map |
 | --- | --- | --- | --- |
 | implementation source survey | `scan_implementation_evidence.py` | 공개 QUIC 구현체 source tree keyword first-pass scan | [tables/scanner-trigger-summary-20260630.md](tables/scanner-trigger-summary-20260630.md) |
-| operational friction matrix | `build_cm_operational_friction_matrix.py` | experiment/literature corpus를 friction_id별로 집계 | [chapter-02-reference-and-evidence.md](chapter-02-reference-and-evidence.md) |
-| implementation positive control | quic-go repro scripts and qlog scanner | local active migration positive control artifact 생성/검증 | [chapter-03-reference-and-evidence.md](chapter-03-reference-and-evidence.md) |
+| operational friction matrix | `build_cm_operational_friction_matrix.py` | experiment/literature corpus를 friction_id별로 집계 | [tables/chapter-02-scanner-trigger-map-20260630.md](tables/chapter-02-scanner-trigger-map-20260630.md) |
+| implementation positive control | quic-go repro scripts and qlog scanner | local active migration positive control artifact 생성/검증 | [tables/chapter-03-scanner-trigger-map-20260630.md](tables/chapter-03-scanner-trigger-map-20260630.md) |
+| deployment path positive/negative controls | AWS NLB CID generator, NLB harness, H3 repro | cloud LB, proxy, CDN boundary와 AWS NLB data-plane 조건 검증 | [tables/chapter-04-scanner-trigger-map-20260630.md](tables/chapter-04-scanner-trigger-map-20260630.md) |
 | browser observability | Chrome/Safari/Android readiness and classifiers | browser artifact claim ceiling 설정 | [tables/chapter-05-scanner-trigger-map-20260630.md](tables/chapter-05-scanner-trigger-map-20260630.md) |
 | local NAT rebinding | UDP rebinding proxy, Chrome runner, local classifiers | controlled local Chrome rebinding/return-path controls | [tables/chapter-06-scanner-trigger-map-20260630.md](tables/chapter-06-scanner-trigger-map-20260630.md) |
 | controlled public origin | readiness/config/baseline scanners | public application H3 baseline gate | [tables/chapter-07-scanner-trigger-map-20260630.md](tables/chapter-07-scanner-trigger-map-20260630.md) |

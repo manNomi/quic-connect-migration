@@ -14,6 +14,7 @@
 | literature tracker | [data/literature-review-tracker.csv](../../data/literature-review-tracker.csv) | RFC, 논문, 공식 문서, draft, issue 링크와 relevance |
 | generated report | [docs/results/cm-operational-friction-matrix-20260624.md](../results/cm-operational-friction-matrix-20260624.md) | paper-facing friction matrix |
 | generated csv | [data/cm-operational-friction-matrix-20260624.csv](../../data/cm-operational-friction-matrix-20260624.csv) | friction row별 experiment/literature match count |
+| builder trigger map | [tables/chapter-02-scanner-trigger-map-20260630.md](tables/chapter-02-scanner-trigger-map-20260630.md) | builder가 읽는 input column, matching term, output field line anchor |
 | paper draft section | [docs/paper/cm-underuse-and-deployment-friction-ko-20260629.md](../paper/cm-underuse-and-deployment-friction-ko-20260629.md) | 한국어 논문 섹션 초안 |
 
 ## 2. Builder가 하는 일

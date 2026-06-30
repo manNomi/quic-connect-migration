@@ -16,6 +16,7 @@
 | transport server | [repro/quic-go-min-repro/cmd/server/main.go](../../repro/quic-go-min-repro/cmd/server/main.go) | AWS NLB CID generator를 quic-go transport에 연결 |
 | H3 server | [repro/quic-go-min-repro/cmd/h3server/main.go](../../repro/quic-go-min-repro/cmd/h3server/main.go) | HTTP/3 upload/download workload |
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
+| deployment trigger map | [tables/chapter-04-scanner-trigger-map-20260630.md](tables/chapter-04-scanner-trigger-map-20260630.md) | CID generator, NLB harness, H3 workload, false-positive guard line anchor |
 
 ## 2. 공식 reference links
 

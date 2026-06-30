@@ -14,6 +14,7 @@
 | harness wrapper | [harness/scripts/run-local-quic-go.sh](../../harness/scripts/run-local-quic-go.sh) | repo-level local quic-go run wrapper |
 | artifact validator | [harness/scripts/validate-quic-go-artifacts.sh](../../harness/scripts/validate-quic-go-artifacts.sh) | client/server `ok=true`와 qlog path validation evidence 검사 |
 | qlog scanner | [tools/scan_qlog_events.py](../../tools/scan_qlog_events.py) | `.sqlog`에서 `path_challenge`, `path_response`, packet event count 요약 |
+| scanner trigger map | [tables/chapter-03-scanner-trigger-map-20260630.md](tables/chapter-03-scanner-trigger-map-20260630.md) | client/server/runner/validator/qlog trigger line anchor |
 | HTTP/3 client extension | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 workload에서 active path switch를 수행하는 확장 client |
 | HTTP/3 server extension | [repro/quic-go-min-repro/cmd/h3server/main.go](../../repro/quic-go-min-repro/cmd/h3server/main.go) | upload/download/browser workload를 제공하는 H3 server |
 
