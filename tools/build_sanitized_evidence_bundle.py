@@ -514,6 +514,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence, final professor approval, public browser CM success, live AWS+s2n success, or Safari handover success.",
         next_gap="Use in the professor meeting to choose between conservative maturity/gap paper scope and opening AWS/public-browser gates for positive results.",
     ),
+    EvidenceItem(
+        id="noniphone-reviewer-risk-audit",
+        chapter="12",
+        category="reviewer-risk-synthesis",
+        implementation="cross-layer evidence corpus",
+        evidence_doc="docs/results/noniphone-reviewer-risk-audit-20260701.md",
+        runner_or_tool="tools/build_noniphone_reviewer_risk_audit.py",
+        local_artifact_id="noniphone-reviewer-risk-audit-20260701",
+        claim_strength="paper_synthesis",
+        supports="A reviewer-facing validity audit that identifies critical overclaim risks, external-validity gaps, AWS/browser/Safari claim boundaries, and defensive wording for the current paper scope.",
+        do_not_claim="New runtime evidence, reviewer acceptance, public browser CM success, live AWS+s2n success, or Safari handover success.",
+        next_gap="Use the audit to revise the paper abstract/introduction/method wording before deciding whether external positive-result gates must be opened.",
+    ),
 ]
 
 

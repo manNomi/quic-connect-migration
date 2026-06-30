@@ -10,7 +10,7 @@ This document chooses the next research step using only public-safe committed ev
 | --- | --- |
 | source bundle | `data/sanitized-evidence-bundle-20260630.json` |
 | source bundle exists | `True` |
-| source bundle item count | `37` |
+| source bundle item count | `38` |
 | candidate tracks | `6` |
 | runnable now | `[]` |
 | blocked track count | `6` |

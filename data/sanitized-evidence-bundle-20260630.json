@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 37,
+  "item_count": 38,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -16,7 +16,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "paper_synthesis": 3,
+    "paper_synthesis": 4,
     "readiness_blocked": 10,
     "run_plan": 2,
     "server_runtime_positive": 1,
@@ -55,6 +55,7 @@
     "public-origin-deploy-plan": 1,
     "public-origin-readiness": 1,
     "public-trial-plan": 1,
+    "reviewer-risk-synthesis": 1,
     "server-runtime-positive-control": 1,
     "source-audit": 1,
     "workload-synthesis": 1
@@ -650,6 +651,22 @@
       "supports": "A Korean professor-facing decision packet that separates recommended paper scope, optional positive-result gates, blocked claims, and questions for the next research meeting.",
       "do_not_claim": "New runtime evidence, final professor approval, public browser CM success, live AWS+s2n success, or Safari handover success.",
       "next_gap": "Use in the professor meeting to choose between conservative maturity/gap paper scope and opening AWS/public-browser gates for positive results.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "noniphone-reviewer-risk-audit",
+      "chapter": "12",
+      "category": "reviewer-risk-synthesis",
+      "implementation": "cross-layer evidence corpus",
+      "evidence_doc": "docs/results/noniphone-reviewer-risk-audit-20260701.md",
+      "runner_or_tool": "tools/build_noniphone_reviewer_risk_audit.py",
+      "local_artifact_id": "noniphone-reviewer-risk-audit-20260701",
+      "claim_strength": "paper_synthesis",
+      "supports": "A reviewer-facing validity audit that identifies critical overclaim risks, external-validity gaps, AWS/browser/Safari claim boundaries, and defensive wording for the current paper scope.",
+      "do_not_claim": "New runtime evidence, reviewer acceptance, public browser CM success, live AWS+s2n success, or Safari handover success.",
+      "next_gap": "Use the audit to revise the paper abstract/introduction/method wording before deciding whether external positive-result gates must be opened.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

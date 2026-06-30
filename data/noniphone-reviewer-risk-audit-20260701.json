@@ -1,0 +1,171 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "source_paths": {
+    "claim_dashboard": "data/noniphone-claim-readiness-dashboard-20260701.json",
+    "professor_packet": "data/noniphone-professor-decision-packet-20260701.json"
+  },
+  "source_exists": {
+    "claim_dashboard": true,
+    "professor_packet": true
+  },
+  "summary": {
+    "risk_count": 9,
+    "critical_count": 2,
+    "high_count": 4,
+    "critical_risks": [
+      "guarantee_overclaim",
+      "public_positive_absence"
+    ],
+    "high_risks": [
+      "local_rebinding_external_validity",
+      "aws_s2n_scope_confusion",
+      "streaming_completion_qoe_confound",
+      "terminology_mobile_unstable"
+    ],
+    "allowed_claim_count": 5,
+    "blocked_claim_count": 3,
+    "professor_questions": [
+      "현재 논문을 CM implementation/deployment/browser maturity gap 분석으로 scope를 확정해도 되는가?",
+      "positive result가 꼭 필요하다면 AWS NLB+s2n과 Chrome controlled-public workload 중 어느 gate를 먼저 열 것인가?",
+      "Streaming workload는 main claim으로 둘 것인가, QoE/session-churn appendix로 둘 것인가?",
+      "Safari는 main browser comparison이 아니라 feasibility appendix로 제한해도 되는가?"
+    ],
+    "audit_decision": "The paper is defensible as a conservative maturity/gap analysis if critical overclaims are avoided; positive browser/AWS claims require opening external gates."
+  },
+  "risks": [
+    {
+      "id": "guarantee_overclaim",
+      "severity": "critical",
+      "reviewer_objection": "The paper may overstate that HTTP/3 Connection Migration guarantees web task continuity.",
+      "current_evidence": [
+        "noniphone-claim-readiness-dashboard",
+        "noniphone-professor-decision-packet"
+      ],
+      "vulnerable_wording": "HTTP/3 Connection Migration guarantees seamless work continuity.",
+      "defensible_wording": "We evaluate where QUIC/HTTP/3 migration primitives, deployment routing, browser policy, and workload behavior do or do not support continuity.",
+      "mitigation": "Use evaluate/assess/classify language, and keep transport continuity separate from application task completion.",
+      "remaining_gap": "A positive public browser CM success row is still absent.",
+      "professor_decision_needed": "Decide whether the paper is a maturity/gap analysis or must wait for a positive public/browser result."
+    },
+    {
+      "id": "local_rebinding_external_validity",
+      "severity": "high",
+      "reviewer_objection": "Local UDP rebinding may not generalize to Wi-Fi/LTE, desktop interface handover, or public origin behavior.",
+      "current_evidence": [
+        "chrome-local-rebinding-workload-controls",
+        "noniphone-workload-qoe-synthesis",
+        "noniphone-desktop-path-change-readiness"
+      ],
+      "vulnerable_wording": "Chrome handover works because local rebinding controls pass.",
+      "defensible_wording": "Local rebinding controls are controlled browser/workload probes; public handover remains a separate gate.",
+      "mitigation": "Label local results as controls and require public-origin active path-change rows for browser CM success.",
+      "remaining_gap": "No active non-iPhone secondary desktop path and no H3-ready controlled public origin are available.",
+      "professor_decision_needed": "Open public Chrome gates or keep local controls as methodological evidence only."
+    },
+    {
+      "id": "public_positive_absence",
+      "severity": "critical",
+      "reviewer_objection": "The paper lacks a successful controlled-public Chrome single-session migration result.",
+      "current_evidence": [
+        "controlled-public-chrome-bridge-synthesis",
+        "noniphone-public-workload-trial-packet",
+        "controlled-public-origin-workload-deploy-packet"
+      ],
+      "vulnerable_wording": "Chrome public-origin Connection Migration is validated.",
+      "defensible_wording": "Tracked public Chrome rows currently provide H3 baselines and negative/gap evidence, not strong CM success.",
+      "mitigation": "Report strong CM acceptance criteria and state that current strong success count is zero.",
+      "remaining_gap": "Need application completion, client active path change, server tuple change, qlog path validation, and one target Chrome QUIC session in the same active row.",
+      "professor_decision_needed": "Choose whether to run public Chrome trials after opening origin and desktop path gates."
+    },
+    {
+      "id": "aws_s2n_scope_confusion",
+      "severity": "high",
+      "reviewer_objection": "AWS NLB+s2n readiness may be confused with live forwarding or active migration success.",
+      "current_evidence": [
+        "s2n-nlb-cid-provider-proof",
+        "s2n-nlb-live-readiness",
+        "aws-s2n-nlb-live-runner",
+        "s2n-active-migration-api-audit"
+      ],
+      "vulnerable_wording": "AWS NLB+s2n migration works.",
+      "defensible_wording": "The repository has local CID-provider prerequisite evidence and a fail-closed live runner; live AWS forwarding is credential-blocked and active migration is a later design step.",
+      "mitigation": "Split AWS claims into local prerequisite, live forwarding echo, and active path-change variant.",
+      "remaining_gap": "AWS identity is invalid on the current host; live forwarding has not run.",
+      "professor_decision_needed": "Refresh AWS credentials if AWS deployment evidence is required for the paper."
+    },
+    {
+      "id": "streaming_completion_qoe_confound",
+      "severity": "high",
+      "reviewer_objection": "Streaming completion can hide rebuffering, retry/reconnect, and multiple QUIC sessions.",
+      "current_evidence": [
+        "chrome-desktop-noniphone-musiclike-local-refresh",
+        "chrome-desktop-noniphone-buffered-media-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "vulnerable_wording": "Video and music workloads are continuous because playback completed.",
+      "defensible_wording": "Streaming workloads are reported with QoE and session attribution; completion alone is not continuity.",
+      "mitigation": "Always report rebuffer count, startup delay, retry count, target session count, tuple change, and qlog path evidence together.",
+      "remaining_gap": "No public streaming handover rows exist yet.",
+      "professor_decision_needed": "Decide whether streaming is a main evaluation axis or a QoE appendix."
+    },
+    {
+      "id": "implementation_survey_heterogeneity",
+      "severity": "medium",
+      "reviewer_objection": "Implementation evidence mixes runtime tests, source audits, app demos, and readiness gates.",
+      "current_evidence": [
+        "cross-implementation-fresh-rerun",
+        "sanitized-evidence-bundle-20260630",
+        "implementation-survey.csv"
+      ],
+      "vulnerable_wording": "All surveyed implementations are equally mature.",
+      "defensible_wording": "The survey uses evidence levels and claim boundaries; runtime, source, app-demo, and readiness evidence are not treated as equal.",
+      "mitigation": "Keep current_level/evidence_status columns visible and do not collapse them into a single binary support label.",
+      "remaining_gap": "Some large production stacks still need Linux/build-focused execution.",
+      "professor_decision_needed": "Decide whether additional implementation appendix depth is needed after the current broad survey."
+    },
+    {
+      "id": "terminology_mobile_unstable",
+      "severity": "high",
+      "reviewer_objection": "Terms like unstable mobile network or mobile handover may be ambiguous or overbroad.",
+      "current_evidence": [
+        "noniphone-professor-decision-packet",
+        "noniphone-claim-readiness-dashboard"
+      ],
+      "vulnerable_wording": "Unstable mobile networks are evaluated.",
+      "defensible_wording": "The current non-iPhone work evaluates controlled path-change readiness, local rebinding controls, public-origin gates, and workload continuity boundaries.",
+      "mitigation": "Avoid claiming LTE/5G/Wi-Fi handover unless those rows exist; define path change, NAT rebinding, public-origin handover, and application recovery separately.",
+      "remaining_gap": "No non-iPhone public active path-change row exists yet.",
+      "professor_decision_needed": "Approve terminology before writing the final introduction and abstract."
+    },
+    {
+      "id": "safari_claim_ceiling",
+      "severity": "medium",
+      "reviewer_objection": "Safari evidence has weaker observability than Chrome and is currently blocked at WebDriver session creation.",
+      "current_evidence": [
+        "safari-webdriver-session-readiness",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "vulnerable_wording": "Safari Connection Migration behavior is evaluated.",
+      "defensible_wording": "Safari is a feasibility appendix candidate; current evidence is readiness-blocked and has lower browser-internal observability.",
+      "mitigation": "Do not include Safari in main claims until session smoke and controlled-public baseline pass.",
+      "remaining_gap": "Safari Allow remote automation is not enabled.",
+      "professor_decision_needed": "Decide whether Safari should be excluded, deferred, or kept as a feasibility appendix."
+    },
+    {
+      "id": "security_public_artifact_hygiene",
+      "severity": "medium",
+      "reviewer_objection": "Public artifacts may accidentally expose credentials, hosts, IPs, qlogs, NetLogs, or account data.",
+      "current_evidence": [
+        "sanitized-evidence-bundle-20260630",
+        "reproducibility-manifest-20260630",
+        "publication_bundle_validation"
+      ],
+      "vulnerable_wording": "Raw artifacts are included for reproducibility.",
+      "defensible_wording": "The public repository includes sanitized summaries, tools, manifests, and claim boundaries; raw sensitive artifacts remain excluded.",
+      "mitigation": "Continue secret scan, publication bundle validation, and generated evidence-to-claim mapping before every push.",
+      "remaining_gap": "Raw artifact archival policy for private review is separate from the public repository.",
+      "professor_decision_needed": "Decide whether private raw artifacts need an offline appendix or institutional storage."
+    }
+  ]
+}

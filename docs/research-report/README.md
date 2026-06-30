@@ -64,6 +64,7 @@
 | 후속 연구 bridge synthesis. tracked controlled-public Chrome 결과 통합 | 작성 완료 | `../results/controlled-public-chrome-bridge-synthesis-20260701.md` |
 | 후속 연구 claim readiness. 논문 claim 가능/불가능 판정 | 작성 완료 | `../results/noniphone-claim-readiness-dashboard-20260701.md` |
 | 후속 연구 교수님 decision packet. 미팅용 판단 자료 | 작성 완료 | `../results/noniphone-professor-decision-packet-20260701.md` |
+| 후속 연구 reviewer risk audit. 논문 방어/타당도 리스크 | 작성 완료 | `../results/noniphone-reviewer-risk-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -180,3 +181,4 @@
 | `docs/results/non-iphone-gate-rerun-20260701.md` | 2026-07-01 AWS/Safari/public-origin non-iPhone gate 재검사 결과 |
 | `docs/results/noniphone-claim-readiness-dashboard-20260701.md` | 현재 evidence로 허용 가능한 논문 claim과 막아야 할 public/browser/AWS claim 분리 |
 | `docs/results/noniphone-professor-decision-packet-20260701.md` | 교수님 미팅에서 scope/positive-result gate/Safari appendix 결정을 받을 수 있는 한국어 decision packet |
+| `docs/results/noniphone-reviewer-risk-audit-20260701.md` | 리뷰어가 공격할 수 있는 overclaim/external validity/AWS/browser/Safari/QoE 리스크와 방어 문장 |
