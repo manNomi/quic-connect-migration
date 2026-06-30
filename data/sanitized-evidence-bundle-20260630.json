@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 34,
+  "item_count": 35,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -17,7 +17,7 @@
     "negative_control": 2,
     "observability_positive": 1,
     "paper_synthesis": 1,
-    "readiness_blocked": 9,
+    "readiness_blocked": 10,
     "run_plan": 2,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
@@ -42,6 +42,7 @@
     "deployment-prerequisite": 1,
     "deployment-readiness": 3,
     "deployment-runtime-readiness": 1,
+    "desktop-path-readiness": 1,
     "implementation-api-audit": 1,
     "implementation-app-demo": 2,
     "implementation-focused-e2e": 1,
@@ -583,6 +584,22 @@
       "supports": "The WebPKI + Alt-Svc H3 origin setup is connected to the non-iPhone public range, upload, buffered-video, and music-like workload trial packet.",
       "do_not_claim": "A public origin is currently running, any public workload has been executed, or browser Connection Migration succeeded.",
       "next_gap": "Open the public H3 origin gate, run the baseline, then execute the non-iPhone public workload trial packet.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "noniphone-desktop-path-change-readiness",
+      "chapter": "7/9/10/11",
+      "category": "desktop-path-readiness",
+      "implementation": "macOS Chrome desktop path-change gate",
+      "evidence_doc": "docs/results/noniphone-desktop-path-change-readiness-20260701.md",
+      "runner_or_tool": "tools/build_noniphone_desktop_path_change_readiness.py",
+      "local_artifact_id": "noniphone-desktop-path-change-readiness-20260701",
+      "claim_strength": "readiness_blocked",
+      "supports": "The current host has no active non-iPhone secondary desktop path; iPhone latent failover and Android candidates are excluded from the desktop public workload gate.",
+      "do_not_claim": "A desktop active path-change command is ready, any public workload has been executed, or browser Connection Migration succeeded.",
+      "next_gap": "Connect or enable a non-iPhone secondary path such as Ethernet or USB LAN, then rerun the readiness packet before setting NETWORK_CHANGE_CMD.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

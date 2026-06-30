@@ -73,6 +73,8 @@
 | [data/noniphone-public-workload-trial-packet-20260701.json](../../data/noniphone-public-workload-trial-packet-20260701.json) | structured public workload trial packet |
 | [docs/results/controlled-public-origin-workload-deploy-packet-20260701.md](../results/controlled-public-origin-workload-deploy-packet-20260701.md) | controlled public H3 origin deployment packet for the non-iPhone workload trial |
 | [data/controlled-public-origin-workload-deploy-packet-20260701.json](../../data/controlled-public-origin-workload-deploy-packet-20260701.json) | structured public origin workload deployment packet |
+| [docs/results/noniphone-desktop-path-change-readiness-20260701.md](../results/noniphone-desktop-path-change-readiness-20260701.md) | non-iPhone desktop active path-change readiness before public workload trials |
+| [data/noniphone-desktop-path-change-readiness-20260701.json](../../data/noniphone-desktop-path-change-readiness-20260701.json) | structured non-iPhone desktop path-change readiness |
 
 ## 5. Reproducibility Commands
 

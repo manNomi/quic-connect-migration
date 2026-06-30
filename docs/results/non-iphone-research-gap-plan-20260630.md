@@ -193,6 +193,10 @@
 
 > `docs/results/controlled-public-origin-workload-deploy-packet-20260701.md`로 public H3 origin 준비 절차를 새 workload packet과 연결했다. packet은 WebPKI certificate, TCP/UDP 443, Alt-Svc `h3`, quic-go H3 server baseline, `CONTROLLED_PUBLIC_BASELINE_SUMMARY`, non-iPhone public workload packet 실행 순서를 하나의 run plan으로 묶는다. 이는 public origin이 현재 준비됐다는 근거가 아니라, origin gate가 열렸을 때 range/upload/media trial로 바로 넘어가기 위한 deployment protocol이다.
 
+2026-07-01 non-iPhone desktop path-change readiness:
+
+> `docs/results/noniphone-desktop-path-change-readiness-20260701.md`로 iPhone을 제외한 desktop active path-change gate를 별도 점검했다. 현재 호스트는 active IPv4 interface가 `en0` 하나뿐이라 non-iPhone secondary desktop path가 없고, `macos_wifi_to_iphone_usb_latent_failover`와 `android_wifi_to_cellular_cutover` 후보는 이번 desktop gate에서 제외했다. 따라서 public workload active row를 세려면 먼저 Ethernet, USB LAN, Thunderbolt Ethernet 같은 non-iPhone secondary path를 연결/활성화한 뒤 `client_active_path_changed` snapshot gate를 통과해야 한다.
+
 2026-07-01 controlled-public bridge synthesis:
 
 > `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md`로 tracked controlled-public Chrome validation 문서 18개를 통합했다. no-change baseline 6개는 모두 H3 application baseline으로 확인됐지만, active network-change 12개 중 strong controlled-public CM success row는 `0`개였다. active row 중 2개는 application task가 성공했지만 qlog path validation이 없어서 `tuple_changed_without_path_validation` 또는 negative-control로만 쓸 수 있다. 따라서 이 corpus는 Chrome public-origin CM 성공 근거가 아니라 deployment/browser bridge gap과 negative-control 근거다.
@@ -240,7 +244,7 @@
 
 상태:
 
-> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 34개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
+> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 35개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
 
 해석:
 

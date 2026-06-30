@@ -31,13 +31,14 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     assert "invalid_client_token" in tracks["aws-s2n-nlb-live-forwarding"]["blocker"]
     assert "non-iphone-gate-rerun-20260701" in tracks["aws-s2n-nlb-live-forwarding"]["supporting_evidence_found"]
     assert tracks["chrome-controlled-public-workloads"]["rank"] == 2
-    assert tracks["chrome-controlled-public-workloads"]["current_state"] == "local_controls_pass_public_bridge_gap_user_origin_not_h3_ready"
+    assert tracks["chrome-controlled-public-workloads"]["current_state"] == "local_controls_pass_public_bridge_gap_origin_and_desktop_path_blocked"
     assert "user-provided-public-origin-readiness" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "controlled-public-chrome-bridge-synthesis" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-musiclike-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-buffered-media-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "noniphone-workload-qoe-synthesis" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "controlled-public-origin-workload-deploy-packet" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
+    assert "noniphone-desktop-path-change-readiness" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "noniphone-public-workload-trial-packet" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-upload-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert tracks["safari-desktop-baseline"]["current_state"] == "binary_ready_session_blocked"

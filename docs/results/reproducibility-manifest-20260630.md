@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `b038a34` |
+| source commit at generation | `1b8f481` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `138` |
-| latest experiment matrix item | `controlled-public-origin-workload-deploy-packet` |
+| experiment matrix items | `139` |
+| latest experiment matrix item | `noniphone-desktop-path-change-readiness` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -77,6 +77,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `noniphone_workload_qoe_synthesis_csv` | `data/noniphone-workload-qoe-continuity-synthesis-20260701.csv` | `yes` |
 | `controlled_public_origin_workload_deploy_packet` | `docs/results/controlled-public-origin-workload-deploy-packet-20260701.md` | `yes` |
 | `controlled_public_origin_workload_deploy_packet_json` | `data/controlled-public-origin-workload-deploy-packet-20260701.json` | `yes` |
+| `noniphone_desktop_path_change_readiness` | `docs/results/noniphone-desktop-path-change-readiness-20260701.md` | `yes` |
+| `noniphone_desktop_path_change_readiness_json` | `data/noniphone-desktop-path-change-readiness-20260701.json` | `yes` |
 | `noniphone_public_workload_trial_packet` | `docs/results/noniphone-public-workload-trial-packet-20260701.md` | `yes` |
 | `noniphone_public_workload_trial_packet_json` | `data/noniphone-public-workload-trial-packet-20260701.json` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh` | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | `yes` |

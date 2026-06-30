@@ -136,6 +136,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "noniphone_workload_qoe_synthesis_csv": "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv",
         "controlled_public_origin_workload_deploy_packet": "docs/results/controlled-public-origin-workload-deploy-packet-20260701.md",
         "controlled_public_origin_workload_deploy_packet_json": "data/controlled-public-origin-workload-deploy-packet-20260701.json",
+        "noniphone_desktop_path_change_readiness": "docs/results/noniphone-desktop-path-change-readiness-20260701.md",
+        "noniphone_desktop_path_change_readiness_json": "data/noniphone-desktop-path-change-readiness-20260701.json",
         "noniphone_public_workload_trial_packet": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
         "noniphone_public_workload_trial_packet_json": "data/noniphone-public-workload-trial-packet-20260701.json",
         "chrome_desktop_noniphone_range_local_refresh": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",

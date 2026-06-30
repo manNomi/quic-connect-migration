@@ -100,6 +100,7 @@
 88. non-iPhone workload continuity/QoE synthesis를 추가했다. 기존 local Chrome/quic-go CSV 8개에서 32개 row를 정규화했고, range/download와 upload는 single-session local path-validation evidence가 상대적으로 강한 반면 buffered video와 music-like segment는 completion을 QoE 비용, retry/reconnect, Chrome session churn과 분리해야 함을 확인했다.
 89. non-iPhone public workload trial packet을 추가했다. public H3 origin과 desktop active path-change command가 준비되면 baseline, range no-change, range active 3회, upload no-change, upload active 3회, buffered low/high active, music-like retry0/retry1 active 순서로 실행하며 strong CM acceptance는 task completion, client path change, target tuple change, qlog PATH_CHALLENGE/PATH_RESPONSE, Chrome target QUIC session `1`개를 모두 요구하도록 고정했다.
 90. controlled public origin workload deploy packet을 추가했다. WebPKI TLS, TCP/UDP 443, Alt-Svc `h3`, quic-go H3 server baseline, non-iPhone public workload packet 실행 순서를 하나로 연결해 public origin gate가 열리면 range/upload/media trial로 바로 넘어갈 수 있게 했다.
+91. non-iPhone desktop path-change readiness를 추가했다. 현재 호스트는 active IPv4 interface가 `en0` 하나뿐이라 iPhone을 제외한 desktop active secondary path가 없고, iPhone latent failover와 Android 후보는 desktop public workload gate에서 제외했다. 따라서 public workload active row를 세기 전 Ethernet/USB LAN/Thunderbolt Ethernet 같은 non-iPhone secondary path를 먼저 열어야 한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -289,6 +290,7 @@
 - [Non-iPhone workload continuity and QoE synthesis](docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md)
 - [Non-iPhone public workload trial packet](docs/results/noniphone-public-workload-trial-packet-20260701.md)
 - [Controlled public origin workload deploy packet](docs/results/controlled-public-origin-workload-deploy-packet-20260701.md)
+- [Non-iPhone desktop path-change readiness](docs/results/noniphone-desktop-path-change-readiness-20260701.md)
 - [Controlled public Chrome bridge synthesis](docs/results/controlled-public-chrome-bridge-synthesis-20260701.md)
 - [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
 - [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)

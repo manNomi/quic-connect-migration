@@ -42,6 +42,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "chrome-desktop-noniphone-buffered-media-local-refresh" in ids
     assert "noniphone-workload-qoe-synthesis" in ids
     assert "controlled-public-origin-workload-deploy-packet" in ids
+    assert "noniphone-desktop-path-change-readiness" in ids
     assert "noniphone-public-workload-trial-packet" in ids
     assert "chrome-desktop-noniphone-range-local-refresh" in ids
     assert "chrome-desktop-noniphone-upload-local-refresh" in ids
