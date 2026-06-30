@@ -1,0 +1,129 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "source_paths": {
+    "s2n_api_audit": "data/s2n-active-migration-api-audit-20260630.json",
+    "safety_audit": "data/aws-s2n-live-runner-safety-audit-20260701.json",
+    "gate_rerun": "data/non-iphone-gate-rerun-20260701.json"
+  },
+  "source_exists": {
+    "s2n_api_audit": true,
+    "safety_audit": true,
+    "gate_rerun": true
+  },
+  "summary": {
+    "public_active_trigger_api_found": false,
+    "migration_tests_present": true,
+    "active_path_events_present": true,
+    "path_migration_provider_public": false,
+    "live_runner_safety_ok": true,
+    "aws_gate_open": false,
+    "current_open_gates": [],
+    "recommended_first_step": "phase1_forwarding_echo_prerequisite",
+    "preferred_phase2_design": "phase2_nat_rebinding_proxy",
+    "decision": "Run live forwarding echo first when AWS opens; because s2n lacks a current public AddPath/Probe/Switch API, use NAT-rebinding proxy as the preferred phase-2 path-change design."
+  },
+  "options": [
+    {
+      "id": "phase1_forwarding_echo_prerequisite",
+      "rank": 0,
+      "label": "Live forwarding echo prerequisite",
+      "design_type": "prerequisite",
+      "prerequisite": "AWS identity ok and live runner safety audit ok.",
+      "mechanism": "Run the existing AWS NLB+s2n live runner without path-change injection.",
+      "evidence_required": [
+        "validation=ok",
+        "client_echo_matches=true",
+        "server_success_count=1",
+        "successful_target present",
+        "cleanup_status recorded"
+      ],
+      "claim_if_success": "AWS NLB can forward a deterministic s2n-quic echo workload to exactly one CID-routed target in this setup.",
+      "do_not_claim": "Active migration or path-change continuity.",
+      "feasibility": "blocked_until_aws_identity_ok",
+      "next_action": "Refresh AWS credentials, then run `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh` with default cleanup."
+    },
+    {
+      "id": "phase2_nat_rebinding_proxy",
+      "rank": 1,
+      "label": "NAT-rebinding proxy path-change",
+      "design_type": "preferred_phase2",
+      "prerequisite": "Phase-1 forwarding echo passes; NLB endpoint, server IDs, and cleanup are validated.",
+      "mechanism": "Insert a UDP rebinding proxy between the s2n client and the NLB endpoint so the server/NLB observes a source tuple change while the application workload continues.",
+      "evidence_required": [
+        "client echo or stream continuity",
+        "proxy upstream A/B packet counters",
+        "server observed remote tuple count >= 2 or active-path update event",
+        "same successful target before/after rebind",
+        "PATH_CHALLENGE/PATH_RESPONSE or s2n active-path event when available",
+        "CID Server ID remains routable"
+      ],
+      "claim_if_success": "AWS NLB+s2n can tolerate a controlled NAT-rebinding style path change for the tested echo/stream workload.",
+      "do_not_claim": "Application-triggered active migration API support or browser handover.",
+      "feasibility": "best_next_design_without_s2n_public_active_api",
+      "next_action": "Add a live-runner variant that routes the s2n client through a UDP rebinding proxy and records proxy/server event evidence."
+    },
+    {
+      "id": "phase2_linux_network_namespace_rebind",
+      "rank": 2,
+      "label": "Linux namespace/SNAT client path-change",
+      "design_type": "deployment_like_variant",
+      "prerequisite": "Linux/EC2 client host with permission to create namespaces, veth, routes, or NAT rules.",
+      "mechanism": "Run the s2n client on a Linux host and change the egress source tuple using namespace/routing/SNAT controls during a longer stream workload.",
+      "evidence_required": [
+        "client path-change command log",
+        "before/after local route or SNAT state",
+        "server tuple change",
+        "same target after path change",
+        "workload completion",
+        "s2n event/qlog evidence if enabled"
+      ],
+      "claim_if_success": "The AWS NLB+s2n setup survives a host-level Linux client path-change trigger under the tested conditions.",
+      "do_not_claim": "Mobile Wi-Fi/cellular handover or public browser continuity.",
+      "feasibility": "requires_linux_client_host",
+      "next_action": "Use only after forwarding echo and proxy rebinding design are stable, or when a Linux EC2 client host is easier than local desktop path-change."
+    },
+    {
+      "id": "phase2_s2n_test_io_rebind",
+      "rank": 3,
+      "label": "s2n test-IO rebind adaptation",
+      "design_type": "implementation_variant",
+      "prerequisite": "Access to s2n-quic test IO hooks or a forked test harness.",
+      "mechanism": "Adapt the s2n test-suite socket rebind mechanism into a controlled local or lab runner to reproduce the library's tested rebind path outside the public app API.",
+      "evidence_required": [
+        "socket.rebind-style trigger",
+        "ActivePathUpdated event",
+        "workload completion",
+        "negative-control blocked-port row"
+      ],
+      "claim_if_success": "s2n-quic's lower-level rebind machinery works in a reproduced lab harness.",
+      "do_not_claim": "Public application API support, AWS NLB deployment success, or browser behavior.",
+      "feasibility": "useful_but_lower_paper_value",
+      "next_action": "Keep as fallback if AWS remains blocked and implementation-depth appendix becomes necessary."
+    },
+    {
+      "id": "phase2_public_api_wait_or_patch",
+      "rank": 4,
+      "label": "Wait for or patch public active API",
+      "design_type": "long_term",
+      "prerequisite": "Upstream public path migration provider or an explicit research fork.",
+      "mechanism": "Expose a quic-go-like application trigger in s2n-quic, then perform AddPath/Probe/Switch-like migration through AWS NLB.",
+      "evidence_required": [
+        "public API call trace",
+        "path probe before switch",
+        "validated new path",
+        "payload continuity",
+        "same target through NLB"
+      ],
+      "claim_if_success": "A modified or future s2n-quic API can perform application-triggered active migration through CID-aware NLB routing.",
+      "do_not_claim": "Current upstream public API behavior.",
+      "feasibility": "not_current_upstream",
+      "next_action": "Do not block the paper on this; mention as future improvement direction unless a fork is approved."
+    }
+  ],
+  "claim_boundary": {
+    "safe_claim": "The current design separates AWS forwarding, NAT-rebinding style path change, implementation-level test-IO rebind evidence, and future public active API work.",
+    "unsafe_claim": "The current upstream s2n public API already supports application-triggered active migration through AWS NLB.",
+    "paper_use": "Use this as the methods plan for the AWS follow-up, not as a result row."
+  }
+}

@@ -399,6 +399,20 @@
 
 > 이 audit은 live AWS forwarding 성공이 아니다. 다만 credential이 열렸을 때 무작정 실험을 돌리지 않고, 먼저 forwarding echo만 실행하고 cleanup coverage를 확인한 뒤 active path-change variant를 별도 phase로 설계해야 한다는 실행 경계를 고정한다. 현재 gate는 여전히 `aws_identity_invalid_client_token`이므로 live resource 생성은 하지 않는다.
 
+### P18. 2026-07-01 AWS s2n phase-2 path-change design
+
+목표:
+
+> `AWS NLB + s2n-quic` forwarding echo가 성공한 뒤 어떤 path-change 실험을 해야 하는지 미리 고정한다. 특히 s2n-quic 현재 public API가 quic-go식 `AddPath -> Probe -> Switch`를 제공하지 않는다는 한계를 반영해, active migration overclaim 없이 후속 실험을 설계한다.
+
+상태:
+
+> 완료. `tools/build_aws_s2n_phase2_path_change_design.py`와 regression test를 추가했고, `docs/results/aws-s2n-phase2-path-change-design-20260701.md` 및 `data/aws-s2n-phase2-path-change-design-20260701.json`을 생성했다. 설계는 5개 option을 구분한다: forwarding echo prerequisite, NAT-rebinding proxy path-change, Linux namespace/SNAT client path-change, s2n test-IO rebind adaptation, public API wait-or-patch.
+
+해석:
+
+> AWS가 열리면 1단계는 여전히 live forwarding echo다. 그 다음 현재 upstream s2n public API 조건에서 가장 방어 가능한 phase-2는 NAT-rebinding proxy 방식이다. 이 방식이 성공해도 claim은 "application-triggered active migration"이 아니라 "AWS NLB+s2n이 controlled NAT-rebinding style path change를 견딘다"로 제한해야 한다. 진짜 AddPath/Probe/Switch형 active migration은 s2n public API 변화나 research fork가 승인될 때 future work로 둔다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -421,7 +435,8 @@
 | 16 | non-iPhone paper section scaffold | 완료. 현재 evidence를 abstract/introduction/method/results/limitations에 배치하는 논문 구조 scaffold 생성 |
 | 17 | non-quic-go implementation findings | 완료. quic-go 제외 17개 구현체/스택의 검수 결과와 claim boundary를 교수님 질의 대응용으로 분리 |
 | 18 | AWS s2n live runner safety audit | 완료. live AWS 실행 전 fail-closed gate/resource inventory/cleanup coverage/claim boundary를 정적으로 검수 |
+| 19 | AWS s2n phase-2 path-change design | 완료. forwarding echo 이후 NAT-rebinding proxy/Linux namespace/test-IO/public API variant와 claim boundary를 설계 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, AWS s2n live runner safety audit, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold, non-quic-go implementation findings는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 NAT-rebinding proxy phase-2 variant를 구현한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, AWS s2n live runner safety audit, AWS s2n phase-2 path-change design, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold, non-quic-go implementation findings는 확보됐다.

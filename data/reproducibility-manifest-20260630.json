@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "299150a",
+    "commit": "40080e2",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 146,
+    "total_items": 147,
     "status_counts": {
-      "done": 142,
+      "done": 143,
       "planned": 4
     },
-    "latest_item": "aws-s2n-live-runner-safety-audit"
+    "latest_item": "aws-s2n-phase2-path-change-design"
   },
   "verification": {
     "checks": "109",
@@ -339,6 +339,14 @@
     },
     "aws_s2n_live_runner_safety_audit_json": {
       "path": "data/aws-s2n-live-runner-safety-audit-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_path_change_design": {
+      "path": "docs/results/aws-s2n-phase2-path-change-design-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_path_change_design_json": {
+      "path": "data/aws-s2n-phase2-path-change-design-20260701.json",
       "exists": true
     },
     "s2n_active_migration_api_audit": {

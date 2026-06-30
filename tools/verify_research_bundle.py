@@ -139,6 +139,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     non_quicgo_implementation_findings_json = "data/non-quicgo-implementation-findings-20260701.json"
     aws_s2n_live_runner_safety_audit = "docs/results/aws-s2n-live-runner-safety-audit-20260701.md"
     aws_s2n_live_runner_safety_audit_json = "data/aws-s2n-live-runner-safety-audit-20260701.json"
+    aws_s2n_phase2_path_change_design = "docs/results/aws-s2n-phase2-path-change-design-20260701.md"
+    aws_s2n_phase2_path_change_design_json = "data/aws-s2n-phase2-path-change-design-20260701.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
@@ -219,6 +221,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         non_quicgo_implementation_findings_json = str(generated_dir / "non-quicgo-implementation-findings.json")
         aws_s2n_live_runner_safety_audit = str(generated_dir / "aws-s2n-live-runner-safety-audit.md")
         aws_s2n_live_runner_safety_audit_json = str(generated_dir / "aws-s2n-live-runner-safety-audit.json")
+        aws_s2n_phase2_path_change_design = str(generated_dir / "aws-s2n-phase2-path-change-design.md")
+        aws_s2n_phase2_path_change_design_json = str(generated_dir / "aws-s2n-phase2-path-change-design.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
@@ -273,6 +277,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_noniphone_paper_section_scaffold.py",
                 "tools/build_non_quicgo_implementation_findings.py",
                 "tools/audit_aws_s2n_live_runner_safety.py",
+                "tools/build_aws_s2n_phase2_path_change_design.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
@@ -338,6 +343,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_noniphone_paper_section_scaffold.py",
                 "tools/test_build_non_quicgo_implementation_findings.py",
                 "tools/test_audit_aws_s2n_live_runner_safety.py",
+                "tools/test_build_aws_s2n_phase2_path_change_design.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
@@ -1157,6 +1163,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 aws_s2n_live_runner_safety_audit,
                 "--json-output",
                 aws_s2n_live_runner_safety_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_path_change_design_regression",
+            [python_bin, "tools/test_build_aws_s2n_phase2_path_change_design.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_path_change_design",
+            [
+                python_bin,
+                "tools/build_aws_s2n_phase2_path_change_design.py",
+                "--output",
+                aws_s2n_phase2_path_change_design,
+                "--json-output",
+                aws_s2n_phase2_path_change_design_json,
             ],
             {0},
             30,
