@@ -4,7 +4,7 @@
 
 ## 1. 이 챕터의 목적
 
-이 챕터의 목적은 단순히 “어떤 QUIC 구현체가 유명한가”를 나열하는 것이 아니다. 교수님 피드백의 첫 번째 논점은 다음이었다.
+이 챕터의 목적은 단순히 “어떤 QUIC 구현체가 유명한가”를 나열하는 것이 아니다. 초기 연구 피드백의 첫 번째 논점은 다음이었다.
 
 > Connection Migration이 왜 안 쓰이는지를 논하려면, 먼저 그 기술이 실제 구현체에 구현되어 있는지 확인해야 한다.
 
@@ -319,7 +319,7 @@ Chapter 1의 결론은 다음이다.
 
 ## 10. 보고 시 강조할 문장
 
-교수님께 설명할 때는 이렇게 말하면 된다.
+연구 검토 시에는 다음처럼 요약할 수 있다.
 
 > 챕터 1에서는 QUIC WG 구현체 목록을 출발점으로 18개 구현체/스택을 선정했고, path validation, NAT rebinding, active migration API, migration policy, preferred address, CID/LB, qlog/event, test 여부를 CSV로 정리했습니다. 이후 scanner로 1차 evidence 후보를 찾고, source/test를 수동 검수했으며, 8개 구현체는 local test까지 실행했습니다. 결론적으로 CM은 구현체 수준에서는 존재하지만, 실제 브라우저나 CDN/LB에서 end-to-end CM으로 보이는지는 별도 문제라서 Chapter 2에서 deployment/runtime friction을 분석하게 되었습니다.
 

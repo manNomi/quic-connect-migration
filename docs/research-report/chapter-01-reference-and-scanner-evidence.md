@@ -12,7 +12,7 @@
 | HTTP/3 RFC | [RFC 9114: HTTP/3](https://datatracker.ietf.org/doc/html/rfc9114) | HTTP/3가 QUIC 위에서 동작한다는 전제와 웹 실험 해석 기준 |
 | QUIC WG 구현체 목록 | [quicwg/base-drafts wiki: Implementations](https://github.com/quicwg/base-drafts/wiki/Implementations) | 조사 대상 seed 목록 |
 | QUIC WG 구현체 원본 목록 | [quicwg.github.io implementations.md](https://github.com/quicwg/quicwg.github.io/blob/main/implementations.md) | wiki와 함께 구현체 후보를 교차 확인 |
-| 교수님 추천 핵심 논문 | [ACM DOI: 10.1145/3727063.3727066](https://dl.acm.org/doi/10.1145/3727063.3727066) | 최신 관련 연구 기준점. 로컬 PDF: `/Users/manwook-han/Desktop/lab/3727063.3727066.pdf` |
+| 핵심 참고 논문 | [ACM DOI: 10.1145/3727063.3727066](https://dl.acm.org/doi/10.1145/3727063.3727066) | 최신 관련 연구 기준점. 로컬 PDF: `/Users/manwook-han/Desktop/lab/3727063.3727066.pdf` |
 | curl 이슈 | [curl/curl#7695](https://github.com/curl/curl/issues/7695) | HTTP/3 지원과 Connection Migration 지원이 동일하지 않다는 반례성 근거 |
 
 ## 2. 구현체별 공식 링크
@@ -120,7 +120,7 @@ python3 tools/scan_implementation_evidence.py \
 
 ## 6. 검증 순서
 
-교수님 또는 제3자가 hallucination 여부를 점검하려면 다음 순서로 보면 된다.
+검토자 또는 제3자가 hallucination 여부를 점검하려면 다음 순서로 보면 된다.
 
 1. RFC 9000에서 connection migration/path validation/transport parameter 개념을 확인한다.
 2. `data/implementation-survey.csv`에서 내가 어떤 구현체를 어떤 level로 분류했는지 본다.

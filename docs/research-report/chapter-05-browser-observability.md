@@ -21,7 +21,7 @@ Chapter 3와 Chapter 4는 controlled QUIC client/server와 CID-aware deployment 
 | L2 | client/server path change proof | server remote tuple 증가, client path snapshot 변화, local rebinding proxy switch | 재연결 또는 multiple session 가능성 배제 불가 |
 | L3 | QUIC path validation proof | qlog 또는 NetLog의 `PATH_CHALLENGE`/`PATH_RESPONSE` | path validation은 transport 절차이지 작업 보장의 충분조건은 아님 |
 | L4 | browser session attribution | Chrome target QUIC session count/source id | browser CM claim의 핵심 경계 |
-| L5 | application task continuity | L1-L4와 workload completion을 함께 만족 | 논문에서 가장 방어 가능한 browser-level claim |
+| L5 | application task continuity | L1-L4와 workload completion을 함께 만족 | 논문에서 가장 근거가 충분한 browser-level claim |
 
 따라서 "작업이 완료됐다"와 "같은 QUIC connection에서 migration됐다"는 별도 outcome이다.
 

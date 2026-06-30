@@ -38,7 +38,7 @@
 | [run-local-happy-path.sh#L21-L29](../../../repro/quic-go-min-repro/scripts/run-local-happy-path.sh#L21-L29) | server launch with qlog/keylog/result paths | server artifacts | run artifact 생성 |
 | [run-local-happy-path.sh#L41-L52](../../../repro/quic-go-min-repro/scripts/run-local-happy-path.sh#L41-L52) | client launch with payload/probe/qlog paths | client artifacts | positive control 실행 |
 | [run-local-happy-path.sh#L57-L61](../../../repro/quic-go-min-repro/scripts/run-local-happy-path.sh#L57-L61) | `rg --no-ignore --text` for path frames | `qlog-path-validation.txt` | ignored artifact path의 qlog도 검출 |
-| [run-local-quic-go.sh#L24-L46](../../../harness/scripts/run-local-quic-go.sh#L24-L46) | repo-level wrapper | manifest and validation summary | 교수님 보고용 한 명령 wrapper |
+| [run-local-quic-go.sh#L24-L46](../../../harness/scripts/run-local-quic-go.sh#L24-L46) | repo-level wrapper | manifest and validation summary | 연구 보고용 한 명령 wrapper |
 | [validate-quic-go-artifacts.sh#L19-L21](../../../harness/scripts/validate-quic-go-artifacts.sh#L19-L21) | client/server/qlog existence | required artifact gate | 결과 파일 누락 방지 |
 | [validate-quic-go-artifacts.sh#L23-L29](../../../harness/scripts/validate-quic-go-artifacts.sh#L23-L29) | client/server `ok=true` | success gate | qlog만 있고 application 실패한 run 배제 |
 | [validate-quic-go-artifacts.sh#L31-L37](../../../harness/scripts/validate-quic-go-artifacts.sh#L31-L37) | `path_challenge|path_response` scan | non-empty qlog evidence | migration primitive 검증 |
