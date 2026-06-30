@@ -70,6 +70,7 @@ TRACKS = [
             "user-provided-public-origin-readiness",
             "non-iphone-gate-rerun-20260701",
             "chrome-desktop-noniphone-media-local-refresh",
+            "chrome-desktop-noniphone-musiclike-local-refresh",
             "chrome-desktop-noniphone-range-local-refresh",
             "chrome-desktop-noniphone-upload-local-refresh",
         ),

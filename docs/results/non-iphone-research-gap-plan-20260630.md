@@ -173,6 +173,10 @@
 
 > `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md`로 fresh local Chrome forced-H3 upload control을 추가했다. `chrome-desktop-noniphone-upload-drop3000-retry0-20260630`은 `PASS`, `nat_rebinding_path_validation_without_observed_tuple_change`, upload complete `true`, retry used `0`, upload bytes `131072`, Chrome target QUIC session `1`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet A/B `29/110`이었다. server request-level remote tuple은 `1`개로 유지되어 upload에서는 request log만으로 packet-level rebinding을 판단하면 안 된다는 기존 2026-06-24 결과를 fresh row로 재확인했다.
 
+2026-07-01 music-like 추가 확인:
+
+> `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md`로 fresh local Chrome forced-H3 music-like segment control 2개 row를 추가했다. 6000ms A+B return-path outage에서 retry0 row는 `FAIL`, `browser_h3_request_failed`, media complete `false`, completed segment `1/8`, Chrome target QUIC session `2`였다. 같은 조건에서 retry1 row는 `PASS`, `nat_rebinding_multiple_quic_sessions`, media complete `true`, completed segment `8/8`, Chrome target QUIC session `3`이었다. 따라서 음악형 streaming completion은 retry/reconnect 기반 작업 회복으로 해석해야 하며, single-session browser CM 성공으로 쓰면 안 된다.
+
 2026-06-30 user-provided public origin readiness:
 
 > 사용자가 제안한 public HTTPS origin 후보를 `tools/check_public_origin_readiness.py`로 redacted 검사했다. 결과는 HTTPS reachability `true`, final status `HTTP/2 200`, `h3 Alt-Svc=false`였다. 따라서 이 후보는 그대로 controlled-public H3 workload target이 아니며, 해당 도메인을 쓰려면 WebPKI TLS, HTTP/3 listener, `Alt-Svc: h3`, workload endpoint를 우리가 통제하도록 설정해야 한다. 결과는 `docs/results/user-provided-public-origin-readiness-20260630.md`와 `data/user-provided-public-origin-readiness-20260630.json`에 기록했다.
@@ -216,7 +220,7 @@
 
 상태:
 
-> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 28개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
+> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 29개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
 
 해석:
 
@@ -287,7 +291,8 @@
 | 8 | Safari WebDriver session readiness | 완료. binary readiness와 session creation readiness를 분리했고 현재 host의 Safari blocker를 `Allow remote automation`으로 좁힘 |
 | 9 | non-iPhone next research decision brief | 완료. AWS NLB+s2n live forwarding을 1순위, Chrome controlled-public workload를 2순위, Safari feasibility를 설정 의존 보강으로 정리 |
 | 10 | 2026-07-01 non-iPhone gate rerun | 완료. AWS/Safari/public-origin 세 gate 모두 아직 닫혀 있음을 public-safe report로 고정 |
+| 11 | Chrome desktop music-like local refresh | 완료. 6000ms outage에서 retry0 실패와 retry1 multiple-session 회복을 fresh row로 재확인 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload page-ready trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report는 확보됐다.

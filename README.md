@@ -94,6 +94,7 @@
 82. user-provided public origin readiness를 redacted로 확인했다. HTTPS reachability는 있지만 현재 `HTTP/2 200`이고 `h3 Alt-Svc=false`라서, 그대로는 controlled-public Chrome H3/CM 실험 타깃이 아니다.
 83. non-iPhone next research decision brief를 추가했다. 현재 구현체 성숙도 조사를 더 늘리기보다 deployment/browser bridge를 열어야 하며, 1순위는 AWS credential refresh 후 AWS NLB+s2n live forwarding echo, 2순위는 controlled public Chrome media/range/upload trial, Safari는 `PASS_FEASIBILITY` 보강으로 정리된다.
 84. 2026-07-01 non-iPhone gate rerun을 추가했다. AWS는 여전히 `invalid_client_token`, Safari WebDriver session은 `Allow remote automation` 미활성화, user-provided public origin은 `h3 Alt-Svc=false`라서 다음 실험 시작 전 외부 gate가 필요하다.
+85. Chrome desktop non-iPhone music-like local refresh를 추가했다. 6000ms local outage에서 retry0은 0/1 FAIL, retry1은 1/1 PASS였지만 retry1도 Chrome target QUIC session `3`개로 관찰되어, 음악형 streaming completion은 single-session CM이 아니라 application retry/reconnect 회복으로 해석해야 한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -278,6 +279,7 @@
 - [Chrome H3 local UDP rebinding repetition summary](docs/results/chrome-h3-rebinding-repetition-summary-20260624.md)
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
 - [Chrome desktop non-iPhone upload local refresh](docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md)
+- [Chrome desktop non-iPhone music-like local refresh](docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md)
 - [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
 - [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)
 - [Non-iPhone next research decision brief](docs/results/non-iphone-next-research-decision-20260630.md)

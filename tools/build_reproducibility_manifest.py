@@ -128,6 +128,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "nginx_quic_bpf_linux_runner": "docs/results/nginx-quic-bpf-linux-runner-20260630.md",
         "chrome_desktop_noniphone_media_local_refresh": "docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md",
         "chrome_desktop_noniphone_media_local_refresh_csv": "data/chrome-desktop-noniphone-media-local-refresh-20260630.csv",
+        "chrome_desktop_noniphone_musiclike_local_refresh": "docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md",
+        "chrome_desktop_noniphone_musiclike_local_refresh_csv": "data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv",
         "chrome_desktop_noniphone_range_local_refresh": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
         "chrome_desktop_noniphone_range_local_refresh_csv": "data/chrome-desktop-noniphone-range-local-refresh-20260630.csv",
         "chrome_desktop_noniphone_upload_local_refresh": "docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md",

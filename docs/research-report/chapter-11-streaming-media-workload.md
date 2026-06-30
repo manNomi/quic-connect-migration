@@ -87,8 +87,12 @@ media workload는 두 종류로 추가됐다.
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
 | music-like segments | 6000ms | 0 | 0/3 | 0/3 | - | 2-2 | `browser_h3_request_failed` |
 | music-like segments | 6000ms | 1 | 3/3 | 3/3 | 14076 | 3-3 | `nat_rebinding_multiple_quic_sessions` |
+| music-like fresh refresh | 6000ms | 0 | 0/1 | 0/1 | - | 2 | `browser_h3_request_failed` |
+| music-like fresh refresh | 6000ms | 1 | 1/1 | 1/1 | 16786 | 3 | `nat_rebinding_multiple_quic_sessions` |
 
 이 결과는 중요한 반례다. 작은 segment나 music-like workload가 자동으로 tolerant한 것은 아니다. retry=0에서는 3/3 실패했고, retry=1에서 3/3 복구됐다. 그러나 복구 mechanism은 여전히 multiple Chrome QUIC sessions였다.
+
+2026-07-01 fresh refresh에서도 같은 방향이 재현됐다. retry=0 row는 첫 segment 이후 DOM task가 실패했고, retry=1 row는 8/8 segment completion으로 회복됐지만 Chrome target QUIC session은 3개였다. 따라서 음악형 streaming completion은 application retry/reconnect 회복으로 해석해야 하며, single-session browser CM 성공으로 쓰면 안 된다.
 
 ## 6. Buffered Playback Control
 

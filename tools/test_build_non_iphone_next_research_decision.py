@@ -33,6 +33,7 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     assert tracks["chrome-controlled-public-workloads"]["rank"] == 2
     assert tracks["chrome-controlled-public-workloads"]["current_state"] == "local_controls_pass_user_origin_not_h3_ready"
     assert "user-provided-public-origin-readiness" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
+    assert "chrome-desktop-noniphone-musiclike-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-upload-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert tracks["safari-desktop-baseline"]["current_state"] == "binary_ready_session_blocked"
 
