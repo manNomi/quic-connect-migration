@@ -71,6 +71,7 @@
 | AWS s2n live runner safety audit. live 실행 전 cleanup/cost/safety boundary | 작성 완료 | `../results/aws-s2n-live-runner-safety-audit-20260701.md` |
 | AWS s2n phase-2 path-change design. forwarding echo 이후 경로변경 실험 설계 | 작성 완료 | `../results/aws-s2n-phase2-path-change-design-20260701.md` |
 | AWS s2n phase-2 rebinding runner audit. NAT-rebinding proxy runner 구현/경계 검수 | 작성 완료 | `../results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` |
+| AWS s2n phase-2 artifact classifier contract. live artifact PASS/FAIL 판정 기준 | 작성 완료 | `../results/aws-s2n-phase2-artifact-classifier-contract-20260701.md` |
 
 ## 폴더 운영 방식
 

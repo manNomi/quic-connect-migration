@@ -298,6 +298,7 @@
 - [AWS s2n live runner safety audit](docs/results/aws-s2n-live-runner-safety-audit-20260701.md)
 - [AWS s2n phase-2 path-change design](docs/results/aws-s2n-phase2-path-change-design-20260701.md)
 - [AWS s2n phase-2 rebinding runner audit](docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md)
+- [AWS s2n phase-2 artifact classifier contract](docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md)
 - [Controlled public origin workload deploy packet](docs/results/controlled-public-origin-workload-deploy-packet-20260701.md)
 - [Non-iPhone desktop path-change readiness](docs/results/noniphone-desktop-path-change-readiness-20260701.md)
 - [Controlled public Chrome bridge synthesis](docs/results/controlled-public-chrome-bridge-synthesis-20260701.md)

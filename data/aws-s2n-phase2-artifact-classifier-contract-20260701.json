@@ -1,0 +1,27 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "classifier": "tools/classify_aws_s2n_phase2_artifact.py",
+  "summary_schema_source": "harness/scripts/run-aws-s2n-nlb-live-data-plane.sh",
+  "phase1_required_gates": [
+    "summary_status_pass",
+    "client_echo_matches",
+    "single_successful_target"
+  ],
+  "phase2_required_gates": [
+    "summary_status_pass",
+    "client_echo_matches",
+    "single_successful_target",
+    "proxy_rebind_observed",
+    "proxy_switched_to_b",
+    "proxy_has_client_packets",
+    "proxy_has_a_and_b_server_packets",
+    "upstream_tuple_changed",
+    "chunked_client_after_switch"
+  ],
+  "safe_boundaries": {
+    "phase1": "Forwarding echo only; not active migration.",
+    "phase2": "Controlled NAT-rebinding proxy continuity only; not public s2n active migration API support."
+  },
+  "paper_use": "Use this classifier before turning any future AWS live artifact into a paper result row."
+}

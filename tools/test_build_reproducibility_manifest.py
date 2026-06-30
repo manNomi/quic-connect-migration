@@ -85,6 +85,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["aws_s2n_phase2_rebinding_preflight_fixture"]["exists"] is True
     assert paths["aws_s2n_phase2_rebinding_runner_audit"]["exists"] is True
     assert paths["aws_s2n_phase2_rebinding_runner_audit_json"]["exists"] is True
+    assert paths["aws_s2n_phase2_artifact_classifier_contract"]["exists"] is True
+    assert paths["aws_s2n_phase2_artifact_classifier_contract_json"]["exists"] is True
     assert paths["s2n_active_migration_api_audit"]["exists"] is True
     assert paths["s2n_active_migration_api_audit_json"]["exists"] is True
     assert paths["browser_cm_observability_refresh"]["exists"] is True
@@ -102,7 +104,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "aws-s2n-phase2-rebinding-runner-audit"
+    assert manifest["experiment_matrix"]["latest_item"] == "aws-s2n-phase2-artifact-classifier-contract"
 
 
 def test_generated_date_uses_utc_day() -> None:

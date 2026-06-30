@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `a34fc76` |
+| source commit at generation | `c447895` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `148` |
-| latest experiment matrix item | `aws-s2n-phase2-rebinding-runner-audit` |
+| experiment matrix items | `149` |
+| latest experiment matrix item | `aws-s2n-phase2-artifact-classifier-contract` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -120,6 +120,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `aws_s2n_phase2_rebinding_preflight_fixture` | `data/aws-s2n-phase2-rebinding-preflight-20260701.txt` | `yes` |
 | `aws_s2n_phase2_rebinding_runner_audit` | `docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` | `yes` |
 | `aws_s2n_phase2_rebinding_runner_audit_json` | `data/aws-s2n-phase2-rebinding-runner-audit-20260701.json` | `yes` |
+| `aws_s2n_phase2_artifact_classifier_contract` | `docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md` | `yes` |
+| `aws_s2n_phase2_artifact_classifier_contract_json` | `data/aws-s2n-phase2-artifact-classifier-contract-20260701.json` | `yes` |
 | `s2n_active_migration_api_audit` | `docs/results/s2n-active-migration-api-audit-20260630.md` | `yes` |
 | `s2n_active_migration_api_audit_json` | `data/s2n-active-migration-api-audit-20260630.json` | `yes` |
 | `browser_cm_observability_refresh` | `docs/results/browser-cm-observability-readiness-refresh-20260630.md` | `yes` |

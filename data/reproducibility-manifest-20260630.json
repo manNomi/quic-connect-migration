@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "a34fc76",
+    "commit": "c447895",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 148,
+    "total_items": 149,
     "status_counts": {
-      "done": 144,
+      "done": 145,
       "planned": 4
     },
-    "latest_item": "aws-s2n-phase2-rebinding-runner-audit"
+    "latest_item": "aws-s2n-phase2-artifact-classifier-contract"
   },
   "verification": {
     "checks": "109",
@@ -359,6 +359,14 @@
     },
     "aws_s2n_phase2_rebinding_runner_audit_json": {
       "path": "data/aws-s2n-phase2-rebinding-runner-audit-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_artifact_classifier_contract": {
+      "path": "docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_artifact_classifier_contract_json": {
+      "path": "data/aws-s2n-phase2-artifact-classifier-contract-20260701.json",
       "exists": true
     },
     "s2n_active_migration_api_audit": {

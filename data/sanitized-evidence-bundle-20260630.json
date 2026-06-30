@@ -1,10 +1,11 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 44,
+  "item_count": 45,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
+    "artifact_classifier_contract": 1,
     "bridge_gap_negative_controls": 1,
     "broad_test_suite": 1,
     "deployment_positive": 1,
@@ -41,6 +42,7 @@
     "claim-readiness-synthesis": 1,
     "cross-gate-readiness": 1,
     "deployment-application-bridge": 1,
+    "deployment-artifact-classifier": 1,
     "deployment-experiment-design": 1,
     "deployment-live-runner": 1,
     "deployment-negative-control": 2,
@@ -373,6 +375,22 @@
       "supports": "A packaged phase-2 NAT-rebinding proxy mode for the AWS NLB+s2n runner, with chunked client traffic, remote-safe UDP proxy binding, proxy-observed rebind classification, and fail-closed pre-resource gating.",
       "do_not_claim": "Live AWS NLB+s2n NAT-rebinding continuity, application-triggered active migration, browser handover, or current upstream s2n public active migration API support.",
       "next_gap": "After credentials open, run forwarding echo first; if it passes, run PATH_CHANGE_MODE=rebinding_proxy with chunked client traffic and inspect proxy/server/client artifacts.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "aws-s2n-phase2-artifact-classifier-contract",
+      "chapter": "4",
+      "category": "deployment-artifact-classifier",
+      "implementation": "AWS NLB + s2n-quic",
+      "evidence_doc": "docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md",
+      "runner_or_tool": "tools/classify_aws_s2n_phase2_artifact.py",
+      "local_artifact_id": "aws-s2n-phase2-artifact-classifier-contract-20260701",
+      "claim_strength": "artifact_classifier_contract",
+      "supports": "A strict classifier contract for future AWS NLB+s2n artifacts, separating forwarding echo prerequisite evidence from NAT-rebinding proxy continuity and requiring proxy B-side packets plus chunked client traffic for phase-2 acceptance.",
+      "do_not_claim": "A future AWS artifact is positive without running this classifier, or that a phase-2 NAT-rebinding proxy PASS proves public s2n application-triggered active migration.",
+      "next_gap": "After live artifacts exist, run this classifier with --require-accepted before converting AWS results into paper rows.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

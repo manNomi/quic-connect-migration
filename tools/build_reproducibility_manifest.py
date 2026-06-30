@@ -179,6 +179,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "aws_s2n_phase2_rebinding_preflight_fixture": "data/aws-s2n-phase2-rebinding-preflight-20260701.txt",
         "aws_s2n_phase2_rebinding_runner_audit": "docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md",
         "aws_s2n_phase2_rebinding_runner_audit_json": "data/aws-s2n-phase2-rebinding-runner-audit-20260701.json",
+        "aws_s2n_phase2_artifact_classifier_contract": "docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md",
+        "aws_s2n_phase2_artifact_classifier_contract_json": "data/aws-s2n-phase2-artifact-classifier-contract-20260701.json",
         "s2n_active_migration_api_audit": "docs/results/s2n-active-migration-api-audit-20260630.md",
         "s2n_active_migration_api_audit_json": "data/s2n-active-migration-api-audit-20260630.json",
         "browser_cm_observability_refresh": "docs/results/browser-cm-observability-readiness-refresh-20260630.md",
