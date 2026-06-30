@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "ab9f3fa",
+    "commit": "038ab67",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -55,16 +55,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 162,
+    "total_items": 163,
     "status_counts": {
-      "done": 158,
+      "done": 159,
       "planned": 4
     },
-    "latest_item": "ngtcp2-migration-api-boundary-audit"
+    "latest_item": "ngtcp2-runtime-trial-packet"
   },
   "verification": {
-    "checks": "155",
-    "passed": "155",
+    "checks": "157",
+    "passed": "157",
     "ok": "yes"
   },
   "research_audit": {
@@ -280,6 +280,18 @@
     },
     "ngtcp2_migration_api_boundary_audit_json": {
       "path": "data/ngtcp2-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "ngtcp2_runtime_trial_packet": {
+      "path": "docs/results/ngtcp2-runtime-trial-packet-20260701.md",
+      "exists": true
+    },
+    "ngtcp2_runtime_trial_packet_json": {
+      "path": "data/ngtcp2-runtime-trial-packet-20260701.json",
+      "exists": true
+    },
+    "ngtcp2_example_migration_runner": {
+      "path": "harness/scripts/run-ngtcp2-example-migration-demo.sh",
       "exists": true
     },
     "quinn_migration_api_boundary_audit": {

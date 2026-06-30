@@ -10,7 +10,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 | --- | --- |
 | experiment trials | `99` |
 | experiment status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
-| verification | `155/155 passed; ok=yes` |
+| verification | `157/157 passed; ok=yes` |
 | CI | `-/- (-)` |
 | final browser handover | `3/6` |
 | needed-now external inputs | `[]` |

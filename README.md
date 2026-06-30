@@ -112,6 +112,7 @@
 100. Firefox desktop runtime trial packet을 추가했다. 현재 호스트에는 Firefox/geckodriver와 non-iPhone desktop path-change gate가 없어 런타임 결과는 없지만, local Neqo H3 baseline, controlled-public H3 baseline, range active, upload active row의 필요 artifact와 claim boundary를 fail-closed로 고정했다.
 101. Quinn migration API boundary audit를 추가했다. Quinn은 server migration policy, endpoint-wide socket rebind, preferred-address, PATH_CHALLENGE/PATH_RESPONSE, fresh migration/rebind tests가 강하지만 public control surface는 quic-go식 per-connection `AddPath -> Probe -> Switch`가 아니라 endpoint rebind 중심이라고 고정했다.
 102. ngtcp2 migration API boundary audit를 추가했다. ngtcp2는 공개 header에 immediate/validation-gated client migration API, path-validation callback, disable-active-migration/preferred-address policy, qlog PATH_CHALLENGE/PATH_RESPONSE 근거가 있어 C-library 비교군으로 강하지만 browser/deployment continuity는 별도 runtime row가 필요하다.
+103. ngtcp2 runtime trial packet과 fail-closed runner를 추가했다. `osslclient/osslserver` 기반 HTTP/3 example migration row로 승격하는 경로를 만들었고, 현재 로컬은 `libev` pkg-config 미존재로 `validation=blocked`, `blocked_or_failed_reason=missing_pkg_config_libev`로 닫아 runtime PASS를 과장하지 않도록 했다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -309,6 +310,7 @@
 - [Non-quic-go execution depth audit](docs/results/non-quicgo-execution-depth-audit-20260701.md)
 - [MsQuic migration API boundary audit](docs/results/msquic-migration-api-boundary-audit-20260701.md)
 - [ngtcp2 migration API boundary audit](docs/results/ngtcp2-migration-api-boundary-audit-20260701.md)
+- [ngtcp2 runtime trial packet](docs/results/ngtcp2-runtime-trial-packet-20260701.md)
 - [Quinn migration API boundary audit](docs/results/quinn-migration-api-boundary-audit-20260701.md)
 - [XQUIC full-suite Linux audit](docs/results/xquic-full-suite-linux-audit-20260701.md)
 - [mvfst focused Linux runner audit](docs/results/mvfst-focused-linux-runner-audit-20260701.md)

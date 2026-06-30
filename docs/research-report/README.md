@@ -77,6 +77,7 @@
 | quic-go 외 구현체 실행 깊이 감사. 왜 quic-go만 가장 깊은 positive control인지 | 작성 완료 | `../results/non-quicgo-execution-depth-audit-20260701.md` |
 | MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
 | ngtcp2 migration API boundary audit. C library direct migration API와 browser/deployment claim boundary | 작성 완료 | `../results/ngtcp2-migration-api-boundary-audit-20260701.md` |
+| ngtcp2 runtime trial packet. HTTP/3 example migration runner와 `libev` blocker 경계 | 작성 완료 | `../results/ngtcp2-runtime-trial-packet-20260701.md` |
 | Quinn migration API boundary audit. Rust stack endpoint rebind와 quic-go식 per-connection active control 경계 | 작성 완료 | `../results/quinn-migration-api-boundary-audit-20260701.md` |
 | XQUIC full-suite Linux audit. NAT rebinding demo와 Linux replay gate 경계 | 작성 완료 | `../results/xquic-full-suite-linux-audit-20260701.md` |
 | mvfst focused Linux runner audit. production 후보 focused BUCK test 실행 gate | 작성 완료 | `../results/mvfst-focused-linux-runner-audit-20260701.md` |
@@ -125,6 +126,8 @@
 | `tools/build_firefox_neqo_browser_boundary_audit.py` | Chapter 1/5 Firefox-adjacent Neqo transport maturity와 Firefox runtime claim boundary audit builder |
 | `tools/build_firefox_desktop_runtime_trial_packet.py` | Chapter 5/7 Firefox desktop runtime trial packet builder |
 | `tools/build_quinn_migration_api_boundary_audit.py` | Chapter 1 Quinn endpoint rebind/API boundary audit builder |
+| `tools/build_ngtcp2_runtime_trial_packet.py` | Chapter 1 ngtcp2 example runtime trial packet builder |
+| `harness/scripts/run-ngtcp2-example-migration-demo.sh` | ngtcp2 osslclient/osslserver HTTP/3 migration runtime runner |
 | `tools/build_cdn_edge_cm_boundary_audit.py` | Chapter 4 CloudFront/Cloudflare CDN edge claim boundary audit builder |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
@@ -217,6 +220,7 @@
 | `docs/results/non-quicgo-implementation-findings-20260701.md` | quic-go를 제외한 17개 구현체/스택의 검수 결과와 claim boundary |
 | `docs/results/non-quicgo-execution-depth-audit-20260701.md` | quic-go 외 구현체의 실행 깊이 차이, 남은 deepening 후보, AWS gate 최신 상태 |
 | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic public API, NAT rebinding tests, QUIC-aware LB deployment boundary를 source link로 고정 |
+| `docs/results/ngtcp2-runtime-trial-packet-20260701.md` | ngtcp2 example client/server runtime row 승격 경로와 현재 `libev` blocker를 fail-closed로 고정 |
 | `docs/results/quinn-migration-api-boundary-audit-20260701.md` | Quinn server migration policy, endpoint rebind, preferred-address, path validation, test evidence와 quic-go API shape 차이를 고정 |
 | `docs/results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo PASS, macOS Werror blocker, Linux full-suite replay runner claim boundary |
 | `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst source/test map을 Linux focused BUCK runner로 재현 가능하게 고정 |

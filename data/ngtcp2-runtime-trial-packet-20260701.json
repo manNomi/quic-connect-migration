@@ -1,0 +1,197 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "implementation": "ngtcp2",
+  "source_commit": "c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+  "local_clone": {
+    "observed": true,
+    "commit": "c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+    "matches_expected_commit": "yes",
+    "remote": "https://github.com/ngtcp2/ngtcp2.git"
+  },
+  "dependency_state": {
+    "libev": "missing",
+    "libnghttp3": "1.16.0",
+    "openssl": "3.6.2"
+  },
+  "focused_test_state": {
+    "log_exists": true,
+    "expected_tests": 6,
+    "passed_tests": 6,
+    "all_expected_seen": "yes",
+    "summary_line": "6 of 6 (100%) tests successful, 0 (0%) test skipped."
+  },
+  "example_binary_state": {
+    "candidate_count": 4,
+    "present_count": 0,
+    "present": [],
+    "ossl_pair_present": "no"
+  },
+  "runner": {
+    "path": "harness/scripts/run-ngtcp2-example-migration-demo.sh",
+    "exists": true,
+    "result_env": "harness/results/ngtcp2-example-migration-demo-local-20260701/results/result.env",
+    "result_env_exists": true,
+    "result_env_values": {
+      "run_id": "ngtcp2-example-migration-demo-local-20260701",
+      "artifact_dir": "/Users/manwook-han/Desktop/lab/quic-connect-migration/harness/results/ngtcp2-example-migration-demo-local-20260701",
+      "system_name": "Darwin",
+      "system_machine": "arm64",
+      "ngtcp2_dir": "/private/tmp/quic-cm-scan-repos/ngtcp2",
+      "ngtcp2_expected_commit": "c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "ngtcp2_observed_commit": "c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "ngtcp2_commit_matches": "yes",
+      "build_dir": "/private/tmp/quic-cm-scan-repos/ngtcp2/build-example-migration",
+      "require_ready": "0",
+      "dry_run": "0",
+      "cmake_generator": "Ninja",
+      "jobs": "11",
+      "port": "44330",
+      "change_local_addr_after": "1s",
+      "preflight_missing_commands": "none",
+      "pkg_config_libev": "missing",
+      "pkg_config_libnghttp3": "1.16.0",
+      "pkg_config_openssl": "3.6.2",
+      "cmake_configure_exit": "not-run",
+      "cmake_build_exit": "not-run",
+      "example_binaries_present": "not-run",
+      "openssl_cert_exit": "not-run",
+      "server_pid": "not-run",
+      "client_exit": "not-run",
+      "client_timeout_seconds": "20",
+      "client_local_addr_change_count": "not-run",
+      "client_immediate_migration_error_count": "not-run",
+      "client_qlog_count": "not-run",
+      "server_qlog_count": "not-run",
+      "path_challenge_count": "not-run",
+      "path_response_count": "not-run",
+      "validation": "blocked",
+      "blocked_or_failed_reason": "missing_pkg_config_libev",
+      "stage": "preflight"
+    }
+  },
+  "runtime_trial": {
+    "status": "blocked",
+    "reason": "missing_pkg_config_libev",
+    "can_claim_runtime_pass": "no",
+    "can_claim_browser_or_deployment": "no"
+  },
+  "claim_boundary": {
+    "safe_claim": "ngtcp2 has strong C-library migration/path-validation API and focused test evidence; a fail-closed example HTTP/3 runtime runner is now packaged, but current local execution is blocked unless dependency gates are open.",
+    "unsafe_claim": "ngtcp2 runtime HTTP/3 workload continuity, browser handover, CDN/LB deployment continuity, or production app continuity.",
+    "next_gap": "Install/provide libev with pkg-config visibility, then run harness/scripts/run-ngtcp2-example-migration-demo.sh with REQUIRE_READY=1 and require client exit 0 plus path-validation frame evidence."
+  },
+  "evidence": [
+    {
+      "id": "examples-require-libev-nghttp3",
+      "source": "README.rst",
+      "line": 45,
+      "topic": "Example dependency gate",
+      "observation": "The ngtcp2 README states that sources under examples require libev and nghttp3.",
+      "implication": "A runtime example-client/server migration row must record libev and nghttp3 readiness before claiming execution.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/README.rst#L45"
+    },
+    {
+      "id": "examples-are-http3-client-server",
+      "source": "README.rst",
+      "line": 201,
+      "topic": "Example runtime scope",
+      "observation": "The README says the built client and server executables live under examples and speak HTTP/3.",
+      "implication": "The examples are a legitimate runtime bridge between transport migration APIs and an HTTP/3 workload.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/README.rst#L201"
+    },
+    {
+      "id": "openssl-example-binaries",
+      "source": "README.rst",
+      "line": 312,
+      "topic": "OpenSSL example binaries",
+      "observation": "The examples list includes osslclient and osslserver as OpenSSL-backed client/server binaries.",
+      "implication": "A public-safe local runner can target osslclient/osslserver without adding a new ngtcp2 application.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/README.rst#L312"
+    },
+    {
+      "id": "cmake-finds-example-dependencies",
+      "source": "CMakeLists.txt",
+      "line": 152,
+      "topic": "CMake dependency discovery",
+      "observation": "When ENABLE_LIB_ONLY is off, CMake searches for Libev and Libnghttp3.",
+      "implication": "Missing libev is an example-runtime readiness blocker rather than evidence that migration primitives are absent.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/CMakeLists.txt#L152"
+    },
+    {
+      "id": "cmake-example-required-flags",
+      "source": "CMakeLists.txt",
+      "line": 252,
+      "topic": "Example dependency flags",
+      "observation": "CMake records HAVE_LIBEV and HAVE_LIBNGHTTP3 as example requirements.",
+      "implication": "The trial packet can classify current local state before attempting a runtime run.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/CMakeLists.txt#L252"
+    },
+    {
+      "id": "ossl-example-build-condition",
+      "source": "examples/CMakeLists.txt",
+      "line": 414,
+      "topic": "osslclient/osslserver build gate",
+      "observation": "osslclient and osslserver are built only when Libev, OpenSSL helper support, and Libnghttp3 are found.",
+      "implication": "The runtime row cannot be promoted until these dependency gates are open.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/examples/CMakeLists.txt#L414"
+    },
+    {
+      "id": "example-active-versus-nat-rebinding",
+      "source": "examples/client.cc",
+      "line": 1347,
+      "topic": "Example migration trigger",
+      "observation": "The example client calls ngtcp2_conn_initiate_immediate_migration when changing local address without --nat-rebinding.",
+      "implication": "The example can exercise active client migration semantics, not just passive NAT rebinding simulation.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/examples/client.cc#L1347"
+    },
+    {
+      "id": "example-change-local-addr-flag",
+      "source": "examples/client.cc",
+      "line": 2015,
+      "topic": "CLI trigger",
+      "observation": "The --change-local-addr option changes the client local address after handshake completion.",
+      "implication": "The runner has a documented trigger for a controlled post-handshake migration attempt.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/examples/client.cc#L2015"
+    },
+    {
+      "id": "example-qlog-options",
+      "source": "examples/client.cc",
+      "line": 2047,
+      "topic": "qlog capture",
+      "observation": "The example client supports qlog-file and qlog-dir output.",
+      "implication": "A future runtime PASS can be tied to path-validation frame evidence rather than exit code only.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/examples/client.cc#L2047"
+    },
+    {
+      "id": "server-htdocs-qlog-options",
+      "source": "examples/server.cc",
+      "line": 2500,
+      "topic": "HTTP/3 app and qlog capture",
+      "observation": "The example server supports --htdocs and --qlog-dir.",
+      "implication": "The runner can use a minimal static HTTP/3 object and collect server-side qlog-derived evidence.",
+      "source_base": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
+      "url": "https://github.com/ngtcp2/ngtcp2/blob/c24b12690c5bdf7ad2715ae427504e76bf5c6ffc/examples/server.cc#L2500"
+    },
+    {
+      "id": "fresh-focused-test-log",
+      "source": "docs/results/implementation-rerun-results-20260630.md",
+      "line": 279,
+      "topic": "Fresh local migration tests",
+      "observation": "The study records six focused ngtcp2 migration/path-validation tests passing at the audited commit.",
+      "implication": "The current missing runtime row is an example dependency/runtime gap, not an absence of migration tests.",
+      "source_base": "https://github.com/manNomi/quic-connect-migration/blob/docs/quinn-neqo-rerun-20260630",
+      "url": "https://github.com/manNomi/quic-connect-migration/blob/docs/quinn-neqo-rerun-20260630/docs/results/implementation-rerun-results-20260630.md#L279"
+    }
+  ],
+  "public_safety_scan_ok": true
+}
