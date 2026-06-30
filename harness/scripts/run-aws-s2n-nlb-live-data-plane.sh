@@ -12,9 +12,16 @@ RESOURCE_PREFIX="${RESOURCE_PREFIX:-quic-cm-lab}"
 PORT="${PORT:-4242}"
 NLB_PROTOCOL="${NLB_PROTOCOL:-QUIC}"
 PAYLOAD_BYTES="${PAYLOAD_BYTES:-4096}"
+PAYLOAD_CHUNKS="${PAYLOAD_CHUNKS:-1}"
+CHUNK_DELAY_MS="${CHUNK_DELAY_MS:-0}"
 SERVER_TIMEOUT_SECS="${SERVER_TIMEOUT_SECS:-180}"
 CLIENT_TIMEOUT_SECS="${CLIENT_TIMEOUT_SECS:-45}"
 CLIENT_START_DELAY_SECONDS="${CLIENT_START_DELAY_SECONDS:-5}"
+PATH_CHANGE_MODE="${PATH_CHANGE_MODE:-forwarding_echo}"
+REBINDING_PROXY_LISTEN="${REBINDING_PROXY_LISTEN:-127.0.0.1:4443}"
+REBINDING_PROXY_SWITCH_AFTER="${REBINDING_PROXY_SWITCH_AFTER:-750ms}"
+REBINDING_PROXY_TIMEOUT="${REBINDING_PROXY_TIMEOUT:-60s}"
+REBINDING_PROXY_UPSTREAM_BIND_IP="${REBINDING_PROXY_UPSTREAM_BIND_IP:-0.0.0.0}"
 INSTANCE_TYPE="${INSTANCE_TYPE:-t4g.micro}"
 TARGET_A_SERVER_ID="${TARGET_A_SERVER_ID:-0xa1b2c3d4e5f65890}"
 TARGET_B_SERVER_ID="${TARGET_B_SERVER_ID:-0xa1b2c3d4e5f65999}"
@@ -26,6 +33,8 @@ RUN_DIR="$PROJECT_ROOT/harness/results/$RUN_ID"
 RESULT_DIR="$RUN_DIR/results"
 LOG_DIR="$RUN_DIR/logs"
 CRATE_DIR="$PROJECT_ROOT/experiments/s2n-quic-nlb-cid-provider"
+REBINDING_PROXY_SOURCE_DIR="$PROJECT_ROOT/repro/quic-go-min-repro"
+REBINDING_PROXY_SOURCE="$REBINDING_PROXY_SOURCE_DIR/cmd/udprebindproxy/main.go"
 
 mkdir -p "$RESULT_DIR" "$LOG_DIR"
 
@@ -90,9 +99,14 @@ write_blocked_result() {
     print_kv "aws_identity_classification" "${AWS_IDENTITY_CLASSIFICATION:-unknown}"
     print_kv "aws_cli_found" "${AWS_CLI_FOUND:-unknown}"
     print_kv "cargo_found" "${CARGO_FOUND:-unknown}"
+    print_kv "go_found" "${GO_FOUND:-unknown}"
     print_kv "crate_ready" "${CRATE_READY:-unknown}"
     print_kv "server_binary_source_ready" "${SERVER_BINARY_SOURCE_READY:-unknown}"
     print_kv "client_binary_source_ready" "${CLIENT_BINARY_SOURCE_READY:-unknown}"
+    print_kv "rebinding_proxy_source_ready" "${REBINDING_PROXY_SOURCE_READY:-unknown}"
+    print_kv "path_change_mode" "$PATH_CHANGE_MODE"
+    print_kv "payload_chunks" "$PAYLOAD_CHUNKS"
+    print_kv "chunk_delay_ms" "$CHUNK_DELAY_MS"
     print_kv "live_phase" "pre_resource_gate"
     print_kv "validation" "$validation"
     print_kv "blocked_reason" "$reason"
@@ -113,6 +127,8 @@ This artifact is public-safe. The runner stopped before creating AWS resources.
 | crate ready | \`${CRATE_READY:-unknown}\` |
 | server source ready | \`${SERVER_BINARY_SOURCE_READY:-unknown}\` |
 | client source ready | \`${CLIENT_BINARY_SOURCE_READY:-unknown}\` |
+| rebinding proxy source ready | \`${REBINDING_PROXY_SOURCE_READY:-unknown}\` |
+| path change mode | \`$PATH_CHANGE_MODE\` |
 | validation | \`$validation\` |
 | blocked reason | \`$reason\` |
 
@@ -137,6 +153,10 @@ CARGO_FOUND="no"
 if command_found cargo; then
   CARGO_FOUND="yes"
 fi
+GO_FOUND="no"
+if command_found go; then
+  GO_FOUND="yes"
+fi
 CRATE_READY="no"
 if [[ -f "$CRATE_DIR/Cargo.toml" ]]; then
   CRATE_READY="yes"
@@ -149,6 +169,10 @@ CLIENT_BINARY_SOURCE_READY="no"
 if [[ -f "$CRATE_DIR/src/bin/nlb_live_client.rs" ]]; then
   CLIENT_BINARY_SOURCE_READY="yes"
 fi
+REBINDING_PROXY_SOURCE_READY="no"
+if [[ -f "$REBINDING_PROXY_SOURCE" ]]; then
+  REBINDING_PROXY_SOURCE_READY="yes"
+fi
 
 cat >"$RESULT_DIR/manifest.env" <<EOF
 run_id=$RUN_ID
@@ -158,9 +182,16 @@ aws_region=$AWS_REGION
 port=$PORT
 nlb_protocol=$NLB_PROTOCOL
 payload_bytes=$PAYLOAD_BYTES
+payload_chunks=$PAYLOAD_CHUNKS
+chunk_delay_ms=$CHUNK_DELAY_MS
 server_timeout_secs=$SERVER_TIMEOUT_SECS
 client_timeout_secs=$CLIENT_TIMEOUT_SECS
 client_start_delay_seconds=$CLIENT_START_DELAY_SECONDS
+path_change_mode=$PATH_CHANGE_MODE
+rebinding_proxy_listen=$REBINDING_PROXY_LISTEN
+rebinding_proxy_switch_after=$REBINDING_PROXY_SWITCH_AFTER
+rebinding_proxy_timeout=$REBINDING_PROXY_TIMEOUT
+rebinding_proxy_upstream_bind_ip=$REBINDING_PROXY_UPSTREAM_BIND_IP
 target_a_server_id=$TARGET_A_SERVER_ID
 target_b_server_id=$TARGET_B_SERVER_ID
 require_live=$REQUIRE_LIVE
@@ -197,8 +228,17 @@ fi
 if [[ "$CLIENT_BINARY_SOURCE_READY" != "yes" ]]; then
   run_or_block "missing_nlb_live_client_source"
 fi
+if [[ "$PATH_CHANGE_MODE" != "forwarding_echo" && "$PATH_CHANGE_MODE" != "rebinding_proxy" ]]; then
+  run_or_block "invalid_path_change_mode_${PATH_CHANGE_MODE}"
+fi
+if [[ "$PATH_CHANGE_MODE" == "rebinding_proxy" && "$REBINDING_PROXY_SOURCE_READY" != "yes" ]]; then
+  run_or_block "missing_rebinding_proxy_source"
+fi
 if [[ "$CARGO_FOUND" != "yes" ]]; then
   run_or_block "missing_cargo"
+fi
+if [[ "$PATH_CHANGE_MODE" == "rebinding_proxy" && "$GO_FOUND" != "yes" ]]; then
+  run_or_block "missing_go_for_rebinding_proxy"
 fi
 if [[ "$AWS_IDENTITY_OK" != "yes" ]]; then
   run_or_block "aws_identity_${AWS_IDENTITY_CLASSIFICATION}"
@@ -213,6 +253,9 @@ require_command ssh
 require_command scp
 require_command tar
 require_command cargo
+if [[ "$PATH_CHANGE_MODE" == "rebinding_proxy" ]]; then
+  require_command go
+fi
 
 KEY_NAME="${RESOURCE_PREFIX}-${RUN_ID}-key"
 KEY_PATH="$RUN_DIR/$KEY_NAME"
@@ -565,18 +608,48 @@ log "run s2n client through NLB $LB_DNS:$PORT"
 if (( CLIENT_START_DELAY_SECONDS > 0 )); then
   sleep "$CLIENT_START_DELAY_SECONDS"
 fi
+CLIENT_SERVER_ADDR="$LB_DNS:$PORT"
+REBINDING_PROXY_PID=""
+REBINDING_PROXY_EXIT=0
+if [[ "$PATH_CHANGE_MODE" == "rebinding_proxy" ]]; then
+  log "build UDP rebinding proxy"
+  mkdir -p "$RUN_DIR/bin"
+  (cd "$REBINDING_PROXY_SOURCE_DIR" && go build -o "$RUN_DIR/bin/udprebindproxy" ./cmd/udprebindproxy)
+  log "start UDP rebinding proxy $REBINDING_PROXY_LISTEN -> $LB_DNS:$PORT"
+  "$RUN_DIR/bin/udprebindproxy" \
+    --listen "$REBINDING_PROXY_LISTEN" \
+    --server "$LB_DNS:$PORT" \
+    --upstream-bind-ip "$REBINDING_PROXY_UPSTREAM_BIND_IP" \
+    --switch-after "$REBINDING_PROXY_SWITCH_AFTER" \
+    --timeout "$REBINDING_PROXY_TIMEOUT" \
+    --log "$LOG_DIR/rebinding-proxy.jsonl" \
+    --result "$RESULT_DIR/rebinding-proxy.json" \
+    >"$LOG_DIR/rebinding-proxy.stdout" \
+    2>"$LOG_DIR/rebinding-proxy.stderr" &
+  REBINDING_PROXY_PID="$!"
+  CLIENT_SERVER_ADDR="$REBINDING_PROXY_LISTEN"
+  sleep 1
+fi
 CLIENT_RESULT="$RUN_DIR/client/results/client.json"
 CLIENT_EXIT=0
-SERVER_ADDR="$LB_DNS:$PORT" \
+SERVER_ADDR="$CLIENT_SERVER_ADDR" \
   SERVER_NAME=localhost \
   CERT_PEM_PATH="$CERT_PEM_PATH" \
   PAYLOAD_BYTES="$PAYLOAD_BYTES" \
+  PAYLOAD_CHUNKS="$PAYLOAD_CHUNKS" \
+  CHUNK_DELAY_MS="$CHUNK_DELAY_MS" \
   TIMEOUT_SECS="$CLIENT_TIMEOUT_SECS" \
   RESULT_PATH="$CLIENT_RESULT" \
   cargo run --manifest-path "$CRATE_DIR/Cargo.toml" --release --bin nlb_live_client \
   >"$LOG_DIR/client.stdout" \
   2>"$LOG_DIR/client.stderr" || CLIENT_EXIT=$?
 manifest_set "client_exit_code" "$CLIENT_EXIT"
+if [[ -n "$REBINDING_PROXY_PID" ]]; then
+  sleep 2
+  kill "$REBINDING_PROXY_PID" >/dev/null 2>&1 || true
+  wait "$REBINDING_PROXY_PID" || REBINDING_PROXY_EXIT=$?
+  manifest_set "rebinding_proxy_exit_code" "$REBINDING_PROXY_EXIT"
+fi
 
 sleep 8
 collect_all_targets
@@ -589,7 +662,16 @@ import sys
 
 run = pathlib.Path(sys.argv[1])
 client_path = run / "client" / "results" / "client.json"
+manifest_path = run / "results" / "manifest.env"
+proxy_path = run / "results" / "rebinding-proxy.json"
 client = json.loads(client_path.read_text()) if client_path.exists() else {}
+proxy = json.loads(proxy_path.read_text()) if proxy_path.exists() else {}
+manifest = {}
+if manifest_path.exists():
+    for raw in manifest_path.read_text().splitlines():
+        if "=" in raw:
+            key, value = raw.split("=", 1)
+            manifest[key] = value
 servers = []
 for target in ("target-a", "target-b"):
     for path in (run / target).glob("**/results/server.json"):
@@ -602,16 +684,33 @@ for target in ("target-a", "target-b"):
         servers.append(data)
 
 successful_servers = [s for s in servers if s.get("status") == "PASS"]
-positive_pass = client.get("status") == "PASS" and client.get("echo_matches") is True and len(successful_servers) == 1
+path_change_mode = manifest.get("path_change_mode", "forwarding_echo")
+forwarding_pass = client.get("status") == "PASS" and client.get("echo_matches") is True and len(successful_servers) == 1
+proxy_rebind_observed = (
+    path_change_mode == "rebinding_proxy"
+    and proxy.get("switched") is True
+    and int(proxy.get("server_packets_b") or 0) > 0
+)
+positive_pass = forwarding_pass and (path_change_mode != "rebinding_proxy" or proxy_rebind_observed)
+claim_boundary = (
+    "s2n NLB NAT-rebinding proxy continuity only; not public application-triggered active migration"
+    if path_change_mode == "rebinding_proxy"
+    else "s2n NLB forwarding echo only; not active connection migration"
+)
 summary = {
     "status": "PASS" if positive_pass else "FAIL_CLASSIFIED",
-    "claim_boundary": "s2n NLB forwarding echo only; not active connection migration",
+    "claim_boundary": claim_boundary,
+    "path_change_mode": path_change_mode,
     "client_status": client.get("status"),
     "client_echo_matches": client.get("echo_matches"),
     "client_payload_bytes": client.get("payload_bytes"),
+    "client_payload_chunks": client.get("payload_chunks"),
+    "client_chunk_delay_ms": client.get("chunk_delay_ms"),
     "client_received_bytes": client.get("received_bytes"),
     "server_success_count": len(successful_servers),
     "successful_target": successful_servers[0].get("_target") if successful_servers else None,
+    "proxy_rebind_observed": proxy_rebind_observed,
+    "rebinding_proxy": proxy,
     "servers": servers,
 }
 (run / "results" / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
@@ -623,7 +722,9 @@ summary = {
         f"client_echo_matches={client.get('echo_matches')}",
         f"server_success_count={len(successful_servers)}",
         f"successful_target={successful_servers[0].get('_target') if successful_servers else ''}",
-        "claim_boundary=s2n_nlb_forwarding_echo_not_active_migration",
+        f"path_change_mode={path_change_mode}",
+        f"proxy_rebind_observed={proxy_rebind_observed}",
+        f"claim_boundary={'s2n_nlb_nat_rebinding_proxy_not_public_active_migration' if path_change_mode == 'rebinding_proxy' else 's2n_nlb_forwarding_echo_not_active_migration'}",
         "",
     ])
 )

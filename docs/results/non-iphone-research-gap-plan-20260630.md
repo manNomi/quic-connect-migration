@@ -413,6 +413,20 @@
 
 > AWS가 열리면 1단계는 여전히 live forwarding echo다. 그 다음 현재 upstream s2n public API 조건에서 가장 방어 가능한 phase-2는 NAT-rebinding proxy 방식이다. 이 방식이 성공해도 claim은 "application-triggered active migration"이 아니라 "AWS NLB+s2n이 controlled NAT-rebinding style path change를 견딘다"로 제한해야 한다. 진짜 AddPath/Probe/Switch형 active migration은 s2n public API 변화나 research fork가 승인될 때 future work로 둔다.
 
+### P19. 2026-07-01 AWS s2n phase-2 rebinding runner audit
+
+목표:
+
+> P18에서 설계한 NAT-rebinding proxy variant를 실제 runner에 포장한다. AWS credential이 열리기 전에도 pre-resource gate에서 fail-closed로 멈추고, credential이 열리면 forwarding echo 이후 `PATH_CHANGE_MODE=rebinding_proxy`로 재현 가능한 phase-2 실행이 가능해야 한다.
+
+상태:
+
+> 완료. `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`에 `PATH_CHANGE_MODE=rebinding_proxy` 모드를 추가했고, s2n live client에는 `PAYLOAD_CHUNKS`와 `CHUNK_DELAY_MS`를 추가했다. 기존 `udprebindproxy`는 AWS NLB 같은 원격 upstream에도 쓸 수 있도록 `--upstream-bind-ip`와 wildcard bind 경로를 추가했다. `RUN_ID=aws-s2n-nlb-rebinding-proxy-preflight-20260701 PATH_CHANGE_MODE=rebinding_proxy PAYLOAD_CHUNKS=8 CHUNK_DELAY_MS=250 REQUIRE_LIVE=0` preflight를 실행해 AWS resource 생성 전 `aws_identity_invalid_client_token`으로 안전하게 차단되는 것을 확인했다. `tools/audit_aws_s2n_phase2_rebinding_runner.py`와 regression test를 추가했고, `docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` 및 `data/aws-s2n-phase2-rebinding-runner-audit-20260701.json`을 생성했다.
+
+해석:
+
+> 이제 "AWS가 열리면 무엇을 해야 하는가"가 설계 문서에만 있지 않고 runner 수준으로도 고정됐다. 다만 현재 결과는 runner readiness와 blocked preflight이지 live AWS continuity PASS가 아니다. 실제 논문 claim은 future live run에서 client echo, proxy B-side server packet, single successful target, server artifact를 함께 확인한 뒤에만 강화할 수 있다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -436,7 +450,8 @@
 | 17 | non-quic-go implementation findings | 완료. quic-go 제외 17개 구현체/스택의 검수 결과와 claim boundary를 교수님 질의 대응용으로 분리 |
 | 18 | AWS s2n live runner safety audit | 완료. live AWS 실행 전 fail-closed gate/resource inventory/cleanup coverage/claim boundary를 정적으로 검수 |
 | 19 | AWS s2n phase-2 path-change design | 완료. forwarding echo 이후 NAT-rebinding proxy/Linux namespace/test-IO/public API variant와 claim boundary를 설계 |
+| 20 | AWS s2n phase-2 rebinding runner audit | 완료. NAT-rebinding proxy mode/chunked client/remote-safe proxy bind/pre-resource blocked control을 runner와 audit으로 고정 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 NAT-rebinding proxy phase-2 variant를 구현한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, AWS s2n live runner safety audit, AWS s2n phase-2 path-change design, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold, non-quic-go implementation findings는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 이미 구현된 `PATH_CHANGE_MODE=rebinding_proxy` phase-2 mode를 실행해 NAT-rebinding proxy continuity를 검수한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, AWS s2n live runner safety audit, AWS s2n phase-2 path-change design, AWS s2n phase-2 rebinding runner audit, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold, non-quic-go implementation findings는 확보됐다.

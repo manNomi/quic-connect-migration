@@ -22,6 +22,7 @@ type proxyResult struct {
 	CompletedAt                     string `json:"completed_at"`
 	ListenAddr                      string `json:"listen_addr"`
 	ServerAddr                      string `json:"server_addr"`
+	UpstreamBindIP                  string `json:"upstream_bind_ip"`
 	UpstreamAAddr                   string `json:"upstream_a_addr"`
 	UpstreamBAddr                   string `json:"upstream_b_addr"`
 	SwitchAfterMillis               int64  `json:"switch_after_ms"`
@@ -94,6 +95,7 @@ func (l *jsonlLogger) log(event string, fields map[string]any) {
 func main() {
 	listen := flag.String("listen", "127.0.0.1:4443", "client-facing UDP listen address")
 	server := flag.String("server", "127.0.0.1:4444", "upstream QUIC server UDP address")
+	upstreamBindIP := flag.String("upstream-bind-ip", "", "local IP for upstream sockets; empty uses loopback for loopback servers and wildcard otherwise")
 	switchAfter := flag.Duration("switch-after", 3*time.Second, "delay before forwarding new client packets via upstream socket B")
 	dropAServerAfterSwitch := flag.Bool("drop-a-server-after-switch", false, "drop server-to-client packets arriving on upstream A after client traffic has switched to upstream B")
 	dropBServerAfterSwitch := flag.Bool("drop-b-server-after-switch", false, "drop server-to-client packets arriving on upstream B after client traffic has switched to upstream B")
@@ -109,7 +111,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(ctx, *timeout)
 	defer cancel()
 
-	result, err := run(ctx, *listen, *server, *switchAfter, *dropAServerAfterSwitch, *dropBServerAfterSwitch, *dropAServerAfterSwitchFor, *dropBServerAfterSwitchFor, *logPath)
+	result, err := run(ctx, *listen, *server, *upstreamBindIP, *switchAfter, *dropAServerAfterSwitch, *dropBServerAfterSwitch, *dropAServerAfterSwitchFor, *dropBServerAfterSwitchFor, *logPath)
 	if err != nil {
 		result.Error = err.Error()
 	}
@@ -125,13 +127,14 @@ func main() {
 	}
 }
 
-func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Duration, dropAServerAfterSwitch, dropBServerAfterSwitch bool, dropAServerAfterSwitchFor, dropBServerAfterSwitchFor time.Duration, logPath string) (proxyResult, error) {
+func run(ctx context.Context, listenAddr, serverAddr, upstreamBindIP string, switchAfter time.Duration, dropAServerAfterSwitch, dropBServerAfterSwitch bool, dropAServerAfterSwitchFor, dropBServerAfterSwitchFor time.Duration, logPath string) (proxyResult, error) {
 	started := time.Now().UTC()
 	result := proxyResult{
 		Role:                            "udprebindproxy",
 		StartedAt:                       started.Format(time.RFC3339Nano),
 		ListenAddr:                      listenAddr,
 		ServerAddr:                      serverAddr,
+		UpstreamBindIP:                  upstreamBindIP,
 		SwitchAfterMillis:               switchAfter.Milliseconds(),
 		DropAServerAfterSwitch:          dropAServerAfterSwitch,
 		DropBServerAfterSwitch:          dropBServerAfterSwitch,
@@ -153,9 +156,9 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 	}
 	defer clientConn.Close()
 
-	upstreamBind := &net.UDPAddr{IP: serverUDPAddr.IP, Port: 0}
-	if upstreamBind.IP == nil || upstreamBind.IP.IsUnspecified() {
-		upstreamBind.IP = net.ParseIP("127.0.0.1")
+	upstreamBind := &net.UDPAddr{IP: upstreamBindAddress(serverUDPAddr, upstreamBindIP), Port: 0}
+	if upstreamBind.IP != nil {
+		result.UpstreamBindIP = upstreamBind.IP.String()
 	}
 	upstreamA, err := net.ListenUDP("udp", upstreamBind)
 	if err != nil {
@@ -178,6 +181,7 @@ func run(ctx context.Context, listenAddr, serverAddr string, switchAfter time.Du
 	logger.log("proxy_started", map[string]any{
 		"listen":                            listenAddr,
 		"server":                            serverAddr,
+		"upstream_bind_ip":                  result.UpstreamBindIP,
 		"upstream_a":                        result.UpstreamAAddr,
 		"upstream_b":                        result.UpstreamBAddr,
 		"switch_after":                      switchAfter.String(),
@@ -329,6 +333,22 @@ func cloneUDPAddr(addr *net.UDPAddr) *net.UDPAddr {
 		clone.IP = append(net.IP(nil), addr.IP...)
 	}
 	return &clone
+}
+
+func upstreamBindAddress(serverUDPAddr *net.UDPAddr, explicit string) net.IP {
+	if explicit != "" {
+		parsed := net.ParseIP(explicit)
+		if parsed != nil {
+			return parsed
+		}
+	}
+	if serverUDPAddr == nil || serverUDPAddr.IP == nil {
+		return net.IPv4zero
+	}
+	if serverUDPAddr.IP.IsLoopback() {
+		return serverUDPAddr.IP
+	}
+	return net.IPv4zero
 }
 
 func writeJSON(path string, value any) error {

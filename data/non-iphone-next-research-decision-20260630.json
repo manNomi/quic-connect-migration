@@ -3,7 +3,7 @@
   "public_safe": true,
   "source_bundle": "data/sanitized-evidence-bundle-20260630.json",
   "source_bundle_exists": true,
-  "source_bundle_item_count": 43,
+  "source_bundle_item_count": 44,
   "track_count": 6,
   "runnable_now": [],
   "blocked_track_count": 6,
@@ -22,15 +22,16 @@
       "current_state": "runner_ready_but_credential_blocked",
       "can_run_now": false,
       "blocker": "AWS identity still classifies as invalid_client_token on the current host.",
-      "needed_from_user_or_environment": "Refresh AWS credentials, then run the dedicated live NLB+s2n runner before designing active path-change.",
+      "needed_from_user_or_environment": "Refresh AWS credentials, then run the dedicated live NLB+s2n forwarding echo before the packaged rebinding-proxy mode.",
       "paper_value": "Highest: directly answers the deployment/AWS part of the professor decision without needing iPhone.",
-      "risk": "The first live run only proves forwarding echo and target consistency; s2n public active migration API remains a separate limitation.",
-      "next_command_or_action": "Refresh AWS credentials, then run `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`.",
+      "risk": "The first live run only proves forwarding echo and target consistency; the packaged rebinding-proxy mode still must be run separately and does not prove s2n public active migration API support.",
+      "next_command_or_action": "Refresh AWS credentials, run `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`, then run it again with `PATH_CHANGE_MODE=rebinding_proxy PAYLOAD_CHUNKS=8 CHUNK_DELAY_MS=250` if forwarding echo passes.",
       "supporting_evidence_ids": [
         "s2n-nlb-cid-provider-proof",
         "s2n-nlb-live-readiness",
         "aws-s2n-nlb-live-runner",
         "s2n-active-migration-api-audit",
+        "aws-s2n-phase2-rebinding-runner-audit",
         "non-iphone-gate-rerun-20260701"
       ],
       "decision": "Primary next step once AWS credentials are valid.",
@@ -39,6 +40,7 @@
         "s2n-nlb-live-readiness",
         "aws-s2n-nlb-live-runner",
         "s2n-active-migration-api-audit",
+        "aws-s2n-phase2-rebinding-runner-audit",
         "non-iphone-gate-rerun-20260701"
       ],
       "supporting_evidence_missing": []

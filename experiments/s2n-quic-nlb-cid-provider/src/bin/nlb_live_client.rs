@@ -18,6 +18,8 @@ struct LiveClientResult {
     server_name: String,
     client_local_addr: String,
     payload_bytes: usize,
+    payload_chunks: usize,
+    chunk_delay_ms: u64,
     received_bytes: usize,
     echo_matches: bool,
 }
@@ -29,6 +31,8 @@ async fn main() -> Result<(), AnyError> {
     let server_name = env_value("SERVER_NAME", "localhost");
     let timeout_secs = env_value("TIMEOUT_SECS", "30").parse::<u64>()?;
     let payload_bytes = env_value("PAYLOAD_BYTES", "4096").parse::<usize>()?;
+    let payload_chunks = env_value("PAYLOAD_CHUNKS", "1").parse::<usize>()?.max(1);
+    let chunk_delay_ms = env_value("CHUNK_DELAY_MS", "0").parse::<u64>()?;
     let result_path = PathBuf::from(env_value("RESULT_PATH", "results/client.json"));
     if let Some(parent) = result_path.parent() {
         fs::create_dir_all(parent)?;
@@ -52,7 +56,12 @@ async fn main() -> Result<(), AnyError> {
     )
     .await??;
     let payload = deterministic_payload(payload_bytes);
-    stream.send(payload.clone().into()).await?;
+    for chunk in payload_chunks_for(&payload, payload_chunks) {
+        stream.send(chunk.to_vec().into()).await?;
+        if chunk_delay_ms > 0 {
+            tokio::time::sleep(Duration::from_millis(chunk_delay_ms)).await;
+        }
+    }
     stream.finish()?;
 
     let mut received = Vec::with_capacity(payload.len());
@@ -70,6 +79,8 @@ async fn main() -> Result<(), AnyError> {
         server_name,
         client_local_addr,
         payload_bytes,
+        payload_chunks,
+        chunk_delay_ms,
         received_bytes: received.len(),
         echo_matches,
     };
@@ -88,6 +99,14 @@ async fn main() -> Result<(), AnyError> {
 
 fn deterministic_payload(len: usize) -> Vec<u8> {
     (0..len).map(|index| (index % 251) as u8).collect()
+}
+
+fn payload_chunks_for(payload: &[u8], chunks: usize) -> Vec<&[u8]> {
+    if payload.is_empty() {
+        return vec![payload];
+    }
+    let chunk_size = payload.len().div_ceil(chunks.max(1)).max(1);
+    payload.chunks(chunk_size).collect()
 }
 
 fn resolve_addr(addr: &str) -> Result<SocketAddr, AnyError> {

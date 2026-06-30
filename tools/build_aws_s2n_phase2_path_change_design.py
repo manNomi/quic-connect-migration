@@ -72,7 +72,7 @@ OPTIONS = [
         claim_if_success="AWS NLB+s2n can tolerate a controlled NAT-rebinding style path change for the tested echo/stream workload.",
         do_not_claim="Application-triggered active migration API support or browser handover.",
         feasibility="best_next_design_without_s2n_public_active_api",
-        next_action="Add a live-runner variant that routes the s2n client through a UDP rebinding proxy and records proxy/server event evidence.",
+        next_action="Run the packaged live-runner variant with PATH_CHANGE_MODE=rebinding_proxy after forwarding echo is stable, then inspect client/proxy/server evidence.",
     ),
     DesignOption(
         id="phase2_linux_network_namespace_rebind",
@@ -255,7 +255,7 @@ def emit_markdown(design: dict[str, Any]) -> str:
             "",
             "1. Keep live AWS execution blocked until `aws_identity_ok=yes`.",
             "2. Run the existing live forwarding echo and inspect `validation=ok`, `client_echo_matches=true`, and `server_success_count=1`.",
-            "3. Add the NAT-rebinding proxy variant only after forwarding echo is stable.",
+            "3. Run the packaged NAT-rebinding proxy variant only after forwarding echo is stable.",
             "4. Treat proxy or namespace path-change evidence as passive/NAT-rebinding continuity unless a current public s2n active migration API is introduced.",
             "5. Keep a future public API/fork path as future work rather than the next paper-critical blocker.",
         ]

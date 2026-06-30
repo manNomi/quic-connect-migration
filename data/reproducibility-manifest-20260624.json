@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "3c195fe",
+    "commit": "c48c29a",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 134,
+    "total_items": 148,
     "status_counts": {
-      "done": 130,
+      "done": 144,
       "planned": 4
     },
-    "latest_item": "chrome-desktop-noniphone-musiclike-local-refresh"
+    "latest_item": "aws-s2n-phase2-rebinding-runner-audit"
   },
   "verification": {
     "checks": "109",
@@ -165,6 +165,94 @@
       "path": "data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv",
       "exists": true
     },
+    "chrome_desktop_noniphone_buffered_media_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_buffered_media_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv",
+      "exists": true
+    },
+    "noniphone_workload_qoe_synthesis": {
+      "path": "docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md",
+      "exists": true
+    },
+    "noniphone_workload_qoe_synthesis_csv": {
+      "path": "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv",
+      "exists": true
+    },
+    "controlled_public_origin_workload_deploy_packet": {
+      "path": "docs/results/controlled-public-origin-workload-deploy-packet-20260701.md",
+      "exists": true
+    },
+    "controlled_public_origin_workload_deploy_packet_json": {
+      "path": "data/controlled-public-origin-workload-deploy-packet-20260701.json",
+      "exists": true
+    },
+    "noniphone_desktop_path_change_readiness": {
+      "path": "docs/results/noniphone-desktop-path-change-readiness-20260701.md",
+      "exists": true
+    },
+    "noniphone_desktop_path_change_readiness_json": {
+      "path": "data/noniphone-desktop-path-change-readiness-20260701.json",
+      "exists": true
+    },
+    "noniphone_public_workload_trial_packet": {
+      "path": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
+      "exists": true
+    },
+    "noniphone_public_workload_trial_packet_json": {
+      "path": "data/noniphone-public-workload-trial-packet-20260701.json",
+      "exists": true
+    },
+    "noniphone_claim_readiness_dashboard": {
+      "path": "docs/results/noniphone-claim-readiness-dashboard-20260701.md",
+      "exists": true
+    },
+    "noniphone_claim_readiness_dashboard_json": {
+      "path": "data/noniphone-claim-readiness-dashboard-20260701.json",
+      "exists": true
+    },
+    "noniphone_professor_decision_packet": {
+      "path": "docs/results/noniphone-professor-decision-packet-20260701.md",
+      "exists": true
+    },
+    "noniphone_professor_decision_packet_json": {
+      "path": "data/noniphone-professor-decision-packet-20260701.json",
+      "exists": true
+    },
+    "noniphone_reviewer_risk_audit": {
+      "path": "docs/results/noniphone-reviewer-risk-audit-20260701.md",
+      "exists": true
+    },
+    "noniphone_reviewer_risk_audit_json": {
+      "path": "data/noniphone-reviewer-risk-audit-20260701.json",
+      "exists": true
+    },
+    "noniphone_paper_wording_guard": {
+      "path": "docs/results/noniphone-paper-wording-guard-20260701.md",
+      "exists": true
+    },
+    "noniphone_paper_wording_guard_json": {
+      "path": "data/noniphone-paper-wording-guard-20260701.json",
+      "exists": true
+    },
+    "noniphone_paper_section_scaffold": {
+      "path": "docs/results/noniphone-paper-section-scaffold-20260701.md",
+      "exists": true
+    },
+    "noniphone_paper_section_scaffold_json": {
+      "path": "data/noniphone-paper-section-scaffold-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_implementation_findings": {
+      "path": "docs/results/non-quicgo-implementation-findings-20260701.md",
+      "exists": true
+    },
+    "non_quicgo_implementation_findings_json": {
+      "path": "data/non-quicgo-implementation-findings-20260701.json",
+      "exists": true
+    },
     "chrome_desktop_noniphone_range_local_refresh": {
       "path": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
       "exists": true
@@ -179,6 +267,18 @@
     },
     "chrome_desktop_noniphone_upload_local_refresh_csv": {
       "path": "data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis": {
+      "path": "docs/results/controlled-public-chrome-bridge-synthesis-20260701.md",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis_json": {
+      "path": "data/controlled-public-chrome-bridge-synthesis-20260701.json",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis_csv": {
+      "path": "data/controlled-public-chrome-bridge-synthesis-20260701.csv",
       "exists": true
     },
     "haproxy_negative_control": {
@@ -231,6 +331,30 @@
     },
     "aws_s2n_nlb_live_runner": {
       "path": "docs/results/aws-s2n-nlb-live-runner-20260630.md",
+      "exists": true
+    },
+    "aws_s2n_live_runner_safety_audit": {
+      "path": "docs/results/aws-s2n-live-runner-safety-audit-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_live_runner_safety_audit_json": {
+      "path": "data/aws-s2n-live-runner-safety-audit-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_path_change_design": {
+      "path": "docs/results/aws-s2n-phase2-path-change-design-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_path_change_design_json": {
+      "path": "data/aws-s2n-phase2-path-change-design-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_rebinding_runner_audit": {
+      "path": "docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_rebinding_runner_audit_json": {
+      "path": "data/aws-s2n-phase2-rebinding-runner-audit-20260701.json",
       "exists": true
     },
     "s2n_active_migration_api_audit": {

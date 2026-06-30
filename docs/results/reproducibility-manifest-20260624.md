@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `3c195fe` |
+| source commit at generation | `c48c29a` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `134` |
-| latest experiment matrix item | `chrome-desktop-noniphone-musiclike-local-refresh` |
+| experiment matrix items | `148` |
+| latest experiment matrix item | `aws-s2n-phase2-rebinding-runner-audit` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -71,10 +71,35 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `chrome_desktop_noniphone_media_local_refresh_csv` | `data/chrome-desktop-noniphone-media-local-refresh-20260630.csv` | `yes` |
 | `chrome_desktop_noniphone_musiclike_local_refresh` | `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md` | `yes` |
 | `chrome_desktop_noniphone_musiclike_local_refresh_csv` | `data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv` | `yes` |
+| `chrome_desktop_noniphone_buffered_media_local_refresh` | `docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md` | `yes` |
+| `chrome_desktop_noniphone_buffered_media_local_refresh_csv` | `data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv` | `yes` |
+| `noniphone_workload_qoe_synthesis` | `docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md` | `yes` |
+| `noniphone_workload_qoe_synthesis_csv` | `data/noniphone-workload-qoe-continuity-synthesis-20260701.csv` | `yes` |
+| `controlled_public_origin_workload_deploy_packet` | `docs/results/controlled-public-origin-workload-deploy-packet-20260701.md` | `yes` |
+| `controlled_public_origin_workload_deploy_packet_json` | `data/controlled-public-origin-workload-deploy-packet-20260701.json` | `yes` |
+| `noniphone_desktop_path_change_readiness` | `docs/results/noniphone-desktop-path-change-readiness-20260701.md` | `yes` |
+| `noniphone_desktop_path_change_readiness_json` | `data/noniphone-desktop-path-change-readiness-20260701.json` | `yes` |
+| `noniphone_public_workload_trial_packet` | `docs/results/noniphone-public-workload-trial-packet-20260701.md` | `yes` |
+| `noniphone_public_workload_trial_packet_json` | `data/noniphone-public-workload-trial-packet-20260701.json` | `yes` |
+| `noniphone_claim_readiness_dashboard` | `docs/results/noniphone-claim-readiness-dashboard-20260701.md` | `yes` |
+| `noniphone_claim_readiness_dashboard_json` | `data/noniphone-claim-readiness-dashboard-20260701.json` | `yes` |
+| `noniphone_professor_decision_packet` | `docs/results/noniphone-professor-decision-packet-20260701.md` | `yes` |
+| `noniphone_professor_decision_packet_json` | `data/noniphone-professor-decision-packet-20260701.json` | `yes` |
+| `noniphone_reviewer_risk_audit` | `docs/results/noniphone-reviewer-risk-audit-20260701.md` | `yes` |
+| `noniphone_reviewer_risk_audit_json` | `data/noniphone-reviewer-risk-audit-20260701.json` | `yes` |
+| `noniphone_paper_wording_guard` | `docs/results/noniphone-paper-wording-guard-20260701.md` | `yes` |
+| `noniphone_paper_wording_guard_json` | `data/noniphone-paper-wording-guard-20260701.json` | `yes` |
+| `noniphone_paper_section_scaffold` | `docs/results/noniphone-paper-section-scaffold-20260701.md` | `yes` |
+| `noniphone_paper_section_scaffold_json` | `data/noniphone-paper-section-scaffold-20260701.json` | `yes` |
+| `non_quicgo_implementation_findings` | `docs/results/non-quicgo-implementation-findings-20260701.md` | `yes` |
+| `non_quicgo_implementation_findings_json` | `data/non-quicgo-implementation-findings-20260701.json` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh` | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh_csv` | `data/chrome-desktop-noniphone-range-local-refresh-20260630.csv` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh` | `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh_csv` | `data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv` | `yes` |
+| `controlled_public_chrome_bridge_synthesis` | `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md` | `yes` |
+| `controlled_public_chrome_bridge_synthesis_json` | `data/controlled-public-chrome-bridge-synthesis-20260701.json` | `yes` |
+| `controlled_public_chrome_bridge_synthesis_csv` | `data/controlled-public-chrome-bridge-synthesis-20260701.csv` | `yes` |
 | `haproxy_negative_control` | `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | `yes` |
 | `lsquic_preferred_address_demo` | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | `yes` |
 | `lsquic_nat_rebinding_demo` | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | `yes` |
@@ -88,6 +113,12 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `s2n_nlb_cid_provider_rerun` | `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | `yes` |
 | `s2n_nlb_live_readiness` | `docs/results/s2n-nlb-live-readiness-20260630.md` | `yes` |
 | `aws_s2n_nlb_live_runner` | `docs/results/aws-s2n-nlb-live-runner-20260630.md` | `yes` |
+| `aws_s2n_live_runner_safety_audit` | `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | `yes` |
+| `aws_s2n_live_runner_safety_audit_json` | `data/aws-s2n-live-runner-safety-audit-20260701.json` | `yes` |
+| `aws_s2n_phase2_path_change_design` | `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | `yes` |
+| `aws_s2n_phase2_path_change_design_json` | `data/aws-s2n-phase2-path-change-design-20260701.json` | `yes` |
+| `aws_s2n_phase2_rebinding_runner_audit` | `docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` | `yes` |
+| `aws_s2n_phase2_rebinding_runner_audit_json` | `data/aws-s2n-phase2-rebinding-runner-audit-20260701.json` | `yes` |
 | `s2n_active_migration_api_audit` | `docs/results/s2n-active-migration-api-audit-20260630.md` | `yes` |
 | `s2n_active_migration_api_audit_json` | `data/s2n-active-migration-api-audit-20260630.json` | `yes` |
 | `browser_cm_observability_refresh` | `docs/results/browser-cm-observability-readiness-refresh-20260630.md` | `yes` |
