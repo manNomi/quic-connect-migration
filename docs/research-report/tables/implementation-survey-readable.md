@@ -28,7 +28,7 @@
 | --- | ---: |
 | 총 조사 대상 | 18 |
 | local test까지 실행한 구현체 | 8 |
-| 2026-06-30 fresh rerun artifact 확보 | 6 |
+| 2026-06-30 fresh rerun artifact 확보 | 8 |
 | source inspected | 15 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
@@ -47,8 +47,8 @@
 | 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4` | `fresh_rerun_20260630` | Use as C library primitive/path-validation comparison |
 | 5 | LiteSpeed lsquic | server | O | O | O | `logs` | O | `likely` | `L4_L5_candidate` | `source_inspected` | Check OpenLiteSpeed/lsquic instrumentation and setup cost |
 | 6 | MsQuic | library/server | O | O | ? check | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `source_inspected` | Confirm active migration sample/API and LB assumptions |
-| 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `source_inspected` | Inspect public API for active local address migration |
-| 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `source_inspected` | Assess build and experiment ergonomics |
+| 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Rust migration/rebind comparison |
+| 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Firefox-adjacent broad migration test evidence |
 | 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L2_L4` | `source_inspected` | Assess docs language/build feasibility |
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_runtime_policy_dependent` | `source_and_local_browser_baseline` | Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults |
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
