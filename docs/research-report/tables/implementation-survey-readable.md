@@ -56,7 +56,7 @@
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_runtime_policy_dependent` | `source_and_local_browser_baseline` | Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults |
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | ? s2n | `yes` | `L5_deployment_candidate` | `partial_deferred` | Start only after s2n-quic custom CID compatibility is verified |
-| 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use as large-scale implementation maturity evidence; not first experiment |
+| 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use source audit appendix as large-scale implementation maturity evidence; Linux build/test remains follow-up |
 | 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |
 | 15 | nginx QUIC | server | O | O | X | `logs` | ? test | `server_deploy` | `L3_L4` | `source_inspected` | Use boundary appendix as server-side passive migration source evidence; runtime handover remains follow-up |
 | 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4_partial` | `fresh_build_partial_20260630` | Use as partial primitive evidence; isolate migration-only unit test or install Perl deps for e2e path-migration before upgrading to fresh rerun |
@@ -84,7 +84,7 @@
 | --- | --- |
 | MsQuic | NAT rebinding/path validation은 fresh rerun 통과, LB deployment assumption은 별도 검증 필요 |
 | LiteSpeed lsquic | preferred-address app-level positive control까지 확보했으며 OpenLiteSpeed/서버 배포 논의에 연결 가능 |
-| mvfst | 대규모 deployment 후보이나 build/test cost가 큼 |
+| mvfst | 대규모 deployment 후보이며 source audit appendix에서 path manager/client/server migration test 구조를 고정함. build/test cost가 큼 |
 | nginx QUIC | 실제 server deployment와 연결 가능하나 현재는 source-only 근거. boundary appendix에서 server passive migration source flow를 고정함 |
 | AWS NLB + s2n-quic | CID-aware routing 실험으로 이어짐 |
 | AWS CloudFront | end-to-end CM이 아니라 edge-level continuity로 해석해야 함 |

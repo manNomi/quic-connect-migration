@@ -394,4 +394,5 @@ Chapter 1의 결론은 다음이다.
 | `../results/quic-go-minimum-reproduction-results.md` | quic-go positive control |
 | `../results/quiche-path-event-timeline-20260623.md` | quiche migration lifecycle |
 | `../results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control |
+| `../results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `../results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

@@ -101,11 +101,15 @@
 
 > mvfst를 full build까지 못 하더라도, path manager, migration tests, qlog/stats 근거를 source-linked appendix로 정리한다.
 
+상태:
+
+> 완료. `docs/results/mvfst-cm-source-audit-20260630.md`에 `QuicPathManager`, client active probe/migration flow, server passive migration state machine, qlog/stat hook, migration-specific test files를 source-linked appendix로 정리했다.
+
 실행 방향:
 
-1. migration/path manager 관련 파일과 test 목록 고정
-2. build 가능성 빠른 점검
-3. 실패하면 dependency caveat와 source evidence를 분리
+1. 완료: migration/path manager 관련 파일과 test 목록 고정
+2. 완료: build/test는 이번 턴에서 실행하지 않고 dependency/build cost caveat로 분리
+3. 완료: fresh PASS가 아니라 source-audited evidence로 분류
 
 ### P5. Chrome desktop public-origin simulation
 
