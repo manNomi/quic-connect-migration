@@ -1,10 +1,11 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 29,
+  "item_count": 30,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
+    "bridge_gap_negative_controls": 1,
     "broad_test_suite": 1,
     "deployment_positive": 1,
     "focused_e2e_positive": 1,
@@ -21,6 +22,7 @@
     "strong_local_positive": 1
   },
   "category_counts": {
+    "browser-deployment-bridge-synthesis": 1,
     "browser-local-control": 1,
     "browser-local-media-control": 1,
     "browser-local-music-control": 1,
@@ -430,6 +432,22 @@
       "supports": "The current non-iPhone gates were rerun: AWS remains credential-blocked, Safari WebDriver session remains disabled, and the user-provided public origin remains non-H3-ready.",
       "do_not_claim": "AWS NLB live forwarding, Safari controlled-public execution, Chrome public-origin H3 baseline, or browser Connection Migration.",
       "next_gap": "Open one gate: refresh AWS credentials, configure a controlled H3 public origin, or enable Safari Allow remote automation.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "controlled-public-chrome-bridge-synthesis",
+      "chapter": "7-9",
+      "category": "browser-deployment-bridge-synthesis",
+      "implementation": "Chrome + controlled public quic-go H3",
+      "evidence_doc": "docs/results/controlled-public-chrome-bridge-synthesis-20260701.md",
+      "runner_or_tool": "tools/build_controlled_public_chrome_bridge_synthesis.py",
+      "local_artifact_id": "tracked-controlled-public-chrome-validation-docs-20260629",
+      "claim_strength": "bridge_gap_negative_controls",
+      "supports": "Tracked controlled-public Chrome validation records include H3 no-change baselines and active network-change negative controls; none combine active network change, application continuity, tuple change, and QUIC path validation.",
+      "do_not_claim": "Controlled-public Chrome single-session Connection Migration success, final browser handover success, or upload coverage from untracked local validation notes.",
+      "next_gap": "Open a controlled public H3 origin and rerun page-ready media/range/upload trials with artifact-bundle validation.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

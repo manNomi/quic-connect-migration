@@ -8,7 +8,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `3c195fe` |
+| source commit at generation | `70c1d2e` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
@@ -75,6 +75,9 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `chrome_desktop_noniphone_range_local_refresh_csv` | `data/chrome-desktop-noniphone-range-local-refresh-20260630.csv` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh` | `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh_csv` | `data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv` | `yes` |
+| `controlled_public_chrome_bridge_synthesis` | `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md` | `yes` |
+| `controlled_public_chrome_bridge_synthesis_json` | `data/controlled-public-chrome-bridge-synthesis-20260701.json` | `yes` |
+| `controlled_public_chrome_bridge_synthesis_csv` | `data/controlled-public-chrome-bridge-synthesis-20260701.csv` | `yes` |
 | `haproxy_negative_control` | `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | `yes` |
 | `lsquic_preferred_address_demo` | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | `yes` |
 | `lsquic_nat_rebinding_demo` | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | `yes` |

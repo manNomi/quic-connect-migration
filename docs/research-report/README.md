@@ -61,6 +61,7 @@
 | Chapter 12 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-12-external-link-check-20260630.md` |
 | 후속 연구 디시전 브리프. iPhone 없이 다음에 할 연구 | 작성 완료 | `../results/non-iphone-next-research-decision-20260630.md` |
 | 후속 연구 gate 재검사. 2026-07-01 non-iPhone gates | 작성 완료 | `../results/non-iphone-gate-rerun-20260701.md` |
+| 후속 연구 bridge synthesis. tracked controlled-public Chrome 결과 통합 | 작성 완료 | `../results/controlled-public-chrome-bridge-synthesis-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -165,6 +166,7 @@
 | `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md` | Chapter 11 fresh non-iPhone Chrome desktop music-like segment local control |
 | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | Chapter 9 fresh non-iPhone Chrome desktop range local control |
 | `docs/results/user-provided-public-origin-readiness-20260630.md` | Chapter 7 user-provided public origin 후보의 HTTPS/H3 Alt-Svc readiness 결과 |
+| `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md` | Chapter 7-9 tracked controlled-public Chrome validation row 18개의 bridge gap synthesis |
 | `docs/results/literature-claim-positioning-20260629.md` | Chapter 12 literature claim positioning |
 | `docs/results/non-iphone-research-gap-plan-20260630.md` | iPhone 없이 이어갈 후속 연구 공백 보강 계획 |
 | `docs/results/non-iphone-next-research-decision-20260630.md` | evidence bundle 기준 다음 non-iPhone 연구 트랙 우선순위와 blocker |

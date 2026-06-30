@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "3c195fe",
+    "commit": "70c1d2e",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -179,6 +179,18 @@
     },
     "chrome_desktop_noniphone_upload_local_refresh_csv": {
       "path": "data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis": {
+      "path": "docs/results/controlled-public-chrome-bridge-synthesis-20260701.md",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis_json": {
+      "path": "data/controlled-public-chrome-bridge-synthesis-20260701.json",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis_csv": {
+      "path": "data/controlled-public-chrome-bridge-synthesis-20260701.csv",
       "exists": true
     },
     "haproxy_negative_control": {

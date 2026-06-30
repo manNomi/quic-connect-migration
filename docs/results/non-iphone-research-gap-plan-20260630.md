@@ -177,6 +177,10 @@
 
 > `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md`로 fresh local Chrome forced-H3 music-like segment control 2개 row를 추가했다. 6000ms A+B return-path outage에서 retry0 row는 `FAIL`, `browser_h3_request_failed`, media complete `false`, completed segment `1/8`, Chrome target QUIC session `2`였다. 같은 조건에서 retry1 row는 `PASS`, `nat_rebinding_multiple_quic_sessions`, media complete `true`, completed segment `8/8`, Chrome target QUIC session `3`이었다. 따라서 음악형 streaming completion은 retry/reconnect 기반 작업 회복으로 해석해야 하며, single-session browser CM 성공으로 쓰면 안 된다.
 
+2026-07-01 controlled-public bridge synthesis:
+
+> `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md`로 tracked controlled-public Chrome validation 문서 18개를 통합했다. no-change baseline 6개는 모두 H3 application baseline으로 확인됐지만, active network-change 12개 중 strong controlled-public CM success row는 `0`개였다. active row 중 2개는 application task가 성공했지만 qlog path validation이 없어서 `tuple_changed_without_path_validation` 또는 negative-control로만 쓸 수 있다. 따라서 이 corpus는 Chrome public-origin CM 성공 근거가 아니라 deployment/browser bridge gap과 negative-control 근거다.
+
 2026-06-30 user-provided public origin readiness:
 
 > 사용자가 제안한 public HTTPS origin 후보를 `tools/check_public_origin_readiness.py`로 redacted 검사했다. 결과는 HTTPS reachability `true`, final status `HTTP/2 200`, `h3 Alt-Svc=false`였다. 따라서 이 후보는 그대로 controlled-public H3 workload target이 아니며, 해당 도메인을 쓰려면 WebPKI TLS, HTTP/3 listener, `Alt-Svc: h3`, workload endpoint를 우리가 통제하도록 설정해야 한다. 결과는 `docs/results/user-provided-public-origin-readiness-20260630.md`와 `data/user-provided-public-origin-readiness-20260630.json`에 기록했다.

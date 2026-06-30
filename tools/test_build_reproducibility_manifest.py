@@ -54,6 +54,9 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["chrome_desktop_noniphone_range_local_refresh_csv"]["exists"] is True
     assert paths["chrome_desktop_noniphone_upload_local_refresh"]["exists"] is True
     assert paths["chrome_desktop_noniphone_upload_local_refresh_csv"]["exists"] is True
+    assert paths["controlled_public_chrome_bridge_synthesis"]["exists"] is True
+    assert paths["controlled_public_chrome_bridge_synthesis_json"]["exists"] is True
+    assert paths["controlled_public_chrome_bridge_synthesis_csv"]["exists"] is True
     assert paths["quicly_e2e_path_migration"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
     assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
