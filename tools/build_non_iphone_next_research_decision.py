@@ -50,6 +50,7 @@ TRACKS = [
             "s2n-nlb-live-readiness",
             "aws-s2n-nlb-live-runner",
             "s2n-active-migration-api-audit",
+            "non-iphone-gate-rerun-20260701",
         ),
         decision="Primary next step once AWS credentials are valid.",
     ),
@@ -67,6 +68,7 @@ TRACKS = [
         supporting_evidence_ids=(
             "chromium-cronet-policy-evidence",
             "user-provided-public-origin-readiness",
+            "non-iphone-gate-rerun-20260701",
             "chrome-desktop-noniphone-media-local-refresh",
             "chrome-desktop-noniphone-range-local-refresh",
             "chrome-desktop-noniphone-upload-local-refresh",
@@ -120,7 +122,7 @@ TRACKS = [
         paper_value="Medium: adds cross-browser feasibility, but claim ceiling remains lower than Chrome because there is no NetLog-equivalent artifact.",
         risk="A Safari PASS is feasibility evidence, not browser-internal single-session CM proof.",
         next_command_or_action="Rerun `tools/check_browser_cm_observability.py --safari-session-smoke`, then controlled-public Safari baseline.",
-        supporting_evidence_ids=("safari-webdriver-session-readiness",),
+        supporting_evidence_ids=("safari-webdriver-session-readiness", "non-iphone-gate-rerun-20260701"),
         decision="Worth doing after one settings toggle, but not enough as the main paper contribution.",
     ),
     Track(

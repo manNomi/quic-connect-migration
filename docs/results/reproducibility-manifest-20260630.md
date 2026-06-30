@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `f71a81a` |
+| source commit at generation | `ab8df65` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `132` |
-| latest experiment matrix item | `non-iphone-next-research-decision` |
+| experiment matrix items | `133` |
+| latest experiment matrix item | `non-iphone-gate-rerun-20260701` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -93,6 +93,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `safari_webdriver_session_readiness` | `docs/results/safari-webdriver-session-readiness-20260630.md` | `yes` |
 | `user_provided_public_origin_readiness` | `docs/results/user-provided-public-origin-readiness-20260630.md` | `yes` |
 | `user_provided_public_origin_readiness_json` | `data/user-provided-public-origin-readiness-20260630.json` | `yes` |
+| `non_iphone_gate_rerun` | `docs/results/non-iphone-gate-rerun-20260701.md` | `yes` |
+| `non_iphone_gate_rerun_json` | `data/non-iphone-gate-rerun-20260701.json` | `yes` |
 | `non_iphone_next_research_decision` | `docs/results/non-iphone-next-research-decision-20260630.md` | `yes` |
 | `non_iphone_next_research_decision_json` | `data/non-iphone-next-research-decision-20260630.json` | `yes` |
 | `research_report_index` | `docs/research-report/README.md` | `yes` |

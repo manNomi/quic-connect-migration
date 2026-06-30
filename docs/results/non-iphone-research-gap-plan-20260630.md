@@ -216,7 +216,7 @@
 
 상태:
 
-> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 27개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
+> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 28개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
 
 해석:
 
@@ -259,6 +259,20 @@
 
 > 구현체 성숙도 조사는 더 늘리는 것보다, 이제 deployment/browser bridge를 열어야 논문 기여가 커진다. 현재 1순위는 AWS credential refresh 후 AWS NLB+s2n live forwarding echo이고, 2순위는 controlled public Chrome media/range/upload trial이다. Safari는 `Allow remote automation`을 켠 뒤 cross-browser `PASS_FEASIBILITY` 보강으로 진행하는 것이 적절하다.
 
+### P10. 2026-07-01 non-iPhone gate rerun
+
+목표:
+
+> 다음 실험을 시작하기 전에 AWS, Safari, user-provided public origin 중 하나라도 열렸는지 재검사한다.
+
+상태:
+
+> 완료. `tools/build_non_iphone_gate_rerun_report.py`와 regression test를 추가했고, `docs/results/non-iphone-gate-rerun-20260701.md` 및 `data/non-iphone-gate-rerun-20260701.json`을 생성했다. 재검사 결과 open gate는 없었다. AWS NLB+s2n은 `aws_identity_invalid_client_token`, Safari WebDriver session은 `allow_remote_automation_disabled`, user-provided public origin은 `h3 Alt-Svc=false`로 남았다. `safaridriver --enable`도 비대화식 실행에서는 password/authorization prompt 때문에 성공하지 못했다.
+
+해석:
+
+> 현재 상태에서 바로 새 live/browser 실험을 시작하면 실패가 예상된다. 연구적으로는 “구현체 성숙도는 충분히 보강됐고, 다음 논문 기여는 외부 gate를 하나 열어 deployment/browser bridge를 실험하는 것”이라는 결론이 더 강해졌다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -272,7 +286,8 @@
 | 7 | Chrome desktop upload local refresh | 완료. media/range에 이어 upload fresh local control까지 추가해 streaming/large-transfer workload 비교 근거를 보강 |
 | 8 | Safari WebDriver session readiness | 완료. binary readiness와 session creation readiness를 분리했고 현재 host의 Safari blocker를 `Allow remote automation`으로 좁힘 |
 | 9 | non-iPhone next research decision brief | 완료. AWS NLB+s2n live forwarding을 1순위, Chrome controlled-public workload를 2순위, Safari feasibility를 설정 의존 보강으로 정리 |
+| 10 | 2026-07-01 non-iPhone gate rerun | 완료. AWS/Safari/public-origin 세 gate 모두 아직 닫혀 있음을 public-safe report로 고정 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload page-ready trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, Safari session readiness split, sanitized evidence-to-claim bundle, non-iPhone next research decision brief는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload page-ready trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report는 확보됐다.

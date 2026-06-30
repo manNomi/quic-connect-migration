@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 27,
+  "item_count": 28,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -13,7 +13,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "readiness_blocked": 8,
+    "readiness_blocked": 9,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -26,6 +26,7 @@
     "browser-local-upload-control": 1,
     "browser-policy-source": 1,
     "browser-readiness": 1,
+    "cross-gate-readiness": 1,
     "deployment-application-bridge": 1,
     "deployment-live-runner": 1,
     "deployment-negative-control": 2,
@@ -411,6 +412,22 @@
       "supports": "The user-provided public HTTPS origin is reachable over HTTPS but does not currently advertise `Alt-Svc: h3`, so it is not a ready controlled-public H3 target.",
       "do_not_claim": "Chrome controlled-public H3 baseline, browser Connection Migration, or usable public-origin workload continuity.",
       "next_gap": "Configure a controlled H3 origin with WebPKI TLS, Alt-Svc, and workload endpoints, then rerun readiness with `--require-h3-alt-svc`.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "non-iphone-gate-rerun-20260701",
+      "chapter": "7",
+      "category": "cross-gate-readiness",
+      "implementation": "AWS NLB+s2n, Safari desktop, user-provided public origin",
+      "evidence_doc": "docs/results/non-iphone-gate-rerun-20260701.md",
+      "runner_or_tool": "tools/build_non_iphone_gate_rerun_report.py",
+      "local_artifact_id": "non-iphone-gate-rerun-20260701",
+      "claim_strength": "readiness_blocked",
+      "supports": "The current non-iPhone gates were rerun: AWS remains credential-blocked, Safari WebDriver session remains disabled, and the user-provided public origin remains non-H3-ready.",
+      "do_not_claim": "AWS NLB live forwarding, Safari controlled-public execution, Chrome public-origin H3 baseline, or browser Connection Migration.",
+      "next_gap": "Open one gate: refresh AWS credentials, configure a controlled H3 public origin, or enable Safari Allow remote automation.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

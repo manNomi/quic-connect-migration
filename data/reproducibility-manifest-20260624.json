@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "f71a81a",
+    "commit": "ab8df65",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 132,
+    "total_items": 133,
     "status_counts": {
-      "done": 128,
+      "done": 129,
       "planned": 4
     },
-    "latest_item": "non-iphone-next-research-decision"
+    "latest_item": "non-iphone-gate-rerun-20260701"
   },
   "verification": {
     "checks": "109",
@@ -251,6 +251,14 @@
     },
     "user_provided_public_origin_readiness_json": {
       "path": "data/user-provided-public-origin-readiness-20260630.json",
+      "exists": true
+    },
+    "non_iphone_gate_rerun": {
+      "path": "docs/results/non-iphone-gate-rerun-20260701.md",
+      "exists": true
+    },
+    "non_iphone_gate_rerun_json": {
+      "path": "data/non-iphone-gate-rerun-20260701.json",
       "exists": true
     },
     "non_iphone_next_research_decision": {

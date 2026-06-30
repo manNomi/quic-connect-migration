@@ -29,6 +29,7 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     assert decision["tracks"][0]["id"] == "aws-s2n-nlb-live-forwarding"
     assert tracks["aws-s2n-nlb-live-forwarding"]["can_run_now"] is False
     assert "invalid_client_token" in tracks["aws-s2n-nlb-live-forwarding"]["blocker"]
+    assert "non-iphone-gate-rerun-20260701" in tracks["aws-s2n-nlb-live-forwarding"]["supporting_evidence_found"]
     assert tracks["chrome-controlled-public-workloads"]["rank"] == 2
     assert tracks["chrome-controlled-public-workloads"]["current_state"] == "local_controls_pass_user_origin_not_h3_ready"
     assert "user-provided-public-origin-readiness" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
