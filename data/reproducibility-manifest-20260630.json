@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "90701ab",
+    "commit": "5599528",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -53,12 +53,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 119,
+    "total_items": 120,
     "status_counts": {
-      "done": 115,
+      "done": 116,
       "planned": 4
     },
-    "latest_item": "s2n-nlb-live-readiness"
+    "latest_item": "nginx-quic-bpf-readiness"
   },
   "verification": {
     "checks": "109",
@@ -130,6 +130,10 @@
     },
     "nginx_runtime_demo": {
       "path": "docs/results/nginx-quic-active-migration-runtime-20260630.md",
+      "exists": true
+    },
+    "nginx_quic_bpf_readiness": {
+      "path": "docs/results/nginx-quic-bpf-readiness-20260630.md",
       "exists": true
     },
     "haproxy_negative_control": {

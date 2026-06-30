@@ -149,6 +149,8 @@ HAProxy negative-control과 반대로, nginx QUIC은 origin/web-server 계층에
 
 > nginx runtime demo는 "서버 구현체가 active client migration을 처리할 수 있다"는 근거다. 그러나 이는 proxy/CDN/LB 경로가 같은 semantics를 보존한다는 뜻은 아니며, browser handover claim도 아니다.
 
+Linux `quic_bpf` production-routing claim은 별도다. `harness/scripts/check-nginx-quic-bpf-readiness.sh` 최신 local run은 source, migration file, runtime demo script, HTTP/3 module build는 `yes`였지만 현재 host가 Darwin이라 `can_run_linux_quic_bpf_now=no`, `blocked_reason=linux_required`로 닫혔다. 따라서 nginx에 대해서는 local server runtime positive control까지만 말하고, Linux/eBPF packet-routing deployment success는 후속으로 남긴다.
+
 ## 7.2 OpenLiteSpeed Follow-up Packet
 
 LSQUIC example demo는 이미 preferred-address와 NAT rebinding app-level positive control을 제공하지만, production-like server integration은 별도 검증이 필요하다. 이를 위해 OpenLiteSpeed follow-up을 세 단계로 분리했다.

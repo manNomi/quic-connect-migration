@@ -92,6 +92,8 @@
 | `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
 | `harness/scripts/run-nginx-quic-active-migration-demo.sh` | Chapter 3 nginx QUIC active migration runtime demo |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
+| `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
+| `docs/results/nginx-quic-bpf-readiness-20260630.md` | Chapter 4 nginx local runtime demo와 Linux `quic_bpf` 검증 경계 |
 | `harness/scripts/openlitespeed-runtime-preflight.sh` | Chapter 4 OpenLiteSpeed production-like runtime readiness gate |
 | `harness/scripts/run-openlitespeed-active-migration-demo.sh` | Chapter 4 OpenLiteSpeed Linux/EC2 active-migration runtime runner |
 | `tools/report_artifact_storage.py` | Chapter 4 OpenLiteSpeed runtime 전 local artifact/disk usage report |

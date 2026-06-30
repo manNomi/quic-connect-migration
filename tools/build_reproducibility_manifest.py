@@ -122,6 +122,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "non_iphone_gap_plan": "docs/results/non-iphone-research-gap-plan-20260630.md",
         "nginx_haproxy_boundary": "docs/results/nginx-haproxy-quic-cm-boundary-20260630.md",
         "nginx_runtime_demo": "docs/results/nginx-quic-active-migration-runtime-20260630.md",
+        "nginx_quic_bpf_readiness": "docs/results/nginx-quic-bpf-readiness-20260630.md",
         "haproxy_negative_control": "docs/results/haproxy-http3-negative-control-rerun-20260630.md",
         "lsquic_preferred_address_demo": "docs/results/lsquic-preferred-address-app-demo-20260630.md",
         "lsquic_nat_rebinding_demo": "docs/results/lsquic-nat-rebinding-app-demo-20260630.md",

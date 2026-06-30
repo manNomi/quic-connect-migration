@@ -42,8 +42,9 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["implementation_rerun_results"]["exists"] is True
     assert paths["openlitespeed_runtime_runner"]["exists"] is True
     assert paths["nginx_haproxy_boundary"]["exists"] is True
+    assert paths["nginx_quic_bpf_readiness"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "s2n-nlb-live-readiness"
+    assert manifest["experiment_matrix"]["latest_item"] == "nginx-quic-bpf-readiness"
 
 
 def test_generated_date_uses_utc_day() -> None:
