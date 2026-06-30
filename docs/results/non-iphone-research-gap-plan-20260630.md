@@ -28,6 +28,7 @@
 | nginx QUIC production/Linux `quic_bpf` | nginx local runtime은 확보됐지만 production packet routing은 아직 약함 | 가능 |
 | AWS NLB + s2n-quic CID routing 검증 | 교수님 decision의 AWS 구축 검수와 직접 연결. dedicated runner는 준비됐고 live 실행은 AWS identity 갱신 필요 | 가능 |
 | Chrome desktop public-origin simulation | iPhone 없이 browser/runtime policy의 한계를 보강 | 가능 |
+| Safari desktop WebDriver/session readiness | cross-browser feasibility 후보지만 Chrome NetLog와 관찰성이 다르고 WebDriver session gate가 별도 존재 | 가능 |
 | sanitized evidence bundle | raw log가 ignored path에 있어 심사/보고 시 재현 근거가 약해질 수 있음 | 완료 |
 
 ## 3. 우선순위 제안
@@ -217,6 +218,29 @@
 
 > 이 bundle은 raw artifact archive가 아니라 evidence-to-claim map이다. 따라서 논문/보고서에서 어떤 문장을 쓸 수 있고 어떤 문장을 피해야 하는지 빠르게 확인하는 안전장치로 쓴다.
 
+### P8. Safari desktop WebDriver/session readiness
+
+목표:
+
+> Safari를 Chrome과 같은 등급의 browser CM evidence로 다루지 않되, cross-browser feasibility 후보로 실행 가능한 gate를 정확히 분리한다.
+
+상태:
+
+> 부분 완료. `tools/check_browser_cm_observability.py`에 `--safari-session-smoke` 옵션을 추가해 `safaridriver --version`과 실제 WebDriver session creation을 분리했다. fresh run 기준 Safari `26.2`, `safaridriver exit=0`, packet capture tooling, `rvictl`은 준비되어 있지만, session creation은 Safari Settings의 `Allow remote automation` 미활성화로 실패했다. 따라서 Safari controlled-public baseline/network-change trial은 현재 host에서 바로 실행할 수 없다.
+
+실행 방향:
+
+1. 완료: Safari/safaridriver binary readiness 확인
+2. 완료: 실제 WebDriver session creation smoke 추가
+3. 완료: 현재 blocker를 `Allow remote automation` 설정으로 좁힘
+4. 남음: Safari 설정에서 remote automation 활성화 후 session smoke 재실행
+5. 남음: controlled public Safari baseline 실행
+6. 남음: Safari network-change feasibility 실행
+
+주의:
+
+> Safari WebDriver session이 열려도 Chrome NetLog-equivalent가 없으므로 Safari 결과는 server/qlog/client-path 중심 `PASS_FEASIBILITY`로만 해석한다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -228,7 +252,8 @@
 | 5 | quicly focused e2e path-migration | 완료. path-migration subtest는 PASS, full e2e caveat는 유지 |
 | 6 | sanitized evidence bundle 생성 | 완료. evidence item에 대해 supports/do-not-claim/next-gap boundary를 public-safe로 고정 |
 | 7 | Chrome desktop upload local refresh | 완료. media/range에 이어 upload fresh local control까지 추가해 streaming/large-transfer workload 비교 근거를 보강 |
+| 8 | Safari WebDriver session readiness | 완료. binary readiness와 session creation readiness를 분리했고 현재 host의 Safari blocker를 `Allow remote automation`으로 좁힘 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, sanitized evidence-to-claim bundle은 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, Safari session readiness split, sanitized evidence-to-claim bundle은 확보됐다.

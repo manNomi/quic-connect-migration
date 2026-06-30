@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "1fc159b",
+    "commit": "ecf6971",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 129,
+    "total_items": 130,
     "status_counts": {
-      "done": 125,
+      "done": 126,
       "planned": 4
     },
-    "latest_item": "chrome-desktop-noniphone-upload-local-refresh"
+    "latest_item": "safari-webdriver-session-readiness"
   },
   "verification": {
     "checks": "109",
@@ -231,6 +231,18 @@
     },
     "s2n_active_migration_api_audit_json": {
       "path": "data/s2n-active-migration-api-audit-20260630.json",
+      "exists": true
+    },
+    "browser_cm_observability_refresh": {
+      "path": "docs/results/browser-cm-observability-readiness-refresh-20260630.md",
+      "exists": true
+    },
+    "browser_cm_observability_refresh_json": {
+      "path": "data/browser-cm-observability-refresh-20260630.json",
+      "exists": true
+    },
+    "safari_webdriver_session_readiness": {
+      "path": "docs/results/safari-webdriver-session-readiness-20260630.md",
       "exists": true
     },
     "research_report_index": {

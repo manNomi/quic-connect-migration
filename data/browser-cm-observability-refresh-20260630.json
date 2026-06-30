@@ -1,0 +1,97 @@
+{
+  "check_date": "2026-06-30",
+  "chrome": {
+    "name": "Chrome",
+    "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "found": true,
+    "executable": true,
+    "version": "149.0.7827.199"
+  },
+  "safari": {
+    "name": "Safari",
+    "path": "/Applications/Safari.app/Contents/MacOS/Safari",
+    "found": true,
+    "executable": true,
+    "version": "26.2"
+  },
+  "safari_technology_preview": {
+    "name": "Safari Technology Preview",
+    "path": "/Applications/Safari Technology Preview.app/Contents/MacOS/Safari Technology Preview",
+    "found": false,
+    "executable": false,
+    "version": ""
+  },
+  "safaridriver": {
+    "command": [
+      "safaridriver",
+      "--version"
+    ],
+    "found": true,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "safari_webdriver_binary_ready": true,
+  "safari_webdriver_session_checked": true,
+  "safari_webdriver_session_ready": false,
+  "safari_webdriver_session_error": "Could not create a session: You must enable 'Allow remote automation' in the Developer section of Safari Settings to control Safari via WebDriver.",
+  "tcpdump": {
+    "command": [
+      "tcpdump",
+      "--version"
+    ],
+    "found": true,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "rvictl": {
+    "command": [
+      "rvictl",
+      "-h"
+    ],
+    "found": true,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "networksetup": {
+    "command": [
+      "networksetup",
+      "-listallnetworkservices"
+    ],
+    "found": true,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "route": {
+    "command": [
+      "route",
+      "-n",
+      "get",
+      "default"
+    ],
+    "found": true,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "ifconfig": {
+    "command": [
+      "ifconfig"
+    ],
+    "found": true,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "chrome_netlog_ready": true,
+  "safari_webdriver_ready": false,
+  "packet_capture_tooling_ready": true,
+  "ios_remote_capture_candidate": true,
+  "blockers": [
+    "Safari WebDriver session creation failed; enable Allow remote automation before Safari trials",
+    "Safari does not provide a Chrome NetLog-equivalent artifact in this harness; use packet capture and server-side qlog"
+  ]
+}

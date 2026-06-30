@@ -147,6 +147,9 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "aws_s2n_nlb_live_runner": "docs/results/aws-s2n-nlb-live-runner-20260630.md",
         "s2n_active_migration_api_audit": "docs/results/s2n-active-migration-api-audit-20260630.md",
         "s2n_active_migration_api_audit_json": "data/s2n-active-migration-api-audit-20260630.json",
+        "browser_cm_observability_refresh": "docs/results/browser-cm-observability-readiness-refresh-20260630.md",
+        "browser_cm_observability_refresh_json": "data/browser-cm-observability-refresh-20260630.json",
+        "safari_webdriver_session_readiness": "docs/results/safari-webdriver-session-readiness-20260630.md",
         "research_report_index": "docs/research-report/README.md",
     }
 

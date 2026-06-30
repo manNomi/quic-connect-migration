@@ -121,6 +121,7 @@
 | `docs/results/s2n-active-migration-api-audit-20260630.md` | Chapter 4 s2n focused migration test PASS와 public active trigger API 부재 근거 |
 | `docs/research-report/tables/chapter-04-scanner-trigger-map-20260630.md` | Chapter 4 AWS NLB/H3 deployment trigger 추적표 |
 | `tools/check_browser_cm_observability.py` | Chapter 5 browser observability readiness scanner |
+| `docs/results/safari-webdriver-session-readiness-20260630.md` | Chapter 5 Safari WebDriver binary/session readiness 분리 결과 |
 | `tools/classify_chrome_h3_artifacts.py` | Chapter 5 Chrome local H3/rebinding artifact classifier |
 | `tools/classify_controlled_public_h3_network_change.py` | Chapter 5 controlled public-origin network-change classifier |
 | `repro/quic-go-min-repro/cmd/udprebindproxy/main.go` | Chapter 6 local UDP NAT rebinding proxy |

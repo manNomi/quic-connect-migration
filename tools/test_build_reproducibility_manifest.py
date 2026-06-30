@@ -57,9 +57,12 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
     assert paths["s2n_active_migration_api_audit"]["exists"] is True
     assert paths["s2n_active_migration_api_audit_json"]["exists"] is True
+    assert paths["browser_cm_observability_refresh"]["exists"] is True
+    assert paths["browser_cm_observability_refresh_json"]["exists"] is True
+    assert paths["safari_webdriver_session_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "chrome-desktop-noniphone-upload-local-refresh"
+    assert manifest["experiment_matrix"]["latest_item"] == "safari-webdriver-session-readiness"
 
 
 def test_generated_date_uses_utc_day() -> None:

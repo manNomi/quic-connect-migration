@@ -47,16 +47,20 @@ Chapter 3와 Chapter 4는 controlled QUIC client/server와 CID-aware deployment 
 | Safari TP found | `false` |
 | Safari TP version | `-` |
 | safaridriver | `exit=0` |
-| Safari WebDriver ready | `true` |
+| Safari WebDriver binary ready | `true` |
+| Safari WebDriver session checked | `true` |
+| Safari WebDriver session ready | `false` |
+| Safari WebDriver session error | `Could not create a session: You must enable 'Allow remote automation' in the Developer section of Safari Settings to control Safari via WebDriver.` |
+| Safari WebDriver ready | `false` |
 | tcpdump | `exit=0` |
 | rvictl | `exit=0` |
 | packet capture tooling ready | `true` |
 | iOS remote capture candidate | `true` |
-| blockers | `Safari does not provide a Chrome NetLog-equivalent artifact in this harness; use packet capture and server-side qlog` |
+| blockers | `Safari WebDriver session creation failed; enable Allow remote automation before Safari trials; Safari does not provide a Chrome NetLog-equivalent artifact in this harness; use packet capture and server-side qlog` |
 
 해석:
 
-> 로컬 장비는 Chrome/Safari 자동화와 packet capture 도구를 갖추고 있다. 그러나 Safari 계열은 browser-internal QUIC session continuity를 직접 보여주는 artifact가 없으므로 Chrome과 같은 등급으로 판정하면 안 된다.
+> 로컬 장비는 Chrome NetLog와 packet capture 도구를 갖추고 있고 Safari/safaridriver binary도 존재한다. 그러나 현재 Safari 설정에서는 WebDriver session creation이 실패하므로 Safari controlled-public trial을 바로 실행할 수 없다. 이 설정을 켠 뒤에도 Safari 계열은 browser-internal QUIC session continuity를 직접 보여주는 artifact가 없으므로 Chrome과 같은 등급으로 판정하면 안 된다.
 
 ## 4. Chrome에서만 강한 판정이 가능한 이유
 
@@ -107,6 +111,6 @@ Android Chrome도 ADB로 Chrome 앱을 열 수는 있다. 하지만 현재 harne
 | 브라우저별 claim ceiling을 분리했는가? | PASS |
 | Chrome NetLog와 Safari WebDriver를 같은 artifact로 취급하지 않았는가? | PASS |
 | scanner trigger와 classifier 조건을 문서화했는가? | PASS, `chapter-05-reference-and-evidence.md`와 scanner trigger table 참조 |
-| fresh readiness scanner를 재실행했는가? | PASS, `2026-06-30` 실행 |
+| fresh readiness scanner를 재실행했는가? | PASS, `2026-06-30` 실행, Safari session smoke 포함 |
 | 테스트를 실행했는가? | PASS, `test_classify_chrome_h3_artifacts.py`, `test_classify_controlled_public_h3_network_change.py`, `test_check_final_browser_handover_readiness.py` 직접 실행 |
 | `pytest` 부재를 기록했는가? | PASS, 시스템 `pytest`는 없었고 test script direct execution으로 대체 |

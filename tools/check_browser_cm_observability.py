@@ -8,6 +8,10 @@ import json
 import os
 import shutil
 import subprocess
+import tempfile
+import time
+import urllib.error
+import urllib.request
 from dataclasses import asdict, dataclass
 from research_clock import utc_date_iso
 from pathlib import Path
@@ -38,6 +42,10 @@ class BrowserCMObservability:
     safari: BrowserPath
     safari_technology_preview: BrowserPath
     safaridriver: CommandResult
+    safari_webdriver_binary_ready: bool
+    safari_webdriver_session_checked: bool
+    safari_webdriver_session_ready: bool
+    safari_webdriver_session_error: str
     tcpdump: CommandResult
     rvictl: CommandResult
     networksetup: CommandResult
@@ -90,11 +98,91 @@ def summarize_command(result: CommandResult, include_output: bool) -> CommandRes
     return CommandResult(result.command, result.found, result.exit_code, "", "")
 
 
+def request_json(method: str, url: str, payload: dict[str, object] | None = None, timeout: int = 3) -> tuple[int, dict[str, object]]:
+    data = None
+    headers = {}
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    request = urllib.request.Request(url, data=data, headers=headers, method=method)
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        body = response.read().decode("utf-8", errors="ignore")
+        return response.status, json.loads(body) if body else {}
+
+
+def webdriver_error_message(exc: Exception) -> str:
+    if isinstance(exc, urllib.error.HTTPError):
+        body = exc.read().decode("utf-8", errors="ignore")
+        try:
+            payload = json.loads(body) if body else {}
+        except json.JSONDecodeError:
+            return str(exc)
+        value = payload.get("value") if isinstance(payload, dict) else {}
+        if isinstance(value, dict) and value.get("message"):
+            return str(value["message"])
+    return str(exc)
+
+
+def run_safari_session_smoke(port: int, timeout: int) -> tuple[bool, str]:
+    base_url = f"http://127.0.0.1:{port}"
+    process: subprocess.Popen[bytes] | None = None
+    with tempfile.TemporaryFile() as log:
+        try:
+            process = subprocess.Popen(["safaridriver", "-p", str(port)], stdout=log, stderr=log)
+            deadline = time.monotonic() + timeout
+            last_error = "safaridriver status not attempted"
+            while time.monotonic() < deadline:
+                try:
+                    status, _ = request_json("GET", f"{base_url}/status", timeout=2)
+                    if 200 <= status < 300:
+                        break
+                except Exception as exc:  # noqa: BLE001 - readiness should preserve local WebDriver failures.
+                    last_error = str(exc)
+                time.sleep(0.25)
+            else:
+                return False, last_error
+
+            try:
+                _, created = request_json(
+                    "POST",
+                    f"{base_url}/session",
+                    {"capabilities": {"alwaysMatch": {"browserName": "safari"}}},
+                    timeout=timeout,
+                )
+            except Exception as exc:  # noqa: BLE001 - session creation failure is the key readiness signal.
+                return False, webdriver_error_message(exc)
+
+            value = created.get("value") if isinstance(created, dict) else {}
+            session_id = ""
+            if isinstance(value, dict) and isinstance(value.get("sessionId"), str):
+                session_id = value["sessionId"]
+            if not session_id and isinstance(created.get("sessionId"), str):
+                session_id = str(created["sessionId"])
+            if not session_id:
+                return False, "session id missing after create_session"
+            try:
+                request_json("DELETE", f"{base_url}/session/{session_id}", timeout=timeout)
+            except Exception:
+                pass
+            return True, ""
+        finally:
+            if process is not None:
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+
+
 def build_readiness(
     chrome_bin: str,
     safari_bin: str,
     safari_tp_bin: str,
     include_command_output: bool = False,
+    safari_session_smoke: bool = False,
+    safari_session_smoke_port: int = 4455,
+    safari_session_smoke_timeout: int = 8,
 ) -> BrowserCMObservability:
     chrome = browser_path("Chrome", chrome_bin)
     safari = browser_path("Safari", safari_bin)
@@ -107,14 +195,29 @@ def build_readiness(
     ifconfig = run_command(["ifconfig"])
 
     chrome_netlog_ready = chrome.executable
-    safari_webdriver_ready = safari.executable and safaridriver.found and safaridriver.exit_code in (0, 1)
+    safari_webdriver_binary_ready = safari.executable and safaridriver.found and safaridriver.exit_code in (0, 1)
+    safari_webdriver_session_checked = bool(safari_session_smoke and safari_webdriver_binary_ready)
+    safari_webdriver_session_ready = False
+    safari_webdriver_session_error = ""
+    if safari_webdriver_session_checked:
+        safari_webdriver_session_ready, safari_webdriver_session_error = run_safari_session_smoke(
+            safari_session_smoke_port,
+            safari_session_smoke_timeout,
+        )
+    safari_webdriver_ready = (
+        safari_webdriver_binary_ready
+        if not safari_webdriver_session_checked
+        else safari_webdriver_session_ready
+    )
     packet_capture_tooling_ready = tcpdump.found and route.exit_code == 0 and ifconfig.exit_code == 0
     ios_remote_capture_candidate = rvictl.found
     blockers: list[str] = []
     if not chrome_netlog_ready:
         blockers.append("Chrome executable not found for NetLog-based browser H3 experiments")
-    if safari.found and not safari_webdriver_ready:
-        blockers.append("Safari exists but safaridriver is not ready")
+    if safari.found and not safari_webdriver_binary_ready:
+        blockers.append("Safari exists but safaridriver binary is not ready")
+    if safari_webdriver_session_checked and not safari_webdriver_session_ready:
+        blockers.append("Safari WebDriver session creation failed; enable Allow remote automation before Safari trials")
     if not safari.found and not safari_tp.found:
         blockers.append("Safari or Safari Technology Preview not found")
     if safari.found and not packet_capture_tooling_ready:
@@ -130,6 +233,10 @@ def build_readiness(
         safari=safari,
         safari_technology_preview=safari_tp,
         safaridriver=summarize_command(safaridriver, include_command_output),
+        safari_webdriver_binary_ready=safari_webdriver_binary_ready,
+        safari_webdriver_session_checked=safari_webdriver_session_checked,
+        safari_webdriver_session_ready=safari_webdriver_session_ready,
+        safari_webdriver_session_error=safari_webdriver_session_error,
         tcpdump=summarize_command(tcpdump, include_command_output),
         rvictl=summarize_command(rvictl, include_command_output),
         networksetup=summarize_command(networksetup, include_command_output),
@@ -166,6 +273,10 @@ def emit_markdown(readiness: BrowserCMObservability) -> str:
         f"| Safari TP found | `{str(readiness.safari_technology_preview.found).lower()}` |",
         f"| Safari TP version | `{readiness.safari_technology_preview.version or '-'}` |",
         f"| safaridriver | `{command_summary(readiness.safaridriver)}` |",
+        f"| Safari WebDriver binary ready | `{str(readiness.safari_webdriver_binary_ready).lower()}` |",
+        f"| Safari WebDriver session checked | `{str(readiness.safari_webdriver_session_checked).lower()}` |",
+        f"| Safari WebDriver session ready | `{str(readiness.safari_webdriver_session_ready).lower()}` |",
+        f"| Safari WebDriver session error | `{readiness.safari_webdriver_session_error or '-'}` |",
         f"| Safari WebDriver ready | `{str(readiness.safari_webdriver_ready).lower()}` |",
         f"| tcpdump | `{command_summary(readiness.tcpdump)}` |",
         f"| rvictl | `{command_summary(readiness.rvictl)}` |",
@@ -187,6 +298,13 @@ def main() -> int:
     parser.add_argument("--format", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--output")
     parser.add_argument(
+        "--safari-session-smoke",
+        action="store_true",
+        help="attempt to create and delete a real Safari WebDriver session",
+    )
+    parser.add_argument("--safari-session-smoke-port", type=int, default=4455)
+    parser.add_argument("--safari-session-smoke-timeout", type=int, default=8)
+    parser.add_argument(
         "--include-command-output",
         action="store_true",
         help="include raw command stdout/stderr; omit for public artifacts",
@@ -198,6 +316,9 @@ def main() -> int:
         args.safari_bin,
         args.safari_technology_preview_bin,
         include_command_output=args.include_command_output,
+        safari_session_smoke=args.safari_session_smoke,
+        safari_session_smoke_port=args.safari_session_smoke_port,
+        safari_session_smoke_timeout=args.safari_session_smoke_timeout,
     )
     if args.format == "json":
         text = json.dumps(asdict(readiness), indent=2, ensure_ascii=False) + "\n"
