@@ -1,6 +1,6 @@
 # Research Status Dashboard
 
-Generated: `2026-06-26`
+Generated: `2026-06-30`
 
 This dashboard is public-safe. It summarizes tracked, redacted research state without printing private domains, TLS paths, network-change commands, qlogs, NetLogs, pcaps, device IDs, or credentials.
 
@@ -8,9 +8,9 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 | field | value |
 | --- | --- |
-| experiment trials | `71` |
-| experiment status counts | `{'PASS': 28, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 37}` |
-| verification | `109/109 passed; ok=yes` |
+| experiment trials | `99` |
+| experiment status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
+| verification | `81/82 passed; ok=no` |
 | CI | `-/- (-)` |
 | final browser handover | `3/6` |
 | needed-now external inputs | `[]` |
@@ -22,7 +22,7 @@ This dashboard is public-safe. It summarizes tracked, redacted research state wi
 
 ## Next Operator Action
 
-Prepare an active secondary path and an operator-approved NETWORK_CHANGE_CMD.
+Run and register the controlled-public Chrome application H3 baseline.
 
 ## Needed-Now External Inputs
 
@@ -34,6 +34,7 @@ Prepare an active secondary path and an operator-approved NETWORK_CHANGE_CMD.
 
 | gate | blocked planned executions |
 | --- | ---: |
+| `baseline_summary_ready` | 7 |
 | `desktop_secondary_path_ready` | 7 |
 | `network_change_command_present` | 7 |
 

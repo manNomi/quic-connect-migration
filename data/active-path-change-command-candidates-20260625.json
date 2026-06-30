@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-26",
+  "generated": "2026-06-30",
   "commands_included": false,
   "read_only": true,
   "summary": {
@@ -9,6 +9,7 @@
     ],
     "default_interface": "en0",
     "secondary_path_ready": false,
+    "latent_iphone_usb_candidate_ready": false,
     "ready_candidate_count": 0,
     "ready_candidates": []
   },
@@ -45,10 +46,6 @@
       {
         "hardware_port": "Thunderbolt 3",
         "device": "en3"
-      },
-      {
-        "hardware_port": "iPhone USB",
-        "device": "en8"
       }
     ],
     "network_services": [
@@ -105,6 +102,22 @@
       "restore_command": "",
       "detected": {
         "wifi_device": "en0"
+      },
+      "requires_operator_approval": true
+    },
+    {
+      "id": "macos_wifi_to_iphone_usb_latent_failover",
+      "label": "Turn Wi-Fi off and measure delayed iPhone USB activation",
+      "ready": false,
+      "reason": "blocked: iPhone USB interface was not present in ifconfig output",
+      "command_template": "networksetup -setairportpower <wifi-device> off",
+      "restore_template": "networksetup -setairportpower <wifi-device> on",
+      "command": "",
+      "restore_command": "",
+      "detected": {
+        "wifi_device": "en0",
+        "iphone_service": "iPhone USB",
+        "iphone_device": "en8"
       },
       "requires_operator_approval": true
     },

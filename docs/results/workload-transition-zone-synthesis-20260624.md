@@ -1,6 +1,6 @@
 # Workload Transition-Zone Synthesis
 
-Generated: `2026-06-26`
+Generated: `2026-06-30`
 
 This synthesis combines the Chrome forced-H3 local UDP rebinding downlink and upload fine-boundary controls. It compares DOM task completion across workload direction; it is not public browser handover evidence.
 

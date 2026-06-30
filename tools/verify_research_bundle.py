@@ -137,6 +137,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     noniphone_paper_section_scaffold_json = "data/noniphone-paper-section-scaffold-20260701.json"
     non_quicgo_implementation_findings = "docs/results/non-quicgo-implementation-findings-20260701.md"
     non_quicgo_implementation_findings_json = "data/non-quicgo-implementation-findings-20260701.json"
+    non_quicgo_execution_depth_audit = "docs/results/non-quicgo-execution-depth-audit-20260701.md"
+    non_quicgo_execution_depth_audit_json = "data/non-quicgo-execution-depth-audit-20260701.json"
+    non_quicgo_execution_depth_audit_csv = "data/non-quicgo-execution-depth-audit-20260701.csv"
     aws_s2n_live_runner_safety_audit = "docs/results/aws-s2n-live-runner-safety-audit-20260701.md"
     aws_s2n_live_runner_safety_audit_json = "data/aws-s2n-live-runner-safety-audit-20260701.json"
     aws_s2n_phase2_path_change_design = "docs/results/aws-s2n-phase2-path-change-design-20260701.md"
@@ -228,6 +231,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         noniphone_paper_section_scaffold_json = str(generated_dir / "noniphone-paper-section-scaffold.json")
         non_quicgo_implementation_findings = str(generated_dir / "non-quicgo-implementation-findings.md")
         non_quicgo_implementation_findings_json = str(generated_dir / "non-quicgo-implementation-findings.json")
+        non_quicgo_execution_depth_audit = str(generated_dir / "non-quicgo-execution-depth-audit.md")
+        non_quicgo_execution_depth_audit_json = str(generated_dir / "non-quicgo-execution-depth-audit.json")
+        non_quicgo_execution_depth_audit_csv = str(generated_dir / "non-quicgo-execution-depth-audit.csv")
         aws_s2n_live_runner_safety_audit = str(generated_dir / "aws-s2n-live-runner-safety-audit.md")
         aws_s2n_live_runner_safety_audit_json = str(generated_dir / "aws-s2n-live-runner-safety-audit.json")
         aws_s2n_phase2_path_change_design = str(generated_dir / "aws-s2n-phase2-path-change-design.md")
@@ -294,6 +300,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_noniphone_paper_wording_guard.py",
                 "tools/build_noniphone_paper_section_scaffold.py",
                 "tools/build_non_quicgo_implementation_findings.py",
+                "tools/build_non_quicgo_execution_depth_audit.py",
                 "tools/audit_aws_s2n_live_runner_safety.py",
                 "tools/build_aws_s2n_phase2_path_change_design.py",
                 "tools/audit_aws_s2n_phase2_rebinding_runner.py",
@@ -364,6 +371,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_noniphone_paper_wording_guard.py",
                 "tools/test_build_noniphone_paper_section_scaffold.py",
                 "tools/test_build_non_quicgo_implementation_findings.py",
+                "tools/test_build_non_quicgo_execution_depth_audit.py",
                 "tools/test_audit_aws_s2n_live_runner_safety.py",
                 "tools/test_build_aws_s2n_phase2_path_change_design.py",
                 "tools/test_audit_aws_s2n_phase2_rebinding_runner.py",
@@ -1170,6 +1178,27 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 non_quicgo_implementation_findings,
                 "--json-output",
                 non_quicgo_implementation_findings_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "non_quicgo_execution_depth_audit_regression",
+            [python_bin, "tools/test_build_non_quicgo_execution_depth_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "non_quicgo_execution_depth_audit",
+            [
+                python_bin,
+                "tools/build_non_quicgo_execution_depth_audit.py",
+                "--output",
+                non_quicgo_execution_depth_audit,
+                "--json-output",
+                non_quicgo_execution_depth_audit_json,
+                "--csv-output",
+                non_quicgo_execution_depth_audit_csv,
             ],
             {0},
             30,

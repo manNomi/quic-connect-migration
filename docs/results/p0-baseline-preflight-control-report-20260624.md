@@ -1,6 +1,6 @@
 # P0 Baseline Preflight Control Report
 
-Generated: `2026-06-26`
+Generated: `2026-06-30`
 
 This public-safe control report uses synthetic fixtures to check that the P0 preflight guard opens and closes only under the intended readiness states.
 

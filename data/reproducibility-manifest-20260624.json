@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "4a46f81",
+    "commit": "f3d85dd",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,16 +54,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 151,
+    "total_items": 152,
     "status_counts": {
-      "done": 147,
+      "done": 148,
       "planned": 4
     },
-    "latest_item": "controlled-public-chrome-contract-application-audit"
+    "latest_item": "non-quicgo-execution-depth-audit"
   },
   "verification": {
-    "checks": "131",
-    "passed": "131",
+    "checks": "135",
+    "passed": "135",
     "ok": "yes"
   },
   "research_audit": {
@@ -251,6 +251,18 @@
     },
     "non_quicgo_implementation_findings_json": {
       "path": "data/non-quicgo-implementation-findings-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit": {
+      "path": "docs/results/non-quicgo-execution-depth-audit-20260701.md",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit_json": {
+      "path": "data/non-quicgo-execution-depth-audit-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit_csv": {
+      "path": "data/non-quicgo-execution-depth-audit-20260701.csv",
       "exists": true
     },
     "chrome_desktop_noniphone_range_local_refresh": {

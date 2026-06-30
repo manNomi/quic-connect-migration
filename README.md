@@ -101,6 +101,7 @@
 89. non-iPhone public workload trial packet을 추가했다. public H3 origin과 desktop active path-change command가 준비되면 baseline, range no-change, range active 3회, upload no-change, upload active 3회, buffered low/high active, music-like retry0/retry1 active 순서로 실행하며 strong CM acceptance는 task completion, client path change, target tuple change, qlog PATH_CHALLENGE/PATH_RESPONSE, Chrome target QUIC session `1`개를 모두 요구하도록 고정했다.
 90. controlled public origin workload deploy packet을 추가했다. WebPKI TLS, TCP/UDP 443, Alt-Svc `h3`, quic-go H3 server baseline, non-iPhone public workload packet 실행 순서를 하나로 연결해 public origin gate가 열리면 range/upload/media trial로 바로 넘어갈 수 있게 했다.
 91. non-iPhone desktop path-change readiness를 추가했다. 현재 호스트는 active IPv4 interface가 `en0` 하나뿐이라 iPhone을 제외한 desktop active secondary path가 없고, iPhone latent failover와 Android 후보는 desktop public workload gate에서 제외했다. 따라서 public workload active row를 세기 전 Ethernet/USB LAN/Thunderbolt Ethernet 같은 non-iPhone secondary path를 먼저 열어야 한다.
+92. non-quic-go execution depth audit를 추가했다. quic-go는 가장 깊은 controlled AddPath/Probe/Switch positive control이지만, quiche/s2n/ngtcp2/MsQuic/Quinn/Neqo/picoquic 등은 test-suite/runtime/source/deployment-readiness evidence를 제공하므로 "CM이 구현체에 없어서 안 쓰인다"는 설명은 부족하다는 결론을 고정했다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -295,6 +296,7 @@
 - [Non-iPhone paper wording guard](docs/results/noniphone-paper-wording-guard-20260701.md)
 - [Non-iPhone paper section scaffold](docs/results/noniphone-paper-section-scaffold-20260701.md)
 - [Non-quic-go implementation findings](docs/results/non-quicgo-implementation-findings-20260701.md)
+- [Non-quic-go execution depth audit](docs/results/non-quicgo-execution-depth-audit-20260701.md)
 - [AWS s2n live runner safety audit](docs/results/aws-s2n-live-runner-safety-audit-20260701.md)
 - [AWS s2n phase-2 path-change design](docs/results/aws-s2n-phase2-path-change-design-20260701.md)
 - [AWS s2n phase-2 rebinding runner audit](docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md)

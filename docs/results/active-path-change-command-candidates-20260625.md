@@ -1,6 +1,6 @@
 # Active Path-Change Command Candidates
 
-Generated: `2026-06-26`
+Generated: `2026-06-30`
 
 This report is read-only. It does not execute network-change commands.
 
@@ -11,6 +11,7 @@ This report is read-only. It does not execute network-change commands.
 | active IPv4 interfaces | `en0` |
 | default interface | `en0` |
 | secondary path ready | `no` |
+| latent iPhone USB candidate ready | `no` |
 | ready candidates | `-` |
 | commands included | `no` |
 
@@ -19,6 +20,7 @@ This report is read-only. It does not execute network-change commands.
 | candidate | ready | reason | command form | restore form |
 | --- | --- | --- | --- | --- |
 | `macos_wifi_power_cutover` | `no` | blocked: no active secondary non-loopback IPv4 path was detected | `networksetup -setairportpower <wifi-device> off` | `networksetup -setairportpower <wifi-device> on` |
+| `macos_wifi_to_iphone_usb_latent_failover` | `no` | blocked: iPhone USB interface was not present in ifconfig output | `networksetup -setairportpower <wifi-device> off` | `networksetup -setairportpower <wifi-device> on` |
 | `macos_service_order_cutover` | `no` | blocked: no active secondary service was detected | `networksetup -ordernetworkservices <secondary-service> <primary-service> <remaining-services...>` | `networksetup -ordernetworkservices <primary-service> <secondary-service> <remaining-services...>` |
 | `android_wifi_to_cellular_cutover` | `no` | blocked: no ADB device is connected | `adb shell svc wifi disable` | `adb shell svc wifi enable` |
 

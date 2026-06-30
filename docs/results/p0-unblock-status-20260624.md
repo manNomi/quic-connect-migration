@@ -1,6 +1,6 @@
 # P0 Unblock Status
 
-Generated: `2026-06-26`
+Generated: `2026-06-30`
 
 This tracker is public-safe. It compresses final protocol readiness into the gates that currently block the P0 controlled-public/browser handover path.
 
@@ -13,7 +13,7 @@ This tracker is public-safe. It compresses final protocol readiness into the gat
 | total planned trials | `10` |
 | blocked planned trials | `7` |
 | final requirements complete | `3/6` |
-| needed-now gates | `2` |
+| needed-now gates | `3` |
 | local next-trial overlay | `not-used` |
 | local next-trial ready | `-` |
 | local missing required gates | - |
@@ -22,11 +22,13 @@ This tracker is public-safe. It compresses final protocol readiness into the gat
 
 | order | gate | status | blocked trials | blocks next | operator action | validation command |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `desktop_secondary_path_ready` | `needed-now` | 7 | `yes` | Prepare a real active secondary non-loopback path for desktop browser trials. | `python3 tools/check_handover_readiness.py --format markdown` |
-| 2 | `network_change_command_present` | `needed-now` | 7 | `yes` | Provide an operator-approved active network-change command. | `python3 tools/check_controlled_public_config.py --require-active-ready` |
+| 1 | `baseline_summary_ready` | `needed-now` | 7 | `yes` | Run and register the controlled-public Chrome application H3 baseline. | `python3 tools/check_controlled_public_baseline_unlock.py --require-unlocked` |
+| 2 | `desktop_secondary_path_ready` | `needed-now` | 7 | `yes` | Prepare a real active secondary non-loopback path for desktop browser trials. | `python3 tools/check_handover_readiness.py --format markdown` |
+| 3 | `network_change_command_present` | `needed-now` | 7 | `yes` | Provide an operator-approved active network-change command. | `python3 tools/check_controlled_public_config.py --require-active-ready` |
 
 ## Safe Handling
 
+- `baseline_summary_ready`: Register only validated summaries with raw artifact bundle references kept local/ignored.
 - `desktop_secondary_path_ready`: Do not infer path change from server tuple evidence alone.
 - `network_change_command_present`: Do not commit machine-specific interface commands.
 

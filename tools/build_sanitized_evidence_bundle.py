@@ -644,6 +644,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence beyond the referenced artifacts, equal maturity across all stacks, browser handover success, or managed deployment continuity.",
         next_gap="Use this synthesis when explaining why quic-go is the deepest positive control while non-quic-go evidence still rejects a pure implementation-absence explanation.",
     ),
+    EvidenceItem(
+        id="non-quicgo-execution-depth-audit",
+        chapter="1",
+        category="implementation-depth-boundary",
+        implementation="implementation survey excluding quic-go",
+        evidence_doc="docs/results/non-quicgo-execution-depth-audit-20260701.md",
+        runner_or_tool="tools/build_non_quicgo_execution_depth_audit.py",
+        local_artifact_id="non-quicgo-execution-depth-audit-20260701",
+        claim_strength="implementation_depth_synthesis",
+        supports="A row-level explanation of why quic-go has the deepest controlled AddPath/Probe/Switch evidence while non-quic-go stacks still contribute test-suite, runtime, source, deployment-readiness, and negative-control evidence.",
+        do_not_claim="New runtime evidence, equal active migration control across all stacks, browser handover success, or managed deployment continuity.",
+        next_gap="Use the remaining-deepening candidates to decide whether AWS NLB+s2n, mvfst Linux build, CloudFront edge, XQUIC Linux, quicly full e2e, or Chrome/Cronet runtime rows are worth opening next.",
+    ),
 ]
 
 

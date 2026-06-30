@@ -109,7 +109,10 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "controlled-public-chrome-contract-application-audit"
+    assert paths["non_quicgo_execution_depth_audit"]["exists"] is True
+    assert paths["non_quicgo_execution_depth_audit_json"]["exists"] is True
+    assert paths["non_quicgo_execution_depth_audit_csv"]["exists"] is True
+    assert manifest["experiment_matrix"]["latest_item"] == "non-quicgo-execution-depth-audit"
 
 
 def test_generated_date_uses_utc_day() -> None:
