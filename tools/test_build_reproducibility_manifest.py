@@ -114,7 +114,10 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_quicgo_execution_depth_audit_csv"]["exists"] is True
     assert paths["msquic_migration_api_boundary_audit"]["exists"] is True
     assert paths["msquic_migration_api_boundary_audit_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "msquic-migration-api-boundary-audit"
+    assert paths["xquic_full_suite_linux_audit"]["exists"] is True
+    assert paths["xquic_full_suite_linux_audit_json"]["exists"] is True
+    assert paths["xquic_full_suite_linux_runner"]["exists"] is True
+    assert manifest["experiment_matrix"]["latest_item"] == "xquic-full-suite-linux-audit"
 
 
 def test_generated_date_uses_utc_day() -> None:

@@ -56,7 +56,7 @@
 | 6 | MsQuic | library/server | O | O | policy | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `fresh_rerun_20260630` | Use as production-relevant NAT rebinding/path-validation evidence; API audit shows constrained local-address control rather than quic-go-style AddPath/Probe/Switch |
 | 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Rust migration/rebind comparison |
 | 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Firefox-adjacent broad migration test evidence |
-| 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; retry full run_tests on Linux because macOS AppleClang Werror blocks QPACK unit build |
+| 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; Linux full-suite replay runner is packaged in harness/scripts/run-xquic-full-suite-linux.sh because macOS AppleClang Werror blocks QPACK unit build |
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_runtime_policy_dependent` | `source_and_local_browser_baseline` | Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults |
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | s2n local provider proof | `yes` | `L5_deployment_candidate` | `partial_deferred` | s2n custom CID local provider proof PASS; next run live AWS NLB target A/B forwarding and migration continuity |
@@ -80,7 +80,7 @@
 | LiteSpeed lsquic | full CTest 79/79와 preferred-address/NAT-rebinding HTTP/3 app demo 근거를 확보함 |
 | nginx QUIC | quiche client active migration 중 1MiB HTTP/3 response, server path seq:1 validation evidence 확보 |
 | MsQuic | production-relevant NAT rebind/path validation gtest가 v4/v6에서 통과함 |
-| XQUIC | NAT rebinding demo가 실제 client/server로 통과했지만 full suite는 Linux 재실행 필요 |
+| XQUIC | NAT rebinding demo가 실제 client/server로 통과했고 full suite는 Linux replay runner로 재실행 가능 |
 | quicly | full e2e 전체는 `slow-start` 실패로 PASS가 아니지만 `path-migration` e2e subtest와 CID seq 1 first path probe check는 통과 |
 
 ### 2. production/deployment 논의 후보

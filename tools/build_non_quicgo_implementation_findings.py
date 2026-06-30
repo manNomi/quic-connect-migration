@@ -77,7 +77,7 @@ def risk_note(row: dict[str, str]) -> str:
     if name == "quicly":
         return "Focused path-migration e2e is positive; full e2e still has unrelated host-specific failures."
     if name == "XQUIC":
-        return "NAT rebinding demo passed; full test suite needs Linux or compiler-flag follow-up."
+        return "NAT rebinding demo passed and Linux full-suite replay runner is packaged; full-suite PASS still requires a Linux ok artifact."
     if name == "HAProxy QUIC":
         return "HTTP/3 proxy success is a negative control for active migration support."
     if name == "aioquic":

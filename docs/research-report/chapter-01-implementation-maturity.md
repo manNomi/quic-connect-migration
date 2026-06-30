@@ -167,7 +167,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 | Quinn | migration/rebind tests | PASS |
 | Neqo | migration test suite | PASS |
 | MsQuic | NAT rebind/path-validation selected gtests, IPv4/IPv6 | PASS |
-| XQUIC | loopback client/server NAT rebinding demo | PASS demo, full suite partial |
+| XQUIC | loopback client/server NAT rebinding demo, Linux full-suite replay runner | PASS demo, full suite Linux gate packaged |
 | LiteSpeed LSQUIC | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS |
 | nginx QUIC | HTTP/3 server runtime demo, quiche active migration, server path seq:1 validation | PASS |
 | HAProxy QUIC | HTTP/3 proxy baseline PASS, quiche active migration path validation FAIL | PASS_NEGATIVE_CONTROL |
@@ -420,6 +420,7 @@ Chapter 1의 결론은 다음이다.
 | `../results/quic-go-minimum-reproduction-results.md` | quic-go positive control |
 | `../results/quiche-path-event-timeline-20260623.md` | quiche migration lifecycle |
 | `../results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic migration API/deployment boundary |
+| `../results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo, macOS Werror blocker, Linux full-suite replay gate |
 | `../results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control |
 | `../results/nginx-quic-active-migration-runtime-20260630.md` | nginx HTTP/3 runtime active-client-migration demo |
 | `../results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun |

@@ -7,17 +7,17 @@ Generated: `2026-06-30`
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `13.3 GiB` |
+| disk free | `13.2 GiB` |
 | target free GiB | `7.0` |
 | artifact roots total | `36.3 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
-| cleanup candidates | `299` |
+| cleanup candidates | `300` |
 | CSV-referenced candidates | `90` |
 | planned final-trial candidates | `4` |
-| review-unreferenced candidates | `129` |
+| review-unreferenced candidates | `130` |
 | review-unreferenced size | `8.1 GiB` |
 | protected referenced/planned size | `25.8 GiB` |
-| projected free if review-unreferenced removed | `21.4 GiB` |
+| projected free if review-unreferenced removed | `21.3 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
@@ -322,6 +322,7 @@ Generated: `2026-06-30`
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-readiness-current-20260630` | `2.0 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-readiness-local-20260630` | `1.9 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-preflight-20260624T094137Z` | `1.8 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
+| `review-unreferenced` | `harness/results/xquic-full-suite-linux-local-blocked-20260701` | `1.8 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-linux-demo-local-blocked-20260630-verify2` | `1.7 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-linux-demo-local-blocked-20260630-verify` | `1.7 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-linux-demo-local-blocked-20260630` | `1.7 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |

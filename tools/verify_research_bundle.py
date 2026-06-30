@@ -142,6 +142,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     non_quicgo_execution_depth_audit_csv = "data/non-quicgo-execution-depth-audit-20260701.csv"
     msquic_migration_api_boundary_audit = "docs/results/msquic-migration-api-boundary-audit-20260701.md"
     msquic_migration_api_boundary_audit_json = "data/msquic-migration-api-boundary-audit-20260701.json"
+    xquic_full_suite_linux_audit = "docs/results/xquic-full-suite-linux-audit-20260701.md"
+    xquic_full_suite_linux_audit_json = "data/xquic-full-suite-linux-audit-20260701.json"
     aws_s2n_live_runner_safety_audit = "docs/results/aws-s2n-live-runner-safety-audit-20260701.md"
     aws_s2n_live_runner_safety_audit_json = "data/aws-s2n-live-runner-safety-audit-20260701.json"
     aws_s2n_phase2_path_change_design = "docs/results/aws-s2n-phase2-path-change-design-20260701.md"
@@ -238,6 +240,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         non_quicgo_execution_depth_audit_csv = str(generated_dir / "non-quicgo-execution-depth-audit.csv")
         msquic_migration_api_boundary_audit = str(generated_dir / "msquic-migration-api-boundary-audit.md")
         msquic_migration_api_boundary_audit_json = str(generated_dir / "msquic-migration-api-boundary-audit.json")
+        xquic_full_suite_linux_audit = str(generated_dir / "xquic-full-suite-linux-audit.md")
+        xquic_full_suite_linux_audit_json = str(generated_dir / "xquic-full-suite-linux-audit.json")
         aws_s2n_live_runner_safety_audit = str(generated_dir / "aws-s2n-live-runner-safety-audit.md")
         aws_s2n_live_runner_safety_audit_json = str(generated_dir / "aws-s2n-live-runner-safety-audit.json")
         aws_s2n_phase2_path_change_design = str(generated_dir / "aws-s2n-phase2-path-change-design.md")
@@ -306,6 +310,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_non_quicgo_implementation_findings.py",
                 "tools/build_non_quicgo_execution_depth_audit.py",
                 "tools/build_msquic_migration_api_boundary_audit.py",
+                "tools/build_xquic_full_suite_linux_audit.py",
                 "tools/audit_aws_s2n_live_runner_safety.py",
                 "tools/build_aws_s2n_phase2_path_change_design.py",
                 "tools/audit_aws_s2n_phase2_rebinding_runner.py",
@@ -378,6 +383,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_non_quicgo_implementation_findings.py",
                 "tools/test_build_non_quicgo_execution_depth_audit.py",
                 "tools/test_build_msquic_migration_api_boundary_audit.py",
+                "tools/test_build_xquic_full_suite_linux_audit.py",
                 "tools/test_audit_aws_s2n_live_runner_safety.py",
                 "tools/test_build_aws_s2n_phase2_path_change_design.py",
                 "tools/test_audit_aws_s2n_phase2_rebinding_runner.py",
@@ -1224,6 +1230,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 msquic_migration_api_boundary_audit,
                 "--json-output",
                 msquic_migration_api_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "xquic_full_suite_linux_audit_regression",
+            [python_bin, "tools/test_build_xquic_full_suite_linux_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "xquic_full_suite_linux_audit",
+            [
+                python_bin,
+                "tools/build_xquic_full_suite_linux_audit.py",
+                "--output",
+                xquic_full_suite_linux_audit,
+                "--json-output",
+                xquic_full_suite_linux_audit_json,
             ],
             {0},
             30,

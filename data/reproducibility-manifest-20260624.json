@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "634d67e",
+    "commit": "b122dc0",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,16 +54,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 153,
+    "total_items": 154,
     "status_counts": {
-      "done": 149,
+      "done": 150,
       "planned": 4
     },
-    "latest_item": "msquic-migration-api-boundary-audit"
+    "latest_item": "xquic-full-suite-linux-audit"
   },
   "verification": {
-    "checks": "137",
-    "passed": "137",
+    "checks": "139",
+    "passed": "139",
     "ok": "yes"
   },
   "research_audit": {
@@ -271,6 +271,18 @@
     },
     "msquic_migration_api_boundary_audit_json": {
       "path": "data/msquic-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "xquic_full_suite_linux_audit": {
+      "path": "docs/results/xquic-full-suite-linux-audit-20260701.md",
+      "exists": true
+    },
+    "xquic_full_suite_linux_audit_json": {
+      "path": "data/xquic-full-suite-linux-audit-20260701.json",
+      "exists": true
+    },
+    "xquic_full_suite_linux_runner": {
+      "path": "harness/scripts/run-xquic-full-suite-linux.sh",
       "exists": true
     },
     "chrome_desktop_noniphone_range_local_refresh": {

@@ -177,9 +177,9 @@
       "aws_suitability": "low",
       "current_level": "L3_L4_partial",
       "evidence_status": "fresh_rebind_demo_20260630",
-      "next_action": "Use as NAT rebinding demo evidence; retry full run_tests on Linux because macOS AppleClang Werror blocks QPACK unit build",
+      "next_action": "Use as NAT rebinding demo evidence; Linux full-suite replay runner is packaged in harness/scripts/run-xquic-full-suite-linux.sh because macOS AppleClang Werror blocks QPACK unit build",
       "claim_class": "focused_or_partial_positive",
-      "risk_note": "NAT rebinding demo passed; full test suite needs Linux or compiler-flag follow-up."
+      "risk_note": "NAT rebinding demo passed and Linux full-suite replay runner is packaged; full-suite PASS still requires a Linux ok artifact."
     },
     {
       "priority": "10",

@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 49,
+  "item_count": 50,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -12,6 +12,7 @@
     "deployment_positive": 1,
     "experiment_design": 1,
     "focused_e2e_positive": 1,
+    "focused_positive_with_linux_replay_gate": 1,
     "implementation_depth_synthesis": 1,
     "implementation_synthesis": 1,
     "local_browser_control": 1,
@@ -67,6 +68,7 @@
     "implementation-observability": 1,
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
+    "implementation-runner-readiness": 1,
     "implementation-synthesis": 1,
     "paper-section-synthesis": 1,
     "paper-wording-synthesis": 1,
@@ -174,6 +176,22 @@
       "supports": "quicly `path-migration` e2e subtest passed, including CID sequence 1 first path probe check.",
       "do_not_claim": "Full quicly `t/e2e.t` success; the full e2e still fails an unrelated `slow-start` subtest on this host.",
       "next_gap": "Use Linux/upstream-compatible timing environment to check full e2e cleanliness.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "xquic-full-suite-linux-audit",
+      "chapter": "1",
+      "category": "implementation-runner-readiness",
+      "implementation": "XQUIC",
+      "evidence_doc": "docs/results/xquic-full-suite-linux-audit-20260701.md",
+      "runner_or_tool": "harness/scripts/run-xquic-full-suite-linux.sh",
+      "local_artifact_id": "xquic-full-suite-linux-local-blocked-20260701",
+      "claim_strength": "focused_positive_with_linux_replay_gate",
+      "supports": "XQUIC source callbacks, NAT rebinding validation, registered client/server demo hooks, local NAT rebinding demo PASS, and a fail-closed Linux full-suite replay runner.",
+      "do_not_claim": "XQUIC full test-suite PASS, browser/mobile handover success, or production deployment continuity.",
+      "next_gap": "Run the Linux replay runner on a compatible host and accept only validation=ok with zero failed unit/case markers.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

@@ -8,15 +8,15 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `634d67e` |
+| source commit at generation | `b122dc0` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `153` |
-| latest experiment matrix item | `msquic-migration-api-boundary-audit` |
-| verification | `137/137 passed; ok=yes` |
+| experiment matrix items | `154` |
+| latest experiment matrix item | `xquic-full-suite-linux-audit` |
+| verification | `139/139 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
@@ -98,6 +98,9 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `non_quicgo_execution_depth_audit_csv` | `data/non-quicgo-execution-depth-audit-20260701.csv` | `yes` |
 | `msquic_migration_api_boundary_audit` | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | `yes` |
 | `msquic_migration_api_boundary_audit_json` | `data/msquic-migration-api-boundary-audit-20260701.json` | `yes` |
+| `xquic_full_suite_linux_audit` | `docs/results/xquic-full-suite-linux-audit-20260701.md` | `yes` |
+| `xquic_full_suite_linux_audit_json` | `data/xquic-full-suite-linux-audit-20260701.json` | `yes` |
+| `xquic_full_suite_linux_runner` | `harness/scripts/run-xquic-full-suite-linux.sh` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh` | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh_csv` | `data/chrome-desktop-noniphone-range-local-refresh-20260630.csv` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh` | `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | `yes` |

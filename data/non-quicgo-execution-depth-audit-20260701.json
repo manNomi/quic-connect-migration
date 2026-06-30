@@ -154,8 +154,8 @@
       "active_migration_api": "unclear",
       "passive_migration": "yes",
       "tests": "yes",
-      "why_not_quic_go_depth": "The NAT rebinding demo passed, but the full suite was deferred to Linux or compiler-flag follow-up because the macOS build path hit unrelated toolchain friction.",
-      "next_non_iphone_gate": "Rerun the full test suite on Linux with compatible compiler flags."
+      "why_not_quic_go_depth": "The NAT rebinding demo passed, and a fail-closed Linux full-suite replay runner is now packaged; the current macOS build path still hits unrelated AppleClang Werror toolchain friction.",
+      "next_non_iphone_gate": "Run harness/scripts/run-xquic-full-suite-linux.sh on Linux and accept only validation=ok with zero failed unit/case markers."
     },
     {
       "priority": "10",
