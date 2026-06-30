@@ -71,6 +71,8 @@
 | [data/noniphone-workload-qoe-continuity-synthesis-20260701.csv](../../data/noniphone-workload-qoe-continuity-synthesis-20260701.csv) | normalized workload synthesis CSV |
 | [docs/results/noniphone-public-workload-trial-packet-20260701.md](../results/noniphone-public-workload-trial-packet-20260701.md) | non-iPhone public workload trial packet |
 | [data/noniphone-public-workload-trial-packet-20260701.json](../../data/noniphone-public-workload-trial-packet-20260701.json) | structured public workload trial packet |
+| [docs/results/controlled-public-origin-workload-deploy-packet-20260701.md](../results/controlled-public-origin-workload-deploy-packet-20260701.md) | controlled public H3 origin deployment packet for the non-iPhone workload trial |
+| [data/controlled-public-origin-workload-deploy-packet-20260701.json](../../data/controlled-public-origin-workload-deploy-packet-20260701.json) | structured public origin workload deployment packet |
 
 ## 5. Reproducibility Commands
 

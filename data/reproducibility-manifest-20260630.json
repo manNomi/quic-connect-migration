@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "206b315",
+    "commit": "b038a34",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 137,
+    "total_items": 138,
     "status_counts": {
-      "done": 133,
+      "done": 134,
       "planned": 4
     },
-    "latest_item": "noniphone-public-workload-trial-packet"
+    "latest_item": "controlled-public-origin-workload-deploy-packet"
   },
   "verification": {
     "checks": "109",
@@ -179,6 +179,14 @@
     },
     "noniphone_workload_qoe_synthesis_csv": {
       "path": "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv",
+      "exists": true
+    },
+    "controlled_public_origin_workload_deploy_packet": {
+      "path": "docs/results/controlled-public-origin-workload-deploy-packet-20260701.md",
+      "exists": true
+    },
+    "controlled_public_origin_workload_deploy_packet_json": {
+      "path": "data/controlled-public-origin-workload-deploy-packet-20260701.json",
       "exists": true
     },
     "noniphone_public_workload_trial_packet": {

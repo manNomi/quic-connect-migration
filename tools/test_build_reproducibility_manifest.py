@@ -73,13 +73,15 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["safari_webdriver_session_readiness"]["exists"] is True
     assert paths["user_provided_public_origin_readiness"]["exists"] is True
     assert paths["user_provided_public_origin_readiness_json"]["exists"] is True
+    assert paths["controlled_public_origin_workload_deploy_packet"]["exists"] is True
+    assert paths["controlled_public_origin_workload_deploy_packet_json"]["exists"] is True
     assert paths["non_iphone_gate_rerun"]["exists"] is True
     assert paths["non_iphone_gate_rerun_json"]["exists"] is True
     assert paths["non_iphone_next_research_decision"]["exists"] is True
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "noniphone-public-workload-trial-packet"
+    assert manifest["experiment_matrix"]["latest_item"] == "controlled-public-origin-workload-deploy-packet"
 
 
 def test_generated_date_uses_utc_day() -> None:

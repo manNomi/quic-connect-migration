@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 33,
+  "item_count": 34,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -18,7 +18,7 @@
     "observability_positive": 1,
     "paper_synthesis": 1,
     "readiness_blocked": 9,
-    "run_plan": 1,
+    "run_plan": 2,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -49,6 +49,7 @@
     "implementation-observability": 1,
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
+    "public-origin-deploy-plan": 1,
     "public-origin-readiness": 1,
     "public-trial-plan": 1,
     "server-runtime-positive-control": 1,
@@ -566,6 +567,22 @@
       "supports": "Thirty-two normalized non-iPhone local Chrome workload rows show that range/download and upload have cleaner single-session local path-validation evidence, while buffered video and music-like segment completion must be framed with QoE, retry/reconnect, and session churn.",
       "do_not_claim": "Public Wi-Fi/LTE handover, CDN deployment continuity, or that all streaming workloads are protected by single-session browser Connection Migration.",
       "next_gap": "After an H3-ready public origin is available, run public range/upload trials first, then buffered and music-like streaming trials with QoE/session metrics.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "controlled-public-origin-workload-deploy-packet",
+      "chapter": "7/9/10/11",
+      "category": "public-origin-deploy-plan",
+      "implementation": "controlled public quic-go H3 origin",
+      "evidence_doc": "docs/results/controlled-public-origin-workload-deploy-packet-20260701.md",
+      "runner_or_tool": "tools/build_controlled_public_origin_deploy_packet.py",
+      "local_artifact_id": "controlled-public-origin-workload-deploy-packet-20260701",
+      "claim_strength": "run_plan",
+      "supports": "The WebPKI + Alt-Svc H3 origin setup is connected to the non-iPhone public range, upload, buffered-video, and music-like workload trial packet.",
+      "do_not_claim": "A public origin is currently running, any public workload has been executed, or browser Connection Migration succeeded.",
+      "next_gap": "Open the public H3 origin gate, run the baseline, then execute the non-iPhone public workload trial packet.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

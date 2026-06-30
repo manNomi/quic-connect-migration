@@ -3,7 +3,7 @@
   "public_safe": true,
   "source_bundle": "data/sanitized-evidence-bundle-20260630.json",
   "source_bundle_exists": true,
-  "source_bundle_item_count": 33,
+  "source_bundle_item_count": 34,
   "track_count": 6,
   "runnable_now": [],
   "blocked_track_count": 6,
@@ -65,6 +65,7 @@
         "chrome-desktop-noniphone-range-local-refresh",
         "chrome-desktop-noniphone-upload-local-refresh",
         "noniphone-workload-qoe-synthesis",
+        "controlled-public-origin-workload-deploy-packet",
         "noniphone-public-workload-trial-packet"
       ],
       "decision": "Best browser-facing next step after public origin is available.",
@@ -79,6 +80,7 @@
         "chrome-desktop-noniphone-range-local-refresh",
         "chrome-desktop-noniphone-upload-local-refresh",
         "noniphone-workload-qoe-synthesis",
+        "controlled-public-origin-workload-deploy-packet",
         "noniphone-public-workload-trial-packet"
       ],
       "supporting_evidence_missing": []
