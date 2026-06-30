@@ -11,6 +11,7 @@
 | AWS NLB CID generator | [repro/quic-go-min-repro/internal/common/aws_nlb_cid.go](../../repro/quic-go-min-repro/internal/common/aws_nlb_cid.go) | `0x00 + 8-byte Server ID + 7-byte nonce` CID 생성 |
 | CID unit test | [repro/quic-go-min-repro/internal/common/aws_nlb_cid_test.go](../../repro/quic-go-min-repro/internal/common/aws_nlb_cid_test.go) | CID length, config byte, Server ID placement, nonce uniqueness 검증 |
 | NLB data-plane harness | [harness/scripts/run-aws-nlb-quic-data-plane.sh](../../harness/scripts/run-aws-nlb-quic-data-plane.sh) | temporary NLB/target/EC2 생성, package deploy, positive/negative run, cleanup |
+| s2n NLB live readiness gate | [harness/scripts/check-s2n-nlb-live-readiness.sh](../../harness/scripts/check-s2n-nlb-live-readiness.sh) | AWS identity, local s2n CID provider proof, live runner readiness를 public-safe로 분리 |
 | package script | [harness/scripts/package-quic-go-ec2.sh](../../harness/scripts/package-quic-go-ec2.sh) | EC2 target에 올릴 repro package 생성 |
 | EC2 bootstrap | [repro/quic-go-min-repro/scripts/ec2-bootstrap-go.sh](../../repro/quic-go-min-repro/scripts/ec2-bootstrap-go.sh) | EC2 target에서 Go runtime 준비 |
 | transport server | [repro/quic-go-min-repro/cmd/server/main.go](../../repro/quic-go-min-repro/cmd/server/main.go) | AWS NLB CID generator를 quic-go transport에 연결 |
@@ -52,6 +53,7 @@
 | [docs/results/aws-nlb-quic-negative-control-results-20260624.md](../results/aws-nlb-quic-negative-control-results-20260624.md) | malformed CID / Server ID mismatch negative controls |
 | [docs/results/aws-nlb-tcp-quic-443-results-20260624.md](../results/aws-nlb-tcp-quic-443-results-20260624.md) | `TCP_QUIC :443` repeat positive control |
 | [docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md](../results/s2n-quic-nlb-cid-provider-rerun-20260630.md) | s2n-quic custom CID provider 복원/rerun, AWS NLB deployment prerequisite |
+| [docs/results/s2n-nlb-live-readiness-20260630.md](../results/s2n-nlb-live-readiness-20260630.md) | live AWS NLB+s2n 전제 조건 gate; local proof PASS, AWS identity invalid, dedicated s2n runner pending |
 | [docs/results/aws-nlb-http3-workload-results-20260624.md](../results/aws-nlb-http3-workload-results-20260624.md) | HTTP/3 POST-before / migration / GET-after workload |
 | [docs/results/haproxy-http3-negative-control-results-20260623.md](../results/haproxy-http3-negative-control-results-20260623.md) | HTTP/3 proxy support != active CM support negative control |
 | [docs/results/haproxy-http3-negative-control-rerun-20260630.md](../results/haproxy-http3-negative-control-rerun-20260630.md) | HAProxy HTTP/3 negative-control fresh rerun with reproducible runner |
@@ -83,6 +85,15 @@ AWS NLB negative control:
 | malformed CID layout | QUIC support만으로 충분하지 않음 |
 | registered Server ID mismatch | target health와 routable CID correctness는 별개 |
 | failed application payload or no response | deployment contract 위반 시 continuity 실패 |
+
+s2n NLB live readiness:
+
+| evidence | 의미 |
+| --- | --- |
+| local s2n CID provider proof `PASS` | s2n endpoint에 AWS NLB-compatible CID provider를 주입할 수 있음 |
+| local echo `echo_matches=yes` | provider가 설치된 local s2n endpoint가 application echo workload를 완료 |
+| AWS identity `invalid_client_token` | current host에서 live AWS resource 생성/삭제를 실행하면 안 됨 |
+| dedicated s2n live runner pending | quic-go NLB success와 s2n NLB success를 분리해야 함 |
 
 HAProxy negative control:
 

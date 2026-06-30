@@ -101,6 +101,20 @@ positive control의 반대쪽 근거도 확보했다.
 
 > CID-aware load balancing is a deployability contract. The load balancer may support QUIC, and targets may be healthy, but migrated packets are only routable when backend-generated CIDs follow the load balancer's expected Server ID layout.
 
+## 6.1 s2n-quic AWS NLB Follow-up Readiness
+
+s2n-quic은 AWS NLB와의 연결성이 높은 구현체지만, quic-go 기반 NLB success를 곧바로 s2n success로 일반화하면 안 된다. 그래서 dedicated s2n live experiment 전제 조건을 별도 readiness gate로 분리했다.
+
+| 항목 | 최신 결과 | 의미 |
+| --- | --- | --- |
+| runner | `harness/scripts/check-s2n-nlb-live-readiness.sh` | live AWS resource 생성 전 public-safe gate |
+| AWS identity | `aws_identity_ok=no`, `aws_identity_classification=invalid_client_token` | 현재 live AWS resource 생성 금지 |
+| local s2n CID proof | `local_proof_status=PASS`, `local_proof_echo_matches=yes` | custom CID provider와 local s2n echo 전제 조건은 통과 |
+| existing NLB runner | `existing_quic_go_nlb_runner_ready=yes` | 기존 live runner는 quic-go 경로를 커버 |
+| dedicated s2n live runner | `s2n_live_nlb_runner_ready=no` | s2n target A/B용 live runner는 후속 구현 필요 |
+
+따라서 현재 s2n NLB claim은 "local provider prerequisite ready"까지다. AWS NLB 뒤에서 s2n target이 migrated packet을 같은 backend로 받는지는 아직 검증하지 않았다.
+
 ## 7. HAProxy Negative Control
 
 HAProxy local HTTP/3 negative control은 다음을 보여줬다.

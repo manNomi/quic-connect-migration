@@ -74,19 +74,21 @@
 
 상태:
 
-> 부분 완료. `experiments/s2n-quic-nlb-cid-provider` proof crate를 복원했고, `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md`에 `cargo test` 3개 PASS와 local s2n-quic echo proof PASS를 정리했다. AWS live NLB target A/B forwarding은 아직 후속이다.
+> 부분 완료. `experiments/s2n-quic-nlb-cid-provider` proof crate를 복원했고, `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md`에 `cargo test` 3개 PASS와 local s2n-quic echo proof PASS를 정리했다. 추가로 `harness/scripts/check-s2n-nlb-live-readiness.sh`와 `docs/results/s2n-nlb-live-readiness-20260630.md`를 추가해 live AWS NLB+s2n 실험 전제 조건을 fail-closed로 고정했다. AWS live NLB target A/B forwarding은 아직 후속이다.
 
 2026-06-30 추가 확인:
 
-> `./harness/scripts/aws-preflight.sh` 실행 결과 현재 local AWS credential은 `invalid_client_token`으로 분류됐다. 따라서 live AWS NLB 재실행은 credential refresh 이후 진행한다.
+> `./harness/scripts/aws-preflight.sh` 실행 결과 현재 local AWS credential은 `invalid_client_token`으로 분류됐다. 이어서 `RUN_ID=s2n-nlb-live-readiness-local-20260630 harness/scripts/check-s2n-nlb-live-readiness.sh`를 실행했고, 결과는 `aws_identity_ok=no`, `aws_identity_classification=invalid_client_token`, `local_proof_status=PASS`, `local_proof_echo_matches=yes`, `existing_quic_go_nlb_runner_ready=yes`, `s2n_live_nlb_runner_ready=no`, `can_run_live_s2n_nlb_now=no`, `blocked_reason=aws_identity_invalid_client_token`이었다. 따라서 live AWS NLB 재실행은 credential refresh와 dedicated s2n live runner 구현 이후 진행한다.
 
 실행 방향:
 
 1. 완료: s2n-quic custom CID provider local proof 복원 및 rerun
-2. 후속: EC2 server에서 s2n-quic 또는 quic-go HTTP/3 origin 구동
-3. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
-4. 후속: desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
-5. 후속: NLB가 같은 backend로 보냈는지 server log/qlog로 확인
+2. 완료: live AWS NLB+s2n readiness gate 추가 및 현재 blocker 고정
+3. 후속: dedicated s2n live NLB data-plane runner 구현
+4. 후속: EC2 server에서 s2n-quic target A/B 구동
+5. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
+6. 후속: desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
+7. 후속: NLB가 같은 backend로 보냈는지 server log/qlog로 확인
 
 핵심 질문:
 
@@ -157,10 +159,10 @@
 | ---: | --- | --- |
 | 1 | nginx/HAProxy negative-control source+doc appendix + nginx runtime demo | 완료. HTTP/3 support와 CM support의 경계를 강화했고 nginx server runtime positive control 확보 |
 | 2 | OpenLiteSpeed production-like runtime demo | source feasibility/preflight/cleanup dry-run/runtime runner는 완료. 현재는 Linux/EC2 환경 또는 referenced raw artifact archive 정책이 필요 |
-| 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | 교수님 decision의 AWS 검증과 직접 연결. 현재 credential refresh 필요 |
+| 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | readiness gate 완료. 현재 credential refresh와 dedicated s2n live runner 구현 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | nginx local runtime evidence를 deployment 쪽으로 확장 |
 | 5 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner는 확보됐다.
+다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 dedicated s2n live NLB runner를 구현/실행해 target A/B forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate는 확보됐다.

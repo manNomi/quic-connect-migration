@@ -106,6 +106,8 @@
 | `docs/research-report/tables/chapter-03-scanner-trigger-map-20260630.md` | Chapter 3 quic-go positive-control trigger 추적표 |
 | `repro/quic-go-min-repro/internal/common/aws_nlb_cid.go` | Chapter 4 AWS NLB routable CID generator |
 | `harness/scripts/run-aws-nlb-quic-data-plane.sh` | Chapter 4 AWS NLB positive/negative control harness |
+| `harness/scripts/check-s2n-nlb-live-readiness.sh` | Chapter 4 s2n-quic AWS NLB live 실험 readiness gate |
+| `docs/results/s2n-nlb-live-readiness-20260630.md` | Chapter 4 s2n-quic AWS NLB live readiness 결과와 현재 blocker |
 | `docs/research-report/tables/chapter-04-scanner-trigger-map-20260630.md` | Chapter 4 AWS NLB/H3 deployment trigger 추적표 |
 | `tools/check_browser_cm_observability.py` | Chapter 5 browser observability readiness scanner |
 | `tools/classify_chrome_h3_artifacts.py` | Chapter 5 Chrome local H3/rebinding artifact classifier |
