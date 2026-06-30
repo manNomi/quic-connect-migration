@@ -115,6 +115,7 @@
 | `docs/results/implementation-rerun-results-20260630.md` | 2026-06-30 구현체 fresh rerun/demo/partial 결과 |
 | `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | s2n-quic AWS NLB CID provider proof 복원 및 rerun 결과 |
 | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | LSQUIC preferred-address HTTP/3 app demo 결과 |
+| `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | LSQUIC local UDP proxy NAT rebinding HTTP/3 app demo 결과 |
 | `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | `docs/results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

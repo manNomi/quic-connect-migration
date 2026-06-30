@@ -18,6 +18,7 @@
 | HTTP/3 client extension | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 workload에서 active path switch를 수행하는 확장 client |
 | HTTP/3 server extension | [repro/quic-go-min-repro/cmd/h3server/main.go](../../repro/quic-go-min-repro/cmd/h3server/main.go) | upload/download/browser workload를 제공하는 H3 server |
 | LSQUIC preferred-address runner | [harness/scripts/run-lsquic-preferred-address-demo.sh](../../harness/scripts/run-lsquic-preferred-address-demo.sh) | LSQUIC `http_client`/`http_server` preferred-address app demo 재현 |
+| LSQUIC NAT rebinding runner | [harness/scripts/run-lsquic-nat-rebinding-demo.sh](../../harness/scripts/run-lsquic-nat-rebinding-demo.sh) | LSQUIC `http_client`/`http_server` local UDP proxy NAT rebinding app demo 재현 |
 
 ## 2. quic-go Fresh Rerun
 
@@ -56,7 +57,7 @@ quic-go만 강하게 검수했다는 약점을 줄이기 위해 2026-06-30에 10
 | Cloudflare quiche | `c4c0b978461aa153399a90217d85bebd1800f84d` | `cargo test -p quiche --lib migration --features qlog`, sample client/server migration | `8 passed`, sample client exit `0` | `harness/results/impl-rerun-20260630T070249Z/logs/quiche-cargo-test-migration.log`, `harness/results/impl-rerun-20260630T070249Z/quiche-local-success` |
 | picoquic | `d3a80307200d28c53a6470d257bdd0801fad7971` | `picoquic_ct` selected migration suite | `Tried 13 tests, 0 fails` | `harness/results/impl-rerun-20260630T070249Z/logs/picoquic-migration-tests.log` |
 | s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `cargo test -p s2n-quic-tests connection_migration` | `10 passed; 0 failed` | `harness/results/impl-rerun-20260630T070249Z/logs/s2n-quic-connection-migration-tests.log` |
-| LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79 plus selected `trapa`, `qlog`, `parse_packet_in`, `frame_reader`, `packet_out` tests; preferred-address app demo | `100% tests passed, 0 tests failed out of 79`; selected 5/5 PASS; app demo `validation=ok` | `harness/results/impl-rerun-20260630T070249Z/logs/lsquic-*.log`, `harness/results/lsquic-preferred-address-script-20260630T095500Z` |
+| LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79 plus selected `trapa`, `qlog`, `parse_packet_in`, `frame_reader`, `packet_out` tests; preferred-address app demo; NAT rebinding app demo | `100% tests passed, 0 tests failed out of 79`; selected 5/5 PASS; preferred-address demo `validation=ok`; NAT rebinding demo `validation=ok` | `harness/results/impl-rerun-20260630T070249Z/logs/lsquic-*.log`, `harness/results/lsquic-preferred-address-script-20260630T095500Z`, `harness/results/lsquic-nat-rebinding-demo-20260630T102751Z` |
 | MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | build `msquictest`, selected v4/v6 RebindPort/RebindAddr/PathValidation tests | `8 passed; 0 failed` | `harness/results/impl-rerun-20260630T070249Z/logs/msquic-rebind-pathvalidation-tests.log`, `harness/results/impl-rerun-20260630T070249Z/logs/msquic-rebind-pathvalidation-v6-tests.log` |
 | ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | selected `tests/main` migration/path-validation tests | `6 of 6 tests successful` | `harness/results/impl-rerun-20260630T070249Z/logs/ngtcp2-migration-tests.log` |
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | selected `unittest` path challenge/transport parameter tests | `Ran 9 tests ... OK` | `harness/results/impl-rerun-20260630T070249Z/logs/aioquic-migration-tests.log` |
@@ -102,7 +103,7 @@ rg --no-ignore --text -n "path_challenge|path_response" "$ARTIFACT_DIR/qlog"
 | Cloudflare quiche | [GitHub](https://github.com/cloudflare/quiche), [Connection API docs](https://docs.rs/quiche/latest/quiche/struct.Connection.html) | path event/qlog 교차검증 후보 |
 | picoquic | [GitHub](https://github.com/private-octopus/picoquic) | NAT rebinding, migration failure, preferred address edge-case 기준선 |
 | s2n-quic | [GitHub](https://github.com/aws/s2n-quic), [official docs](https://aws.github.io/s2n-quic/) | AWS/NLB 후보, migration tests |
-| LiteSpeed LSQUIC | [GitHub](https://github.com/litespeedtech/lsquic), [official LSQUIC page](https://www.litespeedtech.com/open-source/quic-http3-library) | server-stack unit evidence and preferred-address app demo evidence |
+| LiteSpeed LSQUIC | [GitHub](https://github.com/litespeedtech/lsquic), [official LSQUIC page](https://www.litespeedtech.com/open-source/quic-http3-library) | server-stack unit evidence, preferred-address app demo evidence, NAT rebinding app demo evidence |
 | MsQuic | [GitHub](https://github.com/microsoft/msquic), [official docs](https://microsoft.github.io/msquic/), [deployment docs](https://microsoft.github.io/msquic/msquicdocs/docs/Deployment.html) | production-relevant NAT rebind/path-validation evidence with LB caveat |
 | aioquic | [GitHub](https://github.com/aiortc/aioquic), [official docs](https://aioquic.readthedocs.io/) | Python readable passive/path-validation reference |
 | ngtcp2 | [GitHub](https://github.com/ngtcp2/ngtcp2), [official site](https://nghttp2.org/ngtcp2/) | C library primitive comparison |
@@ -122,6 +123,7 @@ rg --no-ignore --text -n "path_challenge|path_response" "$ARTIFACT_DIR/qlog"
 | local implementation summary | [docs/results/local-implementation-test-results.md](../results/local-implementation-test-results.md) | 8개 구현체 로컬 실행 요약 |
 | implementation fresh rerun summary | [docs/results/implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md) | 2026-06-30 현재 HEAD 기준 quiche/picoquic/s2n-quic/MsQuic/LSQUIC/ngtcp2/aioquic/Quinn/Neqo/XQUIC 재실행과 quicly partial 요약 |
 | LSQUIC preferred-address app demo | [docs/results/lsquic-preferred-address-app-demo-20260630.md](../results/lsquic-preferred-address-app-demo-20260630.md) | LSQUIC example HTTP/3 client/server에서 preferred-address migration path와 app data on path 1 확인 |
+| LSQUIC NAT rebinding app demo | [docs/results/lsquic-nat-rebinding-app-demo-20260630.md](../results/lsquic-nat-rebinding-app-demo-20260630.md) | LSQUIC example HTTP/3 client/server에서 local UDP proxy source-port rebinding, server new path recording, path validation 확인 |
 | quic-go minimum reproduction summary | [docs/results/quic-go-minimum-reproduction-results.md](../results/quic-go-minimum-reproduction-results.md) | quic-go active migration 최소 재현 요약 |
 | quic-go fresh artifact | `harness/results/chapter3-local-quic-go-rerun-20260630` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
 | quiche fresh artifact | `harness/results/impl-rerun-20260630T070249Z/quiche-local-success` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
@@ -129,6 +131,7 @@ rg --no-ignore --text -n "path_challenge|path_response" "$ARTIFACT_DIR/qlog"
 | s2n-quic fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/s2n-quic-connection-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
 | LSQUIC fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/lsquic-*.log`, `harness/results/impl-rerun-20260630T070249Z/results/lsquic-commit.txt` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음. full CTest 79/79와 selected CTest 5/5 PASS |
 | LSQUIC preferred-address app demo artifact | `harness/results/lsquic-preferred-address-script-20260630T095500Z` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음. `validation=ok`, path 1 HTTP/3 STREAM evidence |
+| LSQUIC NAT rebinding app demo artifact | `harness/results/lsquic-nat-rebinding-demo-20260630T102751Z` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음. `validation=ok`, `proxy_switched=true`, server `record new path ID 1`, path validation evidence |
 | MsQuic fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/msquic-*.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
 | ngtcp2 fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/ngtcp2-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
 | aioquic fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/aioquic-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
@@ -167,6 +170,13 @@ RUN_ID=lsquic-preferred-address-$(date -u +%Y%m%dT%H%M%SZ) \
 harness/scripts/run-lsquic-preferred-address-demo.sh
 ```
 
+LSQUIC NAT rebinding app demo:
+
+```bash
+RUN_ID=lsquic-nat-rebinding-$(date -u +%Y%m%dT%H%M%SZ) \
+harness/scripts/run-lsquic-nat-rebinding-demo.sh
+```
+
 외부 구현체 재현 명령은 [implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md)의 구현체별 command block을 따른다.
 
 ## 8. 검수 체크리스트
@@ -175,7 +185,7 @@ harness/scripts/run-lsquic-preferred-address-demo.sh
 | --- | --- | --- |
 | 현재 repo에서 최소 positive control이 재실행되는가? | PASS | `chapter3-local-quic-go-rerun-20260630` |
 | quic-go 외 구현체도 fresh rerun을 확보했는가? | PASS | quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo, XQUIC NAT rebinding demo |
-| LSQUIC app-level demo를 확보했는가? | PASS | preferred-address demo `validation=ok`, path 1 HTTP/3 STREAM evidence |
+| LSQUIC app-level demo를 확보했는가? | PASS | preferred-address demo `validation=ok`, NAT rebinding demo `validation=ok`, path validation evidence |
 | partial evidence를 분리했는가? | PASS | quicly는 `fresh_build_partial_20260630`으로 분리 |
 | qlog path validation false negative를 제거했는가? | PASS | validator와 qlog-producing scripts에 `--no-ignore --text` 적용 |
 | 외부 구현체 링크가 있는가? | PASS | 11개 구현체 official/source/docs link 포함 |
