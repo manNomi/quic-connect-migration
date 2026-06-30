@@ -11,9 +11,9 @@ This public-safe budget estimates whether the local machine can store remaining 
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
 | remaining planned executions | `7` |
 | per-trial reserve GiB | `2.0` |
-| disk free GiB | `14.26` |
+| disk free GiB | `13.91` |
 | minimum free GiB floor | `5.0` |
-| usable GiB before floor | `9.26` |
+| usable GiB before floor | `8.91` |
 | max executions before floor | `4` |
 | current local artifact roots | `36.3 GiB` |
 
@@ -22,7 +22,7 @@ This public-safe budget estimates whether the local machine can store remaining 
 | scope | planned executions | required GiB | storage ready | cleanup needed GiB | interpretation |
 | --- | ---: | ---: | --- | ---: | --- |
 | `next-planned-execution` | 1 | 2.0 | `yes` | 0.0 | Enough space to attempt only the next selected capture if storage_ready=yes. |
-| `all-remaining-final-executions` | 7 | 14.0 | `no` | 4.74 | Enough space for the full remaining final browser handover queue if storage_ready=yes. |
+| `all-remaining-final-executions` | 7 | 14.0 | `no` | 5.09 | Enough space for the full remaining final browser handover queue if storage_ready=yes. |
 
 ## Interpretation
 

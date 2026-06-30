@@ -175,15 +175,15 @@
       "priority": "11",
       "name": "AWS CloudFront",
       "category": "managed edge",
-      "current_level": "L5_edge",
-      "evidence_status": "partial_deferred",
+      "current_level": "L5_edge_boundary_audit",
+      "evidence_status": "source_edge_boundary_audit_20260701",
       "depth_class": "managed_or_external_deployment_gate",
       "evidence_strength": "deployment_gate_pending",
       "active_migration_api": "n/a",
       "passive_migration": "n/a",
       "tests": "managed",
-      "why_not_quic_go_depth": "CloudFront is a managed viewer-edge deployment; it cannot be treated as end-to-end origin Connection Migration without a separate edge experiment.",
-      "next_non_iphone_gate": "Design a viewer-edge continuity experiment and explicitly label it non-end-to-end."
+      "why_not_quic_go_depth": "CloudFront official docs support viewer-edge HTTP/3 Connection Migration, but CloudFront cannot be treated as end-to-end origin Connection Migration without separate origin evidence.",
+      "next_non_iphone_gate": "Use the CDN edge boundary audit now; run a viewer-edge continuity experiment only if the paper needs managed-edge runtime evidence."
     },
     {
       "priority": "12",

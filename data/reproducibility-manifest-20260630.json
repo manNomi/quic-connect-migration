@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "6600491",
+    "commit": "cdd3693",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -24,7 +24,8 @@
       "fresh_rebind_demo_20260630": 1,
       "fresh_rerun_20260630": 9,
       "fresh_runtime_20260630": 1,
-      "partial_deferred": 2,
+      "partial_deferred": 1,
+      "source_edge_boundary_audit_20260701": 1,
       "source_inspected": 1,
       "source_policy_audit_20260701": 1
     },
@@ -43,7 +44,7 @@
       "L4_server_runtime": 1,
       "L5_candidate": 1,
       "L5_deployment_candidate": 1,
-      "L5_edge": 1
+      "L5_edge_boundary_audit": 1
     },
     "top_priority_names": [
       "quic-go",
@@ -54,16 +55,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 157,
+    "total_items": 158,
     "status_counts": {
-      "done": 153,
+      "done": 154,
       "planned": 4
     },
-    "latest_item": "chromium-cronet-policy-boundary-audit"
+    "latest_item": "cdn-edge-cm-boundary-audit"
   },
   "verification": {
-    "checks": "145",
-    "passed": "145",
+    "checks": "147",
+    "passed": "147",
     "ok": "yes"
   },
   "research_audit": {
@@ -367,6 +368,14 @@
     },
     "chromium_cronet_policy_boundary_audit_json": {
       "path": "data/chromium-cronet-policy-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "cdn_edge_cm_boundary_audit": {
+      "path": "docs/results/cdn-edge-cm-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "cdn_edge_cm_boundary_audit_json": {
+      "path": "data/cdn-edge-cm-boundary-audit-20260701.json",
       "exists": true
     },
     "openlitespeed_source_feasibility": {

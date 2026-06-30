@@ -163,6 +163,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     controlled_public_chrome_contract_application_audit_csv = "data/controlled-public-chrome-contract-application-audit-20260701.csv"
     chromium_cronet_policy_boundary_audit = "docs/results/chromium-cronet-policy-boundary-audit-20260701.md"
     chromium_cronet_policy_boundary_audit_json = "data/chromium-cronet-policy-boundary-audit-20260701.json"
+    cdn_edge_cm_boundary_audit = "docs/results/cdn-edge-cm-boundary-audit-20260701.md"
+    cdn_edge_cm_boundary_audit_json = "data/cdn-edge-cm-boundary-audit-20260701.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
@@ -267,6 +269,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         controlled_public_chrome_contract_application_audit_csv = str(generated_dir / "controlled-public-chrome-contract-application-audit.csv")
         chromium_cronet_policy_boundary_audit = str(generated_dir / "chromium-cronet-policy-boundary-audit.md")
         chromium_cronet_policy_boundary_audit_json = str(generated_dir / "chromium-cronet-policy-boundary-audit.json")
+        cdn_edge_cm_boundary_audit = str(generated_dir / "cdn-edge-cm-boundary-audit.md")
+        cdn_edge_cm_boundary_audit_json = str(generated_dir / "cdn-edge-cm-boundary-audit.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
@@ -332,6 +336,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_controlled_public_chrome_artifact_classifier_contract.py",
                 "tools/build_controlled_public_chrome_contract_application_audit.py",
                 "tools/build_chromium_cronet_policy_boundary_audit.py",
+                "tools/build_cdn_edge_cm_boundary_audit.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
@@ -1440,6 +1445,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 chromium_cronet_policy_boundary_audit,
                 "--json-output",
                 chromium_cronet_policy_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "cdn_edge_cm_boundary_audit_regression",
+            [python_bin, "tools/test_build_cdn_edge_cm_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "cdn_edge_cm_boundary_audit",
+            [
+                python_bin,
+                "tools/build_cdn_edge_cm_boundary_audit.py",
+                "--output",
+                cdn_edge_cm_boundary_audit,
+                "--json-output",
+                cdn_edge_cm_boundary_audit_json,
             ],
             {0},
             30,

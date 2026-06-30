@@ -25,6 +25,7 @@
 | `fresh_runtime_20260630` | fresh runtime demo evidence 확보 |
 | `fresh_negative_control_20260630` | fresh negative-control runtime evidence 확보 |
 | `source_policy_audit_20260701` | source-level client policy boundary audit 확보 |
+| `source_edge_boundary_audit_20260701` | CDN/edge source-level claim boundary audit 확보 |
 
 ## 요약 숫자
 
@@ -59,7 +60,7 @@
 | 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Firefox-adjacent broad migration test evidence |
 | 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; Linux full-suite replay runner is packaged in harness/scripts/run-xquic-full-suite-linux.sh because macOS AppleClang Werror blocks QPACK unit build |
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_policy_boundary_audit` | `source_policy_audit_20260701` | Use Chromium/Cronet policy-boundary audit as high-usage client evidence; runtime Chrome/Cronet handover still requires active network-change rows |
-| 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
+| 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge_boundary_audit` | `source_edge_boundary_audit_20260701` | Use CDN edge boundary audit for viewer-edge versus origin-end-to-end separation; live viewer-edge experiment remains follow-up |
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | s2n local provider proof | `yes` | `L5_deployment_candidate` | `partial_deferred` | s2n custom CID local provider proof PASS; next run live AWS NLB target A/B forwarding and migration continuity |
 | 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use source audit plus packaged focused Linux runner as large-scale implementation maturity evidence; Buck/getdeps execution remains follow-up |
 | 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |

@@ -180,6 +180,8 @@ CDN은 별도로 해석해야 한다.
 
 > managed edge-level HTTP/3 continuity, not necessarily end-to-end origin QUIC Connection Migration.
 
+2026-07-01 보강 audit에서는 CloudFront와 Cloudflare를 같은 CDN edge boundary로 다시 고정했다. CloudFront 공식 문서는 viewer와 CloudFront 사이의 HTTP/3 및 connection migration을 설명하지만, origin fetch는 별도 leg로 해석해야 한다. Cloudflare 공식 문서도 HTTP/3 설정을 user-to-Cloudflare leg로 제한하고 origin HTTP/3 미지원 경계를 둔다. 따라서 CDN은 "실서비스 관련성"은 높지만 "origin까지 단일 QUIC connection이 유지된다"는 근거로 쓰면 안 된다.
+
 ## 9. 논문에 쓸 수 있는 주장
 
 안전한 주장:

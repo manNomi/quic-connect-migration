@@ -8,8 +8,8 @@
     "PASS_NEGATIVE_CONTROL": 60
   },
   "verification": {
-    "checks": "145",
-    "passed": "145",
+    "checks": "147",
+    "passed": "147",
     "ok": "yes"
   },
   "ci": {

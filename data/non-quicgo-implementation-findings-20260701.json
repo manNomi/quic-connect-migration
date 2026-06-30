@@ -19,7 +19,8 @@
       "fresh_rebind_demo_20260630": 1,
       "fresh_rerun_20260630": 8,
       "fresh_runtime_20260630": 1,
-      "partial_deferred": 2,
+      "partial_deferred": 1,
+      "source_edge_boundary_audit_20260701": 1,
       "source_inspected": 1,
       "source_policy_audit_20260701": 1
     },
@@ -213,11 +214,11 @@
       "tests": "managed",
       "lb_or_cloud_deployability": "yes",
       "aws_suitability": "medium",
-      "current_level": "L5_edge",
-      "evidence_status": "partial_deferred",
-      "next_action": "Design viewer-edge experiment and clarify non-end-to-end interpretation",
+      "current_level": "L5_edge_boundary_audit",
+      "evidence_status": "source_edge_boundary_audit_20260701",
+      "next_action": "Use CDN edge boundary audit for viewer-edge versus origin-end-to-end separation; live viewer-edge experiment remains follow-up",
       "claim_class": "managed_or_deployment_pending",
-      "risk_note": "Viewer-edge continuity is not end-to-end origin Connection Migration."
+      "risk_note": "Official docs support viewer-edge HTTP/3 Connection Migration, but origin end-to-end QUIC CM is not established."
     },
     {
       "priority": "12",

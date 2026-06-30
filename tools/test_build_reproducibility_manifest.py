@@ -86,6 +86,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["quicly_full_e2e_linux_runner"]["exists"] is True
     assert paths["chromium_cronet_policy_boundary_audit"]["exists"] is True
     assert paths["chromium_cronet_policy_boundary_audit_json"]["exists"] is True
+    assert paths["cdn_edge_cm_boundary_audit"]["exists"] is True
+    assert paths["cdn_edge_cm_boundary_audit_json"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
     assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
     assert paths["aws_s2n_live_runner_safety_audit"]["exists"] is True
@@ -125,7 +127,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["xquic_full_suite_linux_audit"]["exists"] is True
     assert paths["xquic_full_suite_linux_audit_json"]["exists"] is True
     assert paths["xquic_full_suite_linux_runner"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "chromium-cronet-policy-boundary-audit"
+    assert manifest["experiment_matrix"]["latest_item"] == "cdn-edge-cm-boundary-audit"
 
 
 def test_generated_date_uses_utc_day() -> None:
