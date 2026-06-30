@@ -96,6 +96,7 @@
 84. 2026-07-01 non-iPhone gate rerun을 추가했다. AWS는 여전히 `invalid_client_token`, Safari WebDriver session은 `Allow remote automation` 미활성화, user-provided public origin은 `h3 Alt-Svc=false`라서 다음 실험 시작 전 외부 gate가 필요하다.
 85. Chrome desktop non-iPhone music-like local refresh를 추가했다. 6000ms local outage에서 retry0은 0/1 FAIL, retry1은 1/1 PASS였지만 retry1도 Chrome target QUIC session `3`개로 관찰되어, 음악형 streaming completion은 single-session CM이 아니라 application retry/reconnect 회복으로 해석해야 한다.
 86. tracked controlled-public Chrome validation 18개를 bridge synthesis로 묶었다. no-change H3 baseline은 6/6 확인됐지만 active network-change 12개 중 single-session CM 성공으로 볼 수 있는 row는 0개라서, 현재 public-browser evidence는 성공 결론이 아니라 deployment/browser bridge gap과 negative-control 근거로 해석해야 한다.
+87. Chrome desktop non-iPhone buffered-media local refresh를 추가했다. 6000ms local outage에서 low/high buffer row 모두 playback complete였지만 low buffer는 rebuffer `6`, high buffer는 rebuffer `1`, 두 row 모두 Chrome target QUIC session `3`개로 관찰되어 동영상형 completion은 QoE 비용과 session churn을 함께 봐야 함을 보강했다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -281,6 +282,7 @@
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
 - [Chrome desktop non-iPhone upload local refresh](docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md)
 - [Chrome desktop non-iPhone music-like local refresh](docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md)
+- [Chrome desktop non-iPhone buffered media local refresh](docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md)
 - [Controlled public Chrome bridge synthesis](docs/results/controlled-public-chrome-bridge-synthesis-20260701.md)
 - [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
 - [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)

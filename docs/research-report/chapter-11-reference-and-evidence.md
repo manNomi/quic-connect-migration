@@ -65,6 +65,8 @@
 | [data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv](../../data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv) | fresh music-like local control CSV |
 | [docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md](../results/chrome-h3-rebinding-buffered-media-control-20260629.md) | buffered playback control |
 | [data/chrome-h3-rebinding-buffered-media-control-20260629.csv](../../data/chrome-h3-rebinding-buffered-media-control-20260629.csv) | buffered playback CSV |
+| [docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md](../results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md) | fresh non-iPhone Chrome desktop buffered-media QoE local control |
+| [data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv](../../data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv) | fresh buffered-media QoE local control CSV |
 
 ## 5. Reproducibility Commands
 

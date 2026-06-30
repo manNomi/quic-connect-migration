@@ -72,6 +72,7 @@ TRACKS = [
             "controlled-public-chrome-bridge-synthesis",
             "chrome-desktop-noniphone-media-local-refresh",
             "chrome-desktop-noniphone-musiclike-local-refresh",
+            "chrome-desktop-noniphone-buffered-media-local-refresh",
             "chrome-desktop-noniphone-range-local-refresh",
             "chrome-desktop-noniphone-upload-local-refresh",
         ),

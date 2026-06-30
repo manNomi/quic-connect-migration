@@ -177,6 +177,10 @@
 
 > `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md`로 fresh local Chrome forced-H3 music-like segment control 2개 row를 추가했다. 6000ms A+B return-path outage에서 retry0 row는 `FAIL`, `browser_h3_request_failed`, media complete `false`, completed segment `1/8`, Chrome target QUIC session `2`였다. 같은 조건에서 retry1 row는 `PASS`, `nat_rebinding_multiple_quic_sessions`, media complete `true`, completed segment `8/8`, Chrome target QUIC session `3`이었다. 따라서 음악형 streaming completion은 retry/reconnect 기반 작업 회복으로 해석해야 하며, single-session browser CM 성공으로 쓰면 안 된다.
 
+2026-07-01 buffered-media 추가 확인:
+
+> `docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md`로 fresh local Chrome forced-H3 buffered-media control 2개 row를 추가했다. 6000ms A+B return-path outage에서 low-buffer `1/1` row와 high-buffer `4/6` row는 모두 playback complete였지만, low-buffer는 rebuffer `6`, high-buffer는 rebuffer `1`이었다. 두 row 모두 Chrome target QUIC session `3`, qlog PATH_CHALLENGE/PATH_RESPONSE `6/3`이어서, 동영상형 workload는 completion뿐 아니라 rebuffer/startup/session churn을 함께 보고해야 한다.
+
 2026-07-01 controlled-public bridge synthesis:
 
 > `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md`로 tracked controlled-public Chrome validation 문서 18개를 통합했다. no-change baseline 6개는 모두 H3 application baseline으로 확인됐지만, active network-change 12개 중 strong controlled-public CM success row는 `0`개였다. active row 중 2개는 application task가 성공했지만 qlog path validation이 없어서 `tuple_changed_without_path_validation` 또는 negative-control로만 쓸 수 있다. 따라서 이 corpus는 Chrome public-origin CM 성공 근거가 아니라 deployment/browser bridge gap과 negative-control 근거다.
@@ -224,7 +228,7 @@
 
 상태:
 
-> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 29개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
+> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 31개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
 
 해석:
 

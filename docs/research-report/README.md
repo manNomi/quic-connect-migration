@@ -164,6 +164,7 @@
 | `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md` | Chapter 11 buffered media local control |
 | `docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md` | Chapter 11 fresh non-iPhone Chrome desktop media local control |
 | `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md` | Chapter 11 fresh non-iPhone Chrome desktop music-like segment local control |
+| `docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md` | Chapter 11 fresh non-iPhone Chrome desktop buffered-media QoE local control |
 | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | Chapter 9 fresh non-iPhone Chrome desktop range local control |
 | `docs/results/user-provided-public-origin-readiness-20260630.md` | Chapter 7 user-provided public origin 후보의 HTTPS/H3 Alt-Svc readiness 결과 |
 | `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md` | Chapter 7-9 tracked controlled-public Chrome validation row 18개의 bridge gap synthesis |

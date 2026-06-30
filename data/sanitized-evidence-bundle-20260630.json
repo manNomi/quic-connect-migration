@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 30,
+  "item_count": 31,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -11,6 +11,7 @@
     "focused_e2e_positive": 1,
     "local_browser_control": 1,
     "local_browser_positive_control": 3,
+    "local_browser_qoe_control": 1,
     "local_browser_recovery_control": 1,
     "local_prerequisite_positive": 1,
     "negative_control": 2,
@@ -23,6 +24,7 @@
   },
   "category_counts": {
     "browser-deployment-bridge-synthesis": 1,
+    "browser-local-buffered-media-control": 1,
     "browser-local-control": 1,
     "browser-local-media-control": 1,
     "browser-local-music-control": 1,
@@ -496,6 +498,22 @@
       "supports": "Fresh Chrome desktop music-like segment rows reconfirm that a 6000ms local outage fails without segment retry but completes with one retry via multiple QUIC sessions.",
       "do_not_claim": "Music streaming is protected by single-session browser Connection Migration, public Wi-Fi/LTE handover, or transport-level continuity.",
       "next_gap": "Run controlled-public page-ready media/music handover once an H3-ready public origin and active path-change gate are available.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "chrome-desktop-noniphone-buffered-media-local-refresh",
+      "chapter": "11",
+      "category": "browser-local-buffered-media-control",
+      "implementation": "Chrome + quic-go local UDP rebinding proxy",
+      "evidence_doc": "docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md",
+      "runner_or_tool": "repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh",
+      "local_artifact_id": "chrome-desktop-noniphone-buffered-media-20260701-pair",
+      "claim_strength": "local_browser_qoe_control",
+      "supports": "Fresh Chrome desktop buffered-media rows completed playback across a 6000ms local outage, but low/high buffer policies produced different rebuffer counts and both rows used multiple Chrome target QUIC sessions.",
+      "do_not_claim": "Video playback was protected by single-session browser Connection Migration, public Wi-Fi/LTE handover, or zero-QoE-impact continuity.",
+      "next_gap": "Run controlled-public page-ready buffered-media handover and report startup delay, rebuffer events, retry count, session count, and qlog path evidence together.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

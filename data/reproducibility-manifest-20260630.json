@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "70c1d2e",
+    "commit": "e6b5806",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 134,
+    "total_items": 135,
     "status_counts": {
-      "done": 130,
+      "done": 131,
       "planned": 4
     },
-    "latest_item": "chrome-desktop-noniphone-musiclike-local-refresh"
+    "latest_item": "chrome-desktop-noniphone-buffered-media-local-refresh"
   },
   "verification": {
     "checks": "109",
@@ -163,6 +163,14 @@
     },
     "chrome_desktop_noniphone_musiclike_local_refresh_csv": {
       "path": "data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_buffered_media_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_buffered_media_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv",
       "exists": true
     },
     "chrome_desktop_noniphone_range_local_refresh": {
