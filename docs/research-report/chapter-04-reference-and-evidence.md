@@ -18,6 +18,7 @@
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
 | HAProxy negative-control runner | [harness/scripts/run-haproxy-http3-negative-control.sh](../../harness/scripts/run-haproxy-http3-negative-control.sh) | HAProxy ordinary H3 baseline과 active migration failure를 재현 |
 | OpenLiteSpeed runtime preflight | [harness/scripts/openlitespeed-runtime-preflight.sh](../../harness/scripts/openlitespeed-runtime-preflight.sh) | OpenLiteSpeed production-like runtime demo를 실행하기 전 local gate 확인 |
+| OpenLiteSpeed active migration runner | [harness/scripts/run-openlitespeed-active-migration-demo.sh](../../harness/scripts/run-openlitespeed-active-migration-demo.sh) | Linux/EC2에서 OpenLiteSpeed minimal server root, quiche active migration, server/client path evidence 검증 |
 | Artifact storage report | [tools/report_artifact_storage.py](../../tools/report_artifact_storage.py) | ignored raw artifact roots와 현재 free space를 삭제 없이 측정 |
 | Artifact cleanup safety audit | [tools/audit_artifact_cleanup_safety.py](../../tools/audit_artifact_cleanup_safety.py) | CSV-referenced/planned artifact를 보호하고 review-unreferenced 후보만 분리 |
 | Artifact cleanup dry-run planner | [tools/plan_artifact_cleanup.py](../../tools/plan_artifact_cleanup.py) | 실제 삭제 없이 OpenLiteSpeed build 전 확보 가능한 free space를 계산 |
@@ -36,6 +37,8 @@
 | HAProxy docs | [HAProxy configuration manual](https://docs.haproxy.org/3.2/configuration.html) | HTTP/3 over QUIC proxy와 migration support boundary 확인 |
 | HAProxy source | [haproxy/haproxy](https://github.com/haproxy/haproxy) | proxy implementation source reference |
 | OpenLiteSpeed source | [litespeedtech/openlitespeed](https://github.com/litespeedtech/openlitespeed) | LSQUIC 기반 production-like HTTP/3 server follow-up target |
+| OpenLiteSpeed docs | [OpenLiteSpeed documentation](https://openlitespeed.org/kb/) | 설치/운영 경로 공식 문서 entry point |
+| LiteSpeed QUIC/HTTP3 setup reference | [LiteSpeed QUIC/HTTP3 guide](https://docs.litespeedtech.com/lsws/cp/cpanel/quic-http3/) | HTTP/3/QUIC가 HTTPS/UDP/listener 설정과 연결된다는 운영 참고 |
 | CloudFront HTTP/3 announcement | [New HTTP/3 support for Amazon CloudFront](https://aws.amazon.com/blogs/aws/new-http-3-support-for-amazon-cloudfront/) | viewer-edge HTTP/3 support 근거 |
 | CloudFront supported HTTP versions | [CloudFront distribution supported HTTP versions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesSupportedHTTPVersions) | managed CDN HTTP version configuration 근거 |
 | CloudFront API note | [CloudFront UpdateDistribution API](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html) | CloudFront HTTP/3 connection migration note 확인 |
@@ -55,6 +58,7 @@
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | OpenLiteSpeed source-level production-like follow-up feasibility; runtime CM proof는 아직 아님 |
 | [docs/results/openlitespeed-runtime-preflight-20260630.md](../results/openlitespeed-runtime-preflight-20260630.md) | OpenLiteSpeed runtime demo readiness gate; latest local result `runtime_ready=no` |
+| [docs/results/openlitespeed-active-migration-runner-20260630.md](../results/openlitespeed-active-migration-runner-20260630.md) | OpenLiteSpeed Linux/EC2 runtime runner와 현재 macOS local `missing-openlitespeed-binary` blocked result |
 | [docs/results/artifact-storage-report-20260630-openlitespeed-preflight.md](../results/artifact-storage-report-20260630-openlitespeed-preflight.md) | OpenLiteSpeed runtime 전 local artifact roots total `35.3GiB`, current free `20.57GiB` |
 | [docs/results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md](../results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md) | review-unreferenced cleanup candidates `92`, reclaimable `7.1GiB`, protected referenced/planned artifact `25.8GiB` |
 | [docs/results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md](../results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md) | deletion-free cleanup dry-run; projected free `27.7GiB`, still `2.3GiB` short of 30GiB target |
@@ -97,6 +101,8 @@ OpenLiteSpeed local runtime readiness:
 | runtime preflight `runtime_ready=no` | 현재 macOS local host는 submodule/binary/Linux-style `/dev/shm`/disk gate가 닫혀 있음 |
 | artifact storage total `35.3GiB` | OpenLiteSpeed build 전 raw artifact storage pressure가 실험 진행 조건에 영향을 줌 |
 | cleanup dry-run projected free `27.7GiB` | 안전 후보만 삭제해도 30GiB local build target에는 부족하므로 Linux/EC2 또는 archive 정책이 필요 |
+| active migration runner added | Linux/EC2에서 config test, ordinary HTTP/3 completion, active migration path evidence를 하나의 packet으로 검증 가능 |
+| local runner result `blocked` | 현재 macOS local host에는 OpenLiteSpeed binary가 없어 runtime success/failure claim을 만들지 않음 |
 
 nginx/HAProxy boundary:
 

@@ -106,6 +106,14 @@ openlitespeed_runtime_preflight=blocked
 
 따라서 안전 후보만 지우는 local cleanup으로는 OpenLiteSpeed build 여유 목표를 충족하지 못한다. 다음 단계는 Linux/EC2 환경 사용 또는 referenced raw artifact archive 정책 결정이다.
 
+2026-06-30 runtime runner 추가:
+
+| 문서 | 핵심 결과 |
+| --- | --- |
+| `harness/scripts/run-openlitespeed-active-migration-demo.sh` | Linux/EC2에서 OpenLiteSpeed minimal server root, quiche active migration client, 1MiB HTTP/3 response, server/client path evidence를 검증하는 runner |
+| `docs/results/openlitespeed-active-migration-runner-20260630.md` | runner acceptance criteria와 현재 macOS blocked result 정리 |
+| `harness/results/openlitespeed-active-migration-local-blocked-20260630` | 현재 로컬 실행은 `validation=blocked`, `blocked_reason=missing-openlitespeed-binary` |
+
 ## 7. Claim boundary
 
 쓸 수 있는 주장:

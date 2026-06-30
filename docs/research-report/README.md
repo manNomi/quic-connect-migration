@@ -91,11 +91,13 @@
 | `harness/scripts/run-nginx-quic-active-migration-demo.sh` | Chapter 3 nginx QUIC active migration runtime demo |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `harness/scripts/openlitespeed-runtime-preflight.sh` | Chapter 4 OpenLiteSpeed production-like runtime readiness gate |
+| `harness/scripts/run-openlitespeed-active-migration-demo.sh` | Chapter 4 OpenLiteSpeed Linux/EC2 active-migration runtime runner |
 | `tools/report_artifact_storage.py` | Chapter 4 OpenLiteSpeed runtime 전 local artifact/disk usage report |
 | `tools/audit_artifact_cleanup_safety.py` | Chapter 4 cleanup 후보가 기존 CSV 근거를 건드리는지 점검하는 safety audit |
 | `tools/plan_artifact_cleanup.py` | Chapter 4 cleanup dry-run planner; 삭제 없이 회수 가능 용량만 계산 |
 | `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md` | Chapter 4 OpenLiteSpeed production-like follow-up source feasibility |
 | `docs/results/openlitespeed-runtime-preflight-20260630.md` | Chapter 4 OpenLiteSpeed runtime preflight result |
+| `docs/results/openlitespeed-active-migration-runner-20260630.md` | Chapter 4 OpenLiteSpeed runtime runner와 local blocked result |
 | `docs/results/artifact-storage-report-20260630-openlitespeed-preflight.md` | Chapter 4 OpenLiteSpeed runtime 전 local artifact storage report |
 | `docs/results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md` | Chapter 4 cleanup safety audit; referenced/planned raw artifact 보호 |
 | `docs/results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md` | Chapter 4 cleanup dry-run; 안전 후보만으로는 30GiB 목표 미달 |

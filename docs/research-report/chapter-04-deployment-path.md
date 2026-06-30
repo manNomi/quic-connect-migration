@@ -135,6 +135,18 @@ HAProxy negative-control과 반대로, nginx QUIC은 origin/web-server 계층에
 
 > nginx runtime demo는 "서버 구현체가 active client migration을 처리할 수 있다"는 근거다. 그러나 이는 proxy/CDN/LB 경로가 같은 semantics를 보존한다는 뜻은 아니며, browser handover claim도 아니다.
 
+## 7.2 OpenLiteSpeed Follow-up Packet
+
+LSQUIC example demo는 이미 preferred-address와 NAT rebinding app-level positive control을 제공하지만, production-like server integration은 별도 검증이 필요하다. 이를 위해 OpenLiteSpeed follow-up을 세 단계로 분리했다.
+
+| 단계 | 상태 | 의미 |
+| --- | --- | --- |
+| source feasibility | 완료 | OpenLiteSpeed source에서 LSQUIC HTTP/3 server engine, `quicEnable`, SCID callback, CID/SHM routing hook 확인 |
+| runtime preflight | 완료 | 현재 macOS local은 `runtime_ready=no`; binary, Linux `/dev/shm`, disk gate가 닫힘 |
+| runtime runner | 완료 | `harness/scripts/run-openlitespeed-active-migration-demo.sh`가 Linux/EC2에서 config test, 1MiB H3 response, active migration path evidence를 검증하도록 준비됨 |
+
+현재 로컬 실행은 `validation=blocked`, `blocked_reason=missing-openlitespeed-binary`다. 따라서 OpenLiteSpeed에 대해 아직 success/failure를 말하지 않고, Linux/EC2에서 runner를 실행한 뒤 `result.env`의 validation과 `migration-grep.log`를 근거로 claim을 갱신한다.
+
 ## 8. CDN/Edge 해석
 
 CDN은 별도로 해석해야 한다.
