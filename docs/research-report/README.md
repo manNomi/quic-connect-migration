@@ -21,6 +21,10 @@
 | Chapter 4. 배포 경로 검수: AWS NLB, Proxy, CDN | 작성 완료 | `chapter-04-deployment-path.md` |
 | Chapter 4 부록. 실제 배포 코드와 reference 근거 | 작성 완료 | `chapter-04-reference-and-evidence.md` |
 | Chapter 4 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-04-external-link-check-20260630.md` |
+| Chapter 5. 브라우저 CM 관찰성 기준 | 작성 완료 | `chapter-05-browser-observability.md` |
+| Chapter 5 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-05-reference-and-evidence.md` |
+| Chapter 5 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-05-scanner-trigger-map-20260630.md` |
+| Chapter 5 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-05-external-link-check-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -48,6 +52,9 @@
 | `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
 | `repro/quic-go-min-repro/internal/common/aws_nlb_cid.go` | Chapter 4 AWS NLB routable CID generator |
 | `harness/scripts/run-aws-nlb-quic-data-plane.sh` | Chapter 4 AWS NLB positive/negative control harness |
+| `tools/check_browser_cm_observability.py` | Chapter 5 browser observability readiness scanner |
+| `tools/classify_chrome_h3_artifacts.py` | Chapter 5 Chrome local H3/rebinding artifact classifier |
+| `tools/classify_controlled_public_h3_network_change.py` | Chapter 5 controlled public-origin network-change classifier |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
