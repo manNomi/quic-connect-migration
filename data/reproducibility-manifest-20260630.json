@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "5599528",
+    "commit": "da65b1a",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -19,7 +19,7 @@
     "total_implementations": 18,
     "evidence_status_counts": {
       "fresh_app_demo_20260630": 1,
-      "fresh_build_partial_20260630": 1,
+      "fresh_focused_e2e_20260630": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
       "fresh_rerun_20260630": 9,
@@ -32,7 +32,8 @@
       "L1_L2": 1,
       "L2_L3": 1,
       "L3_L4": 2,
-      "L3_L4_partial": 2,
+      "L3_L4_focused_e2e": 1,
+      "L3_L4_partial": 1,
       "L4": 3,
       "L4_AWS_L5_candidate": 1,
       "L4_L5": 1,
@@ -53,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 120,
+    "total_items": 121,
     "status_counts": {
-      "done": 116,
+      "done": 117,
       "planned": 4
     },
-    "latest_item": "nginx-quic-bpf-readiness"
+    "latest_item": "quicly-e2e-path-migration"
   },
   "verification": {
     "checks": "109",
@@ -146,6 +147,10 @@
     },
     "lsquic_nat_rebinding_demo": {
       "path": "docs/results/lsquic-nat-rebinding-app-demo-20260630.md",
+      "exists": true
+    },
+    "quicly_e2e_path_migration": {
+      "path": "docs/results/quicly-e2e-path-migration-20260630.md",
       "exists": true
     },
     "openlitespeed_source_feasibility": {

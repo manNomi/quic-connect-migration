@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `5599528` |
+| source commit at generation | `da65b1a` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
-| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_build_partial_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `120` |
-| latest experiment matrix item | `nginx-quic-bpf-readiness` |
+| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
+| experiment matrix items | `121` |
+| latest experiment matrix item | `quicly-e2e-path-migration` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -67,6 +67,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `haproxy_negative_control` | `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | `yes` |
 | `lsquic_preferred_address_demo` | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | `yes` |
 | `lsquic_nat_rebinding_demo` | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | `yes` |
+| `quicly_e2e_path_migration` | `docs/results/quicly-e2e-path-migration-20260630.md` | `yes` |
 | `openlitespeed_source_feasibility` | `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md` | `yes` |
 | `openlitespeed_runtime_preflight` | `docs/results/openlitespeed-runtime-preflight-20260630.md` | `yes` |
 | `openlitespeed_runtime_runner` | `docs/results/openlitespeed-active-migration-runner-20260630.md` | `yes` |

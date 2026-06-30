@@ -91,6 +91,7 @@
 | `harness/scripts/run-local-quic-go.sh` | Chapter 3 local quic-go 재현 wrapper |
 | `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
 | `harness/scripts/run-nginx-quic-active-migration-demo.sh` | Chapter 3 nginx QUIC active migration runtime demo |
+| `harness/scripts/run-quicly-e2e-path-migration-check.sh` | Chapter 3 quicly focused e2e path-migration check |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
 | `docs/results/nginx-quic-bpf-readiness-20260630.md` | Chapter 4 nginx local runtime demo와 Linux `quic_bpf` 검증 경계 |
@@ -132,6 +133,7 @@
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 초기 8개 구현체 local test 결과 |
 | `docs/results/implementation-rerun-results-20260630.md` | 2026-06-30 구현체 fresh rerun/demo/partial 결과 |
+| `docs/results/quicly-e2e-path-migration-20260630.md` | quicly focused e2e path-migration result와 full e2e caveat |
 | `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | s2n-quic AWS NLB CID provider proof 복원 및 rerun 결과 |
 | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | LSQUIC preferred-address HTTP/3 app demo 결과 |
 | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | LSQUIC local UDP proxy NAT rebinding HTTP/3 app demo 결과 |

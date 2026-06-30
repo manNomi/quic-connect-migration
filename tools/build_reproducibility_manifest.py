@@ -126,6 +126,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "haproxy_negative_control": "docs/results/haproxy-http3-negative-control-rerun-20260630.md",
         "lsquic_preferred_address_demo": "docs/results/lsquic-preferred-address-app-demo-20260630.md",
         "lsquic_nat_rebinding_demo": "docs/results/lsquic-nat-rebinding-app-demo-20260630.md",
+        "quicly_e2e_path_migration": "docs/results/quicly-e2e-path-migration-20260630.md",
         "openlitespeed_source_feasibility": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",
         "openlitespeed_runtime_preflight": "docs/results/openlitespeed-runtime-preflight-20260630.md",
         "openlitespeed_runtime_runner": "docs/results/openlitespeed-active-migration-runner-20260630.md",

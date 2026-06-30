@@ -15,7 +15,7 @@
 | nginx QUIC | source audit + HTTP/3 runtime active-client-migration demo `validation=ok` | source-only에서 web-server runtime evidence로 승격 |
 | HAProxy QUIC | HTTP/3 fresh negative-control `validation=ok_negative_control` | source/docs 반례에서 재현 가능한 proxy runtime 반례로 보강 |
 | XQUIC | local client/server NAT rebinding demo PASS | NAT rebinding path가 실제 demo에서 동작함 |
-| quicly | migration-related unit subtest OK, full/e2e partial | partial evidence로 분리해 과장 방지 |
+| quicly | migration-related unit subtest OK, focused e2e `path-migration` PASS, full e2e `slow-start` caveat | full e2e PASS가 아니라 focused migration evidence로 분리해 과장 방지 |
 | Chrome local controls | local forced-H3/rebinding/retry matrix 존재 | browser success claim은 아직 제한적 |
 
 ## 2. 아직 약한 부분
@@ -154,6 +154,24 @@
 
 > retry로 완료된 작업은 single-session CM 성공으로 쓰지 않는다.
 
+### P6. quicly focused e2e path-migration
+
+목표:
+
+> quicly를 단순 partial build/unit evidence로만 남기지 않고, Connection Migration과 직접 관련된 e2e subtest를 분리해 실행 가능한 근거로 고정한다.
+
+상태:
+
+> 완료. `harness/scripts/run-quicly-e2e-path-migration-check.sh`를 추가했고, 최신 run `quicly-e2e-path-migration-local-20260630`에서 `validation=ok_path_migration`, `path_subtest_ok=yes`, `cid_seq_check_ok=yes`를 확보했다. full `t/e2e.t`는 `prove_exit=1`, `slow_start_failed=yes`라 전체 PASS로 주장하지 않는다.
+
+실행 방향:
+
+1. 완료: local CPAN install로 `Net::EmptyPort` dependency 충족
+2. 완료: full `t/e2e.t` 실행
+3. 완료: `path-migration` subtest와 CID seq 1 first path probe check 분리 추출
+4. 완료: unrelated `slow-start` failure와 migration evidence를 분리 보고
+5. 남음: Linux 또는 upstream-compatible timing 환경에서 full `t/e2e.t` clean PASS 여부 확인
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -162,8 +180,9 @@
 | 2 | OpenLiteSpeed production-like runtime demo | source feasibility/preflight/cleanup dry-run/runtime runner는 완료. 현재는 Linux/EC2 환경 또는 referenced raw artifact archive 정책이 필요 |
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | readiness gate 완료. 현재 credential refresh와 dedicated s2n live runner 구현 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | readiness gate 완료. Linux/eBPF host에서 packet-routing runtime 검증 필요 |
-| 5 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
+| 5 | quicly focused e2e path-migration | 완료. path-migration subtest는 PASS, full e2e caveat는 유지 |
+| 6 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 dedicated s2n live NLB runner를 구현/실행해 target A/B forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate는 확보됐다.
+다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 dedicated s2n live NLB runner를 구현/실행해 target A/B forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check는 확보됐다.
