@@ -9,7 +9,9 @@
 | 챕터 | 상태 | 문서 |
 | --- | --- | --- |
 | Chapter 1. QUIC Connection Migration 구현체 성숙도 조사 | 작성 완료 | `chapter-01-implementation-maturity.md` |
+| Chapter 1 부록. 실제 참고 링크와 scanner trigger 근거 | 작성 완료 | `chapter-01-reference-and-scanner-evidence.md` |
 | Chapter 1 표. 구현체별 조사 CSV 가독화 | 작성 완료 | `tables/implementation-survey-readable.md` |
+| Chapter 1 표. scanner trigger 위치 | 작성 완료 | `tables/scanner-trigger-summary-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -27,6 +29,8 @@
 | --- | --- |
 | `data/implementation-survey.csv` | Chapter 1 구현체별 원본 조사표 |
 | `tools/scan_implementation_evidence.py` | 구현체 repo에서 CM 관련 evidence 후보를 찾는 scanner |
+| `docs/research-report/chapter-01-reference-and-scanner-evidence.md` | 공식 참고 링크와 scanner trigger 검증 부록 |
+| `docs/research-report/tables/scanner-trigger-summary-20260630.md` | 15개 공개 구현체 scanner trigger 위치 표 |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

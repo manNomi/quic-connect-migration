@@ -25,6 +25,11 @@
 - `https://github.com/quicwg/base-drafts/wiki/Implementations`
 - `https://github.com/quicwg/quicwg.github.io/blob/main/implementations.md`
 
+공식 링크와 scanner trigger 위치는 별도 검증 부록에 정리했다.
+
+- `docs/research-report/chapter-01-reference-and-scanner-evidence.md`
+- `docs/research-report/tables/scanner-trigger-summary-20260630.md`
+
 다만 이 목록은 “known QUIC implementations” 목록이지, Connection Migration 지원 여부를 직접 알려주는 표가 아니다. 그래서 목록을 seed로 사용하고, 실제 연구 relevance를 기준으로 18개 구현체/스택을 다시 골랐다.
 
 최종 대상은 다음 범주로 나누었다.
@@ -132,6 +137,8 @@ scanner가 보는 주요 category는 다음이다.
 | `tests` | migration/rebinding/path 관련 test |
 
 scanner는 자동 판정기가 아니다. scanner output은 “읽어야 할 파일 후보”를 찾는 용도다. 최종 판정은 source/test/manual run을 통해 사람이 했다.
+
+scanner의 실제 trigger keyword, 실행 명령, 15개 공개 구현체의 commit hash, 파일/라인 링크는 `tables/scanner-trigger-summary-20260630.md`에 고정했다.
 
 ### 5.3 Source/test manual audit
 
