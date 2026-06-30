@@ -142,6 +142,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     non_quicgo_execution_depth_audit_csv = "data/non-quicgo-execution-depth-audit-20260701.csv"
     msquic_migration_api_boundary_audit = "docs/results/msquic-migration-api-boundary-audit-20260701.md"
     msquic_migration_api_boundary_audit_json = "data/msquic-migration-api-boundary-audit-20260701.json"
+    ngtcp2_migration_api_boundary_audit = "docs/results/ngtcp2-migration-api-boundary-audit-20260701.md"
+    ngtcp2_migration_api_boundary_audit_json = "data/ngtcp2-migration-api-boundary-audit-20260701.json"
     quinn_migration_api_boundary_audit = "docs/results/quinn-migration-api-boundary-audit-20260701.md"
     quinn_migration_api_boundary_audit_json = "data/quinn-migration-api-boundary-audit-20260701.json"
     xquic_full_suite_linux_audit = "docs/results/xquic-full-suite-linux-audit-20260701.md"
@@ -254,6 +256,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         non_quicgo_execution_depth_audit_csv = str(generated_dir / "non-quicgo-execution-depth-audit.csv")
         msquic_migration_api_boundary_audit = str(generated_dir / "msquic-migration-api-boundary-audit.md")
         msquic_migration_api_boundary_audit_json = str(generated_dir / "msquic-migration-api-boundary-audit.json")
+        ngtcp2_migration_api_boundary_audit = str(generated_dir / "ngtcp2-migration-api-boundary-audit.md")
+        ngtcp2_migration_api_boundary_audit_json = str(generated_dir / "ngtcp2-migration-api-boundary-audit.json")
         quinn_migration_api_boundary_audit = str(generated_dir / "quinn-migration-api-boundary-audit.md")
         quinn_migration_api_boundary_audit_json = str(generated_dir / "quinn-migration-api-boundary-audit.json")
         xquic_full_suite_linux_audit = str(generated_dir / "xquic-full-suite-linux-audit.md")
@@ -338,6 +342,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_non_quicgo_implementation_findings.py",
                 "tools/build_non_quicgo_execution_depth_audit.py",
                 "tools/build_msquic_migration_api_boundary_audit.py",
+                "tools/build_ngtcp2_migration_api_boundary_audit.py",
                 "tools/build_quinn_migration_api_boundary_audit.py",
                 "tools/build_xquic_full_suite_linux_audit.py",
                 "tools/build_mvfst_focused_linux_runner_audit.py",
@@ -418,6 +423,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_non_quicgo_implementation_findings.py",
                 "tools/test_build_non_quicgo_execution_depth_audit.py",
                 "tools/test_build_msquic_migration_api_boundary_audit.py",
+                "tools/test_build_ngtcp2_migration_api_boundary_audit.py",
                 "tools/test_build_quinn_migration_api_boundary_audit.py",
                 "tools/test_build_xquic_full_suite_linux_audit.py",
                 "tools/test_build_mvfst_focused_linux_runner_audit.py",
@@ -1269,6 +1275,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 msquic_migration_api_boundary_audit,
                 "--json-output",
                 msquic_migration_api_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "ngtcp2_migration_api_boundary_audit_regression",
+            [python_bin, "tools/test_build_ngtcp2_migration_api_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "ngtcp2_migration_api_boundary_audit",
+            [
+                python_bin,
+                "tools/build_ngtcp2_migration_api_boundary_audit.py",
+                "--output",
+                ngtcp2_migration_api_boundary_audit,
+                "--json-output",
+                ngtcp2_migration_api_boundary_audit_json,
             ],
             {0},
             30,

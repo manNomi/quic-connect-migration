@@ -57,6 +57,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "noniphone-paper-section-scaffold" in ids
     assert "non-quicgo-implementation-findings" in ids
     assert "msquic-migration-api-boundary-audit" in ids
+    assert "ngtcp2-migration-api-boundary-audit" in ids
     assert "quinn-migration-api-boundary-audit" in ids
     assert "xquic-full-suite-linux-audit" in ids
     assert "aws-s2n-phase2-rebinding-runner-audit" in ids

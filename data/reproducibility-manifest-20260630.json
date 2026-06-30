@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "63dfe4b",
+    "commit": "ab9f3fa",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -55,16 +55,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 161,
+    "total_items": 162,
     "status_counts": {
-      "done": 157,
+      "done": 158,
       "planned": 4
     },
-    "latest_item": "quinn-migration-api-boundary-audit"
+    "latest_item": "ngtcp2-migration-api-boundary-audit"
   },
   "verification": {
-    "checks": "151",
-    "passed": "151",
+    "checks": "155",
+    "passed": "155",
     "ok": "yes"
   },
   "research_audit": {
@@ -272,6 +272,14 @@
     },
     "msquic_migration_api_boundary_audit_json": {
       "path": "data/msquic-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "ngtcp2_migration_api_boundary_audit": {
+      "path": "docs/results/ngtcp2-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "ngtcp2_migration_api_boundary_audit_json": {
+      "path": "data/ngtcp2-migration-api-boundary-audit-20260701.json",
       "exists": true
     },
     "quinn_migration_api_boundary_audit": {

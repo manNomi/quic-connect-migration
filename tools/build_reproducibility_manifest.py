@@ -157,6 +157,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "non_quicgo_execution_depth_audit_csv": "data/non-quicgo-execution-depth-audit-20260701.csv",
         "msquic_migration_api_boundary_audit": "docs/results/msquic-migration-api-boundary-audit-20260701.md",
         "msquic_migration_api_boundary_audit_json": "data/msquic-migration-api-boundary-audit-20260701.json",
+        "ngtcp2_migration_api_boundary_audit": "docs/results/ngtcp2-migration-api-boundary-audit-20260701.md",
+        "ngtcp2_migration_api_boundary_audit_json": "data/ngtcp2-migration-api-boundary-audit-20260701.json",
         "quinn_migration_api_boundary_audit": "docs/results/quinn-migration-api-boundary-audit-20260701.md",
         "quinn_migration_api_boundary_audit_json": "data/quinn-migration-api-boundary-audit-20260701.json",
         "xquic_full_suite_linux_audit": "docs/results/xquic-full-suite-linux-audit-20260701.md",

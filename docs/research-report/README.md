@@ -76,6 +76,7 @@
 | controlled-public Chrome contract application audit. 기존 public Chrome row contract 적용 결과 | 작성 완료 | `../results/controlled-public-chrome-contract-application-audit-20260701.md` |
 | quic-go 외 구현체 실행 깊이 감사. 왜 quic-go만 가장 깊은 positive control인지 | 작성 완료 | `../results/non-quicgo-execution-depth-audit-20260701.md` |
 | MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
+| ngtcp2 migration API boundary audit. C library direct migration API와 browser/deployment claim boundary | 작성 완료 | `../results/ngtcp2-migration-api-boundary-audit-20260701.md` |
 | Quinn migration API boundary audit. Rust stack endpoint rebind와 quic-go식 per-connection active control 경계 | 작성 완료 | `../results/quinn-migration-api-boundary-audit-20260701.md` |
 | XQUIC full-suite Linux audit. NAT rebinding demo와 Linux replay gate 경계 | 작성 완료 | `../results/xquic-full-suite-linux-audit-20260701.md` |
 | mvfst focused Linux runner audit. production 후보 focused BUCK test 실행 gate | 작성 완료 | `../results/mvfst-focused-linux-runner-audit-20260701.md` |

@@ -6,8 +6,8 @@ Generated: `2026-06-30`
 
 | metric | value |
 | --- | --- |
-| disk free | `12.1 GiB` |
-| disk free GiB | `12.09` |
+| disk free | `14.5 GiB` |
+| disk free GiB | `14.51` |
 | local artifact roots total | `36.3 GiB` |
 
 ## Artifact Roots
