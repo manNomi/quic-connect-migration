@@ -119,6 +119,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "implementation_rerun_results": "docs/results/implementation-rerun-results-20260630.md",
         "implementation_survey_csv": "data/implementation-survey.csv",
         "experiment_matrix": "harness/manifests/experiment-matrix.csv",
+        "sanitized_evidence_bundle": "docs/results/sanitized-evidence-bundle-20260630.md",
+        "sanitized_evidence_bundle_json": "data/sanitized-evidence-bundle-20260630.json",
         "non_iphone_gap_plan": "docs/results/non-iphone-research-gap-plan-20260630.md",
         "nginx_haproxy_boundary": "docs/results/nginx-haproxy-quic-cm-boundary-20260630.md",
         "nginx_runtime_demo": "docs/results/nginx-quic-active-migration-runtime-20260630.md",

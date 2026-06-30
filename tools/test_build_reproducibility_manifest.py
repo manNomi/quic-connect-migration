@@ -40,12 +40,14 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     manifest = build_manifest(include_ci=False)
     paths = manifest["evidence_paths_20260630"]
     assert paths["implementation_rerun_results"]["exists"] is True
+    assert paths["sanitized_evidence_bundle"]["exists"] is True
+    assert paths["sanitized_evidence_bundle_json"]["exists"] is True
     assert paths["openlitespeed_runtime_runner"]["exists"] is True
     assert paths["nginx_haproxy_boundary"]["exists"] is True
     assert paths["nginx_quic_bpf_readiness"]["exists"] is True
     assert paths["quicly_e2e_path_migration"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "quicly-e2e-path-migration"
+    assert manifest["experiment_matrix"]["latest_item"] == "sanitized-evidence-bundle-20260630"
 
 
 def test_generated_date_uses_utc_day() -> None:

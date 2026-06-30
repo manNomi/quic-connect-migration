@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "da65b1a",
+    "commit": "8b77fc4",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 121,
+    "total_items": 122,
     "status_counts": {
-      "done": 117,
+      "done": 118,
       "planned": 4
     },
-    "latest_item": "quicly-e2e-path-migration"
+    "latest_item": "sanitized-evidence-bundle-20260630"
   },
   "verification": {
     "checks": "109",
@@ -119,6 +119,14 @@
     },
     "experiment_matrix": {
       "path": "harness/manifests/experiment-matrix.csv",
+      "exists": true
+    },
+    "sanitized_evidence_bundle": {
+      "path": "docs/results/sanitized-evidence-bundle-20260630.md",
+      "exists": true
+    },
+    "sanitized_evidence_bundle_json": {
+      "path": "data/sanitized-evidence-bundle-20260630.json",
       "exists": true
     },
     "non_iphone_gap_plan": {

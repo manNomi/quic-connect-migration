@@ -27,7 +27,7 @@
 | nginx QUIC production/Linux `quic_bpf` | nginx local runtime은 확보됐지만 production packet routing은 아직 약함 | 가능 |
 | AWS NLB + s2n-quic CID routing 검증 | 교수님 decision의 AWS 구축 검수와 직접 연결 | 가능 |
 | Chrome desktop public-origin simulation | iPhone 없이 browser/runtime policy의 한계를 보강 | 가능 |
-| sanitized evidence bundle | raw log가 ignored path에 있어 심사/보고 시 재현 근거가 약해질 수 있음 | 가능 |
+| sanitized evidence bundle | raw log가 ignored path에 있어 심사/보고 시 재현 근거가 약해질 수 있음 | 완료 |
 
 ## 3. 우선순위 제안
 
@@ -172,6 +172,20 @@
 4. 완료: unrelated `slow-start` failure와 migration evidence를 분리 보고
 5. 남음: Linux 또는 upstream-compatible timing 환경에서 full `t/e2e.t` clean PASS 여부 확인
 
+### P7. Sanitized evidence bundle
+
+목표:
+
+> raw qlog, keylog, pcap, NetLog, private host, credential을 커밋하지 않으면서도, 각 연구 claim이 어떤 공개 문서와 runner/tool에 의해 지지되는지 추적 가능한 bundle을 만든다.
+
+상태:
+
+> 완료. `tools/build_sanitized_evidence_bundle.py`와 `tools/test_build_sanitized_evidence_bundle.py`를 추가했고, `docs/results/sanitized-evidence-bundle-20260630.md` 및 `data/sanitized-evidence-bundle-20260630.json`을 생성했다. 현재 bundle은 18개 evidence item을 포함하고, 각 항목마다 `supports`, `do_not_claim`, `next_gap`을 기록한다.
+
+해석:
+
+> 이 bundle은 raw artifact archive가 아니라 evidence-to-claim map이다. 따라서 논문/보고서에서 어떤 문장을 쓸 수 있고 어떤 문장을 피해야 하는지 빠르게 확인하는 안전장치로 쓴다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -181,8 +195,8 @@
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | readiness gate 완료. 현재 credential refresh와 dedicated s2n live runner 구현 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | readiness gate 완료. Linux/eBPF host에서 packet-routing runtime 검증 필요 |
 | 5 | quicly focused e2e path-migration | 완료. path-migration subtest는 PASS, full e2e caveat는 유지 |
-| 6 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
+| 6 | sanitized evidence bundle 생성 | 완료. 18개 evidence item에 대해 supports/do-not-claim/next-gap boundary를 public-safe로 고정 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 dedicated s2n live NLB runner를 구현/실행해 target A/B forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check는 확보됐다.
+다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 dedicated s2n live NLB runner를 구현/실행해 target A/B forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, sanitized evidence-to-claim bundle은 확보됐다.
