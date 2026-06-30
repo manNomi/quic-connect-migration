@@ -67,6 +67,8 @@
 | [data/chrome-h3-rebinding-buffered-media-control-20260629.csv](../../data/chrome-h3-rebinding-buffered-media-control-20260629.csv) | buffered playback CSV |
 | [docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md](../results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md) | fresh non-iPhone Chrome desktop buffered-media QoE local control |
 | [data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv](../../data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv) | fresh buffered-media QoE local control CSV |
+| [docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md](../results/noniphone-workload-qoe-continuity-synthesis-20260701.md) | non-iPhone workload continuity/QoE synthesis |
+| [data/noniphone-workload-qoe-continuity-synthesis-20260701.csv](../../data/noniphone-workload-qoe-continuity-synthesis-20260701.csv) | normalized workload synthesis CSV |
 
 ## 5. Reproducibility Commands
 

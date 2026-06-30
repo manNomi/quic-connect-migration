@@ -36,6 +36,7 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     assert "controlled-public-chrome-bridge-synthesis" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-musiclike-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-buffered-media-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
+    assert "noniphone-workload-qoe-synthesis" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-upload-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert tracks["safari-desktop-baseline"]["current_state"] == "binary_ready_session_blocked"
 

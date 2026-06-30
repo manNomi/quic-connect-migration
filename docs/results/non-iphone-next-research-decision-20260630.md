@@ -10,7 +10,7 @@ This document chooses the next research step using only public-safe committed ev
 | --- | --- |
 | source bundle | `data/sanitized-evidence-bundle-20260630.json` |
 | source bundle exists | `True` |
-| source bundle item count | `31` |
+| source bundle item count | `32` |
 | candidate tracks | `6` |
 | runnable now | `[]` |
 | blocked track count | `6` |
@@ -42,7 +42,7 @@ This document chooses the next research step using only public-safe committed ev
 | track | evidence IDs | missing | next action |
 | --- | --- | --- | --- |
 | `aws-s2n-nlb-live-forwarding` | `s2n-nlb-cid-provider-proof`, `s2n-nlb-live-readiness`, `aws-s2n-nlb-live-runner`, `s2n-active-migration-api-audit`, `non-iphone-gate-rerun-20260701` | - | Refresh AWS credentials, then run `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`. |
-| `chrome-controlled-public-workloads` | `chromium-cronet-policy-evidence`, `user-provided-public-origin-readiness`, `non-iphone-gate-rerun-20260701`, `controlled-public-chrome-bridge-synthesis`, `chrome-desktop-noniphone-media-local-refresh`, `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh` | - | Prepare public origin, then run the controlled public Chrome media/range/upload wrappers. |
+| `chrome-controlled-public-workloads` | `chromium-cronet-policy-evidence`, `user-provided-public-origin-readiness`, `non-iphone-gate-rerun-20260701`, `controlled-public-chrome-bridge-synthesis`, `chrome-desktop-noniphone-media-local-refresh`, `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh`, `noniphone-workload-qoe-synthesis` | - | Prepare public origin, then run the controlled public Chrome media/range/upload wrappers. |
 | `nginx-quic-bpf-linux` | `nginx-active-client-migration-runtime`, `nginx-quic-bpf-readiness`, `nginx-quic-bpf-linux-runner` | - | Run `harness/scripts/run-nginx-quic-bpf-linux-demo.sh` on a suitable Linux host. |
 | `openlitespeed-production-like` | `lsquic-preferred-address-app-demo`, `lsquic-nat-rebinding-app-demo`, `openlitespeed-runtime-runner` | - | Run `harness/scripts/run-openlitespeed-active-migration-demo.sh` on Linux/EC2. |
 | `safari-desktop-baseline` | `safari-webdriver-session-readiness`, `non-iphone-gate-rerun-20260701` | - | Rerun `tools/check_browser_cm_observability.py --safari-session-smoke`, then controlled-public Safari baseline. |

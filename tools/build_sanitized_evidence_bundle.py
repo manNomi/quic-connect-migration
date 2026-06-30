@@ -436,6 +436,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="Public Wi-Fi/LTE handover, iPhone handover, or request-log-only proof of packet-level rebinding.",
         next_gap="Run controlled-public page-ready upload handover once public origin and active path-change gates are open.",
     ),
+    EvidenceItem(
+        id="noniphone-workload-qoe-synthesis",
+        chapter="9/10/11",
+        category="workload-synthesis",
+        implementation="Chrome + quic-go local workload CSV corpus",
+        evidence_doc="docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md",
+        runner_or_tool="tools/build_noniphone_workload_qoe_synthesis.py",
+        local_artifact_id="noniphone-workload-qoe-continuity-synthesis-20260701",
+        claim_strength="paper_synthesis",
+        supports="Thirty-two normalized non-iPhone local Chrome workload rows show that range/download and upload have cleaner single-session local path-validation evidence, while buffered video and music-like segment completion must be framed with QoE, retry/reconnect, and session churn.",
+        do_not_claim="Public Wi-Fi/LTE handover, CDN deployment continuity, or that all streaming workloads are protected by single-session browser Connection Migration.",
+        next_gap="After an H3-ready public origin is available, run public range/upload trials first, then buffered and music-like streaming trials with QoE/session metrics.",
+    ),
 ]
 
 

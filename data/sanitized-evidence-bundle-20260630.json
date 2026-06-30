@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 31,
+  "item_count": 32,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -16,6 +16,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
+    "paper_synthesis": 1,
     "readiness_blocked": 9,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
@@ -49,7 +50,8 @@
     "implementation-readiness": 1,
     "public-origin-readiness": 1,
     "server-runtime-positive-control": 1,
-    "source-audit": 1
+    "source-audit": 1,
+    "workload-synthesis": 1
   },
   "missing_evidence_docs": [],
   "missing_runners_or_tools": [],
@@ -546,6 +548,22 @@
       "supports": "A fresh Chrome desktop forced-H3 upload run completed without application retry while proxy packets crossed both upstream sockets and qlog/NetLog path validation was observed, even though request-level server remote tuple count stayed at one.",
       "do_not_claim": "Public Wi-Fi/LTE handover, iPhone handover, or request-log-only proof of packet-level rebinding.",
       "next_gap": "Run controlled-public page-ready upload handover once public origin and active path-change gates are open.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "noniphone-workload-qoe-synthesis",
+      "chapter": "9/10/11",
+      "category": "workload-synthesis",
+      "implementation": "Chrome + quic-go local workload CSV corpus",
+      "evidence_doc": "docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md",
+      "runner_or_tool": "tools/build_noniphone_workload_qoe_synthesis.py",
+      "local_artifact_id": "noniphone-workload-qoe-continuity-synthesis-20260701",
+      "claim_strength": "paper_synthesis",
+      "supports": "Thirty-two normalized non-iPhone local Chrome workload rows show that range/download and upload have cleaner single-session local path-validation evidence, while buffered video and music-like segment completion must be framed with QoE, retry/reconnect, and session churn.",
+      "do_not_claim": "Public Wi-Fi/LTE handover, CDN deployment continuity, or that all streaming workloads are protected by single-session browser Connection Migration.",
+      "next_gap": "After an H3-ready public origin is available, run public range/upload trials first, then buffered and music-like streaming trials with QoE/session metrics.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
