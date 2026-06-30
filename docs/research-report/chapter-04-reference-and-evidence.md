@@ -18,6 +18,7 @@
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
 | HAProxy negative-control runner | [harness/scripts/run-haproxy-http3-negative-control.sh](../../harness/scripts/run-haproxy-http3-negative-control.sh) | HAProxy ordinary H3 baseline과 active migration failure를 재현 |
 | deployment trigger map | [tables/chapter-04-scanner-trigger-map-20260630.md](tables/chapter-04-scanner-trigger-map-20260630.md) | CID generator, NLB harness, H3 workload, false-positive guard line anchor |
+| OpenLiteSpeed feasibility audit | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | LSQUIC example demo를 production-like server 실험으로 확장하기 위한 source-level 사전 검수 |
 
 ## 2. 공식 reference links
 
@@ -30,6 +31,7 @@
 | QUIC-LB draft | [draft-ietf-quic-load-balancers](https://datatracker.ietf.org/doc/html/draft-ietf-quic-load-balancers) | routable QUIC Connection ID 개념 기준 |
 | HAProxy docs | [HAProxy configuration manual](https://docs.haproxy.org/3.2/configuration.html) | HTTP/3 over QUIC proxy와 migration support boundary 확인 |
 | HAProxy source | [haproxy/haproxy](https://github.com/haproxy/haproxy) | proxy implementation source reference |
+| OpenLiteSpeed source | [litespeedtech/openlitespeed](https://github.com/litespeedtech/openlitespeed) | LSQUIC 기반 production-like HTTP/3 server follow-up target |
 | CloudFront HTTP/3 announcement | [New HTTP/3 support for Amazon CloudFront](https://aws.amazon.com/blogs/aws/new-http-3-support-for-amazon-cloudfront/) | viewer-edge HTTP/3 support 근거 |
 | CloudFront supported HTTP versions | [CloudFront distribution supported HTTP versions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesSupportedHTTPVersions) | managed CDN HTTP version configuration 근거 |
 | CloudFront API note | [CloudFront UpdateDistribution API](https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html) | CloudFront HTTP/3 connection migration note 확인 |
@@ -47,6 +49,7 @@
 | [docs/results/haproxy-http3-negative-control-results-20260623.md](../results/haproxy-http3-negative-control-results-20260623.md) | HTTP/3 proxy support != active CM support negative control |
 | [docs/results/haproxy-http3-negative-control-rerun-20260630.md](../results/haproxy-http3-negative-control-rerun-20260630.md) | HAProxy HTTP/3 negative-control fresh rerun with reproducible runner |
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
+| [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | OpenLiteSpeed source-level production-like follow-up feasibility; runtime CM proof는 아직 아님 |
 | [docs/results/cm-operational-friction-matrix-20260624.md](../results/cm-operational-friction-matrix-20260624.md) | Chapter 2 friction matrix와 deployment interpretation 연결 |
 
 ## 4. Evidence Chain
