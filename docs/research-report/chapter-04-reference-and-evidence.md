@@ -17,6 +17,7 @@
 | H3 server | [repro/quic-go-min-repro/cmd/h3server/main.go](../../repro/quic-go-min-repro/cmd/h3server/main.go) | HTTP/3 upload/download workload |
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
 | HAProxy negative-control runner | [harness/scripts/run-haproxy-http3-negative-control.sh](../../harness/scripts/run-haproxy-http3-negative-control.sh) | HAProxy ordinary H3 baseline과 active migration failure를 재현 |
+| OpenLiteSpeed runtime preflight | [harness/scripts/openlitespeed-runtime-preflight.sh](../../harness/scripts/openlitespeed-runtime-preflight.sh) | OpenLiteSpeed production-like runtime demo를 실행하기 전 local gate 확인 |
 | deployment trigger map | [tables/chapter-04-scanner-trigger-map-20260630.md](tables/chapter-04-scanner-trigger-map-20260630.md) | CID generator, NLB harness, H3 workload, false-positive guard line anchor |
 | OpenLiteSpeed feasibility audit | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | LSQUIC example demo를 production-like server 실험으로 확장하기 위한 source-level 사전 검수 |
 
@@ -50,6 +51,7 @@
 | [docs/results/haproxy-http3-negative-control-rerun-20260630.md](../results/haproxy-http3-negative-control-rerun-20260630.md) | HAProxy HTTP/3 negative-control fresh rerun with reproducible runner |
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | OpenLiteSpeed source-level production-like follow-up feasibility; runtime CM proof는 아직 아님 |
+| [docs/results/openlitespeed-runtime-preflight-20260630.md](../results/openlitespeed-runtime-preflight-20260630.md) | OpenLiteSpeed runtime demo readiness gate; latest local result `runtime_ready=no` |
 | [docs/results/cm-operational-friction-matrix-20260624.md](../results/cm-operational-friction-matrix-20260624.md) | Chapter 2 friction matrix와 deployment interpretation 연결 |
 
 ## 4. Evidence Chain

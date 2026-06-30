@@ -11,7 +11,7 @@
 | 구현체 성숙도 survey | 18개 구현체/스택 정리 | CM은 구현체 수준에서 실재한다는 claim 가능 |
 | fresh rerun/demo/negative-control | 13개 fresh rerun/demo/negative-control, 1개 partial build/test | quic-go 편중 약점과 proxy 반례 약점이 줄어듦 |
 | LSQUIC | full CTest 79/79, selected CTest 5/5 PASS, preferred-address app demo `validation=ok`, NAT rebinding app demo `validation=ok` | source-only에서 server-stack unit evidence와 두 종류의 app-level path-transition evidence로 승격 |
-| OpenLiteSpeed | source feasibility audit 완료, LSQUIC commit pointer와 HTTP/3 server integration 확인 | LSQUIC example demo를 production-like server 실험으로 확장할 follow-up target으로 고정 |
+| OpenLiteSpeed | source feasibility audit + runtime preflight 완료, `runtime_ready=no` | follow-up target은 타당하지만 현재 macOS local runtime gate는 닫힘 |
 | nginx QUIC | source audit + HTTP/3 runtime active-client-migration demo `validation=ok` | source-only에서 web-server runtime evidence로 승격 |
 | HAProxy QUIC | HTTP/3 fresh negative-control `validation=ok_negative_control` | source/docs 반례에서 재현 가능한 proxy runtime 반례로 보강 |
 | XQUIC | local client/server NAT rebinding demo PASS | NAT rebinding path가 실제 demo에서 동작함 |
@@ -43,7 +43,7 @@
 
 2026-06-30 추가 확인:
 
-> `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md`에 OpenLiteSpeed source feasibility audit를 추가했다. OpenLiteSpeed `f4a6f0f8ddbe93e846a2ddc442f87da07bf5c379`는 `LSQUIC_SERVER_MODE`, `quicEnable 1`, `lsquic_engine_new(LSENG_HTTP_SERVER, &api)`, SCID lifecycle callback, CID/PID shared-memory mapping을 갖고 있고, `LSQUICCOMMIT`이 현재 검수한 LSQUIC `f8ebaf838d2f4db836bda1182ee35b05d5191cee`와 일치한다. 단, local `lshttpd` binary가 없고 디스크 여유가 20GiB/96% used라 runtime build/demo는 cleanup 또는 Linux/EC2 환경 이후로 보류한다.
+> `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md`에 OpenLiteSpeed source feasibility audit를 추가했다. OpenLiteSpeed `f4a6f0f8ddbe93e846a2ddc442f87da07bf5c379`는 `LSQUIC_SERVER_MODE`, `quicEnable 1`, `lsquic_engine_new(LSENG_HTTP_SERVER, &api)`, SCID lifecycle callback, CID/PID shared-memory mapping을 갖고 있고, `LSQUICCOMMIT`이 현재 검수한 LSQUIC `f8ebaf838d2f4db836bda1182ee35b05d5191cee`와 일치한다. 이어서 `harness/scripts/openlitespeed-runtime-preflight.sh`를 추가해 실행했고, 최신 run `openlitespeed-runtime-preflight-20260630T120037Z`는 `runtime_ready=no`, `submodule_ready=no`, `binary_ready=no`, `linux_recommended_ready=no`, `dev_shm_ready=no`, `disk_ready=no`, `disk_free_gib=19.58`로 판정했다. 따라서 runtime build/demo는 cleanup 또는 Linux/EC2 환경 이후로 보류한다.
 
 실행 방향:
 
@@ -52,7 +52,8 @@
 3. 완료: preferred address, PATH_CHALLENGE/PATH_RESPONSE, path 1 STREAM, request completion 확인
 4. 완료: local UDP proxy로 NAT rebinding path 재현
 5. 완료: OpenLiteSpeed source feasibility audit로 production-like follow-up target 타당성 확인
-6. 남음: OpenLiteSpeed production-like runtime 환경에서 path transition 재현
+6. 완료: OpenLiteSpeed runtime preflight로 현재 local blocker를 기계적으로 고정
+7. 남음: OpenLiteSpeed production-like runtime 환경에서 path transition 재현
 
 판정:
 
@@ -153,11 +154,11 @@
 | 순서 | 작업 | 이유 |
 | ---: | --- | --- |
 | 1 | nginx/HAProxy negative-control source+doc appendix + nginx runtime demo | 완료. HTTP/3 support와 CM support의 경계를 강화했고 nginx server runtime positive control 확보 |
-| 2 | OpenLiteSpeed production-like runtime demo | source feasibility는 완료. cleanup 또는 Linux/EC2 환경에서 실제 `lshttpd` HTTP/3 listener + quiche active migration 검증 |
+| 2 | OpenLiteSpeed production-like runtime demo | source feasibility와 preflight는 완료. cleanup 또는 Linux/EC2 환경에서 실제 `lshttpd` HTTP/3 listener + quiche active migration 검증 |
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | 교수님 decision의 AWS 검증과 직접 연결. 현재 credential refresh 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | nginx local runtime evidence를 deployment 쪽으로 확장 |
 | 5 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 디스크 cleanup 또는 Linux/EC2 환경을 먼저 확보한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit는 확보됐다.
+다음 턴에서는 디스크 cleanup 또는 Linux/EC2 환경을 먼저 확보한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight는 확보됐다.
