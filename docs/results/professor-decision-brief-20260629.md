@@ -67,7 +67,7 @@
 | mvfst | L5 후보 | 대규모 서비스 지향 구현체로 source-level migration 근거가 있다. |
 | MsQuic | L4-L5 caveat | 운영체제/서버 환경에서 강하지만 배포 정책과 LB 구성이 중요하다. |
 | lsquic | L4-L5 후보 | LiteSpeed 생태계에서 passive migration/NAT rebinding 근거가 있다. |
-| nginx QUIC | L3-L4 | 웹 서버 관점의 passive migration/path validation 근거가 있다. |
+| nginx QUIC | L4 server runtime | 웹 서버 관점의 passive migration/path validation source 근거와 quiche active migration runtime demo 근거가 있다. |
 | quicly | L3-L4 | path validation/promotion 근거가 있다. |
 | XQUIC | L2-L4 | rebinding/path validation/preferred-address 계열 근거가 있다. |
 | Chromium/Cronet | L4 client runtime | runtime policy와 NetLog 관찰성이 있으나 실제 Chrome browser CM 성공은 별도 실험이 필요하다. |

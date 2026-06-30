@@ -10,13 +10,13 @@
 
 > HTTP/3 endpoint가 동작한다는 사실만으로 QUIC Connection Migration이 지원된다고 볼 수 있는가?
 
-현재 근거 기준의 답은 `no`다. nginx QUIC은 server-side passive migration 처리 근거가 소스에 존재하지만, HAProxy는 공식 문서와 로컬 negative-control 결과상 HTTP/3 proxy support와 active Connection Migration support를 분리해서 보아야 한다.
+현재 근거 기준의 답은 `no`다. nginx QUIC은 source inspection에 더해 local runtime demo에서 quiche client의 active source-port migration을 처리했다. 반면 HAProxy는 공식 문서와 로컬 negative-control 결과상 HTTP/3 proxy support와 active Connection Migration support를 분리해서 보아야 한다.
 
 ## 2. 검사 대상과 버전
 
 | 대상 | 역할 | 기준 commit / version | 검수 범위 |
 | --- | --- | --- | --- |
-| nginx QUIC | web server | `072f6fdbac3323fab257280b7119224027b01315` | official docs + source inspection |
+| nginx QUIC | web server | `072f6fdbac3323fab257280b7119224027b01315`, runtime run `nginx-quic-active-migration-20260630T104724Z` | official docs + source inspection + runtime demo |
 | HAProxy QUIC | reverse proxy / H3 frontend | source `ff6bb343f4a9c8dc38b2917ab1dd70785314b625`, local negative control `HAProxy 3.4.0-64a335366` | official docs + source inspection + existing local negative-control |
 
 검수 명령:
@@ -33,6 +33,8 @@ rg -n "migration|migrat|PATH_CHALLENGE|PATH_RESPONSE|disable_active_migration|pr
 rg -n "connection migration|disable_active_migration|PATH_CHALLENGE|PATH_RESPONSE|path validation|migrat|rebinding" \
   /private/tmp/quic-cm-scan-repos/haproxy/doc \
   /private/tmp/quic-cm-scan-repos/haproxy/src
+
+harness/scripts/run-nginx-quic-active-migration-demo.sh
 ```
 
 ## 3. nginx QUIC 결과
@@ -60,9 +62,24 @@ nginx 공식 HTTP/3 문서는 `quic_bpf` directive가 QUIC packet routing을 활
 | `ngx_quic_handle_migration` | non-probing packet이 non-active path로 오면 active path switch 및 validation 수행 | server-side passive migration handling 근거 |
 | validation failure handling | active path validation 실패 시 last validated backup path로 복귀 | failure control path 존재 |
 
+런타임 demo 결과:
+
+| 항목 | 결과 |
+| --- | --- |
+| run id | `nginx-quic-active-migration-20260630T104724Z` |
+| nginx build | `nginx/1.31.3`, `--with-http_v3_module`, `--with-debug` |
+| client | quiche `--enable-active-migration --perform-migration` |
+| workload | `GET /file-1M`, 1MiB HTTP/3 response |
+| response bytes | `1048576` |
+| access log | `"GET /file-1M HTTP/3.0" 200 1048576` |
+| server new path | `quic path seq:1 created` |
+| path validation | server/client `PATH_CHALLENGE`/`PATH_RESPONSE`, `successfully validated` |
+| client final state | old path `active=false`, new path `active=true` |
+| validation | `validation=ok` |
+
 판정:
 
-> nginx QUIC은 server-side passive migration 또는 NAT rebinding 처리 근거가 소스에 명확하다. 다만 이번 문서는 런타임 HTTP/3 handover 재현이 아니라 source/official-doc 기반 검수이므로, 논문에서는 `server-side passive migration source evidence`로 분류해야 한다.
+> nginx QUIC은 server-side passive migration 또는 NAT rebinding 처리 근거가 소스에 명확하고, local runtime demo에서도 quiche client의 active source-port migration을 HTTP/3 workload 중 처리했다. 다만 browser handover, Linux `quic_bpf` routing, production nginx deployment까지 검증한 것은 아니므로, 논문에서는 `server-side runtime positive control`로 제한해서 분류해야 한다.
 
 ## 4. HAProxy 결과
 
@@ -102,24 +119,24 @@ HAProxy 공식 configuration 문서는 HTTP/3가 QUIC 위에 구현되어 있고
 | official docs에서 CM 관련 문구 | `quic_bpf`가 migration support와 연결됨 | HAProxy는 현재 connection migration을 지원하지 않는다고 설명 |
 | PATH_CHALLENGE/RESPONSE frame handling | yes | yes, frame primitive exists |
 | server-side passive migration source flow | yes, `ngx_event_quic_migration.c` | partial/limited, handler exists but docs and local negative-control constrain claim |
-| active client migration local result | not run in this appendix | negative-control FAIL |
-| 논문 분류 | source-supported server passive migration evidence | proxy negative control |
+| active client migration local result | quiche client active migration runtime demo PASS | negative-control FAIL |
+| 논문 분류 | server-side runtime positive control | proxy negative control |
 
 ## 6. 논문에서 사용할 수 있는 문장
 
 안전한 문장:
 
-> HTTP/3 support alone is not sufficient evidence of QUIC Connection Migration support. In our HAProxy negative-control setup, ordinary HTTP/3 requests succeeded, while an active migration attempt failed path validation. Conversely, nginx source and official documentation show server-side mechanisms for passive migration and path validation, but this remains source-level evidence until reproduced in a runtime handover test.
+> HTTP/3 support alone is not sufficient evidence of QUIC Connection Migration support. In our HAProxy negative-control setup, ordinary HTTP/3 requests succeeded, while an active migration attempt failed path validation. Conversely, nginx source and official documentation show server-side mechanisms for passive migration and path validation, and our local runtime demo confirms that nginx can handle a quiche active source-port migration during a 1MiB HTTP/3 response. This does not imply browser or production deployment success.
 
 한국어 표현:
 
-> HTTP/3 지원은 Connection Migration 지원의 충분조건이 아니다. HAProxy negative-control에서는 일반 HTTP/3 요청은 성공했지만 active migration 시도는 path validation 실패로 끝났다. 반면 nginx QUIC은 소스와 공식 문서에서 server-side passive migration 및 path validation 처리 근거가 확인되지만, 이번 검수는 런타임 handover 재현이 아니므로 source-level evidence로 분류한다.
+> HTTP/3 지원은 Connection Migration 지원의 충분조건이 아니다. HAProxy negative-control에서는 일반 HTTP/3 요청은 성공했지만 active migration 시도는 path validation 실패로 끝났다. 반면 nginx QUIC은 소스와 공식 문서에서 server-side passive migration 및 path validation 처리 근거가 확인됐고, local runtime demo에서도 quiche client의 active source-port migration 중 1MiB HTTP/3 응답을 완료했다. 다만 이는 브라우저 또는 production deployment 성공을 의미하지 않는다.
 
 피해야 할 문장:
 
 | 피해야 할 주장 | 이유 |
 | --- | --- |
-| nginx에서 브라우저 handover가 성공했다 | 이번 검수는 source/docs inspection이며 runtime browser handover가 아니다. |
+| nginx에서 브라우저 handover가 성공했다 | 이번 검수는 quiche sample client 기반 local runtime demo이며 browser handover가 아니다. |
 | HAProxy 소스에는 migration 관련 구현이 없다 | handler/counter/frame primitive는 존재한다. |
 | HAProxy는 모든 버전에서 영원히 CM을 지원하지 않는다 | current docs와 tested build에 대한 claim으로 제한해야 한다. |
 | HTTP/3 proxy가 있으면 end-to-end CM도 된다 | proxy termination은 viewer-proxy와 proxy-origin continuity를 분리한다. |
@@ -132,4 +149,4 @@ HAProxy 공식 configuration 문서는 HTTP/3가 QUIC 위에 구현되어 있고
 2. HTTP/3 availability와 CM availability를 분리해야 한다는 Chapter 2 friction claim을 강화한다.
 3. proxy/CDN/LB deployment에서 end-to-end CM을 별도로 검증해야 한다는 Chapter 4 설계를 뒷받침한다.
 
-후속 작업은 nginx runtime handover local test 또는 HAProxy 최신 빌드 negative-control 재실행이다. 둘 다 iPhone 없이 가능하지만, nginx runtime test는 Linux eBPF 환경이 있으면 더 강한 evidence가 된다.
+후속 작업은 HAProxy 최신 빌드 negative-control 재실행, Linux `quic_bpf`가 있는 nginx deployment test, 또는 OpenLiteSpeed production-like demo다. 모두 iPhone 없이 가능하지만, browser handover claim과는 분리해야 한다.

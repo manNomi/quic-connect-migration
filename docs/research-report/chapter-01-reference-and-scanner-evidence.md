@@ -33,7 +33,7 @@
 | 12 | AWS NLB + s2n-quic | [NLB QUIC announcement](https://aws.amazon.com/blogs/networking-and-content-delivery/introducing-quic-protocol-support-for-network-load-balancer-accelerating-mobile-first-applications/), [NLB listener docs](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-listeners.html) | passthrough QUIC와 CID routing 실험 후보 |
 | 13 | mvfst | [GitHub](https://github.com/facebook/mvfst) | 대규모 production-oriented QUIC stack |
 | 14 | picoquic | [GitHub](https://github.com/private-octopus/picoquic) | edge-case test가 풍부한 연구/interop 구현체 |
-| 15 | nginx QUIC | [GitHub mirror](https://github.com/nginx/nginx), [NGINX HTTP/3 docs](https://nginx.org/en/docs/http/ngx_http_v3_module.html) | server-side passive migration/web server 근거 |
+| 15 | nginx QUIC | [GitHub mirror](https://github.com/nginx/nginx), [NGINX HTTP/3 docs](https://nginx.org/en/docs/http/ngx_http_v3_module.html) | server-side passive migration/web server 근거와 runtime demo |
 | 16 | quicly | [GitHub](https://github.com/h2o/quicly) | H2O 계열 C implementation 비교군 |
 | 17 | aioquic | [GitHub](https://github.com/aiortc/aioquic), [공식 문서](https://aioquic.readthedocs.io/) | Python readable reference, path validation test |
 | 18 | HAProxy QUIC | [GitHub](https://github.com/haproxy/haproxy), [HAProxy HTTP/3 docs](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/protocol-support/http/) | proxy 반례. HTTP/3 proxy 지원과 CM 지원을 분리 |

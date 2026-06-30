@@ -118,6 +118,22 @@ HAProxy local HTTP/3 negative control은 다음을 보여줬다.
 
 이 결과는 proxy 계층에서 특히 중요하다. Proxy가 QUIC을 terminate하면, viewer/proxy 구간의 continuity와 proxy/origin 구간의 continuity가 분리된다.
 
+## 7.1 nginx Server Runtime Contrast
+
+HAProxy negative-control과 반대로, nginx QUIC은 origin/web-server 계층에서 server-side runtime positive evidence를 확보했다.
+
+| 항목 | 결과 |
+| --- | --- |
+| runner | `harness/scripts/run-nginx-quic-active-migration-demo.sh` |
+| latest run | `nginx-quic-active-migration-20260630T104724Z` |
+| workload | quiche client `--perform-migration`, nginx `GET /file-1M` |
+| application result | `client_response_bytes=1048576`, access log `HTTP/3.0 200` |
+| path evidence | server `quic path seq:1 created`, `PATH_CHALLENGE`/`PATH_RESPONSE`, `successfully validated` |
+
+해석:
+
+> nginx runtime demo는 "서버 구현체가 active client migration을 처리할 수 있다"는 근거다. 그러나 이는 proxy/CDN/LB 경로가 같은 semantics를 보존한다는 뜻은 아니며, browser handover claim도 아니다.
+
 ## 8. CDN/Edge 해석
 
 CDN은 별도로 해석해야 한다.
@@ -162,6 +178,7 @@ CDN은 별도로 해석해야 한다.
 | --- | --- |
 | AWS NLB positive/negative control 분리 | PASS |
 | proxy/CDN edge 해석 분리 | PASS |
+| nginx server runtime contrast | PASS |
 | 공식 AWS/HAProxy/Cloudflare 문서 링크 | `chapter-04-reference-and-evidence.md`에 정리 |
 | 구현 코드 링크 | `aws_nlb_cid.go`, NLB harness script로 연결 |
 | 민감정보 처리 | 새 보고용 문서에는 공인 IP, hostname, instance ID, account ID, SSH target을 쓰지 않음 |

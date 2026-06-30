@@ -36,6 +36,7 @@ quic-go를 먼저 고른 이유는 다음과 같다.
 | picoquic | `d3a80307200d28c53a6470d257bdd0801fad7971` | NAT rebinding, migration, loss, failure, preferred address, disabled migration | PASS | broad edge-case maturity evidence |
 | s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `connection_migration` test suite, PathChallenge/PathResponse/event evidence | PASS | AWS-relevant library evidence |
 | LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS | server-stack and app-level path-transition evidence; OpenLiteSpeed still follow-up |
+| nginx QUIC | `072f6fdbac3323fab257280b7119224027b01315` | built HTTP/3 server, quiche active migration, 1MiB `GET /file-1M`, server path seq:1 validation | PASS | web-server runtime evidence; browser/production deployment still follow-up |
 | MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | selected NAT rebind and path-validation gtests, v4/v6 | PASS | production-relevant library evidence with LB caveat |
 | ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | C library migration/path-validation/frame tests | PASS | primitive/API evidence |
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE and transport parameter tests | PASS | passive/path-validation reference |
@@ -180,6 +181,40 @@ LSQUIC은 source inspection에서 fresh unit-suite evidence로 승격됐다. ful
 이후 추가로 `harness/scripts/run-lsquic-preferred-address-demo.sh`를 만들어 example `http_client`/`http_server` app-level demo를 실행했다. 최신 run `lsquic-preferred-address-script-20260630T095500Z`는 `validation=ok`, `client_exit=0`, `server_exit=0`, `client_schedule_migration_count=1`, `server_tx_stream_path1_count=565`, `max_client_read_off=1048835`를 기록했다.
 
 추가 보강으로 `harness/scripts/run-lsquic-nat-rebinding-demo.sh`를 만들어 local UDP proxy 기반 NAT rebinding app demo를 실행했다. 최신 run `lsquic-nat-rebinding-demo-20260630T102751Z`는 `validation=ok`, `client_exit=0`, `server_exit=0`, `proxy_switched=true`, `server_record_new_path_count=1`, `server_path_validated_count=3`, server/client `PATH_CHALLENGE`/`PATH_RESPONSE` evidence를 기록했다. 따라서 LSQUIC은 preferred-address와 NAT rebinding이라는 서로 다른 두 path-transition mechanism에서 app-level positive control을 확보했다. 다만 OpenLiteSpeed production-like server demo는 후속 실험으로 남긴다.
+
+### 3.4.1 nginx QUIC active migration runtime demo
+
+Source:
+
+- [nginx/nginx](https://github.com/nginx/nginx)
+- [nginx HTTP/3 module docs](https://nginx.org/en/docs/http/ngx_http_v3_module.html)
+
+Command:
+
+```bash
+harness/scripts/run-nginx-quic-active-migration-demo.sh
+```
+
+Evidence:
+
+| 항목 | 결과 |
+| --- | --- |
+| run id | `nginx-quic-active-migration-20260630T104724Z` |
+| nginx build | `nginx/1.31.3`, `--with-http_v3_module`, `--with-debug`, OpenSSL `3.3.1` |
+| client | quiche `quiche-client --enable-active-migration --perform-migration` |
+| workload | `GET /file-1M`, 1MiB HTTP/3 response |
+| client exit | `0` |
+| response bytes | `1048576` |
+| access log | `"GET /file-1M HTTP/3.0" 200 1048576` |
+| server new path | `server_path_seq1_created_count=1` |
+| server validation | `server_path_seq1_validated_count=2` |
+| path frames | server rx/tx `PATH_CHALLENGE`/`PATH_RESPONSE` present |
+| client final state | old path `active=false`, new path `active=true` |
+| validation | `validation=ok` |
+
+Interpretation:
+
+nginx QUIC은 source-only 근거에서 server runtime evidence로 승격됐다. nginx가 quiche client의 active source-port migration을 처리했고, server debug log에 새 path 생성, PATH_CHALLENGE/PATH_RESPONSE, path validation 성공이 남았으며, application response 1MiB가 완료됐다. 다만 migration trigger는 quiche client가 수행했으므로 nginx client active migration API evidence가 아니며, browser handover나 Linux `quic_bpf` production routing까지 검증한 것은 아니다.
 
 ### 3.5 MsQuic
 
@@ -439,11 +474,11 @@ quicly는 path validation, migration elicitation, path promotion, PATH_CHALLENGE
 
 안전한 결론:
 
-> Connection Migration is not merely a paper feature. Fresh local reruns across quic-go, quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, and Neqo, plus successful XQUIC NAT rebinding, LSQUIC preferred-address, and LSQUIC NAT-rebinding HTTP/3 app demos, and partial quicly build/unit evidence, show that path validation and migration-related primitives are implemented and tested in multiple QUIC stacks. However, implementation-level maturity does not imply browser-level or managed-deployment continuity.
+> Connection Migration is not merely a paper feature. Fresh local reruns across quic-go, quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, ngtcp2, aioquic, Quinn, and Neqo, plus successful XQUIC NAT rebinding, LSQUIC preferred-address/NAT-rebinding HTTP/3 app demos, nginx active-client-migration runtime demo, and partial quicly build/unit evidence, show that path validation and migration-related primitives are implemented and tested in multiple QUIC stacks. However, implementation-level maturity does not imply browser-level or managed-deployment continuity.
 
 한국어 표현:
 
-> QUIC Connection Migration은 구현되지 않은 기술이 아니다. 주요 구현체들은 path validation, NAT rebinding, active/passive migration, preferred address, disable-active-migration 같은 primitive를 테스트하고 있고, MsQuic selected gtest, LSQUIC full CTest와 preferred-address/NAT-rebinding HTTP/3 app demo, XQUIC NAT rebinding demo도 통과했다. quicly도 partial fresh build/unit evidence를 확보했다. 다만 이러한 transport-level 성숙도는 Chrome/Safari/Android 브라우저 또는 CDN/LB 환경에서 웹 작업 연속성이 보장된다는 뜻은 아니다.
+> QUIC Connection Migration은 구현되지 않은 기술이 아니다. 주요 구현체들은 path validation, NAT rebinding, active/passive migration, preferred address, disable-active-migration 같은 primitive를 테스트하고 있고, MsQuic selected gtest, LSQUIC full CTest와 preferred-address/NAT-rebinding HTTP/3 app demo, nginx HTTP/3 runtime demo, XQUIC NAT rebinding demo도 통과했다. quicly도 partial fresh build/unit evidence를 확보했다. 다만 이러한 transport-level 성숙도는 Chrome/Safari/Android 브라우저 또는 CDN/LB 환경에서 웹 작업 연속성이 보장된다는 뜻은 아니다.
 
 ## 5. 남은 한계
 
@@ -451,5 +486,5 @@ quicly는 path validation, migration elicitation, path promotion, PATH_CHALLENGE
 | --- | --- | --- |
 | raw logs는 ignored path | 로그가 크고 local address/path가 섞여 있어 공개 repo에는 요약만 둔다. | 제출 전 sanitized evidence bundle 생성 |
 | 동일 깊이의 app-level 테스트는 아님 | quic-go/quiche는 sample client/server, 나머지는 library tests 중심이다. | 후보 1-2개를 골라 동일 workload harness로 재실험 |
-| production-scale stack fresh rerun 미반영 | mvfst는 아직 source inspection 중심이다. LSQUIC은 preferred-address/NAT-rebinding app demo까지 통과했지만 OpenLiteSpeed production-like demo는 아직 없다. XQUIC은 NAT rebinding demo까지는 통과했지만 full suite는 Linux 재실행이 필요하다. quicly는 partial evidence라 e2e dependency 정리가 필요하다. | 필요 시 별도 chapter 또는 appendix로 분리 |
+| production-scale stack fresh rerun 미반영 | mvfst는 아직 source inspection 중심이다. LSQUIC은 preferred-address/NAT-rebinding app demo까지 통과했지만 OpenLiteSpeed production-like demo는 아직 없다. nginx는 local server runtime demo를 확보했지만 browser/production deployment는 아니다. XQUIC은 NAT rebinding demo까지는 통과했지만 full suite는 Linux 재실행이 필요하다. quicly는 partial evidence라 e2e dependency 정리가 필요하다. | 필요 시 별도 chapter 또는 appendix로 분리 |
 | browser CM claim은 별도 검증 필요 | browser policy, OS route, certificate, Alt-Svc, NetLog attribution이 개입한다. | Chapter 7 이후 controlled public browser handover 실험으로 분리 |
