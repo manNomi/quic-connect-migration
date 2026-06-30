@@ -93,6 +93,17 @@ proxy는 첫 client packet 이후 지정된 시간까지 upstream A를 사용하
 
 이 row는 local proxy control 안에서는 꽤 강한 browser artifact다. target Chrome QUIC session이 1개이고, server tuple이 2개이며, qlog와 NetLog 양쪽에 path challenge/response가 있다. 하지만 여전히 실제 public handover가 아니므로 Chapter 5의 browser claim ceiling은 유지한다.
 
+### 3.7 Fresh non-iPhone range refresh
+
+같은 날 byte-range workload도 2회 실행했다.
+
+| run | status | classification | range complete | retry used | remote tuples | Chrome sessions | qlog C/R | elapsed ms |
+| --- | --- | --- | --- | ---: | ---: | ---: | --- | ---: |
+| `chrome-desktop-noniphone-range-drop3000-retry0-20260630` | PASS | `nat_rebinding_possible_session_continuity` | true | 0 | 2 | 1 | 1/1 | 1095 |
+| `chrome-desktop-noniphone-range-slow-drop3000-retry0-20260630` | PASS | `nat_rebinding_possible_session_continuity` | true | 0 | 2 | 1 | 1/1 | 6122 |
+
+두 row 모두 retry 없이 완료됐고 target Chrome QUIC session은 1개였다. 느린 row에서는 server packet이 A/B `170/683`으로 B 경로에 집중되어 local path transition evidence가 더 선명했다. 다만 local UDP rebinding control이므로 public route/interface handover 성공으로 확장하지 않는다.
+
 ## 4. 논문에 쓸 수 있는 주장
 
 안전한 주장:

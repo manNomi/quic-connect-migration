@@ -48,6 +48,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["nginx_quic_bpf_linux_runner"]["exists"] is True
     assert paths["chrome_desktop_noniphone_media_local_refresh"]["exists"] is True
     assert paths["chrome_desktop_noniphone_media_local_refresh_csv"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_range_local_refresh"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_range_local_refresh_csv"]["exists"] is True
     assert paths["quicly_e2e_path_migration"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
     assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
@@ -55,7 +57,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["s2n_active_migration_api_audit_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "chrome-desktop-noniphone-media-local-refresh"
+    assert manifest["experiment_matrix"]["latest_item"] == "chrome-desktop-noniphone-range-local-refresh"
 
 
 def test_generated_date_uses_utc_day() -> None:

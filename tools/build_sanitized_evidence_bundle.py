@@ -332,6 +332,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="Public Wi-Fi/LTE handover, iPhone handover, or general browser CM deployment success.",
         next_gap="Run controlled-public page-ready media/upload/range handover once public origin and active path-change gates are open.",
     ),
+    EvidenceItem(
+        id="chrome-desktop-noniphone-range-local-refresh",
+        chapter="6/9",
+        category="browser-local-range-control",
+        implementation="Chrome + quic-go local UDP rebinding proxy",
+        evidence_doc="docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
+        runner_or_tool="repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh",
+        local_artifact_id="chrome-desktop-noniphone-range-20260630-pair",
+        claim_strength="local_browser_positive_control",
+        supports="Two fresh Chrome desktop forced-H3 byte-range runs completed a 1MiB range task without application retry across local UDP rebinding with one target QUIC session, two server-observed remote tuples, and qlog path validation.",
+        do_not_claim="Public Wi-Fi/LTE handover, iPhone handover, or general browser CM deployment success.",
+        next_gap="Run controlled-public page-ready byte-range handover once public origin and active path-change gates are open.",
+    ),
 ]
 
 

@@ -164,12 +164,17 @@
 
 > 부분 완료. public-origin handover는 controlled origin/AWS 또는 별도 public config가 필요하므로 아직 main claim으로 열지 않았다. 대신 `docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md`로 fresh local Chrome forced-H3 media control을 재실행했다. 최신 run `chrome-desktop-noniphone-media-drop3000-retry0-20260630`은 `PASS`, `nat_rebinding_possible_session_continuity`, browser application complete `true`, Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`, NetLog target PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet rebinding `true`를 기록했다. 이는 local browser artifact 해석 근거이지 public Wi-Fi/LTE handover 성공 근거는 아니다.
 
+2026-06-30 range 추가 확인:
+
+> `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md`로 fresh local Chrome forced-H3 byte-range control 2회를 추가했다. `chrome-desktop-noniphone-range-drop3000-retry0-20260630`과 `chrome-desktop-noniphone-range-slow-drop3000-retry0-20260630`은 모두 `PASS`, `nat_rebinding_possible_session_continuity`, range complete `true`, retry used `0`, Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`이었다. slow row는 server packets A/B가 `170/683`으로 B 경로에 집중되어, local path transition evidence로는 강하지만 real public handover evidence는 아니다.
+
 실행 방향:
 
 1. 완료: 기존 Chrome local forced-H3 matrix 재사용
 2. 완료: local HTTPS origin에서 media workload fresh control 실행
-3. 완료: NetLog에서 QUIC session 수, path validation event, retry 여부 분류
-4. 남음: controlled public origin에서 page-ready media/upload/range handover 실행
+3. 완료: local HTTPS origin에서 byte-range workload fresh control 실행
+4. 완료: NetLog에서 QUIC session 수, path validation event, retry 여부 분류
+5. 남음: controlled public origin에서 page-ready media/upload/range handover 실행
 
 주의:
 

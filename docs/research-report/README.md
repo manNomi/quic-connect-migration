@@ -158,5 +158,6 @@
 | `docs/results/streaming-workload-case-analysis-20260629.md` | Chapter 11 streaming workload synthesis |
 | `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md` | Chapter 11 buffered media local control |
 | `docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md` | Chapter 11 fresh non-iPhone Chrome desktop media local control |
+| `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | Chapter 9 fresh non-iPhone Chrome desktop range local control |
 | `docs/results/literature-claim-positioning-20260629.md` | Chapter 12 literature claim positioning |
 | `docs/results/non-iphone-research-gap-plan-20260630.md` | iPhone 없이 이어갈 후속 연구 공백 보강 계획 |

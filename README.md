@@ -88,6 +88,7 @@
 76. mvfst migration test readiness runner를 추가했다. latest remote HEAD 기준 focused migration/path test case 106개와 BUCK target 3개를 확인했지만, 현재 로컬은 disk 부족, `buck2` 없음, CMake direct target 미노출로 build/test 실행은 `validation=blocked`로 남긴다.
 77. nginx `quic_bpf` Linux runner를 추가했다. Linux/root/`/sys/fs/bpf` 조건이 열리면 `quic_bpf on;`과 `listen ... reuseport`로 기존 active migration workload를 실행하고, 현재 macOS 로컬에서는 `validation=blocked`, `blocked_reason=linux_required`로 닫힌다.
 78. Chrome desktop non-iPhone media local refresh를 추가했다. fresh local forced-H3 media run은 `PASS`, `nat_rebinding_possible_session_continuity`, Chrome target QUIC session `1`, server remote tuple `2`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐지만, public Wi-Fi/LTE handover claim은 아니다.
+79. Chrome desktop non-iPhone range local refresh를 추가했다. 1MiB byte-range workload 2회가 retry 없이 2/2 PASS였고, 두 row 모두 Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐다. 이 역시 local UDP rebinding control이지 public handover claim은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
