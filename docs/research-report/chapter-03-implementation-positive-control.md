@@ -16,9 +16,17 @@ Chapter 2는 CM이 잘 보이지 않는 이유가 여러 계층에 흩어져 있
 
 > quic-go, quiche, picoquic, s2n-quic 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했다.
 
-다만 이 결론은 library/client-server positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
+2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, ngtcp2, aioquic도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했다. 다만 이 결론은 library/client-server positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
 
 ## 3. 현재 repo에서 재실행한 검수
+
+### 3.1 왜 quic-go를 먼저 강하게 검수했는가
+
+quic-go를 먼저 고른 것은 구현체 인기도만의 문제가 아니라 실험 통제 때문이다. quic-go는 active migration을 `AddPath -> Probe -> Switch` 순서로 직접 트리거할 수 있고, 같은 repo의 HTTP/3 harness, qlog, payload checksum 검증으로 쉽게 확장할 수 있었다. 즉 quic-go는 "CM이 구현되어 있고 controlled client/server에서는 실제로 동작한다"는 positive control을 만들기 위한 첫 기준점이었다.
+
+하지만 quic-go 하나만 있으면 "다른 구현체는 실제로 검수하지 않았는가?"라는 약점이 남는다. 그래서 이 챕터의 최종 형태에서는 quic-go를 strong positive control로 두고, 다른 구현체를 cross-implementation maturity evidence로 보강한다.
+
+### 3.2 quic-go fresh rerun
 
 이번 정리 중 quic-go 최소 재현을 fresh run으로 다시 실행했다.
 
@@ -50,6 +58,20 @@ harness/scripts/run-local-quic-go.sh
 
 이 조치 후 같은 artifact validation과 fresh rerun이 모두 통과했다.
 
+### 3.3 추가 구현체 fresh rerun
+
+quic-go 편중을 줄이기 위해 2026-06-30에 다음 구현체를 현재 HEAD 기준으로 다시 실행했다.
+
+| 구현체 | commit | 실행 범위 | 결과 | 해석 |
+| --- | --- | --- | --- | --- |
+| Cloudflare quiche | `c4c0b978461aa153399a90217d85bebd1800f84d` | library migration tests, sample client/server migration, qlog | PASS | quic-go 외 강한 implementation positive control |
+| picoquic | `d3a80307200d28c53a6470d257bdd0801fad7971` | NAT rebinding, migration with loss, migration failure, preferred address, disabled migration | PASS | edge-case maturity evidence |
+| s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `connection_migration` test suite, PathChallenge/PathResponse events | PASS | AWS-relevant library evidence |
+| ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | client migration, path validation, disable active migration, frame encode | PASS | C library primitive evidence |
+| aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable active migration tests | PASS | readable passive/path-validation reference |
+
+상세 명령과 로그 위치는 [implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md)에 분리했다. raw log는 `harness/results/impl-rerun-20260630T070249Z` 아래에 있으며, `harness/results/`가 ignored artifact path라 공개 repo에는 요약만 남긴다.
+
 ## 4. Positive Control의 증거 사슬
 
 quic-go fresh run 기준으로 evidence chain은 다음과 같다.
@@ -68,17 +90,17 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 | 구현체 | 현재 evidence 상태 | 확인한 범위 | 해석 |
 | --- | --- | --- | --- |
 | quic-go | 현재 repo에서 fresh rerun PASS | active migration, `AddPath -> Probe -> Switch`, qlog, before/after payload | 가장 강한 positive control |
-| Cloudflare quiche | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | migration tests, sample client/server, PathEvent, qlog | quic-go 교차검증 후보 |
-| picoquic | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | NAT rebinding, migration failure, preferred address, disabled migration | edge-case maturity 기준선 |
-| s2n-quic | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | IP/port rebinding, blocked migration, zero-length CID | AWS/NLB 후보 |
-| aioquic | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | PATH_CHALLENGE/PATH_RESPONSE, disable_active_migration parsing | readable passive reference |
-| ngtcp2 | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | client migration test, path validation, frame encode | C library primitive 비교군 |
+| Cloudflare quiche | 2026-06-30 fresh rerun PASS | migration tests, sample client/server, qlog | quic-go 교차검증 후보 |
+| picoquic | 2026-06-30 fresh rerun PASS | NAT rebinding, migration failure, preferred address, disabled migration | edge-case maturity 기준선 |
+| s2n-quic | 2026-06-30 fresh rerun PASS | IP/port rebinding, PathChallenge/PathResponse, active path update | AWS/NLB 후보 |
+| aioquic | 2026-06-30 fresh rerun PASS | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable_active_migration parsing | readable passive reference |
+| ngtcp2 | 2026-06-30 fresh rerun PASS | client migration test, path validation, disable active migration, frame encode | C library primitive 비교군 |
 | Quinn | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | proto migration, rebind receive path | Rust stack 비교군 |
 | Neqo | 결과 문서 기준 PASS, raw artifact는 현재 repo에 없음 | rebind, graceful/immediate migration, preferred address, disabled migration | Firefox-adjacent 비교군 |
 
 주의:
 
-> quic-go 외 7개 구현체의 raw execution artifact는 현재 공개 repo에서 확인되지 않았다. 따라서 논문 최종본에서는 해당 구현체를 “source/test summary evidence”로 쓰거나, 제출 전 재실행 로그를 다시 보존해야 한다.
+> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, ngtcp2, aioquic의 raw execution artifact는 로컬 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
 
 ## 6. 논문에서 쓸 수 있는 주장
 
@@ -108,8 +130,13 @@ controlled implementation positive control이 확인되면, 다음 질문은 dep
 | 검수 항목 | 결과 |
 | --- | --- |
 | quic-go fresh rerun | PASS |
+| quiche fresh rerun | PASS |
+| picoquic fresh rerun | PASS |
+| s2n-quic fresh rerun | PASS |
+| ngtcp2 fresh rerun | PASS |
+| aioquic fresh rerun | PASS |
 | qlog validator false negative 수정 | PASS |
 | 현재 repo 코드 링크 | `repro/quic-go-min-repro`, `harness/scripts/run-local-quic-go.sh` |
 | 외부 구현체/source 링크 | `chapter-03-reference-and-evidence.md`에 정리 |
-| raw artifact availability | quic-go fresh artifact는 로컬 ignored path에 있음. 다른 구현체 과거 raw artifact는 현재 repo에 없음 |
+| raw artifact availability | fresh rerun artifact는 로컬 ignored path에 있음. 공개 repo에는 요약 문서와 재현 명령을 남김 |
 | claim boundary | browser/public handover 성공 claim을 하지 않음 |

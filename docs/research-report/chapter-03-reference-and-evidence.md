@@ -46,7 +46,23 @@ harness/scripts/run-local-quic-go.sh
 
 Raw artifact는 `harness/results/chapter3-local-quic-go-rerun-20260630` 아래에 생성되었지만, `harness/results/`는 ignored artifact path라 commit하지 않는다.
 
-## 3. qlog Validator Fix
+## 3. 추가 구현체 Fresh Rerun
+
+quic-go만 강하게 검수했다는 약점을 줄이기 위해 2026-06-30에 5개 구현체를 현재 HEAD 기준으로 다시 실행했다.
+
+| 구현체 | source commit | local command group | result | local artifact |
+| --- | --- | --- | --- | --- |
+| Cloudflare quiche | `c4c0b978461aa153399a90217d85bebd1800f84d` | `cargo test -p quiche --lib migration --features qlog`, sample client/server migration | `8 passed`, sample client exit `0` | `harness/results/impl-rerun-20260630T070249Z/logs/quiche-cargo-test-migration.log`, `harness/results/impl-rerun-20260630T070249Z/quiche-local-success` |
+| picoquic | `d3a80307200d28c53a6470d257bdd0801fad7971` | `picoquic_ct` selected migration suite | `Tried 13 tests, 0 fails` | `harness/results/impl-rerun-20260630T070249Z/logs/picoquic-migration-tests.log` |
+| s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `cargo test -p s2n-quic-tests connection_migration` | `10 passed; 0 failed` | `harness/results/impl-rerun-20260630T070249Z/logs/s2n-quic-connection-migration-tests.log` |
+| ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | selected `tests/main` migration/path-validation tests | `6 of 6 tests successful` | `harness/results/impl-rerun-20260630T070249Z/logs/ngtcp2-migration-tests.log` |
+| aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | selected `unittest` path challenge/transport parameter tests | `Ran 9 tests ... OK` | `harness/results/impl-rerun-20260630T070249Z/logs/aioquic-migration-tests.log` |
+
+상세 명령과 해석:
+
+- [docs/results/implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md)
+
+## 4. qlog Validator Fix
 
 fresh run 중 첫 validation은 실패했다.
 
@@ -71,7 +87,7 @@ rg --no-ignore --text -n "path_challenge|path_response" "$ARTIFACT_DIR/qlog"
 - [repro/quic-go-min-repro/scripts/run-h3-client.sh](../../repro/quic-go-min-repro/scripts/run-h3-client.sh)
 - [repro/quic-go-min-repro/scripts/run-local-h3-midflight.sh](../../repro/quic-go-min-repro/scripts/run-local-h3-midflight.sh)
 
-## 4. 외부 구현체 링크
+## 5. 외부 구현체 링크
 
 | 구현체 | official/source link | Chapter 3에서의 역할 |
 | --- | --- | --- |
@@ -88,19 +104,22 @@ rg --no-ignore --text -n "path_challenge|path_response" "$ARTIFACT_DIR/qlog"
 
 - [tables/scanner-trigger-summary-20260630.md](tables/scanner-trigger-summary-20260630.md)
 
-## 5. 기존 결과 문서와 현재 artifact 상태
+## 6. 기존 결과 문서와 현재 artifact 상태
 
 | 항목 | 링크/상태 | 해석 |
 | --- | --- | --- |
 | local implementation summary | [docs/results/local-implementation-test-results.md](../results/local-implementation-test-results.md) | 8개 구현체 로컬 실행 요약 |
+| implementation fresh rerun summary | [docs/results/implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md) | 2026-06-30 현재 HEAD 기준 quiche/picoquic/s2n-quic/ngtcp2/aioquic 재실행 요약 |
 | quic-go minimum reproduction summary | [docs/results/quic-go-minimum-reproduction-results.md](../results/quic-go-minimum-reproduction-results.md) | quic-go active migration 최소 재현 요약 |
 | quic-go fresh artifact | `harness/results/chapter3-local-quic-go-rerun-20260630` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
-| quiche historical raw artifact | 현재 repo에 없음 | 제출 전 필요하면 재실행 필요 |
-| picoquic historical raw artifact | 현재 repo에 없음 | 제출 전 필요하면 재실행 필요 |
-| s2n-quic historical raw artifact | 현재 repo에 없음 | 제출 전 필요하면 재실행 필요 |
-| aioquic/ngtcp2/Quinn/Neqo raw artifact | 현재 repo에 없음 | source/test summary evidence로만 사용 가능 |
+| quiche fresh artifact | `harness/results/impl-rerun-20260630T070249Z/quiche-local-success` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
+| picoquic fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/picoquic-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
+| s2n-quic fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/s2n-quic-connection-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
+| ngtcp2 fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/ngtcp2-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
+| aioquic fresh artifact | `harness/results/impl-rerun-20260630T070249Z/logs/aioquic-migration-tests.log` | 현재 로컬에 존재하지만 ignored path라 commit하지 않음 |
+| Quinn/Neqo raw artifact | 현재 fresh rerun 미실행 | source/test summary evidence로만 사용 가능 |
 
-## 6. 재현 명령 묶음
+## 7. 재현 명령 묶음
 
 현재 repo에서 즉시 재현 가능한 최소 명령:
 
@@ -123,12 +142,15 @@ artifact validation만 재실행:
 harness/scripts/validate-quic-go-artifacts.sh harness/results/<RUN_ID>
 ```
 
-## 7. 검수 체크리스트
+외부 구현체 재현 명령은 [implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md)의 구현체별 command block을 따른다.
+
+## 8. 검수 체크리스트
 
 | 항목 | 판정 | 근거 |
 | --- | --- | --- |
 | 현재 repo에서 최소 positive control이 재실행되는가? | PASS | `chapter3-local-quic-go-rerun-20260630` |
+| quic-go 외 구현체도 fresh rerun을 확보했는가? | PASS | quiche, picoquic, s2n-quic, ngtcp2, aioquic |
 | qlog path validation false negative를 제거했는가? | PASS | validator와 qlog-producing scripts에 `--no-ignore --text` 적용 |
 | 외부 구현체 링크가 있는가? | PASS | 8개 구현체 official/source/docs link 포함 |
-| raw artifact 한계를 명시했는가? | PASS | quic-go 외 historical raw artifact가 현재 repo에 없음을 명시 |
+| raw artifact 한계를 명시했는가? | PASS | raw logs는 ignored path에 보존하고 공개 문서에는 commit/command/result를 남김 |
 | browser handover claim과 분리했는가? | PASS | 이 챕터는 implementation positive control로만 해석 |
