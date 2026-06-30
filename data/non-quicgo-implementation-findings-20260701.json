@@ -253,9 +253,9 @@
       "aws_suitability": "medium",
       "current_level": "L5_candidate",
       "evidence_status": "source_inspected",
-      "next_action": "Use source audit plus focused migration target map as large-scale implementation maturity evidence; Linux/Buck/getdeps build test remains follow-up",
+      "next_action": "Use source audit plus packaged focused Linux runner as large-scale implementation maturity evidence; Buck/getdeps execution remains follow-up",
       "claim_class": "source_or_readiness_only",
-      "risk_note": "Focused source/test map is strong, but local build/test execution is blocked by toolchain/disk gates."
+      "risk_note": "Focused source/test map is strong and a Linux focused-test runner is packaged; local build/test execution remains gated by Buck/getdeps/disk."
     },
     {
       "priority": "14",

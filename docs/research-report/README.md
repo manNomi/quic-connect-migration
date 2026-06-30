@@ -77,6 +77,7 @@
 | quic-go 외 구현체 실행 깊이 감사. 왜 quic-go만 가장 깊은 positive control인지 | 작성 완료 | `../results/non-quicgo-execution-depth-audit-20260701.md` |
 | MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
 | XQUIC full-suite Linux audit. NAT rebinding demo와 Linux replay gate 경계 | 작성 완료 | `../results/xquic-full-suite-linux-audit-20260701.md` |
+| mvfst focused Linux runner audit. production 후보 focused BUCK test 실행 gate | 작성 완료 | `../results/mvfst-focused-linux-runner-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -170,6 +171,7 @@
 | `docs/results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `tools/check_mvfst_migration_test_readiness.py` | mvfst focused migration test target map과 local blocker를 생성하는 readiness 도구 |
 | `docs/results/mvfst-migration-test-readiness-20260630.md` | mvfst latest HEAD focused migration/path test case 106개와 현재 local blocker |
+| `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst focused BUCK target 3개와 Linux runner claim boundary |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
 | `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
 | `docs/results/controlled-public-range-retry-iphone-usb-handover-20260629.md` | Chapter 9 byte-range retry public handover result |
@@ -202,5 +204,6 @@
 | `docs/results/non-quicgo-execution-depth-audit-20260701.md` | quic-go 외 구현체의 실행 깊이 차이, 남은 deepening 후보, AWS gate 최신 상태 |
 | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic public API, NAT rebinding tests, QUIC-aware LB deployment boundary를 source link로 고정 |
 | `docs/results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo PASS, macOS Werror blocker, Linux full-suite replay runner claim boundary |
+| `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst source/test map을 Linux focused BUCK runner로 재현 가능하게 고정 |
 | `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | AWS NLB+s2n live runner의 fail-closed gate, 임시 리소스 inventory, cleanup coverage, risk boundary |
 | `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | AWS NLB+s2n forwarding echo 이후 NAT-rebinding proxy, Linux namespace/SNAT, test-IO rebind, public API/fork variant의 claim boundary |

@@ -210,8 +210,8 @@
       "active_migration_api": "yes",
       "passive_migration": "yes",
       "tests": "yes",
-      "why_not_quic_go_depth": "Source/test coverage is strong, but local build/test execution is gated by Buck/getdeps/disk/toolchain cost.",
-      "next_non_iphone_gate": "Use a Linux builder with Buck/getdeps and enough disk, then run the focused migration test targets."
+      "why_not_quic_go_depth": "Source/test coverage is strong and a focused Linux runner is now packaged, but local build/test execution is still gated by Buck/getdeps/disk/toolchain cost.",
+      "next_non_iphone_gate": "Run harness/scripts/run-mvfst-focused-migration-tests-linux.sh on a Linux builder with buck2 and enough disk; accept only validation=ok for all three focused targets."
     },
     {
       "priority": "14",

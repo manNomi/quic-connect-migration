@@ -34,6 +34,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "aws-s2n-phase2-path-change-design" in ids
     assert "s2n-active-migration-api-audit" in ids
     assert "mvfst-migration-test-readiness" in ids
+    assert "mvfst-focused-linux-runner-audit" in ids
     assert "nginx-quic-bpf-linux-runner" in ids
     assert "safari-webdriver-session-readiness" in ids
     assert "user-provided-public-origin-readiness" in ids

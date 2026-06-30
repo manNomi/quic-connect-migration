@@ -60,7 +60,7 @@
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_runtime_policy_dependent` | `source_and_local_browser_baseline` | Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults |
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | s2n local provider proof | `yes` | `L5_deployment_candidate` | `partial_deferred` | s2n custom CID local provider proof PASS; next run live AWS NLB target A/B forwarding and migration continuity |
-| 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use source audit and focused migration target map as large-scale implementation maturity evidence; Linux/Buck/getdeps build test remains follow-up |
+| 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use source audit plus packaged focused Linux runner as large-scale implementation maturity evidence; Buck/getdeps execution remains follow-up |
 | 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |
 | 15 | nginx QUIC | server | O | O | X | `logs` | runtime demo | `server_deploy` | `L4_server_runtime` | `fresh_runtime_20260630` | Use as server-side runtime active-client-migration positive control; browser handover, Linux quic_bpf, and production deployment remain follow-up |
 | 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4_focused_e2e` | `fresh_focused_e2e_20260630` | Use as focused e2e path-migration evidence; full e2e still fails unrelated slow-start subtest on this host |
@@ -89,7 +89,7 @@
 | --- | --- |
 | MsQuic | NAT rebinding/path validation은 fresh rerun 통과, API boundary audit에서 constrained local-address control과 QUIC-aware LB deployment boundary를 확인함 |
 | LiteSpeed lsquic | preferred-address와 NAT-rebinding app-level positive control까지 확보했으며 OpenLiteSpeed/서버 배포 논의에 연결 가능 |
-| mvfst | 대규모 deployment 후보이며 source audit appendix와 focused readiness runner에서 path manager/client/server migration test 구조 및 BUCK target을 고정함. build/test cost가 큼 |
+| mvfst | 대규모 deployment 후보이며 source audit appendix, focused readiness map, Linux runner에서 path manager/client/server migration test 구조 및 BUCK target을 고정함. build/test cost가 큼 |
 | nginx QUIC | 실제 web server deployment와 연결 가능하며 local runtime demo에서 server-side path creation/validation evidence를 확보함. browser/production deployment는 후속 |
 | AWS NLB + s2n-quic | s2n custom CID local provider proof가 PASS했고, live AWS NLB target A/B forwarding 실험으로 이어짐 |
 | AWS CloudFront | end-to-end CM이 아니라 edge-level continuity로 해석해야 함 |

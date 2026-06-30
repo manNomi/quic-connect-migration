@@ -109,6 +109,9 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
+    assert paths["mvfst_focused_linux_runner_audit"]["exists"] is True
+    assert paths["mvfst_focused_linux_runner_audit_json"]["exists"] is True
+    assert paths["mvfst_focused_linux_runner"]["exists"] is True
     assert paths["non_quicgo_execution_depth_audit"]["exists"] is True
     assert paths["non_quicgo_execution_depth_audit_json"]["exists"] is True
     assert paths["non_quicgo_execution_depth_audit_csv"]["exists"] is True
@@ -117,7 +120,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["xquic_full_suite_linux_audit"]["exists"] is True
     assert paths["xquic_full_suite_linux_audit_json"]["exists"] is True
     assert paths["xquic_full_suite_linux_runner"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "xquic-full-suite-linux-audit"
+    assert manifest["experiment_matrix"]["latest_item"] == "mvfst-focused-linux-runner-audit"
 
 
 def test_generated_date_uses_utc_day() -> None:

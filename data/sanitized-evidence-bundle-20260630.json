@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 50,
+  "item_count": 51,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -31,6 +31,7 @@
     "source_linked_api_boundary": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
+    "source_test_map_with_linux_runner_gate": 1,
     "strong_local_positive": 1
   },
   "category_counts": {
@@ -68,7 +69,7 @@
     "implementation-observability": 1,
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
-    "implementation-runner-readiness": 1,
+    "implementation-runner-readiness": 2,
     "implementation-synthesis": 1,
     "paper-section-synthesis": 1,
     "paper-wording-synthesis": 1,
@@ -480,6 +481,22 @@
       "supports": "mvfst latest HEAD has focused migration/path-manager test files, 106 observed test cases, and BUCK targets for path-manager, client active migration, and server passive migration coverage.",
       "do_not_claim": "Local mvfst build/test success or runtime migration behavior.",
       "next_gap": "Run BUCK focused targets or getdeps build/test on a Linux or sufficiently provisioned builder.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "mvfst-focused-linux-runner-audit",
+      "chapter": "1",
+      "category": "implementation-runner-readiness",
+      "implementation": "mvfst",
+      "evidence_doc": "docs/results/mvfst-focused-linux-runner-audit-20260701.md",
+      "runner_or_tool": "harness/scripts/run-mvfst-focused-migration-tests-linux.sh",
+      "local_artifact_id": "mvfst-focused-migration-linux-local-blocked-20260701",
+      "claim_strength": "source_test_map_with_linux_runner_gate",
+      "supports": "mvfst dedicated path manager, client active migration, server passive migration/NAT rebinding source evidence, focused BUCK target map, 106 observed test cases, and a fail-closed Linux runner.",
+      "do_not_claim": "Local mvfst build/test PASS, browser handover, production Meta deployment behavior, or quic-go-equivalent active control.",
+      "next_gap": "Run the focused Linux runner with buck2 and enough disk; accept only validation=ok with all three BUCK targets exiting 0.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

@@ -71,7 +71,7 @@ def risk_note(row: dict[str, str]) -> str:
     if name == "AWS NLB plus s2n-quic":
         return "Local CID provider proof exists, but live target forwarding and active migration are pending."
     if name == "mvfst":
-        return "Focused source/test map is strong, but local build/test execution is blocked by toolchain/disk gates."
+        return "Focused source/test map is strong and a Linux focused-test runner is packaged; local build/test execution remains gated by Buck/getdeps/disk."
     if name == "nginx QUIC":
         return "Server runtime evidence is positive; Linux quic_bpf and browser handover are separate claims."
     if name == "quicly":

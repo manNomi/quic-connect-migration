@@ -426,4 +426,5 @@ Chapter 1의 결론은 다음이다.
 | `../results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun |
 | `../results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `../results/mvfst-migration-test-readiness-20260630.md` | mvfst latest HEAD focused migration test target map과 local blocker |
+| `../results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst focused BUCK target Linux runner와 claim boundary |
 | `../results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
