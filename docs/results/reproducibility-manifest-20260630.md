@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `35d725f` |
+| source commit at generation | `299150a` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `145` |
-| latest experiment matrix item | `non-quicgo-implementation-findings` |
+| experiment matrix items | `146` |
+| latest experiment matrix item | `aws-s2n-live-runner-safety-audit` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -113,6 +113,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `s2n_nlb_cid_provider_rerun` | `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | `yes` |
 | `s2n_nlb_live_readiness` | `docs/results/s2n-nlb-live-readiness-20260630.md` | `yes` |
 | `aws_s2n_nlb_live_runner` | `docs/results/aws-s2n-nlb-live-runner-20260630.md` | `yes` |
+| `aws_s2n_live_runner_safety_audit` | `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | `yes` |
+| `aws_s2n_live_runner_safety_audit_json` | `data/aws-s2n-live-runner-safety-audit-20260701.json` | `yes` |
 | `s2n_active_migration_api_audit` | `docs/results/s2n-active-migration-api-audit-20260630.md` | `yes` |
 | `s2n_active_migration_api_audit_json` | `data/s2n-active-migration-api-audit-20260630.json` | `yes` |
 | `browser_cm_observability_refresh` | `docs/results/browser-cm-observability-readiness-refresh-20260630.md` | `yes` |

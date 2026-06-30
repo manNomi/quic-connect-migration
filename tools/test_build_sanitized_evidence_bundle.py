@@ -30,6 +30,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "haproxy-http3-negative-control" in ids
     assert "s2n-nlb-live-readiness" in ids
     assert "aws-s2n-nlb-live-runner" in ids
+    assert "aws-s2n-live-runner-safety-audit" in ids
     assert "s2n-active-migration-api-audit" in ids
     assert "mvfst-migration-test-readiness" in ids
     assert "nginx-quic-bpf-linux-runner" in ids

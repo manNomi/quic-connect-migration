@@ -68,6 +68,7 @@
 | 후속 연구 paper wording guard. 논문 문장 안전장치 | 작성 완료 | `../results/noniphone-paper-wording-guard-20260701.md` |
 | 후속 연구 paper section scaffold. 논문 섹션 배치도 | 작성 완료 | `../results/noniphone-paper-section-scaffold-20260701.md` |
 | quic-go 외 구현체 검수 결과. 교수님 질의 대응용 구현체별 boundary | 작성 완료 | `../results/non-quicgo-implementation-findings-20260701.md` |
+| AWS s2n live runner safety audit. live 실행 전 cleanup/cost/safety boundary | 작성 완료 | `../results/aws-s2n-live-runner-safety-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -188,3 +189,4 @@
 | `docs/results/noniphone-paper-wording-guard-20260701.md` | abstract/introduction/method/results/limitations용 한국어/영어 safe wording과 금지 문장 |
 | `docs/results/noniphone-paper-section-scaffold-20260701.md` | 현재 evidence와 wording guard를 abstract/introduction/method/results/limitations 섹션에 배치하는 논문 구조 scaffold |
 | `docs/results/non-quicgo-implementation-findings-20260701.md` | quic-go를 제외한 17개 구현체/스택의 검수 결과와 claim boundary |
+| `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | AWS NLB+s2n live runner의 fail-closed gate, 임시 리소스 inventory, cleanup coverage, risk boundary |

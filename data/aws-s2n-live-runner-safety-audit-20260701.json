@@ -1,0 +1,218 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "source_paths": {
+    "runner": "harness/scripts/run-aws-s2n-nlb-live-data-plane.sh",
+    "gate_env": "harness/results/s2n-nlb-live-readiness-20260701-gate/results/result.env"
+  },
+  "source_exists": {
+    "runner": true,
+    "gate_env": true
+  },
+  "summary": {
+    "fail_closed_ok": true,
+    "resource_inventory_ok": true,
+    "cleanup_coverage_ok": true,
+    "risk_boundary_ok": true,
+    "estimated_live_resources": {
+      "ec2_instances": 2,
+      "network_load_balancers": 1,
+      "target_groups": 1,
+      "listeners": 1,
+      "security_groups": 1,
+      "key_pairs": 1
+    },
+    "current_gate": {
+      "aws_identity_ok": "no",
+      "aws_identity_classification": "invalid_client_token",
+      "can_run_live_s2n_nlb_now": "no",
+      "blocked_reason": "aws_identity_invalid_client_token",
+      "local_proof_status": "PASS",
+      "s2n_live_nlb_runner_ready": "yes"
+    },
+    "audit_decision": "Do not run live AWS resources until aws_identity_ok=yes; when opened, run forwarding echo first and keep active migration as phase 2."
+  },
+  "checks": {
+    "fail_closed": [
+      {
+        "name": "identity_checker",
+        "token": "tools/check_aws_identity_readiness.py",
+        "present": true,
+        "meaning": "AWS identity is checked before live resource creation."
+      },
+      {
+        "name": "identity_ok_gate",
+        "token": "if [[ \"$AWS_IDENTITY_OK\" != \"yes\" ]]",
+        "present": true,
+        "meaning": "Invalid credentials stop the runner before AWS resources are created."
+      },
+      {
+        "name": "readiness_exit_gate",
+        "token": "if [[ \"$AWS_READINESS_EXIT\" != \"0\" ]]",
+        "present": true,
+        "meaning": "Non-zero readiness checker exit is fail-closed."
+      },
+      {
+        "name": "blocked_result_writer",
+        "token": "write_blocked_result",
+        "present": true,
+        "meaning": "Blocked runs write a public-safe result artifact."
+      },
+      {
+        "name": "require_live_switch",
+        "token": "REQUIRE_LIVE=\"${REQUIRE_LIVE:-0}\"",
+        "present": true,
+        "meaning": "Operators can force blocked readiness to fail CI/local scripts when desired."
+      }
+    ],
+    "resources": [
+      {
+        "name": "key_pair",
+        "token": "aws ec2 import-key-pair",
+        "present": true,
+        "meaning": "Temporary SSH key pair for target bootstrap."
+      },
+      {
+        "name": "security_group",
+        "token": "aws ec2 create-security-group",
+        "present": true,
+        "meaning": "Temporary target security group."
+      },
+      {
+        "name": "target_instances",
+        "token": "aws ec2 run-instances",
+        "present": true,
+        "meaning": "Two temporary EC2 targets."
+      },
+      {
+        "name": "target_group",
+        "token": "aws elbv2 create-target-group",
+        "present": true,
+        "meaning": "Temporary QUIC target group."
+      },
+      {
+        "name": "load_balancer",
+        "token": "aws elbv2 create-load-balancer",
+        "present": true,
+        "meaning": "Temporary internet-facing NLB."
+      },
+      {
+        "name": "listener",
+        "token": "aws elbv2 create-listener",
+        "present": true,
+        "meaning": "Temporary QUIC listener."
+      },
+      {
+        "name": "target_registration",
+        "token": "aws elbv2 register-targets",
+        "present": true,
+        "meaning": "Target registration with QuicServerId."
+      }
+    ],
+    "cleanup": [
+      {
+        "name": "trap_cleanup",
+        "token": "trap cleanup EXIT",
+        "present": true,
+        "meaning": "Cleanup runs on normal exit and most shell errors."
+      },
+      {
+        "name": "collect_targets",
+        "token": "collect_all_targets",
+        "present": true,
+        "meaning": "Target artifacts are collected before teardown when possible."
+      },
+      {
+        "name": "delete_listener",
+        "token": "aws elbv2 delete-listener",
+        "present": true,
+        "meaning": "Listener teardown."
+      },
+      {
+        "name": "delete_load_balancer",
+        "token": "aws elbv2 delete-load-balancer",
+        "present": true,
+        "meaning": "NLB teardown."
+      },
+      {
+        "name": "wait_lb_deleted",
+        "token": "aws elbv2 wait load-balancers-deleted",
+        "present": true,
+        "meaning": "Waits until NLB deletion completes."
+      },
+      {
+        "name": "deregister_targets",
+        "token": "aws elbv2 deregister-targets",
+        "present": true,
+        "meaning": "Target deregistration."
+      },
+      {
+        "name": "delete_target_group",
+        "token": "aws elbv2 delete-target-group",
+        "present": true,
+        "meaning": "Target group teardown."
+      },
+      {
+        "name": "terminate_instances",
+        "token": "aws ec2 terminate-instances",
+        "present": true,
+        "meaning": "EC2 target termination."
+      },
+      {
+        "name": "wait_instances_terminated",
+        "token": "aws ec2 wait instance-terminated",
+        "present": true,
+        "meaning": "Waits until instances terminate."
+      },
+      {
+        "name": "delete_security_group",
+        "token": "aws ec2 delete-security-group",
+        "present": true,
+        "meaning": "Security group teardown."
+      },
+      {
+        "name": "delete_key_pair",
+        "token": "aws ec2 delete-key-pair",
+        "present": true,
+        "meaning": "AWS key pair teardown."
+      },
+      {
+        "name": "remove_local_key",
+        "token": "rm -f \"$KEY_PATH\"",
+        "present": true,
+        "meaning": "Local private/public key cleanup."
+      }
+    ],
+    "risk_boundaries": [
+      {
+        "name": "keep_resources_override",
+        "token": "KEEP_AWS_RESOURCES",
+        "present": true,
+        "meaning": "If set, cleanup can be intentionally skipped for debugging."
+      },
+      {
+        "name": "client_public_cidr",
+        "token": "CLIENT_PUBLIC_CIDR",
+        "present": true,
+        "meaning": "SSH/UDP exposure is constrained to the operator public CIDR and VPC CIDR."
+      },
+      {
+        "name": "tag_run_id",
+        "token": "Key=RunId,Value=$RUN_ID",
+        "present": true,
+        "meaning": "Resources are tagged with RunId for cleanup/forensics."
+      },
+      {
+        "name": "claim_boundary",
+        "token": "s2n_nlb_forwarding_echo_not_active_migration",
+        "present": true,
+        "meaning": "The live runner only claims forwarding echo, not active migration."
+      }
+    ]
+  },
+  "claim_boundary": {
+    "safe_claim": "The live runner has explicit pre-resource AWS identity gating, an inventoried temporary resource set, and cleanup coverage for listener, NLB, target group, instances, security group, key pair, and local key material.",
+    "unsafe_claim": "This safety audit proves live AWS forwarding, active Connection Migration, absence of cloud cost, or cleanup success under all possible process-kill/cloud-failure modes.",
+    "next_step": "After credential refresh, run the live forwarding echo with default cleanup, then inspect result.env and summary.json before designing any active path-change variant."
+  }
+}

@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 41,
+  "item_count": 42,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -20,6 +20,7 @@
     "paper_synthesis": 6,
     "readiness_blocked": 10,
     "run_plan": 2,
+    "safety_audit": 1,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -44,6 +45,7 @@
     "deployment-prerequisite": 1,
     "deployment-readiness": 3,
     "deployment-runtime-readiness": 1,
+    "deployment-safety-audit": 1,
     "desktop-path-readiness": 1,
     "implementation-api-audit": 1,
     "implementation-app-demo": 2,
@@ -319,6 +321,22 @@
       "supports": "The repo has a dedicated AWS NLB+s2n live runner with compiling server/client binaries, a local echo smoke, and a pre-resource AWS identity gate.",
       "do_not_claim": "Live AWS NLB forwarding success, active migration success, or browser handover.",
       "next_gap": "Refresh AWS credentials and run the live forwarding echo before designing an active path-change variant.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "aws-s2n-live-runner-safety-audit",
+      "chapter": "4",
+      "category": "deployment-safety-audit",
+      "implementation": "AWS NLB + s2n-quic",
+      "evidence_doc": "docs/results/aws-s2n-live-runner-safety-audit-20260701.md",
+      "runner_or_tool": "tools/audit_aws_s2n_live_runner_safety.py",
+      "local_artifact_id": "aws-s2n-live-runner-safety-audit-20260701",
+      "claim_strength": "safety_audit",
+      "supports": "A static audit of the live AWS NLB+s2n runner's fail-closed identity gate, temporary resource inventory, cleanup coverage, and claim boundary before live resource creation.",
+      "do_not_claim": "Live AWS forwarding success, active migration success, zero cost, or cleanup success under every possible process-kill/cloud-failure mode.",
+      "next_gap": "After credentials are refreshed, run live forwarding echo with default cleanup and inspect the resulting summary before phase-2 active path-change design.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
