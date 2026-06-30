@@ -5,7 +5,7 @@
     "runner": "harness/scripts/run-aws-s2n-nlb-live-data-plane.sh",
     "client": "experiments/s2n-quic-nlb-cid-provider/src/bin/nlb_live_client.rs",
     "proxy": "repro/quic-go-min-repro/cmd/udprebindproxy/main.go",
-    "preflight_env": "harness/results/aws-s2n-nlb-rebinding-proxy-preflight-20260701/results/result.env"
+    "preflight_env": "data/aws-s2n-phase2-rebinding-preflight-20260701.txt"
   },
   "source_exists": {
     "runner": true,

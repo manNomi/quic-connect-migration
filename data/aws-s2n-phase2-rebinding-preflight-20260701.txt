@@ -1,0 +1,17 @@
+run_id=aws-s2n-nlb-rebinding-proxy-preflight-20260701
+aws_region=ap-northeast-2
+aws_identity_ok=no
+aws_identity_classification=invalid_client_token
+aws_cli_found=yes
+cargo_found=yes
+go_found=yes
+crate_ready=yes
+server_binary_source_ready=yes
+client_binary_source_ready=yes
+rebinding_proxy_source_ready=yes
+path_change_mode=rebinding_proxy
+payload_chunks=8
+chunk_delay_ms=250
+live_phase=pre_resource_gate
+validation=blocked
+blocked_reason=aws_identity_invalid_client_token

@@ -16,7 +16,7 @@ def test_audit_detects_phase2_runner_tokens() -> None:
         Path("harness/scripts/run-aws-s2n-nlb-live-data-plane.sh"),
         Path("experiments/s2n-quic-nlb-cid-provider/src/bin/nlb_live_client.rs"),
         Path("repro/quic-go-min-repro/cmd/udprebindproxy/main.go"),
-        Path("harness/results/aws-s2n-nlb-rebinding-proxy-preflight-20260701/results/result.env"),
+        Path("data/aws-s2n-phase2-rebinding-preflight-20260701.txt"),
     )
     summary = audit["summary"]
     assert summary["runner_mode_ready"] is True
@@ -32,7 +32,7 @@ def test_markdown_preserves_claim_boundary() -> None:
         Path("harness/scripts/run-aws-s2n-nlb-live-data-plane.sh"),
         Path("experiments/s2n-quic-nlb-cid-provider/src/bin/nlb_live_client.rs"),
         Path("repro/quic-go-min-repro/cmd/udprebindproxy/main.go"),
-        Path("harness/results/aws-s2n-nlb-rebinding-proxy-preflight-20260701/results/result.env"),
+        Path("data/aws-s2n-phase2-rebinding-preflight-20260701.txt"),
     )
     markdown = emit_markdown(audit)
     assert "Unsafe claim" in markdown

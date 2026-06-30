@@ -82,6 +82,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["aws_s2n_live_runner_safety_audit_json"]["exists"] is True
     assert paths["aws_s2n_phase2_path_change_design"]["exists"] is True
     assert paths["aws_s2n_phase2_path_change_design_json"]["exists"] is True
+    assert paths["aws_s2n_phase2_rebinding_preflight_fixture"]["exists"] is True
     assert paths["aws_s2n_phase2_rebinding_runner_audit"]["exists"] is True
     assert paths["aws_s2n_phase2_rebinding_runner_audit_json"]["exists"] is True
     assert paths["s2n_active_migration_api_audit"]["exists"] is True

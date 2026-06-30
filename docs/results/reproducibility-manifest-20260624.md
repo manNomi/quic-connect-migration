@@ -8,7 +8,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `c48c29a` |
+| source commit at generation | `a34fc76` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
@@ -117,6 +117,7 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `aws_s2n_live_runner_safety_audit_json` | `data/aws-s2n-live-runner-safety-audit-20260701.json` | `yes` |
 | `aws_s2n_phase2_path_change_design` | `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | `yes` |
 | `aws_s2n_phase2_path_change_design_json` | `data/aws-s2n-phase2-path-change-design-20260701.json` | `yes` |
+| `aws_s2n_phase2_rebinding_preflight_fixture` | `data/aws-s2n-phase2-rebinding-preflight-20260701.txt` | `yes` |
 | `aws_s2n_phase2_rebinding_runner_audit` | `docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` | `yes` |
 | `aws_s2n_phase2_rebinding_runner_audit_json` | `data/aws-s2n-phase2-rebinding-runner-audit-20260701.json` | `yes` |
 | `s2n_active_migration_api_audit` | `docs/results/s2n-active-migration-api-audit-20260630.md` | `yes` |

@@ -14,7 +14,7 @@ from research_clock import utc_date_iso
 DEFAULT_RUNNER = "harness/scripts/run-aws-s2n-nlb-live-data-plane.sh"
 DEFAULT_CLIENT = "experiments/s2n-quic-nlb-cid-provider/src/bin/nlb_live_client.rs"
 DEFAULT_PROXY = "repro/quic-go-min-repro/cmd/udprebindproxy/main.go"
-DEFAULT_PREFLIGHT_ENV = "harness/results/aws-s2n-nlb-rebinding-proxy-preflight-20260701/results/result.env"
+DEFAULT_PREFLIGHT_ENV = "data/aws-s2n-phase2-rebinding-preflight-20260701.txt"
 DEFAULT_OUTPUT = "docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md"
 DEFAULT_JSON_OUTPUT = "data/aws-s2n-phase2-rebinding-runner-audit-20260701.json"
 
