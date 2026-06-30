@@ -113,8 +113,9 @@ s2n-quic은 AWS NLB와의 연결성이 높은 구현체지만, quic-go 기반 NL
 | existing NLB runner | `existing_quic_go_nlb_runner_ready=yes` | 기존 live runner는 quic-go 경로를 커버 |
 | dedicated s2n live runner | `s2n_live_nlb_runner_ready=yes` | s2n target A/B용 live runner는 준비됨 |
 | fail-closed live run | `validation=blocked`, `blocked_reason=aws_identity_invalid_client_token` | runner가 AWS resource 생성 전에 안전하게 중단됨 |
+| active migration API audit | `public_active_trigger_api_found=False`, focused test `10 passed` | s2n은 migration/rebinding machinery는 있으나 public app API에서 quic-go식 active trigger는 확인되지 않음 |
 
-따라서 현재 s2n NLB claim은 "local provider prerequisite ready"와 "dedicated live runner ready"까지다. AWS NLB 뒤에서 s2n target이 packet을 받는지는 현재 credential 때문에 아직 검증하지 않았다. 또한 지금 live runner의 1단계 목표는 forwarding echo이며, active migration/path-change variant는 그 다음 단계다.
+따라서 현재 s2n NLB claim은 "local provider prerequisite ready", "dedicated live runner ready", "migration/rebinding tests present but public app trigger not exposed"까지다. AWS NLB 뒤에서 s2n target이 packet을 받는지는 현재 credential 때문에 아직 검증하지 않았다. 또한 지금 live runner의 1단계 목표는 forwarding echo이며, active migration/path-change variant는 public API 변화 또는 lower-level IO/proxy 설계가 필요한 그 다음 단계다.
 
 ## 7. HAProxy Negative Control
 

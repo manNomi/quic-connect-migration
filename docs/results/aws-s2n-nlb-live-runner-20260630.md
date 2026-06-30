@@ -99,7 +99,25 @@ blocked_reason=aws_identity_invalid_client_token
 
 > 현재 구현/runner는 준비됐지만, AWS identity가 `invalid_client_token`이므로 live resource creation은 의도적으로 실행하지 않았다.
 
-## 5. Claim Boundary
+## 5. Active Migration API Audit
+
+이 live runner의 현재 phase는 forwarding echo다. s2n-quic 자체의 connection migration/rebinding test는 현재 checkout에서 다시 확인했다.
+
+| 항목 | 결과 |
+| --- | --- |
+| source commit | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` |
+| focused test | `connection_migration` |
+| test summary | `10 passed; 0 failed; 90 filtered out` |
+| public active trigger candidate | `False` |
+| evidence doc | [s2n-active-migration-api-audit-20260630.md](s2n-active-migration-api-audit-20260630.md) |
+
+해석:
+
+> s2n-quic은 migration/rebinding machinery와 active path event evidence를 갖고 있다. 그러나 현재 public application API에서 quic-go의 `AddPath -> Probe -> Switch`처럼 active source migration을 직접 트리거하는 경로는 확인되지 않았다.
+
+따라서 AWS NLB+s2n 실험은 먼저 target A/B forwarding echo를 확인하고, active path-change는 public API 변화 또는 lower-level IO/proxy variant 설계 이후 별도 phase로 다룬다.
+
+## 6. Claim Boundary
 
 쓸 수 있는 주장:
 
@@ -118,13 +136,13 @@ blocked_reason=aws_identity_invalid_client_token
 | local echo smoke가 NLB routing proof다 | local smoke는 NLB를 거치지 않음 |
 | AWS credential만 고치면 active migration까지 자동으로 입증된다 | 현재 live runner phase는 forwarding echo이며 active source migration은 별도 후속 |
 
-## 6. 다음 단계
+## 7. 다음 단계
 
 | 우선순위 | 작업 | 성공 근거 |
 | ---: | --- | --- |
 | 1 | AWS credential refresh 후 `run-aws-s2n-nlb-live-data-plane.sh` 실행 | `validation=ok`, `client_echo_matches=true`, `server_success_count=1` |
 | 2 | same-target forwarding 확인 | target A/B 중 하나만 `server.json` PASS |
-| 3 | active source-port migration variant 설계 | s2n public API 또는 controlled proxy/rebind path evidence |
+| 3 | active source-port migration variant 설계 | s2n public API 변화, lower-level IO hook, 또는 controlled proxy/rebind path evidence |
 | 4 | qlog/event observability 보강 | server/client path validation event 또는 packet-level evidence |
 
 이 순서 때문에 현재 s2n/NLB 결과는 “live runner ready but AWS blocked”로 분류한다.

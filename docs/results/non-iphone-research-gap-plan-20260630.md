@@ -84,17 +84,22 @@
 
 > 새 `nlb_live_server`와 `nlb_live_client`는 AWS 없이 loopback에서 `payload_bytes=2048`, `echo_matches=true`, server `received_bytes=2048`, `echoed_bytes=2048`로 PASS했다. 이 smoke는 NLB routing proof가 아니라 dedicated live runner에 들어가는 s2n binary들이 같은 TLS/CID-provider 전제로 동작한다는 검증이다.
 
+2026-06-30 active migration API audit:
+
+> `tools/audit_s2n_active_migration_feasibility.py`를 추가해 s2n-quic `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` checkout을 source-linked 방식으로 감사했다. focused `connection_migration` test는 현재 host에서 `10 passed; 0 failed; 90 filtered out`로 재확인됐다. 그러나 `quic/s2n-quic/src/provider.rs`의 `path_migration` provider는 `pub(crate)`이고, provider 주석도 현재 public 기능이 아님을 명시한다. `s2n-quic-qns` interop client도 `ConnectionMigration => false`와 active migration TODO를 남긴다. 따라서 s2n-quic은 migration/rebinding machinery와 active-path observability가 있는 구현체로 분류하되, AWS NLB live runner에서 quic-go처럼 public `AddPath -> Probe -> Switch` 흐름을 직접 트리거할 수 있다고 주장하지 않는다.
+
 실행 방향:
 
 1. 완료: s2n-quic custom CID provider local proof 복원 및 rerun
 2. 완료: live AWS NLB+s2n readiness gate 추가 및 현재 blocker 고정
 3. 완료: dedicated s2n live NLB data-plane runner 구현
 4. 완료: live server/client source와 local binary smoke 검증
-5. 후속: credential refresh 후 EC2 server에서 s2n-quic target A/B 구동
-6. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
-7. 후속: NLB forwarding echo에서 target A/B 중 하나만 PASS하는지 확인
-8. 후속: desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
-9. 후속: NLB가 같은 backend로 보냈는지 server log/qlog로 확인
+5. 완료: s2n active migration API audit로 public app trigger boundary 고정
+6. 후속: credential refresh 후 EC2 server에서 s2n-quic target A/B 구동
+7. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
+8. 후속: NLB forwarding echo에서 target A/B 중 하나만 PASS하는지 확인
+9. 후속: public API가 생기거나 lower-level IO/proxy variant를 설계한 뒤 active path-change 유도
+10. 후속: NLB가 같은 backend로 보냈는지 server log/qlog/event로 확인
 
 핵심 질문:
 

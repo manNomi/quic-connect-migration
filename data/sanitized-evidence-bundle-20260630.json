@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 19,
+  "item_count": 20,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -15,7 +15,7 @@
     "readiness_blocked": 4,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
-    "source_test_audit": 1,
+    "source_test_audit": 2,
     "strong_local_positive": 1
   },
   "category_counts": {
@@ -27,6 +27,7 @@
     "deployment-positive-control": 1,
     "deployment-prerequisite": 1,
     "deployment-readiness": 3,
+    "implementation-api-audit": 1,
     "implementation-app-demo": 2,
     "implementation-focused-e2e": 1,
     "implementation-maturity": 1,
@@ -274,6 +275,22 @@
       "supports": "The repo has a dedicated AWS NLB+s2n live runner with compiling server/client binaries, a local echo smoke, and a pre-resource AWS identity gate.",
       "do_not_claim": "Live AWS NLB forwarding success, active migration success, or browser handover.",
       "next_gap": "Refresh AWS credentials and run the live forwarding echo before designing an active path-change variant.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "s2n-active-migration-api-audit",
+      "chapter": "4",
+      "category": "implementation-api-audit",
+      "implementation": "s2n-quic",
+      "evidence_doc": "docs/results/s2n-active-migration-api-audit-20260630.md",
+      "runner_or_tool": "tools/audit_s2n_active_migration_feasibility.py",
+      "local_artifact_id": "s2n-connection-migration-tests-20260630",
+      "claim_strength": "source_test_audit",
+      "supports": "s2n-quic has connection migration/rebinding tests and active-path observability, while the current public app API does not expose a quic-go-like AddPath/Probe/Switch trigger.",
+      "do_not_claim": "AWS NLB+s2n active migration execution, public application-triggered active migration, or browser handover.",
+      "next_gap": "Run live NLB forwarding echo after credential refresh, then design a lower-level active path-change variant or wait for a public API.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

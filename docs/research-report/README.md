@@ -113,8 +113,10 @@
 | `harness/scripts/run-aws-nlb-quic-data-plane.sh` | Chapter 4 AWS NLB positive/negative control harness |
 | `harness/scripts/check-s2n-nlb-live-readiness.sh` | Chapter 4 s2n-quic AWS NLB live 실험 readiness gate |
 | `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh` | Chapter 4 s2n-quic AWS NLB dedicated live runner; 현재 AWS identity gate에서 fail-closed |
+| `tools/audit_s2n_active_migration_feasibility.py` | Chapter 4 s2n-quic public active migration API boundary 감사 도구 |
 | `docs/results/s2n-nlb-live-readiness-20260630.md` | Chapter 4 s2n-quic AWS NLB live readiness 결과와 현재 blocker |
 | `docs/results/aws-s2n-nlb-live-runner-20260630.md` | Chapter 4 s2n live runner 구현, local binary smoke, blocked artifact |
+| `docs/results/s2n-active-migration-api-audit-20260630.md` | Chapter 4 s2n focused migration test PASS와 public active trigger API 부재 근거 |
 | `docs/research-report/tables/chapter-04-scanner-trigger-map-20260630.md` | Chapter 4 AWS NLB/H3 deployment trigger 추적표 |
 | `tools/check_browser_cm_observability.py` | Chapter 5 browser observability readiness scanner |
 | `tools/classify_chrome_h3_artifacts.py` | Chapter 5 Chrome local H3/rebinding artifact classifier |

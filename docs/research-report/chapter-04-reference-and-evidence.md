@@ -14,6 +14,7 @@
 | s2n NLB live readiness gate | [harness/scripts/check-s2n-nlb-live-readiness.sh](../../harness/scripts/check-s2n-nlb-live-readiness.sh) | AWS identity, local s2n CID provider proof, live runner readiness를 public-safe로 분리 |
 | s2n NLB live runner | [harness/scripts/run-aws-s2n-nlb-live-data-plane.sh](../../harness/scripts/run-aws-s2n-nlb-live-data-plane.sh) | AWS identity가 유효할 때만 EC2 target A/B, NLB, QUIC target registration, s2n echo client를 실행; 현재 invalid token이면 resource 생성 전 blocked |
 | s2n NLB live server/client | [experiments/s2n-quic-nlb-cid-provider/src/bin](../../experiments/s2n-quic-nlb-cid-provider/src/bin) | `nlb_live_server`, `nlb_live_client`, `generate_localhost_cert`로 live runner binary 구성 |
+| s2n active migration API audit | [tools/audit_s2n_active_migration_feasibility.py](../../tools/audit_s2n_active_migration_feasibility.py) | s2n source/test에서 migration machinery와 public active trigger API boundary를 public-safe하게 감사 |
 | package script | [harness/scripts/package-quic-go-ec2.sh](../../harness/scripts/package-quic-go-ec2.sh) | EC2 target에 올릴 repro package 생성 |
 | EC2 bootstrap | [repro/quic-go-min-repro/scripts/ec2-bootstrap-go.sh](../../repro/quic-go-min-repro/scripts/ec2-bootstrap-go.sh) | EC2 target에서 Go runtime 준비 |
 | transport server | [repro/quic-go-min-repro/cmd/server/main.go](../../repro/quic-go-min-repro/cmd/server/main.go) | AWS NLB CID generator를 quic-go transport에 연결 |
@@ -58,6 +59,7 @@
 | [docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md](../results/s2n-quic-nlb-cid-provider-rerun-20260630.md) | s2n-quic custom CID provider 복원/rerun, AWS NLB deployment prerequisite |
 | [docs/results/s2n-nlb-live-readiness-20260630.md](../results/s2n-nlb-live-readiness-20260630.md) | live AWS NLB+s2n 전제 조건 gate; local proof PASS, dedicated s2n runner ready, AWS identity invalid |
 | [docs/results/aws-s2n-nlb-live-runner-20260630.md](../results/aws-s2n-nlb-live-runner-20260630.md) | dedicated AWS NLB+s2n live runner, local binary smoke, current fail-closed blocked artifact |
+| [docs/results/s2n-active-migration-api-audit-20260630.md](../results/s2n-active-migration-api-audit-20260630.md) | s2n migration/rebinding focused test PASS와 public active migration trigger API boundary |
 | [docs/results/aws-nlb-http3-workload-results-20260624.md](../results/aws-nlb-http3-workload-results-20260624.md) | HTTP/3 POST-before / migration / GET-after workload |
 | [docs/results/haproxy-http3-negative-control-results-20260623.md](../results/haproxy-http3-negative-control-results-20260623.md) | HTTP/3 proxy support != active CM support negative control |
 | [docs/results/haproxy-http3-negative-control-rerun-20260630.md](../results/haproxy-http3-negative-control-rerun-20260630.md) | HAProxy HTTP/3 negative-control fresh rerun with reproducible runner |
@@ -99,6 +101,8 @@ s2n NLB live readiness:
 | local echo `echo_matches=yes` | provider가 설치된 local s2n endpoint가 application echo workload를 완료 |
 | dedicated live runner ready | s2n target A/B를 EC2에 배포하고 NLB `QuicServerId` registration 후 echo를 실행할 code path가 준비됨 |
 | local live binary smoke PASS | 새 `nlb_live_server`/`nlb_live_client`가 같은 certificate/CID-provider 전제로 echo를 완료 |
+| focused `connection_migration` test `10 passed` | s2n-quic source checkout에서 rebinding/migration test evidence가 현재도 통과함 |
+| public active trigger candidates `0` | 현재 public app API에서 quic-go식 `AddPath`/`Probe`/`Switch` trigger를 찾지 못함 |
 | AWS identity `invalid_client_token` | current host에서 live AWS resource 생성/삭제를 실행하면 안 됨 |
 | live AWS run `validation=blocked` | runner는 resource 생성 전에 fail-closed로 중단됨 |
 

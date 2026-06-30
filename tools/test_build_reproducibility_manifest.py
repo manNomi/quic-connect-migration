@@ -48,7 +48,9 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["quicly_e2e_path_migration"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
     assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "aws-s2n-nlb-live-runner"
+    assert paths["s2n_active_migration_api_audit"]["exists"] is True
+    assert paths["s2n_active_migration_api_audit_json"]["exists"] is True
+    assert manifest["experiment_matrix"]["latest_item"] == "s2n-active-migration-api-audit"
 
 
 def test_generated_date_uses_utc_day() -> None:
