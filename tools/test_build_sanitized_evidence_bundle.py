@@ -49,6 +49,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "noniphone-reviewer-risk-audit" in ids
     assert "noniphone-paper-wording-guard" in ids
     assert "noniphone-paper-section-scaffold" in ids
+    assert "non-quicgo-implementation-findings" in ids
     assert "chrome-desktop-noniphone-range-local-refresh" in ids
     assert "chrome-desktop-noniphone-upload-local-refresh" in ids
     for item in bundle["items"]:

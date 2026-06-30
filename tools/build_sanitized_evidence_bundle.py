@@ -553,6 +553,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence, final paper text, public browser CM success, live AWS+s2n success, or Safari handover success.",
         next_gap="Use the scaffold to draft the conservative maturity/gap paper or revise it after external positive-result gates open.",
     ),
+    EvidenceItem(
+        id="non-quicgo-implementation-findings",
+        chapter="1",
+        category="implementation-synthesis",
+        implementation="implementation survey excluding quic-go",
+        evidence_doc="docs/results/non-quicgo-implementation-findings-20260701.md",
+        runner_or_tool="tools/build_non_quicgo_implementation_findings.py",
+        local_artifact_id="non-quicgo-implementation-findings-20260701",
+        claim_strength="implementation_synthesis",
+        supports="A professor-facing synthesis of what was verified outside quic-go, separating broad cross-stack evidence, server/app demos, focused partial positives, readiness blockers, and the HAProxy negative control.",
+        do_not_claim="New runtime evidence beyond the referenced artifacts, equal maturity across all stacks, browser handover success, or managed deployment continuity.",
+        next_gap="Use this synthesis when explaining why quic-go is the deepest positive control while non-quic-go evidence still rejects a pure implementation-absence explanation.",
+    ),
 ]
 
 

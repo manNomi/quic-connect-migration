@@ -67,6 +67,7 @@
 | 후속 연구 reviewer risk audit. 논문 방어/타당도 리스크 | 작성 완료 | `../results/noniphone-reviewer-risk-audit-20260701.md` |
 | 후속 연구 paper wording guard. 논문 문장 안전장치 | 작성 완료 | `../results/noniphone-paper-wording-guard-20260701.md` |
 | 후속 연구 paper section scaffold. 논문 섹션 배치도 | 작성 완료 | `../results/noniphone-paper-section-scaffold-20260701.md` |
+| quic-go 외 구현체 검수 결과. 교수님 질의 대응용 구현체별 boundary | 작성 완료 | `../results/non-quicgo-implementation-findings-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -186,3 +187,4 @@
 | `docs/results/noniphone-reviewer-risk-audit-20260701.md` | 리뷰어가 공격할 수 있는 overclaim/external validity/AWS/browser/Safari/QoE 리스크와 방어 문장 |
 | `docs/results/noniphone-paper-wording-guard-20260701.md` | abstract/introduction/method/results/limitations용 한국어/영어 safe wording과 금지 문장 |
 | `docs/results/noniphone-paper-section-scaffold-20260701.md` | 현재 evidence와 wording guard를 abstract/introduction/method/results/limitations 섹션에 배치하는 논문 구조 scaffold |
+| `docs/results/non-quicgo-implementation-findings-20260701.md` | quic-go를 제외한 17개 구현체/스택의 검수 결과와 claim boundary |

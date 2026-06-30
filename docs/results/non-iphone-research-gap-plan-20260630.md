@@ -371,6 +371,20 @@
 
 > 논문 작성 순서는 이제 보수적으로 정리됐다. 초록/서론은 boundary framing, 방법은 evidence level과 strong-CM acceptance, 결과는 implementation/deployment/browser workload/streaming QoE를 분리, 한계는 public Chrome/live AWS/Safari gap을 명시하는 구조가 가장 방어 가능하다.
 
+### P16. 2026-07-01 non-quic-go implementation findings
+
+목표:
+
+> "quic-go 말고는 무엇을 검수했는가"라는 질문에 바로 답할 수 있도록, 구현체 조사표에서 quic-go를 제외한 17개 구현체/스택의 결과와 claim boundary를 별도 보고서로 고정한다.
+
+상태:
+
+> 완료. `tools/build_non_quicgo_implementation_findings.py`와 regression test를 추가했고, `docs/results/non-quicgo-implementation-findings-20260701.md` 및 `data/non-quicgo-implementation-findings-20260701.json`을 생성했다. 결과는 quic-go 제외 17개 중 `strong_cross_implementation_positive` 8개, `server_or_app_runtime_positive` 2개, `focused_or_partial_positive` 2개, `source_or_readiness_only` 2개, `managed_or_deployment_pending` 2개, `negative_control` 1개로 분류된다.
+
+해석:
+
+> quic-go는 가장 깊게 제어 가능한 AddPath/Probe/Switch positive control이지만, quic-go 외 근거가 비어 있는 것은 아니다. quiche, picoquic, s2n-quic, MsQuic, ngtcp2, Quinn, Neqo, aioquic은 fresh rerun으로 구현체/테스트 근거가 있고, LSQUIC과 nginx QUIC은 app/server runtime positive control이 있다. XQUIC과 quicly는 focused/partial positive로 제한해야 하며, HAProxy는 HTTP/3 지원이 active CM 지원의 충분조건이 아님을 보여주는 negative control이다. 따라서 교수님께는 "CM은 구현체에 없어서 못 쓰는 기술이 아니라, 구현체/브라우저/배포/애플리케이션 계층에서 성숙도와 claim boundary가 갈리는 기술"이라고 설명하는 것이 안전하다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -391,7 +405,8 @@
 | 14 | non-iPhone reviewer risk audit | 완료. 리뷰어 공격 지점과 방어 가능한 wording, 남은 evidence gap을 validity audit으로 정리 |
 | 15 | non-iPhone paper wording guard | 완료. 논문 abstract/introduction/method/results/limitations에 넣을 safe bilingual wording과 금지 문장을 정리 |
 | 16 | non-iPhone paper section scaffold | 완료. 현재 evidence를 abstract/introduction/method/results/limitations에 배치하는 논문 구조 scaffold 생성 |
+| 17 | non-quic-go implementation findings | 완료. quic-go 제외 17개 구현체/스택의 검수 결과와 claim boundary를 교수님 질의 대응용으로 분리 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet, non-iPhone reviewer risk audit, non-iPhone paper wording guard, non-iPhone paper section scaffold, non-quic-go implementation findings는 확보됐다.
