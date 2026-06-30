@@ -17,7 +17,7 @@
 | XQUIC | local client/server NAT rebinding demo PASS | NAT rebinding path가 실제 demo에서 동작함 |
 | quicly | migration-related unit subtest OK, focused e2e `path-migration` PASS, full e2e `slow-start` caveat | full e2e PASS가 아니라 focused migration evidence로 분리해 과장 방지 |
 | mvfst | source audit + focused migration test readiness map | production-scale 구현체의 실행 후보 test target과 현재 blocker를 고정 |
-| Chrome local controls | local forced-H3/rebinding/retry matrix 존재 | browser success claim은 아직 제한적 |
+| Chrome local controls | local forced-H3/rebinding/retry matrix + fresh media/range/upload local refresh 존재 | browser success claim은 아직 제한적이지만 workload별 local artifact 해석 근거는 보강됨 |
 
 ## 2. 아직 약한 부분
 
@@ -168,13 +168,18 @@
 
 > `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md`로 fresh local Chrome forced-H3 byte-range control 2회를 추가했다. `chrome-desktop-noniphone-range-drop3000-retry0-20260630`과 `chrome-desktop-noniphone-range-slow-drop3000-retry0-20260630`은 모두 `PASS`, `nat_rebinding_possible_session_continuity`, range complete `true`, retry used `0`, Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`이었다. slow row는 server packets A/B가 `170/683`으로 B 경로에 집중되어, local path transition evidence로는 강하지만 real public handover evidence는 아니다.
 
+2026-06-30 upload 추가 확인:
+
+> `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md`로 fresh local Chrome forced-H3 upload control을 추가했다. `chrome-desktop-noniphone-upload-drop3000-retry0-20260630`은 `PASS`, `nat_rebinding_path_validation_without_observed_tuple_change`, upload complete `true`, retry used `0`, upload bytes `131072`, Chrome target QUIC session `1`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet A/B `29/110`이었다. server request-level remote tuple은 `1`개로 유지되어 upload에서는 request log만으로 packet-level rebinding을 판단하면 안 된다는 기존 2026-06-24 결과를 fresh row로 재확인했다.
+
 실행 방향:
 
 1. 완료: 기존 Chrome local forced-H3 matrix 재사용
 2. 완료: local HTTPS origin에서 media workload fresh control 실행
 3. 완료: local HTTPS origin에서 byte-range workload fresh control 실행
-4. 완료: NetLog에서 QUIC session 수, path validation event, retry 여부 분류
-5. 남음: controlled public origin에서 page-ready media/upload/range handover 실행
+4. 완료: local HTTPS origin에서 upload workload fresh control 실행
+5. 완료: NetLog에서 QUIC session 수, path validation event, retry 여부 분류
+6. 남음: controlled public origin에서 page-ready media/upload/range handover 실행
 
 주의:
 
@@ -221,8 +226,9 @@
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | readiness gate와 dedicated live runner 완료. 현재 credential refresh 후 live forwarding echo와 active path-change variant 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | readiness gate 완료. Linux/eBPF host에서 packet-routing runtime 검증 필요 |
 | 5 | quicly focused e2e path-migration | 완료. path-migration subtest는 PASS, full e2e caveat는 유지 |
-| 6 | sanitized evidence bundle 생성 | 완료. 18개 evidence item에 대해 supports/do-not-claim/next-gap boundary를 public-safe로 고정 |
+| 6 | sanitized evidence bundle 생성 | 완료. evidence item에 대해 supports/do-not-claim/next-gap boundary를 public-safe로 고정 |
+| 7 | Chrome desktop upload local refresh | 완료. media/range에 이어 upload fresh local control까지 추가해 streaming/large-transfer workload 비교 근거를 보강 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, sanitized evidence-to-claim bundle은 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload local refresh, sanitized evidence-to-claim bundle은 확보됐다.

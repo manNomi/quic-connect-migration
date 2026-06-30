@@ -155,6 +155,7 @@
 | `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
 | `docs/results/controlled-public-range-retry-iphone-usb-handover-20260629.md` | Chapter 9 byte-range retry public handover result |
 | `docs/results/iphone-usb-upload-retry-pilot-20260626.md` | Chapter 10 upload retry public handover result |
+| `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | Chapter 10 fresh non-iPhone Chrome desktop upload local control |
 | `docs/results/streaming-workload-case-analysis-20260629.md` | Chapter 11 streaming workload synthesis |
 | `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md` | Chapter 11 buffered media local control |
 | `docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md` | Chapter 11 fresh non-iPhone Chrome desktop media local control |

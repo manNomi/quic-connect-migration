@@ -71,6 +71,8 @@
 | [data/chrome-desktop-noniphone-media-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-media-local-refresh-20260630.csv) | fresh media local control CSV |
 | [docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md](../results/chrome-desktop-noniphone-range-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop range local control |
 | [data/chrome-desktop-noniphone-range-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-range-local-refresh-20260630.csv) | fresh range local control CSV |
+| [docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md](../results/chrome-desktop-noniphone-upload-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop upload local control |
+| [data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv) | fresh upload local control CSV |
 
 ## 5. Reproducibility Commands
 

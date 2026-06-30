@@ -104,6 +104,16 @@ proxy는 첫 client packet 이후 지정된 시간까지 upstream A를 사용하
 
 두 row 모두 retry 없이 완료됐고 target Chrome QUIC session은 1개였다. 느린 row에서는 server packet이 A/B `170/683`으로 B 경로에 집중되어 local path transition evidence가 더 선명했다. 다만 local UDP rebinding control이므로 public route/interface handover 성공으로 확장하지 않는다.
 
+### 3.8 Fresh non-iPhone upload refresh
+
+upload workload도 iPhone 없이 한 번 더 재실행했다.
+
+| run | status | classification | app complete | upload bytes | remote tuples | Chrome sessions | qlog C/R | NetLog C/R | proxy A/B packets |
+| --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
+| `chrome-desktop-noniphone-upload-drop3000-retry0-20260630` | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | true | 131072 | 1 | 1 | 1/1 | 1/1 | 29/110 |
+
+이 row는 upload에서 특히 중요한 해석 경계를 다시 보여준다. server request log 기준 remote tuple은 1개라서 request-level log만 보면 rebinding이 없었던 것처럼 보인다. 그러나 proxy packet은 A/B 양쪽 upstream으로 나뉘었고, qlog와 Chrome NetLog target session에는 PATH_CHALLENGE/PATH_RESPONSE가 있었다. 따라서 upload 분석에서는 request log, proxy packet log, qlog, NetLog를 함께 봐야 한다.
+
 ## 4. 논문에 쓸 수 있는 주장
 
 안전한 주장:

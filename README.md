@@ -89,6 +89,7 @@
 77. nginx `quic_bpf` Linux runner를 추가했다. Linux/root/`/sys/fs/bpf` 조건이 열리면 `quic_bpf on;`과 `listen ... reuseport`로 기존 active migration workload를 실행하고, 현재 macOS 로컬에서는 `validation=blocked`, `blocked_reason=linux_required`로 닫힌다.
 78. Chrome desktop non-iPhone media local refresh를 추가했다. fresh local forced-H3 media run은 `PASS`, `nat_rebinding_possible_session_continuity`, Chrome target QUIC session `1`, server remote tuple `2`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐지만, public Wi-Fi/LTE handover claim은 아니다.
 79. Chrome desktop non-iPhone range local refresh를 추가했다. 1MiB byte-range workload 2회가 retry 없이 2/2 PASS였고, 두 row 모두 Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐다. 이 역시 local UDP rebinding control이지 public handover claim은 아니다.
+80. Chrome desktop non-iPhone upload local refresh를 추가했다. 128KiB upload workload는 retry 없이 PASS였고 Chrome target QUIC session `1`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet A/B `29/110`이 관찰됐다. 다만 server request-level remote tuple은 `1`개라서 upload에서는 request log만으로 path change를 판단하면 안 된다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -272,6 +273,7 @@
 - [Chrome H3 local UDP rebinding proxy results](docs/results/chrome-h3-rebinding-proxy-results-20260624.md)
 - [Chrome H3 local UDP rebinding repetition summary](docs/results/chrome-h3-rebinding-repetition-summary-20260624.md)
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
+- [Chrome desktop non-iPhone upload local refresh](docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md)
 - [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
 - [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
 - [Chrome H3 local transient downlink fine boundary](docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)

@@ -58,6 +58,8 @@
 | [data/iphone-usb-upload-retry-pilot-20260626.csv](../../data/iphone-usb-upload-retry-pilot-20260626.csv) | upload retry rows 원본 CSV. Legacy raw tuple fields가 있으므로 보고서에는 aggregate만 복사 |
 | [docs/results/chrome-h3-rebinding-upload-summary-20260624.md](../results/chrome-h3-rebinding-upload-summary-20260624.md) | local upload rebinding control summary |
 | [data/chrome-h3-rebinding-upload-summary-20260624.csv](../../data/chrome-h3-rebinding-upload-summary-20260624.csv) | local upload rebinding control CSV |
+| [docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md](../results/chrome-desktop-noniphone-upload-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop upload local control |
+| [data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv) | fresh upload local control CSV |
 | [docs/results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md](../results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md) | local transient upload boundary |
 | [docs/results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md](../results/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.md) | local upload retry boundary |
 | [docs/results/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.md](../results/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.md) | local upload retry=2 long outage result |

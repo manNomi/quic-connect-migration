@@ -345,6 +345,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="Public Wi-Fi/LTE handover, iPhone handover, or general browser CM deployment success.",
         next_gap="Run controlled-public page-ready byte-range handover once public origin and active path-change gates are open.",
     ),
+    EvidenceItem(
+        id="chrome-desktop-noniphone-upload-local-refresh",
+        chapter="6/10",
+        category="browser-local-upload-control",
+        implementation="Chrome + quic-go local UDP rebinding proxy",
+        evidence_doc="docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md",
+        runner_or_tool="repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh",
+        local_artifact_id="chrome-desktop-noniphone-upload-drop3000-retry0-20260630",
+        claim_strength="local_browser_positive_control",
+        supports="A fresh Chrome desktop forced-H3 upload run completed without application retry while proxy packets crossed both upstream sockets and qlog/NetLog path validation was observed, even though request-level server remote tuple count stayed at one.",
+        do_not_claim="Public Wi-Fi/LTE handover, iPhone handover, or request-log-only proof of packet-level rebinding.",
+        next_gap="Run controlled-public page-ready upload handover once public origin and active path-change gates are open.",
+    ),
 ]
 
 

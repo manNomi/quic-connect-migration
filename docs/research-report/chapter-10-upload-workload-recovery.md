@@ -73,7 +73,17 @@ local Chrome NAT rebinding upload controls는 packet-level rebinding과 path val
 
 > Upload continuity must be evaluated with both transport/session evidence and application retry outcome, because upload retry can restore user-visible completion even when browser single-session CM is not demonstrated.
 
-## 5. Fresh 2026-06-29 Upload Row의 위치
+## 5. Fresh non-iPhone local upload refresh
+
+2026-06-30에는 iPhone 없이 Chrome desktop local UDP rebinding upload control을 새로 실행했다.
+
+| run | status | classification | upload complete | retry used | upload bytes | remote tuples | Chrome sessions | qlog C/R | NetLog C/R | proxy A/B packets |
+| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- |
+| `chrome-desktop-noniphone-upload-drop3000-retry0-20260630` | PASS | `nat_rebinding_path_validation_without_observed_tuple_change` | true | 0 | 131072 | 1 | 1 | 1/1 | 1/1 | 29/110 |
+
+이 row는 public upload retry replication의 대체물이 아니다. 대신 upload workload에서 artifact 해석이 얼마나 섬세해야 하는지 보강한다. 같은 target QUIC session에서 upload는 완료됐고 qlog/NetLog에는 path validation이 있었지만, request-level server remote tuple은 1개로 유지됐다. 그러므로 upload에서 server request log만 보면 packet-level rebinding을 놓칠 수 있다.
+
+## 6. Fresh 2026-06-29 Upload Row의 위치
 
 2026-06-29 fresh upload no-retry row는 local workspace에 validation file이 있지만, active row가 server artifact missing으로 분류되어 최종 근거로 쓰기 어렵다. 따라서 Chapter 10의 중심 근거는 2026-06-26 repeated upload replication이다.
 
@@ -82,9 +92,10 @@ local Chrome NAT rebinding upload controls는 packet-level rebinding과 path val
 | row type | 논문 사용 |
 | --- | --- |
 | 2026-06-26 repeated upload replication | application retry recovery evidence |
+| 2026-06-30 local upload refresh | local proxy artifact interpretation evidence |
 | 2026-06-29 server-artifact-missing active row | failed/diagnostic record, main claim 근거 아님 |
 
-## 6. 논문에서 쓸 수 있는 주장
+## 7. 논문에서 쓸 수 있는 주장
 
 안전한 주장:
 
@@ -103,11 +114,11 @@ local Chrome NAT rebinding upload controls는 packet-level rebinding과 path val
 | retry=1 always works | 현재 evidence는 matched long upload condition 3회 반복에 한정된다. |
 | fresh 2026-06-29 upload row validates the claim | server artifact missing이라 main evidence가 아니다. |
 
-## 7. 다음 챕터로 넘어가는 이유
+## 8. 다음 챕터로 넘어가는 이유
 
 upload/download는 task failure가 선명하다. 그러나 사용자가 처음에 말한 streaming service 관점에서는 media workload가 더 중요할 수 있다. 다음 챕터는 media segment와 buffered media를 다루면서, completion뿐 아니라 startup delay, buffer depth, rebuffer event, retry/session churn까지 QoE 관점으로 정리해야 한다.
 
-## 8. 검수 결과
+## 9. 검수 결과
 
 | 검수 항목 | 결과 |
 | --- | --- |

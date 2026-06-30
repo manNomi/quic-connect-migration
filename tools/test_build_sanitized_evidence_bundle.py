@@ -35,6 +35,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "nginx-quic-bpf-linux-runner" in ids
     assert "chrome-desktop-noniphone-media-local-refresh" in ids
     assert "chrome-desktop-noniphone-range-local-refresh" in ids
+    assert "chrome-desktop-noniphone-upload-local-refresh" in ids
     for item in bundle["items"]:
         assert item["supports"]
         assert item["do_not_claim"]

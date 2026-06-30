@@ -39,6 +39,12 @@ CSV_FIELDS = [
 ]
 
 
+def redacted_upstream_addr(value: Any, label: str) -> str:
+    if not value:
+        return ""
+    return f"<loopback-{label}>"
+
+
 def read_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
@@ -144,8 +150,8 @@ def row_from_artifact(artifact_dir: Path) -> dict[str, str]:
         "proxy_client_bytes_a": str(forwarding["proxy_client_bytes_a"]),
         "proxy_client_bytes_b": str(forwarding["proxy_client_bytes_b"]),
         "proxy_packet_rebind_observed": str(packet_rebind_observed).lower(),
-        "proxy_upstream_a_addr": str(proxy.get("upstream_a_addr") or ""),
-        "proxy_upstream_b_addr": str(proxy.get("upstream_b_addr") or ""),
+        "proxy_upstream_a_addr": redacted_upstream_addr(proxy.get("upstream_a_addr"), "a"),
+        "proxy_upstream_b_addr": redacted_upstream_addr(proxy.get("upstream_b_addr"), "b"),
         "artifact_dir": artifact_dir.as_posix(),
     }
 
