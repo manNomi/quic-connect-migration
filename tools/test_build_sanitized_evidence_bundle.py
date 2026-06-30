@@ -31,6 +31,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "s2n-nlb-live-readiness" in ids
     assert "aws-s2n-nlb-live-runner" in ids
     assert "s2n-active-migration-api-audit" in ids
+    assert "mvfst-migration-test-readiness" in ids
     for item in bundle["items"]:
         assert item["supports"]
         assert item["do_not_claim"]

@@ -16,6 +16,7 @@
 | HAProxy QUIC | HTTP/3 fresh negative-control `validation=ok_negative_control` | source/docs 반례에서 재현 가능한 proxy runtime 반례로 보강 |
 | XQUIC | local client/server NAT rebinding demo PASS | NAT rebinding path가 실제 demo에서 동작함 |
 | quicly | migration-related unit subtest OK, focused e2e `path-migration` PASS, full e2e `slow-start` caveat | full e2e PASS가 아니라 focused migration evidence로 분리해 과장 방지 |
+| mvfst | source audit + focused migration test readiness map | production-scale 구현체의 실행 후보 test target과 현재 blocker를 고정 |
 | Chrome local controls | local forced-H3/rebinding/retry matrix 존재 | browser success claim은 아직 제한적 |
 
 ## 2. 아직 약한 부분
@@ -141,13 +142,16 @@
 
 상태:
 
-> 완료. `docs/results/mvfst-cm-source-audit-20260630.md`에 `QuicPathManager`, client active probe/migration flow, server passive migration state machine, qlog/stat hook, migration-specific test files를 source-linked appendix로 정리했다.
+> 완료. `docs/results/mvfst-cm-source-audit-20260630.md`에 `QuicPathManager`, client active probe/migration flow, server passive migration state machine, qlog/stat hook, migration-specific test files를 source-linked appendix로 정리했다. 추가로 `tools/check_mvfst_migration_test_readiness.py`와 `docs/results/mvfst-migration-test-readiness-20260630.md`를 추가해 latest remote HEAD `d9d65a3ab3e6ffba785d6605afe6f05b8db015ec` 기준 focused test target map을 고정했다. 결과는 총 106개 test case, high-value migration/path case 78개, BUCK target 3개 확인이다. 현재 로컬 실행은 `disk_below_threshold`, `buck2_missing`, `focused_files_not_directly_exposed_by_current_cmake` 때문에 `validation=blocked`다.
 
 실행 방향:
 
 1. 완료: migration/path manager 관련 파일과 test 목록 고정
 2. 완료: build/test는 이번 턴에서 실행하지 않고 dependency/build cost caveat로 분리
 3. 완료: fresh PASS가 아니라 source-audited evidence로 분류
+4. 완료: focused migration test target readiness runner 추가
+5. 완료: latest remote HEAD 기준 source/BUCK target 존재와 현재 local blocker 고정
+6. 남음: Linux/Buck 또는 충분한 disk의 getdeps 환경에서 target 실행
 
 ### P5. Chrome desktop public-origin simulation
 

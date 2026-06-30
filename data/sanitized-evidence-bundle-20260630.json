@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 20,
+  "item_count": 21,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -12,7 +12,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "readiness_blocked": 4,
+    "readiness_blocked": 5,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -33,6 +33,7 @@
     "implementation-maturity": 1,
     "implementation-observability": 1,
     "implementation-positive-control": 1,
+    "implementation-readiness": 1,
     "server-runtime-positive-control": 1,
     "source-audit": 1
   },
@@ -323,6 +324,22 @@
       "supports": "mvfst has dedicated path manager, client active migration flow, server passive migration state machine, qlog/stat hooks, and migration tests.",
       "do_not_claim": "Local mvfst build/test success.",
       "next_gap": "Run focused mvfst migration tests on Linux builder.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "mvfst-migration-test-readiness",
+      "chapter": "1",
+      "category": "implementation-readiness",
+      "implementation": "mvfst",
+      "evidence_doc": "docs/results/mvfst-migration-test-readiness-20260630.md",
+      "runner_or_tool": "tools/check_mvfst_migration_test_readiness.py",
+      "local_artifact_id": "mvfst-migration-test-readiness-20260630",
+      "claim_strength": "readiness_blocked",
+      "supports": "mvfst latest HEAD has focused migration/path-manager test files, 106 observed test cases, and BUCK targets for path-manager, client active migration, and server passive migration coverage.",
+      "do_not_claim": "Local mvfst build/test success or runtime migration behavior.",
+      "next_gap": "Run BUCK focused targets or getdeps build/test on a Linux or sufficiently provisioned builder.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

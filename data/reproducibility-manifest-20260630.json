@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "d3c6c36",
+    "commit": "3268b2e",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 124,
+    "total_items": 125,
     "status_counts": {
-      "done": 120,
+      "done": 121,
       "planned": 4
     },
-    "latest_item": "s2n-active-migration-api-audit"
+    "latest_item": "mvfst-migration-test-readiness"
   },
   "verification": {
     "checks": "109",
@@ -175,6 +175,14 @@
     },
     "mvfst_source_audit": {
       "path": "docs/results/mvfst-cm-source-audit-20260630.md",
+      "exists": true
+    },
+    "mvfst_migration_test_readiness": {
+      "path": "docs/results/mvfst-migration-test-readiness-20260630.md",
+      "exists": true
+    },
+    "mvfst_migration_test_readiness_json": {
+      "path": "data/mvfst-migration-test-readiness-20260630.json",
       "exists": true
     },
     "s2n_nlb_cid_provider_rerun": {

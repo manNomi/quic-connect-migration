@@ -1,0 +1,151 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "source_root_hint": "external checkout; set MVFST_DIR to override",
+  "source_commit": "d9d65a3ab3e6ffba785d6605afe6f05b8db015ec",
+  "remote_head": "d9d65a3ab3e6ffba785d6605afe6f05b8db015ec",
+  "host": {
+    "os": "Darwin",
+    "linux_recommended": false,
+    "disk_free_gib": 17.84,
+    "disk_threshold_gib": 30.0
+  },
+  "readiness": {
+    "source_ready": true,
+    "getdeps_ready": true,
+    "python3_ready": true,
+    "cmake_ready": true,
+    "ninja_ready": true,
+    "buck2_ready": false,
+    "disk_ready": false,
+    "buck_targets_ready": true,
+    "cmake_direct_targets_ready": false,
+    "can_run_focused_buck_now": false,
+    "can_run_getdeps_now": false,
+    "validation": "blocked",
+    "blocked_reasons": [
+      "disk_below_threshold",
+      "buck2_missing",
+      "focused_files_not_directly_exposed_by_current_cmake"
+    ]
+  },
+  "focused_targets": [
+    {
+      "kind": "path-manager",
+      "file": "quic/state/test/QuicPathManagerTest.cpp",
+      "exists": true,
+      "buck_target": "quic/state/test:quic_path_manager_test",
+      "cmake_direct_file_reference": false,
+      "test_case_count": 55,
+      "high_value_test_count": 27,
+      "sample_high_value_tests": [
+        "QuicPathManagerTest.GetPathByChallengeData",
+        "QuicPathManagerTest.GetPathByChallengeDataNotFound",
+        "QuicPathManagerTest.PrepareChallengeForSending",
+        "QuicPathManagerTest.PrepareChallengeForSendingNonExistentPath",
+        "QuicPathManagerTest.PrepareChallengeForSendingValidatedPath",
+        "QuicPathManagerTest.OnPathResponseReceived",
+        "QuicPathManagerTest.OnPathResponseReceivedStaleResponse",
+        "QuicPathManagerTest.OnPathResponseClearsPendingFlag",
+        "QuicPathManagerTest.OnPathResponseReceivedAfterRetransmit",
+        "QuicPathManagerTest.OnPathResponseReceivedMatchesOriginalAfterRetransmit",
+        "QuicPathManagerTest.GetEarliestChallengeTimeout",
+        "QuicPathManagerTest.OnPathValidationTimeoutExpired"
+      ],
+      "first_test_cases": [
+        "QuicPathManagerTest.AddPath",
+        "QuicPathManagerTest.AddPathWithSocket",
+        "QuicPathManagerTest.AddDuplicatePath",
+        "QuicPathManagerTest.AddValidatedPath",
+        "QuicPathManagerTest.AddValidatedPathDuplicate",
+        "QuicPathManagerTest.GetOrAddPathExisting",
+        "QuicPathManagerTest.GetOrAddPathNew",
+        "QuicPathManagerTest.RemovePath"
+      ]
+    },
+    {
+      "kind": "client-active-migration",
+      "file": "quic/client/test/QuicClientTransportLiteMigrationTest.cpp",
+      "exists": true,
+      "buck_target": "quic/client/test:QuicClientTransportLiteMigrationTest",
+      "cmake_direct_file_reference": false,
+      "test_case_count": 14,
+      "high_value_test_count": 14,
+      "sample_high_value_tests": [
+        "QuicClientTransportLiteMigrationTest.StartPathProbeSuccessWithoutMigrating",
+        "QuicClientTransportLiteMigrationTest.StartPathProbeSuccessWithMigrating",
+        "QuicClientTransportLiteMigrationTest.MigrateConnectionSwitchesCurrentPath",
+        "QuicClientTransportLiteMigrationTest.PathProbeTimeout",
+        "QuicClientTransportLiteMigrationTest.MigrateToUnvalidatedPathThenTimeout",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWithUnboundSocket",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWithSocketAddressFamilyMismatch",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWhenPeerDisablesActiveMigration",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWithoutOneRttCipher",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWithoutSocket",
+        "QuicClientTransportLiteMigrationTest.StartPathProbeAssignsConnectionId",
+        "QuicClientTransportLiteMigrationTest.StartPathProbeFailsWhenNoAvailableConnectionIds"
+      ],
+      "first_test_cases": [
+        "QuicClientTransportLiteMigrationTest.StartPathProbeSuccessWithoutMigrating",
+        "QuicClientTransportLiteMigrationTest.StartPathProbeSuccessWithMigrating",
+        "QuicClientTransportLiteMigrationTest.MigrateConnectionSwitchesCurrentPath",
+        "QuicClientTransportLiteMigrationTest.PathProbeTimeout",
+        "QuicClientTransportLiteMigrationTest.MigrateToUnvalidatedPathThenTimeout",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWithUnboundSocket",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWithSocketAddressFamilyMismatch",
+        "QuicClientTransportLiteMigrationTest.CannotStartProbeWhenPeerDisablesActiveMigration"
+      ]
+    },
+    {
+      "kind": "server-passive-migration",
+      "file": "quic/server/test/QuicServerTransportMigrationTest.cpp",
+      "exists": true,
+      "buck_target": "quic/server/test:QuicServerTransportMigrationTest",
+      "cmake_direct_file_reference": false,
+      "test_case_count": 37,
+      "high_value_test_count": 37,
+      "sample_high_value_tests": [
+        "QuicServerTransportAllowMigrationTest.SendsCorrectNumberOfNewConnectionIdsBasedOnParam",
+        "QuicServerTransportAllowMigrationTest.ReceiveProbeFromNewPeerAddressWithoutMigratingLongGracePeriod",
+        "QuicServerTransportAllowMigrationTest.ReceiveProbeFromNewPeerAddressWithoutMigratingShortGracePeriod",
+        "QuicServerTransportAllowMigrationTest.ReceiveProbeFromNewPeerAddressWithMigrating",
+        "QuicServerTransportAllowMigrationTest.ReceiveReorderedDataFromChangedPeerAddress",
+        "QuicServerTransportAllowMigrationTest.MigrateToNewPeerAndBackWithoutProbing",
+        "QuicServerTransportAllowMigrationTest.MigrateToNewPeerRespondOnFallbackPath",
+        "QuicServerTransportAllowMigrationTest.ResetPathRttPathResponse",
+        "QuicServerTransportAllowMigrationTest.IgnoreInvalidPathResponse",
+        "QuicServerTransportAllowMigrationTest.ReceivePathResponseFromDifferentPeerAddress",
+        "QuicServerTransportAllowMigrationTest.RetiringConnIdIssuesNewIds",
+        "QuicServerTransportAllowMigrationTest.RetiringInvalidConnId"
+      ],
+      "first_test_cases": [
+        "QuicServerTransportAllowMigrationTest.SendsCorrectNumberOfNewConnectionIdsBasedOnParam",
+        "QuicServerTransportAllowMigrationTest.ReceiveProbeFromNewPeerAddressWithoutMigratingLongGracePeriod",
+        "QuicServerTransportAllowMigrationTest.ReceiveProbeFromNewPeerAddressWithoutMigratingShortGracePeriod",
+        "QuicServerTransportAllowMigrationTest.ReceiveProbeFromNewPeerAddressWithMigrating",
+        "QuicServerTransportAllowMigrationTest.ReceiveReorderedDataFromChangedPeerAddress",
+        "QuicServerTransportAllowMigrationTest.MigrateToNewPeerAndBackWithoutProbing",
+        "QuicServerTransportAllowMigrationTest.MigrateToNewPeerRespondOnFallbackPath",
+        "QuicServerTransportAllowMigrationTest.ResetPathRttPathResponse"
+      ]
+    }
+  ],
+  "total_test_cases_observed": 106,
+  "total_high_value_test_cases_observed": 78,
+  "generated_commands": {
+    "buck_focused_tests": [
+      "buck2 test quic/state/test:quic_path_manager_test",
+      "buck2 test quic/client/test:QuicClientTransportLiteMigrationTest",
+      "buck2 test quic/server/test:QuicServerTransportMigrationTest"
+    ],
+    "getdeps_broad_build": [
+      "python3 build/fbcode_builder/getdeps.py --allow-system-packages --num-jobs 4 build mvfst",
+      "python3 build/fbcode_builder/getdeps.py --allow-system-packages --num-jobs 4 test mvfst"
+    ],
+    "source_audit": [
+      "python3 tools/check_mvfst_migration_test_readiness.py --output docs/results/mvfst-migration-test-readiness-20260630.md --json-output data/mvfst-migration-test-readiness-20260630.json"
+    ]
+  },
+  "supports": "mvfst has focused migration/path-manager test files and BUCK targets for path-manager, client active migration, and server passive migration coverage.",
+  "do_not_claim": "Do not claim local mvfst build/test success from this readiness report; it only fixes the focused target map and current blockers."
+}

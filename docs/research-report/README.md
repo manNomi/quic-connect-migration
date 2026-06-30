@@ -147,6 +147,8 @@
 | `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun 결과 |
 | `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | `docs/results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
+| `tools/check_mvfst_migration_test_readiness.py` | mvfst focused migration test target map과 local blocker를 생성하는 readiness 도구 |
+| `docs/results/mvfst-migration-test-readiness-20260630.md` | mvfst latest HEAD focused migration/path test case 106개와 현재 local blocker |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
 | `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
 | `docs/results/controlled-public-range-retry-iphone-usb-handover-20260629.md` | Chapter 9 byte-range retry public handover result |

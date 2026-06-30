@@ -85,6 +85,7 @@
 73. Downlink 5000/5500ms local replication 6회를 추가 실행했고 5000ms는 3/3 PASS, 5500ms는 2/3 PASS였다. 기존 결과와 합산하면 5000ms는 5/6 PASS, 5500ms는 4/6 PASS로 성공 편향 transition zone이다.
 74. AWS NLB + s2n-quic 전용 live runner를 추가했다. 새 s2n live server/client는 local echo smoke를 통과했고, 현재 AWS credential은 `invalid_client_token`이라 runner는 resource 생성 전에 `validation=blocked`로 닫힌다.
 75. s2n-quic active migration API audit를 추가했다. focused `connection_migration` test는 `10 passed`였지만, 현재 public app API에서 quic-go식 `AddPath -> Probe -> Switch` trigger는 확인되지 않아 AWS NLB+s2n active path-change는 forwarding echo 이후 별도 phase로 남긴다.
+76. mvfst migration test readiness runner를 추가했다. latest remote HEAD 기준 focused migration/path test case 106개와 BUCK target 3개를 확인했지만, 현재 로컬은 disk 부족, `buck2` 없음, CMake direct target 미노출로 build/test 실행은 `validation=blocked`로 남긴다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
