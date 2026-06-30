@@ -154,7 +154,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 
 ### 5.4 Local test 실행
 
-빌드와 테스트가 가능한 구현체는 실제로 실행했다. 초기 local test는 8개 구현체에서 시작했고, 2026-06-30 fresh rerun에서 MsQuic, XQUIC, LiteSpeed LSQUIC, quicly, nginx QUIC까지 보강해 총 13개 구현체의 local test/demo/partial artifact를 확보했다.
+빌드와 테스트가 가능한 구현체는 실제로 실행했다. 초기 local test는 8개 구현체에서 시작했고, 2026-06-30 fresh rerun에서 MsQuic, XQUIC, LiteSpeed LSQUIC, quicly, nginx QUIC, HAProxy negative-control까지 보강해 총 14개 구현체/스택의 local test/demo/partial/negative-control artifact를 확보했다.
 
 | 구현체 | 실행한 검수 | 결과 |
 | --- | --- | --- |
@@ -170,6 +170,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 | XQUIC | loopback client/server NAT rebinding demo | PASS demo, full suite partial |
 | LiteSpeed LSQUIC | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS |
 | nginx QUIC | HTTP/3 server runtime demo, quiche active migration, server path seq:1 validation | PASS |
+| HAProxy QUIC | HTTP/3 proxy baseline PASS, quiche active migration path validation FAIL | PASS_NEGATIVE_CONTROL |
 | quicly | build `test.t`/`cli`/`udpfw`, migration-related unit evidence | PARTIAL |
 
 초기 local test 결과는 `docs/results/local-implementation-test-results.md`에, 2026-06-30 fresh rerun 상세 결과는 `docs/results/implementation-rerun-results-20260630.md`에 정리되어 있다.
@@ -369,11 +370,12 @@ quicly는 H2O 계열의 C QUIC library로, path validation과 path promotion int
 | 항목 | 결과 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test/demo까지 실행한 구현체 | 13 |
-| 2026-06-30 fresh rerun/demo artifact 확보 | 12 |
+| local test/demo까지 실행한 구현체 | 14 |
+| 2026-06-30 fresh rerun/demo/negative-control artifact 확보 | 13 |
 | fresh app-level/runtime demo artifact 확보 | 3 |
+| fresh negative-control artifact 확보 | 1 |
 | fresh partial build/test artifact 확보 | 1 |
-| source inspected only | 2 |
+| source inspected only | 1 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |
@@ -402,7 +404,7 @@ Chapter 1의 결론은 다음이다.
 
 연구 검토 시에는 다음처럼 요약할 수 있다.
 
-> 챕터 1에서는 QUIC WG 구현체 목록을 출발점으로 18개 구현체/스택을 선정했고, path validation, NAT rebinding, active migration API, migration policy, preferred address, CID/LB, qlog/event, test 여부를 CSV로 정리했습니다. 이후 scanner로 1차 evidence 후보를 찾고, source/test를 수동 검수했으며, 2026-06-30 기준 13개 구현체는 local test/demo/partial build까지 실행했습니다. 결론적으로 CM은 구현체 수준에서는 존재하지만, 실제 브라우저나 CDN/LB에서 end-to-end CM으로 보이는지는 별도 문제라서 Chapter 2에서 deployment/runtime friction을 분석하게 되었습니다.
+> 챕터 1에서는 QUIC WG 구현체 목록을 출발점으로 18개 구현체/스택을 선정했고, path validation, NAT rebinding, active migration API, migration policy, preferred address, CID/LB, qlog/event, test 여부를 CSV로 정리했습니다. 이후 scanner로 1차 evidence 후보를 찾고, source/test를 수동 검수했으며, 2026-06-30 기준 14개 구현체/스택은 local test/demo/partial build/negative-control까지 실행했습니다. 결론적으로 CM은 구현체 수준에서는 존재하지만, 실제 브라우저나 CDN/LB에서 end-to-end CM으로 보이는지는 별도 문제라서 Chapter 2에서 deployment/runtime friction을 분석하게 되었습니다.
 
 ## 11. 연결 문서
 
@@ -415,5 +417,6 @@ Chapter 1의 결론은 다음이다.
 | `../results/quiche-path-event-timeline-20260623.md` | quiche migration lifecycle |
 | `../results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control |
 | `../results/nginx-quic-active-migration-runtime-20260630.md` | nginx HTTP/3 runtime active-client-migration demo |
+| `../results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun |
 | `../results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `../results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

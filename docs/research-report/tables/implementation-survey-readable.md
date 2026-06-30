@@ -23,17 +23,19 @@
 | `managed` | managed service 성격이라 일반 구현체 test와 다름 |
 | `fresh_app_demo_20260630` | fresh build/test에 더해 app-level demo evidence 확보 |
 | `fresh_runtime_20260630` | fresh runtime demo evidence 확보 |
+| `fresh_negative_control_20260630` | fresh negative-control runtime evidence 확보 |
 
 ## 요약 숫자
 
 | 항목 | 값 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test/demo까지 실행한 구현체 | 13 |
-| 2026-06-30 fresh rerun/demo artifact 확보 | 12 |
+| local test/demo까지 실행한 구현체 | 14 |
+| 2026-06-30 fresh rerun/demo/negative-control artifact 확보 | 13 |
 | fresh app-level/runtime demo artifact 확보 | 3 |
+| fresh negative-control artifact 확보 | 1 |
 | fresh partial build/test artifact 확보 | 1 |
-| source inspected only | 2 |
+| source inspected only | 1 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |
@@ -62,7 +64,7 @@
 | 15 | nginx QUIC | server | O | O | X | `logs` | runtime demo | `server_deploy` | `L4_server_runtime` | `fresh_runtime_20260630` | Use as server-side runtime active-client-migration positive control; browser handover, Linux quic_bpf, and production deployment remain follow-up |
 | 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4_partial` | `fresh_build_partial_20260630` | Use as partial primitive evidence; isolate migration-only unit test or install Perl deps for e2e path-migration before upgrading to fresh rerun |
 | 17 | aioquic | library/tooling | O | △ | X | `logs_tests` | O | `manual` | `L2_L3` | `fresh_rerun_20260630` | Use as readable passive path-validation reference, not primary experiment |
-| 18 | HAProxy QUIC | proxy | △ | △ | X | `stats` | ? | `deployment_constraint` | `L1_L2` | `source_inspected` | Use boundary appendix and local negative control as evidence that HTTP/3 support does not imply active CM support |
+| 18 | HAProxy QUIC | proxy | △ | △ | X | `stats` | runtime negative control | `deployment_constraint` | `L1_L2` | `fresh_negative_control_20260630` | Use fresh local negative control as evidence that HTTP/3 proxy support does not imply active CM support |
 
 ## 보고용 해석
 
@@ -96,7 +98,7 @@
 | 대상 | 주의점 |
 | --- | --- |
 | Chromium/Cronet | runtime policy와 browser behavior가 중요하며 source 근거만으로 Chrome handover success를 말할 수 없음 |
-| HAProxy QUIC | HTTP/3 proxy 지원이 active CM 지원을 의미하지 않는 반례. boundary appendix와 local negative-control을 함께 사용 |
+| HAProxy QUIC | HTTP/3 proxy 지원이 active CM 지원을 의미하지 않는 반례. fresh negative-control에서 ordinary H3 PASS, migrated path validation FAIL |
 | aioquic | passive validation reference로 좋지만 active migration 주력 후보는 아님 |
 | nginx QUIC | server-side runtime evidence는 있으나 client active migration API나 browser handover evidence는 아님 |
 

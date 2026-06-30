@@ -110,7 +110,8 @@ HAProxy local HTTP/3 negative control은 다음을 보여줬다.
 | ordinary HTTP/3 request | PASS |
 | quiche no-migration request | PASS |
 | quiche `--perform-migration` | failed as expected |
-| qlog | `PATH_CHALLENGE` observed, `PATH_RESPONSE` absent |
+| qlog | `path_challenge=3`, `path_response=0` |
+| fresh runner | `harness/scripts/run-haproxy-http3-negative-control.sh`, `validation=ok_negative_control` |
 
 해석:
 
@@ -179,6 +180,7 @@ CDN은 별도로 해석해야 한다.
 | AWS NLB positive/negative control 분리 | PASS |
 | proxy/CDN edge 해석 분리 | PASS |
 | nginx server runtime contrast | PASS |
+| HAProxy fresh negative-control runner | PASS |
 | 공식 AWS/HAProxy/Cloudflare 문서 링크 | `chapter-04-reference-and-evidence.md`에 정리 |
 | 구현 코드 링크 | `aws_nlb_cid.go`, NLB harness script로 연결 |
 | 민감정보 처리 | 새 보고용 문서에는 공인 IP, hostname, instance ID, account ID, SSH target을 쓰지 않음 |

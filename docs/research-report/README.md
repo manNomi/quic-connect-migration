@@ -89,6 +89,7 @@
 | `harness/scripts/run-local-quic-go.sh` | Chapter 3 local quic-go 재현 wrapper |
 | `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
 | `harness/scripts/run-nginx-quic-active-migration-demo.sh` | Chapter 3 nginx QUIC active migration runtime demo |
+| `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `docs/research-report/tables/chapter-03-scanner-trigger-map-20260630.md` | Chapter 3 quic-go positive-control trigger 추적표 |
 | `repro/quic-go-min-repro/internal/common/aws_nlb_cid.go` | Chapter 4 AWS NLB routable CID generator |
 | `harness/scripts/run-aws-nlb-quic-data-plane.sh` | Chapter 4 AWS NLB positive/negative control harness |
@@ -118,6 +119,7 @@
 | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | LSQUIC preferred-address HTTP/3 app demo 결과 |
 | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | LSQUIC local UDP proxy NAT rebinding HTTP/3 app demo 결과 |
 | `docs/results/nginx-quic-active-migration-runtime-20260630.md` | nginx HTTP/3 server active-client-migration runtime demo 결과 |
+| `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun 결과 |
 | `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | `docs/results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

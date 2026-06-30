@@ -9,9 +9,10 @@
 | 영역 | 현재 상태 | 해석 |
 | --- | --- | --- |
 | 구현체 성숙도 survey | 18개 구현체/스택 정리 | CM은 구현체 수준에서 실재한다는 claim 가능 |
-| fresh rerun/demo | 12개 fresh rerun/demo, 1개 partial build/test | quic-go 편중 약점이 줄어듦 |
+| fresh rerun/demo/negative-control | 13개 fresh rerun/demo/negative-control, 1개 partial build/test | quic-go 편중 약점과 proxy 반례 약점이 줄어듦 |
 | LSQUIC | full CTest 79/79, selected CTest 5/5 PASS, preferred-address app demo `validation=ok`, NAT rebinding app demo `validation=ok` | source-only에서 server-stack unit evidence와 두 종류의 app-level path-transition evidence로 승격 |
 | nginx QUIC | source audit + HTTP/3 runtime active-client-migration demo `validation=ok` | source-only에서 web-server runtime evidence로 승격 |
+| HAProxy QUIC | HTTP/3 fresh negative-control `validation=ok_negative_control` | source/docs 반례에서 재현 가능한 proxy runtime 반례로 보강 |
 | XQUIC | local client/server NAT rebinding demo PASS | NAT rebinding path가 실제 demo에서 동작함 |
 | quicly | migration-related unit subtest OK, full/e2e partial | partial evidence로 분리해 과장 방지 |
 | Chrome local controls | local forced-H3/rebinding/retry matrix 존재 | browser success claim은 아직 제한적 |
@@ -22,7 +23,7 @@
 | --- | --- | --- |
 | LSQUIC OpenLiteSpeed production-like migration demo | preferred-address와 NAT rebinding example app demo는 확보했지만 production-like OpenLiteSpeed 경로는 아직 없음 | 가능 |
 | mvfst fresh build/test or focused source audit | 대규모 deployment 구현체인데 아직 source inspection 중심 | 가능하나 빌드 비용 큼 |
-| nginx QUIC production/Linux `quic_bpf` 및 HAProxy 최신 negative-control | nginx local runtime은 확보됐지만 production packet routing과 proxy 최신 build는 아직 약함 | 가능 |
+| nginx QUIC production/Linux `quic_bpf` | nginx local runtime은 확보됐지만 production packet routing은 아직 약함 | 가능 |
 | AWS NLB + s2n-quic CID routing 검증 | 교수님 decision의 AWS 구축 검수와 직접 연결 | 가능 |
 | Chrome desktop public-origin simulation | iPhone 없이 browser/runtime policy의 한계를 보강 | 가능 |
 | sanitized evidence bundle | raw log가 ignored path에 있어 심사/보고 시 재현 근거가 약해질 수 있음 | 가능 |
@@ -94,7 +95,7 @@
 
 상태:
 
-> 완료. `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md`에 nginx QUIC source/official-doc 기반 server-side passive migration evidence와 HAProxy official-doc/source/local negative-control evidence를 분리해 정리했다. 추가로 `harness/scripts/run-nginx-quic-active-migration-demo.sh`와 `docs/results/nginx-quic-active-migration-runtime-20260630.md`를 추가해 nginx HTTP/3 server runtime demo를 확보했다. 최신 run `nginx-quic-active-migration-20260630T104724Z`는 `validation=ok`, `client_response_bytes=1048576`, `server_path_seq1_created_count=1`, `server_path_seq1_validated_count=2`, server/client PATH_CHALLENGE/PATH_RESPONSE evidence를 기록했다.
+> 완료. `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md`에 nginx QUIC source/official-doc 기반 server-side passive migration evidence와 HAProxy official-doc/source/local negative-control evidence를 분리해 정리했다. 추가로 `harness/scripts/run-nginx-quic-active-migration-demo.sh`와 `docs/results/nginx-quic-active-migration-runtime-20260630.md`를 추가해 nginx HTTP/3 server runtime demo를 확보했다. 최신 nginx run `nginx-quic-active-migration-20260630T104724Z`는 `validation=ok`, `client_response_bytes=1048576`, `server_path_seq1_created_count=1`, `server_path_seq1_validated_count=2`, server/client PATH_CHALLENGE/PATH_RESPONSE evidence를 기록했다. 이어서 `harness/scripts/run-haproxy-http3-negative-control.sh`와 `docs/results/haproxy-http3-negative-control-rerun-20260630.md`를 추가해 HAProxy fresh negative-control도 확보했다. 최신 HAProxy run `haproxy-http3-negative-control-20260630T110201Z`는 ordinary H3 baseline PASS, quiche no-migration PASS, active migration path validation FAIL, qlog `path_challenge=3`, `path_response=0`을 기록했다.
 
 실행 방향:
 
@@ -102,8 +103,8 @@
 2. 완료: HAProxy 공식 문서/소스에서 migration unsupported 또는 제한 근거 고정
 3. 완료: 기존 local proxy negative-control에서 ordinary H3 PASS, active migration FAIL, client qlog `PATH_RESPONSE=0` 확인
 4. 완료: nginx HTTP/3 runtime demo에서 quiche active source-port migration, server path seq:1 validation, 1MiB response completion 확인
-5. 남음: Linux `quic_bpf` 기반 packet routing 또는 production-like nginx deployment 검증
-6. 남음: HAProxy 최신 빌드로 negative-control 재실행
+5. 완료: HAProxy fresh negative-control runner로 ordinary H3 PASS와 active migration FAIL 재현
+6. 남음: Linux `quic_bpf` 기반 packet routing 또는 production-like nginx deployment 검증
 
 논문 기여:
 
@@ -148,9 +149,9 @@
 | 1 | nginx/HAProxy negative-control source+doc appendix + nginx runtime demo | 완료. HTTP/3 support와 CM support의 경계를 강화했고 nginx server runtime positive control 확보 |
 | 2 | OpenLiteSpeed production-like demo | LSQUIC example binary와 production-like server 경계 확인 |
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | 교수님 decision의 AWS 검증과 직접 연결. 현재 credential refresh 필요 |
-| 4 | HAProxy 최신 빌드 negative-control 재실행 | proxy boundary를 current build 기준으로 보강 |
+| 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | nginx local runtime evidence를 deployment 쪽으로 확장 |
 | 5 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 OpenLiteSpeed production-like demo 또는 HAProxy 최신 빌드 negative-control 재실행을 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, LSQUIC preferred-address/NAT-rebinding app demo는 확보됐다.
+다음 턴에서는 OpenLiteSpeed production-like demo를 우선 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo는 확보됐다.

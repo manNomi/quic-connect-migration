@@ -4,6 +4,12 @@
 상태: PASS as negative control  
 범위: local HAProxy HTTP/3 frontend가 일반 HTTP/3 요청은 처리하지만 active Connection Migration 시도는 유지하지 못하는지 확인한다.
 
+2026-06-30 fresh rerun:
+
+- 재현 스크립트: `harness/scripts/run-haproxy-http3-negative-control.sh`
+- 결과 문서: `docs/results/haproxy-http3-negative-control-rerun-20260630.md`
+- 최신 run: `haproxy-http3-negative-control-20260630T110201Z`, `validation=ok_negative_control`, qlog `path_challenge=3`, `path_response=0`
+
 ## 1. 결론
 
 HAProxy 3.4.0 Homebrew build는 HTTP/3 endpoint로 정상 동작했다. 그러나 같은 endpoint에 대해 Cloudflare `quiche-client --perform-migration`을 실행하면 새 source port path validation이 실패했다.

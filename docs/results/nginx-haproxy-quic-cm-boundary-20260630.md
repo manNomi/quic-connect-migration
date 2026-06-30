@@ -17,7 +17,7 @@
 | 대상 | 역할 | 기준 commit / version | 검수 범위 |
 | --- | --- | --- | --- |
 | nginx QUIC | web server | `072f6fdbac3323fab257280b7119224027b01315`, runtime run `nginx-quic-active-migration-20260630T104724Z` | official docs + source inspection + runtime demo |
-| HAProxy QUIC | reverse proxy / H3 frontend | source `ff6bb343f4a9c8dc38b2917ab1dd70785314b625`, local negative control `HAProxy 3.4.0-64a335366` | official docs + source inspection + existing local negative-control |
+| HAProxy QUIC | reverse proxy / H3 frontend | source `b68be6d0a2816c71137c53d2c958be9c93bef3ea`, fresh negative-control `haproxy-http3-negative-control-20260630T110201Z`, binary `HAProxy 3.4.0-64a335366` | official docs + source inspection + fresh local negative-control |
 
 검수 명령:
 
@@ -35,6 +35,7 @@ rg -n "connection migration|disable_active_migration|PATH_CHALLENGE|PATH_RESPONS
   /private/tmp/quic-cm-scan-repos/haproxy/src
 
 harness/scripts/run-nginx-quic-active-migration-demo.sh
+harness/scripts/run-haproxy-http3-negative-control.sh
 ```
 
 ## 3. nginx QUIC 결과
@@ -90,11 +91,12 @@ HAProxy 공식 configuration 문서는 HTTP/3가 QUIC 위에 구현되어 있고
 | 근거 | 위치 | 의미 |
 | --- | --- | --- |
 | official configuration docs | [HAProxy configuration manual](https://docs.haproxy.org/3.2/configuration.html) | HTTP/3/QUIC 설명에서 HAProxy의 connection migration 미지원 문구 확인 |
-| current source doc line | [haproxy doc/configuration.txt](https://github.com/haproxy/haproxy/blob/ff6bb343f4a9c8dc38b2917ab1dd70785314b625/doc/configuration.txt#L269-L273) | current master 문서에도 같은 boundary 존재 |
-| migration handler | [src/quic_conn.c](https://github.com/haproxy/haproxy/blob/ff6bb343f4a9c8dc38b2917ab1dd70785314b625/src/quic_conn.c#L1401-L1458) | client-initiated migration detection/handler source exists |
-| server transport parameter default | [src/quic_tp.c](https://github.com/haproxy/haproxy/blob/ff6bb343f4a9c8dc38b2917ab1dd70785314b625/src/quic_tp.c#L110-L113) | server side default에서 `disable_active_migration` set |
-| transport parameter encode | [src/quic_tp.c](https://github.com/haproxy/haproxy/blob/ff6bb343f4a9c8dc38b2917ab1dd70785314b625/src/quic_tp.c#L625-L628) | `disable_active_migration` transport parameter encode path |
+| current source doc line | [haproxy doc/configuration.txt](https://github.com/haproxy/haproxy/blob/b68be6d0a2816c71137c53d2c958be9c93bef3ea/doc/configuration.txt#L269-L273) | current master 문서에도 같은 boundary 존재 |
+| migration handler | [src/quic_conn.c](https://github.com/haproxy/haproxy/blob/b68be6d0a2816c71137c53d2c958be9c93bef3ea/src/quic_conn.c#L1401-L1458) | client-initiated migration detection/handler source exists |
+| server transport parameter default | [src/quic_tp.c](https://github.com/haproxy/haproxy/blob/b68be6d0a2816c71137c53d2c958be9c93bef3ea/src/quic_tp.c#L110-L113) | server side default에서 `disable_active_migration` set |
+| transport parameter encode | [src/quic_tp.c](https://github.com/haproxy/haproxy/blob/b68be6d0a2816c71137c53d2c958be9c93bef3ea/src/quic_tp.c#L625-L628) | `disable_active_migration` transport parameter encode path |
 | local negative control | [haproxy-http3-negative-control-results-20260623.md](haproxy-http3-negative-control-results-20260623.md) | ordinary H3 PASS, quiche active migration FAIL |
+| fresh negative-control rerun | [haproxy-http3-negative-control-rerun-20260630.md](haproxy-http3-negative-control-rerun-20260630.md) | 재현 스크립트 기반 ordinary H3 PASS, active migration path validation FAIL |
 
 로컬 negative-control 요약:
 
@@ -103,12 +105,13 @@ HAProxy 공식 configuration 문서는 HTTP/3가 QUIC 위에 구현되어 있고
 | HAProxy H3 endpoint | curl `--http3-only` PASS, `HTTP/3 200` |
 | quiche no-migration request | PASS, response received |
 | quiche `--perform-migration` | FAIL as expected |
-| qlog | `PATH_CHALLENGE` 3회, `PATH_RESPONSE` 0회 |
+| qlog | `path_challenge` 3회, `path_response` 0회 |
 | client path state | new path `validation_state=Failed active=false` |
+| fresh runner validation | `validation=ok_negative_control` |
 
 판정:
 
-> HAProxy는 HTTP/3 proxy endpoint로 동작할 수 있지만, tested build에서는 quiche active migration 시도가 path validation failure로 끝났다. current source에는 migration handler와 counters가 보이므로 "소스에 관련 코드가 전혀 없다"고 말하면 안 된다. 안전한 결론은 "공식 문서와 local negative-control 기준으로 HAProxy HTTP/3 support는 active Connection Migration support의 증거가 아니다"이다.
+> HAProxy는 HTTP/3 proxy endpoint로 동작할 수 있지만, tested build에서는 quiche active migration 시도가 path validation failure로 끝났다. current source에는 migration handler와 counters가 보이므로 "소스에 관련 코드가 전혀 없다"고 말하면 안 된다. 안전한 결론은 "공식 문서와 fresh local negative-control 기준으로 HAProxy HTTP/3 support는 active Connection Migration support의 증거가 아니다"이다.
 
 ## 5. nginx와 HAProxy 비교
 
@@ -149,4 +152,4 @@ HAProxy 공식 configuration 문서는 HTTP/3가 QUIC 위에 구현되어 있고
 2. HTTP/3 availability와 CM availability를 분리해야 한다는 Chapter 2 friction claim을 강화한다.
 3. proxy/CDN/LB deployment에서 end-to-end CM을 별도로 검증해야 한다는 Chapter 4 설계를 뒷받침한다.
 
-후속 작업은 HAProxy 최신 빌드 negative-control 재실행, Linux `quic_bpf`가 있는 nginx deployment test, 또는 OpenLiteSpeed production-like demo다. 모두 iPhone 없이 가능하지만, browser handover claim과는 분리해야 한다.
+후속 작업은 Linux `quic_bpf`가 있는 nginx deployment test 또는 OpenLiteSpeed production-like demo다. HAProxy fresh negative-control은 재현 스크립트와 함께 확보됐지만, 미래 버전 전체에 대한 일반화는 피해야 한다.

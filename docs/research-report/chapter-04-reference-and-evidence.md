@@ -16,6 +16,7 @@
 | transport server | [repro/quic-go-min-repro/cmd/server/main.go](../../repro/quic-go-min-repro/cmd/server/main.go) | AWS NLB CID generator를 quic-go transport에 연결 |
 | H3 server | [repro/quic-go-min-repro/cmd/h3server/main.go](../../repro/quic-go-min-repro/cmd/h3server/main.go) | HTTP/3 upload/download workload |
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
+| HAProxy negative-control runner | [harness/scripts/run-haproxy-http3-negative-control.sh](../../harness/scripts/run-haproxy-http3-negative-control.sh) | HAProxy ordinary H3 baseline과 active migration failure를 재현 |
 | deployment trigger map | [tables/chapter-04-scanner-trigger-map-20260630.md](tables/chapter-04-scanner-trigger-map-20260630.md) | CID generator, NLB harness, H3 workload, false-positive guard line anchor |
 
 ## 2. 공식 reference links
@@ -44,6 +45,7 @@
 | [docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md](../results/s2n-quic-nlb-cid-provider-rerun-20260630.md) | s2n-quic custom CID provider 복원/rerun, AWS NLB deployment prerequisite |
 | [docs/results/aws-nlb-http3-workload-results-20260624.md](../results/aws-nlb-http3-workload-results-20260624.md) | HTTP/3 POST-before / migration / GET-after workload |
 | [docs/results/haproxy-http3-negative-control-results-20260623.md](../results/haproxy-http3-negative-control-results-20260623.md) | HTTP/3 proxy support != active CM support negative control |
+| [docs/results/haproxy-http3-negative-control-rerun-20260630.md](../results/haproxy-http3-negative-control-rerun-20260630.md) | HAProxy HTTP/3 negative-control fresh rerun with reproducible runner |
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | [docs/results/cm-operational-friction-matrix-20260624.md](../results/cm-operational-friction-matrix-20260624.md) | Chapter 2 friction matrix와 deployment interpretation 연결 |
 
@@ -74,7 +76,7 @@ HAProxy negative control:
 | ordinary H3 request PASS | endpoint/proxy가 HTTP/3 자체는 지원 |
 | no-migration quiche request PASS | client/proxy basic interop은 됨 |
 | migration attempt path validation FAIL | HTTP/3 support가 active CM support를 의미하지 않음 |
-| client qlog `PATH_RESPONSE=0` | path validation failure 근거 |
+| client qlog `path_challenge=3`, `path_response=0` | path validation failure 근거 |
 
 nginx/HAProxy boundary:
 
