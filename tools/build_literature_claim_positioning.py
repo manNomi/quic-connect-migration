@@ -80,7 +80,7 @@ SOURCE_ROWS = [
         "source": "RFC 9308 and RFC 9312",
         "year": "2022",
         "source_type": "IETF operational RFCs",
-        "url": "https://www.rfc-editor.org/rfc/rfc9308.html",
+        "url": "https://datatracker.ietf.org/doc/html/rfc9308",
         "paper_use": "Operational caution for UDP timeouts, NAT rebinding, CID choices, and manageability limits.",
         "supports": "Deployment maturity is separate from transport feature existence.",
         "does_not_support": "It does not measure browser behavior or quantify CM adoption by itself.",

@@ -1,6 +1,6 @@
 # Literature Claim Positioning Matrix
 
-Generated: `2026-06-29`
+Generated: `2026-06-30`
 
 ## Purpose
 
@@ -58,7 +58,7 @@ The current paper direction should be:
 - `ccr2025-wild-cm`: [An Analysis of QUIC Connection Migration in the Wild](https://dl.acm.org/doi/10.1145/3727063.3727066)
 - `rfc9000-cm`: [QUIC: A UDP-Based Multiplexed and Secure Transport](https://datatracker.ietf.org/doc/html/rfc9000)
 - `rfc9114-h3-discovery`: [HTTP/3](https://datatracker.ietf.org/doc/html/rfc9114)
-- `rfc9308-rfc9312-ops`: [RFC 9308 and RFC 9312](https://www.rfc-editor.org/rfc/rfc9308.html)
+- `rfc9308-rfc9312-ops`: [RFC 9308 and RFC 9312](https://datatracker.ietf.org/doc/html/rfc9308)
 - `chromium-cronet-policy`: [Chromium QUIC migration parameters and Android Cronet ConnectionMigrationOptions](https://developer.android.com/develop/connectivity/cronet/reference/org/chromium/net/ConnectionMigrationOptions)
 - `quic-go-docs`: [quic-go Connection Migration documentation](https://quic-go.net/docs/quic/connection-migration/)
 - `ietf-multipath`: [Managing multiple paths for a QUIC connection](https://datatracker.ietf.org/doc/draft-ietf-quic-multipath/)

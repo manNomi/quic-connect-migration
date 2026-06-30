@@ -8,6 +8,8 @@
 
 | 챕터 | 상태 | 문서 |
 | --- | --- | --- |
+| 전체 부록. 참고자료 링크 카탈로그 | 작성 완료 | `reference-link-catalog-20260630.md` |
+| 전체 부록. scanner/classifier/builder trigger 감사 인덱스 | 작성 완료 | `scanner-trigger-audit-index-20260630.md` |
 | Chapter 1. QUIC Connection Migration 구현체 성숙도 조사 | 작성 완료 | `chapter-01-implementation-maturity.md` |
 | Chapter 1 부록. 실제 참고 링크와 scanner trigger 근거 | 작성 완료 | `chapter-01-reference-and-scanner-evidence.md` |
 | Chapter 1 표. 구현체별 조사 CSV 가독화 | 작성 완료 | `tables/implementation-survey-readable.md` |
@@ -49,6 +51,10 @@
 | Chapter 11 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-11-reference-and-evidence.md` |
 | Chapter 11 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-11-scanner-trigger-map-20260630.md` |
 | Chapter 11 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-11-external-link-check-20260630.md` |
+| Chapter 12. Literature-Based Claim Positioning | 작성 완료 | `chapter-12-literature-claim-positioning.md` |
+| Chapter 12 부록. 실제 source link와 builder 근거 | 작성 완료 | `chapter-12-reference-and-evidence.md` |
+| Chapter 12 표. builder trigger 위치 | 작성 완료 | `tables/chapter-12-scanner-trigger-map-20260630.md` |
+| Chapter 12 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-12-external-link-check-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -65,6 +71,8 @@
 | 원본 | 역할 |
 | --- | --- |
 | `data/implementation-survey.csv` | Chapter 1 구현체별 원본 조사표 |
+| `docs/research-report/reference-link-catalog-20260630.md` | 전체 외부 참고자료 링크 카탈로그 |
+| `docs/research-report/scanner-trigger-audit-index-20260630.md` | 전체 scanner/classifier/builder trigger 감사 인덱스 |
 | `tools/scan_implementation_evidence.py` | 구현체 repo에서 CM 관련 evidence 후보를 찾는 scanner |
 | `docs/research-report/chapter-01-reference-and-scanner-evidence.md` | 공식 참고 링크와 scanner trigger 검증 부록 |
 | `docs/research-report/tables/scanner-trigger-summary-20260630.md` | 15개 공개 구현체 scanner trigger 위치 표 |
@@ -93,6 +101,7 @@
 | `tools/summarize_chrome_rebinding_upload_matrix.py` | Chapter 10 local upload control summarizer |
 | `tools/summarize_chrome_rebinding_media_matrix.py` | Chapter 11 local media segment summarizer |
 | `tools/summarize_chrome_rebinding_buffered_media_matrix.py` | Chapter 11 local buffered media summarizer |
+| `tools/build_literature_claim_positioning.py` | Chapter 12 literature-to-claim positioning builder |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
@@ -101,3 +110,4 @@
 | `docs/results/iphone-usb-upload-retry-pilot-20260626.md` | Chapter 10 upload retry public handover result |
 | `docs/results/streaming-workload-case-analysis-20260629.md` | Chapter 11 streaming workload synthesis |
 | `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md` | Chapter 11 buffered media local control |
+| `docs/results/literature-claim-positioning-20260629.md` | Chapter 12 literature claim positioning |
