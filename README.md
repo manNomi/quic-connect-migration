@@ -106,6 +106,7 @@
 94. XQUIC full-suite Linux audit와 fail-closed runner를 추가했다. XQUIC은 source callback, NAT rebinding validation, local NAT rebinding demo PASS 근거가 있지만 full suite PASS는 아직 아니므로 `harness/scripts/run-xquic-full-suite-linux.sh`를 Linux에서 실행해 `validation=ok` artifact가 나와야 claim을 승격할 수 있다.
 95. mvfst focused Linux runner audit를 추가했다. mvfst는 dedicated path manager, client active migration, server passive migration/NAT rebinding, focused BUCK target 3개, 106개 observed test case 근거가 있지만 local PASS는 아니므로 `harness/scripts/run-mvfst-focused-migration-tests-linux.sh`가 Linux/buck2 환경에서 `validation=ok`를 내야 실행 근거로 승격한다.
 96. quicly full-e2e Linux runner audit를 추가했다. quicly는 focused `path-migration` e2e와 CID seq 1 first path probe check가 PASS지만 full `t/e2e.t`는 아직 clean PASS가 아니므로 `harness/scripts/run-quicly-full-e2e-linux.sh`가 Linux에서 `validation=ok_full_e2e`를 내야 full-e2e claim을 승격한다.
+97. Chromium/Cronet policy-boundary audit를 추가했다. Chromium client session에는 socket migration hook과 network-change/path-degrading callback이 있고 NetLog에는 migration trigger/success/failure/probing event family가 있지만, Cronet은 QUIC enabled 경로에서 network-change migration을 명시적으로 disable하므로 Chrome/Cronet handover 성공은 runtime row 없이 주장하지 않는다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 

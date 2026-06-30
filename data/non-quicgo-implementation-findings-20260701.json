@@ -20,8 +20,8 @@
       "fresh_rerun_20260630": 8,
       "fresh_runtime_20260630": 1,
       "partial_deferred": 2,
-      "source_and_local_browser_baseline": 1,
-      "source_inspected": 1
+      "source_inspected": 1,
+      "source_policy_audit_20260701": 1
     },
     "active_migration_api_yes": 7,
     "passive_migration_yes": 13,
@@ -194,11 +194,11 @@
       "tests": "yes",
       "lb_or_cloud_deployability": "n/a",
       "aws_suitability": "high",
-      "current_level": "L4_client_runtime_policy_dependent",
-      "evidence_status": "source_and_local_browser_baseline",
-      "next_action": "Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults",
+      "current_level": "L4_client_policy_boundary_audit",
+      "evidence_status": "source_policy_audit_20260701",
+      "next_action": "Use Chromium/Cronet policy-boundary audit as high-usage client evidence; runtime Chrome/Cronet handover still requires active network-change rows",
       "claim_class": "source_or_readiness_only",
-      "risk_note": "Policy hooks and NetLog exist, but browser handover success requires runtime rows."
+      "risk_note": "Policy hooks, NetLog migration events, and Cronet default-disable evidence exist, but browser handover success still requires runtime rows."
     },
     {
       "priority": "11",

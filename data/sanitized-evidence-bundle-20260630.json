@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 52,
+  "item_count": 53,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -30,6 +30,7 @@
     "safety_audit": 1,
     "server_runtime_positive": 1,
     "source_linked_api_boundary": 1,
+    "source_linked_policy_boundary": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
     "source_test_map_with_linux_runner_gate": 1,
@@ -45,6 +46,7 @@
     "browser-local-music-control": 1,
     "browser-local-range-control": 1,
     "browser-local-upload-control": 1,
+    "browser-policy-boundary": 1,
     "browser-policy-source": 1,
     "browser-readiness": 1,
     "claim-readiness-synthesis": 1,
@@ -530,6 +532,22 @@
       "supports": "Browser/client stack has migration hooks and NetLog events, but runtime policy controls whether migration occurs.",
       "do_not_claim": "Chrome or Cronet handover success from source hooks alone.",
       "next_gap": "Run real browser/network-change trial when non-iPhone path is ready.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "chromium-cronet-policy-boundary-audit",
+      "chapter": "1",
+      "category": "browser-policy-boundary",
+      "implementation": "Chromium/Cronet",
+      "evidence_doc": "docs/results/chromium-cronet-policy-boundary-audit-20260701.md",
+      "runner_or_tool": "tools/build_chromium_cronet_policy_boundary_audit.py",
+      "local_artifact_id": "chromium-cronet-policy-boundary-audit-20260701",
+      "claim_strength": "source_linked_policy_boundary",
+      "supports": "Chromium has client migration hooks and NetLog migration event taxonomy, while Cronet's inspected QUIC path explicitly disables network-change migration by default.",
+      "do_not_claim": "Chrome browser, Android platform HTTP, or Cronet embedded-app live single-session handover success.",
+      "next_gap": "Run Chrome/Cronet active network-change rows with target-session NetLog trigger/success/failure, client path-change, server/qlog, and workload-completion evidence.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

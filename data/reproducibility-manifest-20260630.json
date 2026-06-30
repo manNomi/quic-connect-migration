@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "78f707d",
+    "commit": "6600491",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -25,8 +25,8 @@
       "fresh_rerun_20260630": 9,
       "fresh_runtime_20260630": 1,
       "partial_deferred": 2,
-      "source_and_local_browser_baseline": 1,
-      "source_inspected": 1
+      "source_inspected": 1,
+      "source_policy_audit_20260701": 1
     },
     "current_level_counts": {
       "L1_L2": 1,
@@ -39,7 +39,7 @@
       "L4_L5": 1,
       "L4_L5_candidate": 1,
       "L4_L5_caveat": 1,
-      "L4_client_runtime_policy_dependent": 1,
+      "L4_client_policy_boundary_audit": 1,
       "L4_server_runtime": 1,
       "L5_candidate": 1,
       "L5_deployment_candidate": 1,
@@ -54,16 +54,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 156,
+    "total_items": 157,
     "status_counts": {
-      "done": 152,
+      "done": 153,
       "planned": 4
     },
-    "latest_item": "quicly-full-e2e-linux-audit"
+    "latest_item": "chromium-cronet-policy-boundary-audit"
   },
   "verification": {
-    "checks": "143",
-    "passed": "143",
+    "checks": "145",
+    "passed": "145",
     "ok": "yes"
   },
   "research_audit": {
@@ -359,6 +359,14 @@
     },
     "quicly_full_e2e_linux_runner": {
       "path": "harness/scripts/run-quicly-full-e2e-linux.sh",
+      "exists": true
+    },
+    "chromium_cronet_policy_boundary_audit": {
+      "path": "docs/results/chromium-cronet-policy-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "chromium_cronet_policy_boundary_audit_json": {
+      "path": "data/chromium-cronet-policy-boundary-audit-20260701.json",
       "exists": true
     },
     "openlitespeed_source_feasibility": {

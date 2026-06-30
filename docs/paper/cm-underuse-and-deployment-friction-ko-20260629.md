@@ -18,7 +18,7 @@
 | active migration API = yes | 8 |
 | passive migration = yes | 14 |
 | tests = yes | 14 |
-| level distribution | L1_L2=1; L2_L3=1; L2_L4=1; L3_L4=4; L4=3; L4_AWS_L5_candidate=1; L4_L5=1; L4_L5_candidate=1; L4_L5_caveat=1; L4_client_runtime_policy_dependent=1; L5_candidate=1; L5_deployment_candidate=1; L5_edge=1 |
+| level distribution | L1_L2=1; L2_L3=1; L2_L4=1; L3_L4=4; L4=3; L4_AWS_L5_candidate=1; L4_L5=1; L4_L5_candidate=1; L4_L5_caveat=1; L4_client_policy_boundary_audit=1; L5_candidate=1; L5_deployment_candidate=1; L5_edge=1 |
 
 ## Layer별 friction
 

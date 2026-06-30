@@ -179,6 +179,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "quicly_full_e2e_linux_audit": "docs/results/quicly-full-e2e-linux-audit-20260701.md",
         "quicly_full_e2e_linux_audit_json": "data/quicly-full-e2e-linux-audit-20260701.json",
         "quicly_full_e2e_linux_runner": "harness/scripts/run-quicly-full-e2e-linux.sh",
+        "chromium_cronet_policy_boundary_audit": "docs/results/chromium-cronet-policy-boundary-audit-20260701.md",
+        "chromium_cronet_policy_boundary_audit_json": "data/chromium-cronet-policy-boundary-audit-20260701.json",
         "openlitespeed_source_feasibility": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",
         "openlitespeed_runtime_preflight": "docs/results/openlitespeed-runtime-preflight-20260630.md",
         "openlitespeed_runtime_runner": "docs/results/openlitespeed-active-migration-runner-20260630.md",

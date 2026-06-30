@@ -53,6 +53,8 @@ def classify(row: dict[str, str]) -> str:
         return "focused_or_partial_positive"
     if status == "fresh_rerun_20260630":
         return "strong_cross_implementation_positive"
+    if status == "source_policy_audit_20260701":
+        return "source_or_readiness_only"
     if "managed" in category or "lb_plus_server" in category or status == "partial_deferred":
         return "managed_or_deployment_pending"
     return "source_or_readiness_only"
@@ -69,7 +71,7 @@ def risk_note(row: dict[str, str]) -> str:
     if name == "MsQuic":
         return "NAT rebind/path validation tests are positive; API audit shows constrained local-address control, while QUIC-aware load balancing remains a deployment boundary."
     if name == "Chromium Chrome Cronet":
-        return "Policy hooks and NetLog exist, but browser handover success requires runtime rows."
+        return "Policy hooks, NetLog migration events, and Cronet default-disable evidence exist, but browser handover success still requires runtime rows."
     if name == "AWS CloudFront":
         return "Viewer-edge continuity is not end-to-end origin Connection Migration."
     if name == "AWS NLB plus s2n-quic":

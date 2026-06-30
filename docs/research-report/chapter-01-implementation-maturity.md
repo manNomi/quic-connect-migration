@@ -344,10 +344,14 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 - migration 관련 runtime policy knob
 - Chrome NetLog 관찰 가능성
 - Android Cronet migration option
+- `QuicChromiumClientSession::MigrateToSocket`, network connected/disconnected/default callbacks, path-degrading callback
+- NetLog `QUIC_CONNECTION_MIGRATION_TRIGGERED`, `SUCCESS`, `FAILURE`, network-change, probing event family
+- Cronet `URLRequestContextConfig`에서 QUIC enabled 경로의 network-change migration explicit disable
 
 해석:
 
 > Chromium/Cronet에는 migration 관련 policy와 observability 근거가 있지만, 이것이 Chrome browser에서 실제 Wi-Fi/cellular handover 중 single-session CM이 성공했다는 뜻은 아니다.
+> 특히 Cronet은 Chromium 기반이라도 default embedding policy가 다를 수 있음을 보여주는 좋은 근거다. 따라서 논문에서는 Chromium/Cronet을 "고사용량 client stack의 policy-boundary evidence"로 쓰고, 실제 Chrome/Cronet handover success는 NetLog trigger/success, client path change, server/qlog, workload completion이 모두 맞는 runtime row가 생긴 뒤에만 주장해야 한다.
 
 ### 7.8 quicly
 

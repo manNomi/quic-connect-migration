@@ -161,15 +161,15 @@
       "priority": "10",
       "name": "Chromium Chrome Cronet",
       "category": "client",
-      "current_level": "L4_client_runtime_policy_dependent",
-      "evidence_status": "source_and_local_browser_baseline",
+      "current_level": "L4_client_policy_boundary_audit",
+      "evidence_status": "source_policy_audit_20260701",
       "depth_class": "client_policy_source_plus_local_baseline",
       "evidence_strength": "policy_dependent_client_evidence",
       "active_migration_api": "yes",
       "passive_migration": "policy_dependent",
       "tests": "yes",
-      "why_not_quic_go_depth": "Source policy hooks, tests, and NetLog exist, but actual browser handover behavior is runtime-policy dependent and must be proven with browser rows.",
-      "next_non_iphone_gate": "Run Android/Cronet or desktop Chrome active network-change rows when a non-iPhone secondary path is available."
+      "why_not_quic_go_depth": "Source policy hooks, tests, NetLog migration events, and Cronet default-disable evidence exist, but actual browser handover behavior is runtime-policy dependent and must be proven with browser rows.",
+      "next_non_iphone_gate": "Use the policy-boundary audit now; run Android/Cronet or desktop Chrome active network-change rows when a non-iPhone secondary path is available."
     },
     {
       "priority": "11",

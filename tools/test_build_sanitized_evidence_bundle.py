@@ -62,6 +62,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "aws-s2n-phase2-artifact-classifier-contract" in ids
     assert "chrome-desktop-noniphone-range-local-refresh" in ids
     assert "chrome-desktop-noniphone-upload-local-refresh" in ids
+    assert "chromium-cronet-policy-boundary-audit" in ids
     for item in bundle["items"]:
         assert item["supports"]
         assert item["do_not_claim"]
