@@ -76,6 +76,7 @@ TRACKS = [
             "chrome-desktop-noniphone-range-local-refresh",
             "chrome-desktop-noniphone-upload-local-refresh",
             "noniphone-workload-qoe-synthesis",
+            "noniphone-public-workload-trial-packet",
         ),
         decision="Best browser-facing next step after public origin is available.",
     ),

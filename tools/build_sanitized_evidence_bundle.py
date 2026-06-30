@@ -449,6 +449,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="Public Wi-Fi/LTE handover, CDN deployment continuity, or that all streaming workloads are protected by single-session browser Connection Migration.",
         next_gap="After an H3-ready public origin is available, run public range/upload trials first, then buffered and music-like streaming trials with QoE/session metrics.",
     ),
+    EvidenceItem(
+        id="noniphone-public-workload-trial-packet",
+        chapter="9/10/11",
+        category="public-trial-plan",
+        implementation="Chrome controlled-public workload protocol",
+        evidence_doc="docs/results/noniphone-public-workload-trial-packet-20260701.md",
+        runner_or_tool="tools/build_noniphone_public_workload_trial_packet.py",
+        local_artifact_id="noniphone-public-workload-trial-packet-20260701",
+        claim_strength="run_plan",
+        supports="The next non-iPhone controlled-public Chrome workload order, command templates, and strong CM acceptance gates are fixed for range, upload, buffered video, and music-like segment trials.",
+        do_not_claim="Any public workload has been executed or that browser Connection Migration succeeded.",
+        next_gap="Open the H3 public-origin and desktop path-change gates, then execute the packet in order and classify each row.",
+    ),
 ]
 
 

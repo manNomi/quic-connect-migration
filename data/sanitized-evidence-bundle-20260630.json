@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 32,
+  "item_count": 33,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -18,6 +18,7 @@
     "observability_positive": 1,
     "paper_synthesis": 1,
     "readiness_blocked": 9,
+    "run_plan": 1,
     "server_runtime_positive": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -49,6 +50,7 @@
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
     "public-origin-readiness": 1,
+    "public-trial-plan": 1,
     "server-runtime-positive-control": 1,
     "source-audit": 1,
     "workload-synthesis": 1
@@ -564,6 +566,22 @@
       "supports": "Thirty-two normalized non-iPhone local Chrome workload rows show that range/download and upload have cleaner single-session local path-validation evidence, while buffered video and music-like segment completion must be framed with QoE, retry/reconnect, and session churn.",
       "do_not_claim": "Public Wi-Fi/LTE handover, CDN deployment continuity, or that all streaming workloads are protected by single-session browser Connection Migration.",
       "next_gap": "After an H3-ready public origin is available, run public range/upload trials first, then buffered and music-like streaming trials with QoE/session metrics.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "noniphone-public-workload-trial-packet",
+      "chapter": "9/10/11",
+      "category": "public-trial-plan",
+      "implementation": "Chrome controlled-public workload protocol",
+      "evidence_doc": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
+      "runner_or_tool": "tools/build_noniphone_public_workload_trial_packet.py",
+      "local_artifact_id": "noniphone-public-workload-trial-packet-20260701",
+      "claim_strength": "run_plan",
+      "supports": "The next non-iPhone controlled-public Chrome workload order, command templates, and strong CM acceptance gates are fixed for range, upload, buffered video, and music-like segment trials.",
+      "do_not_claim": "Any public workload has been executed or that browser Connection Migration succeeded.",
+      "next_gap": "Open the H3 public-origin and desktop path-change gates, then execute the packet in order and classify each row.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

@@ -69,6 +69,8 @@
 | [data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv](../../data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv) | fresh buffered-media QoE local control CSV |
 | [docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md](../results/noniphone-workload-qoe-continuity-synthesis-20260701.md) | non-iPhone workload continuity/QoE synthesis |
 | [data/noniphone-workload-qoe-continuity-synthesis-20260701.csv](../../data/noniphone-workload-qoe-continuity-synthesis-20260701.csv) | normalized workload synthesis CSV |
+| [docs/results/noniphone-public-workload-trial-packet-20260701.md](../results/noniphone-public-workload-trial-packet-20260701.md) | non-iPhone public workload trial packet |
+| [data/noniphone-public-workload-trial-packet-20260701.json](../../data/noniphone-public-workload-trial-packet-20260701.json) | structured public workload trial packet |
 
 ## 5. Reproducibility Commands
 

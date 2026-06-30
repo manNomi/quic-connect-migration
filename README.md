@@ -98,6 +98,7 @@
 86. tracked controlled-public Chrome validation 18개를 bridge synthesis로 묶었다. no-change H3 baseline은 6/6 확인됐지만 active network-change 12개 중 single-session CM 성공으로 볼 수 있는 row는 0개라서, 현재 public-browser evidence는 성공 결론이 아니라 deployment/browser bridge gap과 negative-control 근거로 해석해야 한다.
 87. Chrome desktop non-iPhone buffered-media local refresh를 추가했다. 6000ms local outage에서 low/high buffer row 모두 playback complete였지만 low buffer는 rebuffer `6`, high buffer는 rebuffer `1`, 두 row 모두 Chrome target QUIC session `3`개로 관찰되어 동영상형 completion은 QoE 비용과 session churn을 함께 봐야 함을 보강했다.
 88. non-iPhone workload continuity/QoE synthesis를 추가했다. 기존 local Chrome/quic-go CSV 8개에서 32개 row를 정규화했고, range/download와 upload는 single-session local path-validation evidence가 상대적으로 강한 반면 buffered video와 music-like segment는 completion을 QoE 비용, retry/reconnect, Chrome session churn과 분리해야 함을 확인했다.
+89. non-iPhone public workload trial packet을 추가했다. public H3 origin과 desktop active path-change command가 준비되면 baseline, range no-change, range active 3회, upload no-change, upload active 3회, buffered low/high active, music-like retry0/retry1 active 순서로 실행하며 strong CM acceptance는 task completion, client path change, target tuple change, qlog PATH_CHALLENGE/PATH_RESPONSE, Chrome target QUIC session `1`개를 모두 요구하도록 고정했다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -285,6 +286,7 @@
 - [Chrome desktop non-iPhone music-like local refresh](docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md)
 - [Chrome desktop non-iPhone buffered media local refresh](docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md)
 - [Non-iPhone workload continuity and QoE synthesis](docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md)
+- [Non-iPhone public workload trial packet](docs/results/noniphone-public-workload-trial-packet-20260701.md)
 - [Controlled public Chrome bridge synthesis](docs/results/controlled-public-chrome-bridge-synthesis-20260701.md)
 - [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
 - [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)

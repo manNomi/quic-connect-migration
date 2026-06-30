@@ -54,6 +54,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["chrome_desktop_noniphone_buffered_media_local_refresh_csv"]["exists"] is True
     assert paths["noniphone_workload_qoe_synthesis"]["exists"] is True
     assert paths["noniphone_workload_qoe_synthesis_csv"]["exists"] is True
+    assert paths["noniphone_public_workload_trial_packet"]["exists"] is True
+    assert paths["noniphone_public_workload_trial_packet_json"]["exists"] is True
     assert paths["chrome_desktop_noniphone_range_local_refresh"]["exists"] is True
     assert paths["chrome_desktop_noniphone_range_local_refresh_csv"]["exists"] is True
     assert paths["chrome_desktop_noniphone_upload_local_refresh"]["exists"] is True
@@ -77,7 +79,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "noniphone-workload-qoe-synthesis"
+    assert manifest["experiment_matrix"]["latest_item"] == "noniphone-public-workload-trial-packet"
 
 
 def test_generated_date_uses_utc_day() -> None:
