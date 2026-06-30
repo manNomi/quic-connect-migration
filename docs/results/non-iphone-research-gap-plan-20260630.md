@@ -160,11 +160,16 @@
 
 > iPhone 없이 Chrome desktop에서 public-origin, forced-H3, local route/proxy change가 browser-visible continuity로 이어지는지 검증한다.
 
+상태:
+
+> 부분 완료. public-origin handover는 controlled origin/AWS 또는 별도 public config가 필요하므로 아직 main claim으로 열지 않았다. 대신 `docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md`로 fresh local Chrome forced-H3 media control을 재실행했다. 최신 run `chrome-desktop-noniphone-media-drop3000-retry0-20260630`은 `PASS`, `nat_rebinding_possible_session_continuity`, browser application complete `true`, Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`, NetLog target PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet rebinding `true`를 기록했다. 이는 local browser artifact 해석 근거이지 public Wi-Fi/LTE handover 성공 근거는 아니다.
+
 실행 방향:
 
-1. 기존 Chrome local forced-H3 matrix 재사용
-2. public origin 또는 local HTTPS origin에서 upload/download/range/media workload 반복
-3. NetLog에서 QUIC session 수, path validation event, retry 여부 분류
+1. 완료: 기존 Chrome local forced-H3 matrix 재사용
+2. 완료: local HTTPS origin에서 media workload fresh control 실행
+3. 완료: NetLog에서 QUIC session 수, path validation event, retry 여부 분류
+4. 남음: controlled public origin에서 page-ready media/upload/range handover 실행
 
 주의:
 

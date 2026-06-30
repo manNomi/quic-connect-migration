@@ -319,6 +319,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="Real Wi-Fi/cellular handover or single-session browser CM success.",
         next_gap="Use as workload prioritization basis for future controlled public/browser trials.",
     ),
+    EvidenceItem(
+        id="chrome-desktop-noniphone-media-local-refresh",
+        chapter="6/11",
+        category="browser-local-media-control",
+        implementation="Chrome + quic-go local UDP rebinding proxy",
+        evidence_doc="docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md",
+        runner_or_tool="repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh",
+        local_artifact_id="chrome-desktop-noniphone-media-drop3000-retry0-20260630",
+        claim_strength="local_browser_positive_control",
+        supports="A fresh Chrome desktop forced-H3 media run completed across local UDP rebinding with one target QUIC session, two server-observed remote tuples, qlog path validation, and NetLog target path challenge/response evidence.",
+        do_not_claim="Public Wi-Fi/LTE handover, iPhone handover, or general browser CM deployment success.",
+        next_gap="Run controlled-public page-ready media/upload/range handover once public origin and active path-change gates are open.",
+    ),
 ]
 
 

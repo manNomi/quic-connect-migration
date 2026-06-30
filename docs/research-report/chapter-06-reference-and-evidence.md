@@ -18,6 +18,7 @@
 | Chrome classifier | [tools/classify_chrome_h3_artifacts.py](../../tools/classify_chrome_h3_artifacts.py) | NetLog/qlog/proxy/DOM/server artifact 통합 판정 |
 | timing summarizer | [tools/summarize_chrome_rebinding_timing_sensitivity.py](../../tools/summarize_chrome_rebinding_timing_sensitivity.py) | early/late switch timing summary 생성 |
 | transient summarizer | [tools/summarize_chrome_rebinding_transient_return_path_sweep.py](../../tools/summarize_chrome_rebinding_transient_return_path_sweep.py) | transient outage boundary summary 생성 |
+| fresh non-iPhone media result | [docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md](../results/chrome-desktop-noniphone-media-local-refresh-20260630.md) | Chrome desktop local media positive control, public handover 아님 |
 
 ## 2. Scanner Trigger Map
 
@@ -66,6 +67,8 @@
 | [data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv](../../data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv) | downlink fine CSV |
 | [docs/results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md](../results/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.md) | upload 4600/4750/4900/5000ms fine boundary |
 | [data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv](../../data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv) | upload fine CSV |
+| [docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md](../results/chrome-desktop-noniphone-media-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop media local control |
+| [data/chrome-desktop-noniphone-media-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-media-local-refresh-20260630.csv) | fresh media local control CSV |
 
 ## 5. Reproducibility Commands
 

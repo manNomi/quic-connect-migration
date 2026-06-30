@@ -62,6 +62,25 @@ media workload는 두 종류로 추가됐다.
 
 따라서 video-like completion은 "사용자 관점 segment task continuity"이지 "single-session browser CM success"가 아니다.
 
+## 4.1 Fresh Chrome Desktop Local Media Refresh
+
+2026-06-30에 iPhone 없이 local Chrome forced-H3 media control을 짧게 재실행했다. 조건은 6개 media segment, retry 0, proxy switch after 1s, A-side server return path 3000ms drop 설정이었다.
+
+| field | value |
+| --- | --- |
+| run | `chrome-desktop-noniphone-media-drop3000-retry0-20260630` |
+| status | `PASS` |
+| classification | `nat_rebinding_possible_session_continuity` |
+| media/application complete | `true` |
+| elapsed | `1895ms` |
+| server remote tuples | `2` |
+| Chrome target QUIC sessions | `1` |
+| server qlog PATH_CHALLENGE/PATH_RESPONSE | `1/1` |
+| Chrome NetLog target PATH_CHALLENGE/PATH_RESPONSE | `1/1` |
+| proxy client packets A/B | `63/24` |
+
+이 row는 앞의 video-like replication과 달리 single target session으로 분류됐다. 따라서 local control 수준에서는 "possible session continuity" 후보로 쓸 수 있다. 그러나 public origin, real interface handover, mobile network transition을 거치지 않았으므로 streaming handover success claim으로 확장하지 않는다.
+
 ## 5. Music-Like Segment Control
 
 | profile | drop window | retry | PASS/runs | media complete | median elapsed ms | Chrome sessions | classification |

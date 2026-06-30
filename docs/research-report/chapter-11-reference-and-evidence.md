@@ -57,6 +57,8 @@
 | [docs/results/chrome-h3-rebinding-media-segment-pilot-20260629.md](../results/chrome-h3-rebinding-media-segment-pilot-20260629.md) | initial media segment pilot |
 | [docs/results/chrome-h3-rebinding-media-segment-replication-20260629.md](../results/chrome-h3-rebinding-media-segment-replication-20260629.md) | video-like segment replication |
 | [data/chrome-h3-rebinding-media-segment-replication-20260629.csv](../../data/chrome-h3-rebinding-media-segment-replication-20260629.csv) | video-like media CSV |
+| [docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md](../results/chrome-desktop-noniphone-media-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop media local control |
+| [data/chrome-desktop-noniphone-media-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-media-local-refresh-20260630.csv) | fresh media local control CSV |
 | [docs/results/chrome-h3-rebinding-music-like-media-control-20260629.md](../results/chrome-h3-rebinding-music-like-media-control-20260629.md) | music-like segment control |
 | [data/chrome-h3-rebinding-music-like-media-control-20260629.csv](../../data/chrome-h3-rebinding-music-like-media-control-20260629.csv) | music-like media CSV |
 | [docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md](../results/chrome-h3-rebinding-buffered-media-control-20260629.md) | buffered playback control |

@@ -83,6 +83,16 @@ proxy는 첫 client packet 이후 지정된 시간까지 upstream A를 사용하
 
 > local browser workload continuity boundary는 단조 threshold가 아니다. upload는 downlink보다 더 이른 지점에서 깨지는 경향을 보였고, 모든 failure row에도 qlog H3/path evidence가 남을 수 있었다.
 
+### 3.6 Fresh non-iPhone media refresh
+
+2026-06-30에 iPhone 없이 Chrome desktop local media control을 한 번 더 실행했다.
+
+| run | status | classification | app complete | remote tuples | Chrome sessions | qlog C/R | NetLog C/R | proxy A/B packets |
+| --- | --- | --- | --- | ---: | ---: | --- | --- | --- |
+| `chrome-desktop-noniphone-media-drop3000-retry0-20260630` | PASS | `nat_rebinding_possible_session_continuity` | true | 2 | 1 | 1/1 | 1/1 | 63/24 |
+
+이 row는 local proxy control 안에서는 꽤 강한 browser artifact다. target Chrome QUIC session이 1개이고, server tuple이 2개이며, qlog와 NetLog 양쪽에 path challenge/response가 있다. 하지만 여전히 실제 public handover가 아니므로 Chapter 5의 browser claim ceiling은 유지한다.
+
 ## 4. 논문에 쓸 수 있는 주장
 
 안전한 주장:

@@ -33,6 +33,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "s2n-active-migration-api-audit" in ids
     assert "mvfst-migration-test-readiness" in ids
     assert "nginx-quic-bpf-linux-runner" in ids
+    assert "chrome-desktop-noniphone-media-local-refresh" in ids
     for item in bundle["items"]:
         assert item["supports"]
         assert item["do_not_claim"]
