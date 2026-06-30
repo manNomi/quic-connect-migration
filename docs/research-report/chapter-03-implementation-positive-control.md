@@ -14,9 +14,9 @@ Chapter 2는 CM이 잘 보이지 않는 이유가 여러 계층에 흩어져 있
 
 현재까지의 결과는 다음과 같이 정리된다.
 
-> quic-go, quiche, picoquic, s2n-quic, MsQuic, LSQUIC, XQUIC 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했다.
+> quic-go, quiche, picoquic, s2n-quic, MsQuic, LSQUIC, XQUIC 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했고, LSQUIC은 preferred-address 기반 HTTP/3 app demo까지 재현했다.
 
-2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. quicly는 build와 migration-related unit evidence를 확보했지만 full test/e2e는 partial로 분리했다. 다만 이 결론은 library/client-server positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
+2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. 이후 LSQUIC은 `http_client`/`http_server` preferred-address app demo로 추가 보강했다. quicly는 build와 migration-related unit evidence를 확보했지만 full test/e2e는 partial로 분리했다. 다만 이 결론은 library/client-server positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
 
 ## 3. 현재 repo에서 재실행한 검수
 
@@ -67,7 +67,7 @@ quic-go 편중을 줄이기 위해 2026-06-30에 다음 구현체를 현재 HEAD
 | Cloudflare quiche | `c4c0b978461aa153399a90217d85bebd1800f84d` | library migration tests, sample client/server migration, qlog | PASS | quic-go 외 강한 implementation positive control |
 | picoquic | `d3a80307200d28c53a6470d257bdd0801fad7971` | NAT rebinding, migration with loss, migration failure, preferred address, disabled migration | PASS | edge-case maturity evidence |
 | s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `connection_migration` test suite, PathChallenge/PathResponse events | PASS | AWS-relevant library evidence |
-| LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79, selected primitive tests, migration/preferred-address settings | PASS | server-stack unit evidence; app-level migration demo still needed |
+| LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79, selected primitive tests, preferred-address HTTP/3 app demo | PASS | server-stack and preferred-address app-level evidence; NAT rebinding/OpenLiteSpeed still follow-up |
 | MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | NAT rebind and path-validation selected gtests, v4/v6 | PASS | production-relevant library evidence with LB caveat |
 | ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | client migration, path validation, disable active migration, frame encode | PASS | C library primitive evidence |
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable active migration tests | PASS | readable passive/path-validation reference |
@@ -99,7 +99,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 | Cloudflare quiche | 2026-06-30 fresh rerun PASS | migration tests, sample client/server, qlog | quic-go 교차검증 후보 |
 | picoquic | 2026-06-30 fresh rerun PASS | NAT rebinding, migration failure, preferred address, disabled migration | edge-case maturity 기준선 |
 | s2n-quic | 2026-06-30 fresh rerun PASS | IP/port rebinding, PathChallenge/PathResponse, active path update | AWS/NLB 후보 |
-| LiteSpeed LSQUIC | 2026-06-30 fresh rerun PASS | full CTest 79/79, selected qlog/parser/packet/trans-param tests, migration settings | 서버 스택 단위 테스트 근거. HTTP/3 app-level migration demo는 후속 필요 |
+| LiteSpeed LSQUIC | 2026-06-30 fresh rerun + app demo PASS | full CTest 79/79, selected qlog/parser/packet/trans-param tests, preferred-address `GET /file-1M` app demo | 서버 스택 단위 테스트와 preferred-address app-level 근거. NAT rebinding/OpenLiteSpeed demo는 후속 필요 |
 | MsQuic | 2026-06-30 fresh rerun PASS | NAT port/address rebind, path validation timeout, last path close, v4/v6 | production relevance는 높지만 LB caveat 유지 |
 | aioquic | 2026-06-30 fresh rerun PASS | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable_active_migration parsing | readable passive reference |
 | ngtcp2 | 2026-06-30 fresh rerun PASS | client migration test, path validation, disable active migration, frame encode | C library primitive 비교군 |
@@ -110,7 +110,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 
 주의:
 
-> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. quicly partial artifact도 같은 path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
+> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. LSQUIC preferred-address app demo artifact와 quicly partial artifact도 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
 
 ## 6. 논문에서 쓸 수 있는 주장
 
@@ -126,6 +126,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 | “test PASS가 production deployment readiness다.” | LB/CDN/proxy/middlebox 경로가 빠져 있다. |
 | “PATH_CHALLENGE만 있으면 application continuity가 보장된다.” | application task success와 transport path validation은 다른 층이다. |
 | “quiche/picoquic/s2n-quic/LSQUIC raw log가 공개 repo에 커밋되어 있다.” | 공개 repo에는 요약 문서와 재현 명령이 있고, raw log는 로컬 ignored path에 있다. |
+| “LSQUIC preferred-address demo는 NAT rebinding demo다.” | preferred_address migration과 NAT rebinding은 서로 다른 path-change mechanism이다. |
 
 ## 7. 다음 챕터로 넘어간 이유
 
@@ -143,7 +144,7 @@ controlled implementation positive control이 확인되면, 다음 질문은 dep
 | quiche fresh rerun | PASS |
 | picoquic fresh rerun | PASS |
 | s2n-quic fresh rerun | PASS |
-| LiteSpeed LSQUIC fresh rerun | PASS |
+| LiteSpeed LSQUIC fresh rerun + preferred-address app demo | PASS |
 | MsQuic fresh rerun | PASS |
 | ngtcp2 fresh rerun | PASS |
 | aioquic fresh rerun | PASS |

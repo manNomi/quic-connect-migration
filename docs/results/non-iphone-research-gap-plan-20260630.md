@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | 구현체 성숙도 survey | 18개 구현체/스택 정리 | CM은 구현체 수준에서 실재한다는 claim 가능 |
 | fresh rerun/demo | 11개 fresh rerun/demo, 1개 partial build/test | quic-go 편중 약점이 줄어듦 |
-| LSQUIC | full CTest 79/79, selected CTest 5/5 PASS | source-only에서 server-stack unit evidence로 승격 |
+| LSQUIC | full CTest 79/79, selected CTest 5/5 PASS, preferred-address app demo `validation=ok` | source-only에서 server-stack unit evidence와 preferred-address app-level evidence로 승격 |
 | XQUIC | local client/server NAT rebinding demo PASS | NAT rebinding path가 실제 demo에서 동작함 |
 | quicly | migration-related unit subtest OK, full/e2e partial | partial evidence로 분리해 과장 방지 |
 | Chrome local controls | local forced-H3/rebinding/retry matrix 존재 | browser success claim은 아직 제한적 |
@@ -19,7 +19,7 @@
 
 | 공백 | 왜 중요한가 | iPhone 없이 가능한가 |
 | --- | --- | --- |
-| LSQUIC/OpenLiteSpeed app-level migration demo | LSQUIC은 full unit evidence는 있지만 실제 HTTP/3 workload demo가 없음 | 가능 |
+| LSQUIC NAT rebinding/OpenLiteSpeed app-level migration demo | preferred-address app demo는 확보했지만 NAT rebinding과 production-like OpenLiteSpeed 경로는 아직 없음 | 가능 |
 | mvfst fresh build/test or focused source audit | 대규모 deployment 구현체인데 아직 source inspection 중심 | 가능하나 빌드 비용 큼 |
 | nginx QUIC / HAProxy negative-control 정리 | HTTP/3 지원과 CM 지원이 다르다는 반례를 강화 | 가능 |
 | AWS NLB + s2n-quic CID routing 검증 | 교수님 decision의 AWS 구축 검수와 직접 연결 | 가능 |
@@ -34,18 +34,22 @@
 
 > LSQUIC이 unit suite만 통과하는 것이 아니라, HTTP/3 server/client workload에서 path change 또는 NAT rebinding을 관찰할 수 있는지 확인한다.
 
+상태:
+
+> 완료. `harness/scripts/run-lsquic-preferred-address-demo.sh`로 LSQUIC example `http_client`/`http_server` preferred-address migration demo를 재현했고, 최신 run `lsquic-preferred-address-script-20260630T095500Z`에서 `validation=ok`, `server_tx_stream_path1_count=565`, `max_client_read_off=1048835`를 확보했다.
+
 실행 방향:
 
-1. LSQUIC repo의 `http_client`, `http_server`, `duck_server`, `duck_client` 등 실행 가능한 example/tool 확인
-2. loopback 또는 local UDP proxy로 source port/address rebinding을 유도
-3. server log에서 new path, validation, PATH_CHALLENGE/PATH_RESPONSE, request completion 여부 확인
-4. 성공하면 LSQUIC을 `server-stack unit evidence`에서 `server-stack demo evidence`로 승격
+1. 완료: LSQUIC repo의 `http_client`, `http_server` 실행 확인
+2. 완료: server preferred address를 두 번째 UDP port로 광고해 path 1 migration 유도
+3. 완료: preferred address, PATH_CHALLENGE/PATH_RESPONSE, path 1 STREAM, request completion 확인
+4. 남음: local UDP proxy 또는 OpenLiteSpeed 환경에서 NAT rebinding path 재현
 
 판정:
 
 | 결과 | 해석 |
 | --- | --- |
-| request completes with path validation evidence | LSQUIC app-level positive control 확보 |
+| request completes with path validation evidence | 완료: LSQUIC preferred-address app-level positive control 확보 |
 | request completes but path evidence 없음 | 단순 HTTP/3 success로만 분리 |
 | path validation exists but request fails | transport/application continuity gap 근거 |
 | setup cost too high | appendix candidate로 보류 |
@@ -119,12 +123,12 @@
 
 | 순서 | 작업 | 이유 |
 | ---: | --- | --- |
-| 1 | LSQUIC app-level local demo feasibility check | 이미 full CTest가 끝나 있어 가장 가까운 보강점 |
-| 2 | nginx/HAProxy negative-control source+doc appendix | 빠르게 논문 claim boundary를 강화할 수 있음 |
+| 1 | nginx/HAProxy negative-control source+doc appendix | 빠르게 논문 claim boundary를 강화할 수 있음 |
+| 2 | LSQUIC NAT rebinding 또는 OpenLiteSpeed production-like demo | preferred-address app demo 다음의 LSQUIC 남은 공백 |
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | 교수님 decision의 AWS 검증과 직접 연결 |
 | 4 | mvfst focused audit | 대규모 구현체 coverage를 보강 |
 | 5 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 LSQUIC example/tool을 먼저 확인한다. 가능한 경우 local client/server demo를 구성하고, 불가능하면 nginx/HAProxy negative-control 정리로 전환한다. 이 순서가 좋은 이유는 LSQUIC이 이미 fresh full CTest를 통과했기 때문에, app-level evidence로 한 단계 승격시킬 가능성이 가장 높기 때문이다.
+다음 턴에서는 nginx/HAProxy negative-control source+doc appendix를 먼저 진행하는 것이 좋다. LSQUIC preferred-address app demo는 이미 확보했으므로, 이제는 HTTP/3 지원이 CM 지원을 의미하지 않는다는 반례를 강화해 논문 claim boundary를 더 단단하게 만들 차례다.
