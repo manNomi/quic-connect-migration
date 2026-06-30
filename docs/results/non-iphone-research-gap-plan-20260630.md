@@ -43,7 +43,7 @@
 
 2026-06-30 추가 확인:
 
-> `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md`에 OpenLiteSpeed source feasibility audit를 추가했다. OpenLiteSpeed `f4a6f0f8ddbe93e846a2ddc442f87da07bf5c379`는 `LSQUIC_SERVER_MODE`, `quicEnable 1`, `lsquic_engine_new(LSENG_HTTP_SERVER, &api)`, SCID lifecycle callback, CID/PID shared-memory mapping을 갖고 있고, `LSQUICCOMMIT`이 현재 검수한 LSQUIC `f8ebaf838d2f4db836bda1182ee35b05d5191cee`와 일치한다. 이어서 `harness/scripts/openlitespeed-runtime-preflight.sh`를 추가해 실행했고, 최신 run `openlitespeed-runtime-preflight-20260630T120037Z`는 `runtime_ready=no`, `submodule_ready=no`, `binary_ready=no`, `linux_recommended_ready=no`, `dev_shm_ready=no`, `disk_ready=no`, `disk_free_gib=19.58`로 판정했다. 따라서 runtime build/demo는 cleanup 또는 Linux/EC2 환경 이후로 보류한다.
+> `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md`에 OpenLiteSpeed source feasibility audit를 추가했다. OpenLiteSpeed `f4a6f0f8ddbe93e846a2ddc442f87da07bf5c379`는 `LSQUIC_SERVER_MODE`, `quicEnable 1`, `lsquic_engine_new(LSENG_HTTP_SERVER, &api)`, SCID lifecycle callback, CID/PID shared-memory mapping을 갖고 있고, `LSQUICCOMMIT`이 현재 검수한 LSQUIC `f8ebaf838d2f4db836bda1182ee35b05d5191cee`와 일치한다. 이어서 `harness/scripts/openlitespeed-runtime-preflight.sh`를 추가해 실행했고, 최신 run `openlitespeed-runtime-preflight-20260630T120037Z`는 `runtime_ready=no`, `submodule_ready=no`, `binary_ready=no`, `linux_recommended_ready=no`, `dev_shm_ready=no`, `disk_ready=no`, `disk_free_gib=19.58`로 판정했다. 추가로 OpenLiteSpeed build 여유를 확보할 수 있는지 cleanup dry-run을 실행했고, `docs/results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md` 기준 review-unreferenced 후보 전체를 지워도 `27.7GiB`까지만 올라가 `30GiB` 목표에 `2.3GiB` 부족하다. 따라서 runtime build/demo는 Linux/EC2 환경을 우선하거나, referenced raw artifact archive 정책을 정한 뒤 진행한다.
 
 실행 방향:
 
@@ -53,7 +53,8 @@
 4. 완료: local UDP proxy로 NAT rebinding path 재현
 5. 완료: OpenLiteSpeed source feasibility audit로 production-like follow-up target 타당성 확인
 6. 완료: OpenLiteSpeed runtime preflight로 현재 local blocker를 기계적으로 고정
-7. 남음: OpenLiteSpeed production-like runtime 환경에서 path transition 재현
+7. 완료: OpenLiteSpeed build 전 cleanup dry-run으로 안전 후보만으로는 30GiB 목표 미달 확인
+8. 남음: OpenLiteSpeed production-like runtime 환경에서 path transition 재현
 
 판정:
 
@@ -154,11 +155,11 @@
 | 순서 | 작업 | 이유 |
 | ---: | --- | --- |
 | 1 | nginx/HAProxy negative-control source+doc appendix + nginx runtime demo | 완료. HTTP/3 support와 CM support의 경계를 강화했고 nginx server runtime positive control 확보 |
-| 2 | OpenLiteSpeed production-like runtime demo | source feasibility와 preflight는 완료. cleanup 또는 Linux/EC2 환경에서 실제 `lshttpd` HTTP/3 listener + quiche active migration 검증 |
+| 2 | OpenLiteSpeed production-like runtime demo | source feasibility/preflight/cleanup dry-run은 완료. 현재는 Linux/EC2 환경 또는 referenced raw artifact archive 정책이 필요 |
 | 3 | AWS NLB + s2n-quic desktop/client path-change 설계 | 교수님 decision의 AWS 검증과 직접 연결. 현재 credential refresh 필요 |
 | 4 | Linux nginx `quic_bpf` 또는 production-like nginx deployment test | nginx local runtime evidence를 deployment 쪽으로 확장 |
 | 5 | sanitized evidence bundle 생성 | 보고/논문 제출용 재현성 강화 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 디스크 cleanup 또는 Linux/EC2 환경을 먼저 확보한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight는 확보됐다.
+다음 턴에서는 Linux/EC2 환경을 먼저 확보하거나, referenced raw artifact를 archive해도 되는지 결정한 뒤 OpenLiteSpeed production-like runtime demo를 진행하는 것이 좋다. AWS credential이 refresh되면 live NLB+s2n target forwarding으로 넘어간다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run은 확보됐다.

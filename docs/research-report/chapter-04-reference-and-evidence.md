@@ -18,6 +18,9 @@
 | H3 client | [repro/quic-go-min-repro/cmd/h3client/main.go](../../repro/quic-go-min-repro/cmd/h3client/main.go) | HTTP/3 before/after 또는 mid-flight workload와 path switch |
 | HAProxy negative-control runner | [harness/scripts/run-haproxy-http3-negative-control.sh](../../harness/scripts/run-haproxy-http3-negative-control.sh) | HAProxy ordinary H3 baseline과 active migration failure를 재현 |
 | OpenLiteSpeed runtime preflight | [harness/scripts/openlitespeed-runtime-preflight.sh](../../harness/scripts/openlitespeed-runtime-preflight.sh) | OpenLiteSpeed production-like runtime demo를 실행하기 전 local gate 확인 |
+| Artifact storage report | [tools/report_artifact_storage.py](../../tools/report_artifact_storage.py) | ignored raw artifact roots와 현재 free space를 삭제 없이 측정 |
+| Artifact cleanup safety audit | [tools/audit_artifact_cleanup_safety.py](../../tools/audit_artifact_cleanup_safety.py) | CSV-referenced/planned artifact를 보호하고 review-unreferenced 후보만 분리 |
+| Artifact cleanup dry-run planner | [tools/plan_artifact_cleanup.py](../../tools/plan_artifact_cleanup.py) | 실제 삭제 없이 OpenLiteSpeed build 전 확보 가능한 free space를 계산 |
 | deployment trigger map | [tables/chapter-04-scanner-trigger-map-20260630.md](tables/chapter-04-scanner-trigger-map-20260630.md) | CID generator, NLB harness, H3 workload, false-positive guard line anchor |
 | OpenLiteSpeed feasibility audit | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | LSQUIC example demo를 production-like server 실험으로 확장하기 위한 source-level 사전 검수 |
 
@@ -52,6 +55,9 @@
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | [docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md](../results/openlitespeed-quic-cm-source-feasibility-20260630.md) | OpenLiteSpeed source-level production-like follow-up feasibility; runtime CM proof는 아직 아님 |
 | [docs/results/openlitespeed-runtime-preflight-20260630.md](../results/openlitespeed-runtime-preflight-20260630.md) | OpenLiteSpeed runtime demo readiness gate; latest local result `runtime_ready=no` |
+| [docs/results/artifact-storage-report-20260630-openlitespeed-preflight.md](../results/artifact-storage-report-20260630-openlitespeed-preflight.md) | OpenLiteSpeed runtime 전 local artifact roots total `35.3GiB`, current free `20.57GiB` |
+| [docs/results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md](../results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md) | review-unreferenced cleanup candidates `92`, reclaimable `7.1GiB`, protected referenced/planned artifact `25.8GiB` |
+| [docs/results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md](../results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md) | deletion-free cleanup dry-run; projected free `27.7GiB`, still `2.3GiB` short of 30GiB target |
 | [docs/results/cm-operational-friction-matrix-20260624.md](../results/cm-operational-friction-matrix-20260624.md) | Chapter 2 friction matrix와 deployment interpretation 연결 |
 
 ## 4. Evidence Chain
@@ -82,6 +88,15 @@ HAProxy negative control:
 | no-migration quiche request PASS | client/proxy basic interop은 됨 |
 | migration attempt path validation FAIL | HTTP/3 support가 active CM support를 의미하지 않음 |
 | client qlog `path_challenge=3`, `path_response=0` | path validation failure 근거 |
+
+OpenLiteSpeed local runtime readiness:
+
+| evidence | 의미 |
+| --- | --- |
+| source feasibility PASS | OpenLiteSpeed가 LSQUIC HTTP/3 server engine, QUIC config, CID/SHM routing hook을 갖는 production-like follow-up target임 |
+| runtime preflight `runtime_ready=no` | 현재 macOS local host는 submodule/binary/Linux-style `/dev/shm`/disk gate가 닫혀 있음 |
+| artifact storage total `35.3GiB` | OpenLiteSpeed build 전 raw artifact storage pressure가 실험 진행 조건에 영향을 줌 |
+| cleanup dry-run projected free `27.7GiB` | 안전 후보만 삭제해도 30GiB local build target에는 부족하므로 Linux/EC2 또는 archive 정책이 필요 |
 
 nginx/HAProxy boundary:
 

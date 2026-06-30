@@ -96,6 +96,16 @@ openlitespeed_runtime_preflight=blocked
 | 4 | quiche no-migration baseline 실행 | ordinary H3 success와 CM success를 분리 |
 | 5 | quiche active migration 실행 | `PATH_CHALLENGE`/`PATH_RESPONSE`, final path state, 1MiB response completion 확인 |
 
+2026-06-30 cleanup dry-run:
+
+| 문서 | 핵심 결과 |
+| --- | --- |
+| `docs/results/artifact-storage-report-20260630-openlitespeed-preflight.md` | local artifact roots total `35.3GiB`, current free `20.57GiB` |
+| `docs/results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md` | review-unreferenced candidates `92`, size `7.1GiB`, protected referenced/planned size `25.8GiB` |
+| `docs/results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md` | selected cleanup would project free space to `27.7GiB`; 30GiB target is still short by `2.3GiB` |
+
+따라서 안전 후보만 지우는 local cleanup으로는 OpenLiteSpeed build 여유 목표를 충족하지 못한다. 다음 단계는 Linux/EC2 환경 사용 또는 referenced raw artifact archive 정책 결정이다.
+
 ## 7. Claim boundary
 
 쓸 수 있는 주장:
