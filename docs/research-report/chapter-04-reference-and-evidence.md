@@ -43,6 +43,7 @@
 | [docs/results/aws-nlb-tcp-quic-443-results-20260624.md](../results/aws-nlb-tcp-quic-443-results-20260624.md) | `TCP_QUIC :443` repeat positive control |
 | [docs/results/aws-nlb-http3-workload-results-20260624.md](../results/aws-nlb-http3-workload-results-20260624.md) | HTTP/3 POST-before / migration / GET-after workload |
 | [docs/results/haproxy-http3-negative-control-results-20260623.md](../results/haproxy-http3-negative-control-results-20260623.md) | HTTP/3 proxy support != active CM support negative control |
+| [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | [docs/results/cm-operational-friction-matrix-20260624.md](../results/cm-operational-friction-matrix-20260624.md) | Chapter 2 friction matrix와 deployment interpretation 연결 |
 
 ## 4. Evidence Chain
@@ -73,6 +74,15 @@ HAProxy negative control:
 | no-migration quiche request PASS | client/proxy basic interop은 됨 |
 | migration attempt path validation FAIL | HTTP/3 support가 active CM support를 의미하지 않음 |
 | client qlog `PATH_RESPONSE=0` | path validation failure 근거 |
+
+nginx/HAProxy boundary:
+
+| evidence | 의미 |
+| --- | --- |
+| nginx `ngx_event_quic_migration.c` | server-side passive migration, NAT rebinding, path validation source flow 존재 |
+| nginx `quic_bpf` official docs | packet routing과 migration support가 서버 배포 조건과 연결됨 |
+| HAProxy official docs | HTTP/3 support가 있어도 HAProxy current docs는 connection migration 미지원 boundary를 명시 |
+| HAProxy source handler/counter | 관련 코드 primitive는 있으므로 "구현 코드가 전혀 없음"이 아니라 "지원 claim을 제한해야 함"으로 해석 |
 
 ## 5. Claim Boundary
 

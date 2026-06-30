@@ -81,11 +81,15 @@
 
 > HTTP/3을 지원한다는 사실과 Connection Migration을 지원한다는 사실은 다르다는 반례를 명확히 만든다.
 
+상태:
+
+> 완료. `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md`에 nginx QUIC source/official-doc 기반 server-side passive migration evidence와 HAProxy official-doc/source/local negative-control evidence를 분리해 정리했다.
+
 실행 방향:
 
-1. nginx QUIC source에서 server-side passive migration handling과 한계 정리
-2. HAProxy 공식 문서/소스에서 migration unsupported 또는 제한 근거 고정
-3. 가능하면 local proxy path에서 migration attempt가 실패하거나 새 connection으로 분리되는 로그 확보
+1. 완료: nginx QUIC source에서 server-side passive migration handling과 한계 정리
+2. 완료: HAProxy 공식 문서/소스에서 migration unsupported 또는 제한 근거 고정
+3. 완료: 기존 local proxy negative-control에서 ordinary H3 PASS, active migration FAIL, client qlog `PATH_RESPONSE=0` 확인
 
 논문 기여:
 
@@ -131,4 +135,4 @@
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 nginx/HAProxy negative-control source+doc appendix를 먼저 진행하는 것이 좋다. LSQUIC preferred-address app demo는 이미 확보했으므로, 이제는 HTTP/3 지원이 CM 지원을 의미하지 않는다는 반례를 강화해 논문 claim boundary를 더 단단하게 만들 차례다.
+다음 턴에서는 mvfst focused maturity audit 또는 nginx runtime handover local test를 진행하는 것이 좋다. nginx/HAProxy boundary appendix와 LSQUIC preferred-address app demo는 확보했으므로, 이제는 source-only로 남아 있는 대규모 구현체 evidence를 보강하거나 서버 runtime evidence를 추가해 논문 claim boundary를 더 단단하게 만들 차례다.

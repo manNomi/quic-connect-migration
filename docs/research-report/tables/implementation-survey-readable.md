@@ -58,10 +58,10 @@
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | ? s2n | `yes` | `L5_deployment_candidate` | `partial_deferred` | Start only after s2n-quic custom CID compatibility is verified |
 | 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use as large-scale implementation maturity evidence; not first experiment |
 | 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |
-| 15 | nginx QUIC | server | O | O | X | `logs` | ? test | `server_deploy` | `L3_L4` | `source_inspected` | Use as server-side passive migration and web-server deployment evidence |
+| 15 | nginx QUIC | server | O | O | X | `logs` | ? test | `server_deploy` | `L3_L4` | `source_inspected` | Use boundary appendix as server-side passive migration source evidence; runtime handover remains follow-up |
 | 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4_partial` | `fresh_build_partial_20260630` | Use as partial primitive evidence; isolate migration-only unit test or install Perl deps for e2e path-migration before upgrading to fresh rerun |
 | 17 | aioquic | library/tooling | O | △ | X | `logs_tests` | O | `manual` | `L2_L3` | `fresh_rerun_20260630` | Use as readable passive path-validation reference, not primary experiment |
-| 18 | HAProxy QUIC | proxy | △ | △ | X | `stats` | ? | `deployment_constraint` | `L1_L2` | `source_inspected` | Use as evidence that HTTP/3 support does not imply Connection Migration support |
+| 18 | HAProxy QUIC | proxy | △ | △ | X | `stats` | ? | `deployment_constraint` | `L1_L2` | `source_inspected` | Use boundary appendix and local negative control as evidence that HTTP/3 support does not imply active CM support |
 
 ## 보고용 해석
 
@@ -85,7 +85,7 @@
 | MsQuic | NAT rebinding/path validation은 fresh rerun 통과, LB deployment assumption은 별도 검증 필요 |
 | LiteSpeed lsquic | preferred-address app-level positive control까지 확보했으며 OpenLiteSpeed/서버 배포 논의에 연결 가능 |
 | mvfst | 대규모 deployment 후보이나 build/test cost가 큼 |
-| nginx QUIC | 실제 server deployment와 연결 가능하나 현재는 source-only 근거 |
+| nginx QUIC | 실제 server deployment와 연결 가능하나 현재는 source-only 근거. boundary appendix에서 server passive migration source flow를 고정함 |
 | AWS NLB + s2n-quic | CID-aware routing 실험으로 이어짐 |
 | AWS CloudFront | end-to-end CM이 아니라 edge-level continuity로 해석해야 함 |
 
@@ -94,7 +94,7 @@
 | 대상 | 주의점 |
 | --- | --- |
 | Chromium/Cronet | runtime policy와 browser behavior가 중요하며 source 근거만으로 Chrome handover success를 말할 수 없음 |
-| HAProxy QUIC | HTTP/3 proxy 지원이 CM 지원을 의미하지 않는 반례 |
+| HAProxy QUIC | HTTP/3 proxy 지원이 active CM 지원을 의미하지 않는 반례. boundary appendix와 local negative-control을 함께 사용 |
 | aioquic | passive validation reference로 좋지만 active migration 주력 후보는 아님 |
 | nginx QUIC | server-side passive migration 근거는 있으나 client active migration API는 아님 |
 
