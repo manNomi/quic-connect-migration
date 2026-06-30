@@ -111,7 +111,8 @@
 | `tools/summarize_chrome_rebinding_buffered_media_matrix.py` | Chapter 11 local buffered media summarizer |
 | `tools/build_literature_claim_positioning.py` | Chapter 12 literature-to-claim positioning builder |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
-| `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
+| `docs/results/local-implementation-test-results.md` | 초기 8개 구현체 local test 결과 |
+| `docs/results/implementation-rerun-results-20260630.md` | 2026-06-30 구현체 fresh rerun/demo/partial 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
 | `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
 | `docs/results/controlled-public-range-retry-iphone-usb-handover-20260629.md` | Chapter 9 byte-range retry public handover result |
