@@ -501,6 +501,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence, public Chrome Connection Migration success, live AWS NLB+s2n success, or Safari handover success.",
         next_gap="Use the dashboard as the professor-facing decision table, then open AWS credentials or public-origin plus desktop-path gates for stronger positive evidence.",
     ),
+    EvidenceItem(
+        id="noniphone-professor-decision-packet",
+        chapter="12",
+        category="professor-decision-synthesis",
+        implementation="cross-layer evidence corpus",
+        evidence_doc="docs/results/noniphone-professor-decision-packet-20260701.md",
+        runner_or_tool="tools/build_noniphone_professor_decision_packet.py",
+        local_artifact_id="noniphone-professor-decision-packet-20260701",
+        claim_strength="paper_synthesis",
+        supports="A Korean professor-facing decision packet that separates recommended paper scope, optional positive-result gates, blocked claims, and questions for the next research meeting.",
+        do_not_claim="New runtime evidence, final professor approval, public browser CM success, live AWS+s2n success, or Safari handover success.",
+        next_gap="Use in the professor meeting to choose between conservative maturity/gap paper scope and opening AWS/public-browser gates for positive results.",
+    ),
 ]
 
 

@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 36,
+  "item_count": 37,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -16,7 +16,7 @@
     "local_prerequisite_positive": 1,
     "negative_control": 2,
     "observability_positive": 1,
-    "paper_synthesis": 2,
+    "paper_synthesis": 3,
     "readiness_blocked": 10,
     "run_plan": 2,
     "server_runtime_positive": 1,
@@ -51,6 +51,7 @@
     "implementation-observability": 1,
     "implementation-positive-control": 1,
     "implementation-readiness": 1,
+    "professor-decision-synthesis": 1,
     "public-origin-deploy-plan": 1,
     "public-origin-readiness": 1,
     "public-trial-plan": 1,
@@ -633,6 +634,22 @@
       "supports": "Current evidence can be separated into paper-ready maturity/local-QoE claims and blocked public-browser/AWS/Safari claims without relying on raw private artifacts.",
       "do_not_claim": "New runtime evidence, public Chrome Connection Migration success, live AWS NLB+s2n success, or Safari handover success.",
       "next_gap": "Use the dashboard as the professor-facing decision table, then open AWS credentials or public-origin plus desktop-path gates for stronger positive evidence.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "noniphone-professor-decision-packet",
+      "chapter": "12",
+      "category": "professor-decision-synthesis",
+      "implementation": "cross-layer evidence corpus",
+      "evidence_doc": "docs/results/noniphone-professor-decision-packet-20260701.md",
+      "runner_or_tool": "tools/build_noniphone_professor_decision_packet.py",
+      "local_artifact_id": "noniphone-professor-decision-packet-20260701",
+      "claim_strength": "paper_synthesis",
+      "supports": "A Korean professor-facing decision packet that separates recommended paper scope, optional positive-result gates, blocked claims, and questions for the next research meeting.",
+      "do_not_claim": "New runtime evidence, final professor approval, public browser CM success, live AWS+s2n success, or Safari handover success.",
+      "next_gap": "Use in the professor meeting to choose between conservative maturity/gap paper scope and opening AWS/public-browser gates for positive results.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

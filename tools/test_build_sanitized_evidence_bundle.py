@@ -45,6 +45,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "noniphone-desktop-path-change-readiness" in ids
     assert "noniphone-public-workload-trial-packet" in ids
     assert "noniphone-claim-readiness-dashboard" in ids
+    assert "noniphone-professor-decision-packet" in ids
     assert "chrome-desktop-noniphone-range-local-refresh" in ids
     assert "chrome-desktop-noniphone-upload-local-refresh" in ids
     for item in bundle["items"]:

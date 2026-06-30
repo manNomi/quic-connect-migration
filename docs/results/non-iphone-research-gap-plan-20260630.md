@@ -315,6 +315,20 @@
 
 > 현재 corpus는 conservative maturity/gap report에는 충분하다. 즉 “CM primitive는 여러 구현체에 존재하지만, public browser CM success와 live AWS+s2n success는 아직 gate-blocked”라고 말할 수 있다. 반대로 Chrome public-origin single-session CM 성공, Safari handover 성공, live AWS NLB+s2n 성공은 아직 주장하면 안 된다.
 
+### P12. 2026-07-01 professor decision packet
+
+목표:
+
+> claim readiness dashboard를 교수님 미팅에서 바로 사용할 수 있는 decision packet으로 압축한다. 특히 현재 논문 scope를 maturity/gap analysis로 확정할지, positive public/browser/AWS result를 위해 외부 gate를 더 열지, Safari를 appendix로 제한할지를 분리한다.
+
+상태:
+
+> 완료. `tools/build_noniphone_professor_decision_packet.py`와 regression test를 추가했고, `docs/results/noniphone-professor-decision-packet-20260701.md` 및 `data/noniphone-professor-decision-packet-20260701.json`을 생성했다. 이 packet은 한 문장 결론, 현재 판정, 교수님께 받을 decision 4개, 현재 말해도 되는 claim, 아직 말하면 안 되는 claim, 교수님께 물어볼 질문, 금지 문장을 포함한다.
+
+해석:
+
+> 다음 논의에서는 “현재 근거로 conservative maturity/gap paper로 scope를 잡을지”가 1순위 decision이다. 교수님이 positive result를 요구하면 AWS credential을 열어 NLB+s2n live forwarding부터 갈지, public H3 origin과 non-iPhone secondary desktop path를 열어 Chrome controlled-public workload부터 갈지를 정하면 된다. Safari는 main result보다는 feasibility appendix로 보는 것이 방어 가능하다.
+
 ## 4. 다음 실행 순서
 
 | 순서 | 작업 | 이유 |
@@ -331,7 +345,8 @@
 | 10 | 2026-07-01 non-iPhone gate rerun | 완료. AWS/Safari/public-origin 세 gate 모두 아직 닫혀 있음을 public-safe report로 고정 |
 | 11 | Chrome desktop music-like local refresh | 완료. 6000ms outage에서 retry0 실패와 retry1 multiple-session 회복을 fresh row로 재확인 |
 | 12 | non-iPhone claim readiness dashboard | 완료. 허용 가능한 논문 claim과 금지해야 할 public/browser/AWS claim을 evidence ID 기준으로 분리 |
+| 13 | non-iPhone professor decision packet | 완료. 교수님께 받을 scope/positive-result/Safari appendix decision을 한국어 보고용 packet으로 압축 |
 
 ## 5. 바로 다음 턴의 권장 작업
 
-다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard는 확보됐다.
+다음 턴에서는 AWS credential이 refresh되면 s2n live NLB runner를 실제로 실행해 target A/B forwarding echo를 먼저 확인한다. 그 다음 active path-change variant를 설계한다. AWS를 바로 쓰기 어렵다면 controlled public Chrome origin을 준비해 media/range/upload/page-ready music-like trial로 넘어간다. Safari를 진행하려면 먼저 macOS Safari Settings에서 `Allow remote automation`을 켠 뒤 `--safari-session-smoke`를 다시 통과시켜야 한다. nginx/HAProxy boundary appendix, nginx runtime demo, HAProxy fresh negative-control, LSQUIC preferred-address/NAT-rebinding app demo, OpenLiteSpeed source feasibility audit, OpenLiteSpeed runtime preflight, cleanup dry-run, OpenLiteSpeed runtime runner, s2n NLB live readiness gate, s2n dedicated live runner, nginx `quic_bpf` readiness gate, quicly focused e2e path-migration check, Chrome desktop media/range/upload/music-like local refresh, Safari session readiness split, user-provided public-origin readiness, sanitized evidence-to-claim bundle, non-iPhone next research decision brief, 2026-07-01 gate rerun report, non-iPhone claim readiness dashboard, non-iPhone professor decision packet은 확보됐다.
