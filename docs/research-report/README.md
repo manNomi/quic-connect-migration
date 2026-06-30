@@ -41,6 +41,10 @@
 | Chapter 9 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-09-reference-and-evidence.md` |
 | Chapter 9 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-09-scanner-trigger-map-20260630.md` |
 | Chapter 9 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-09-external-link-check-20260630.md` |
+| Chapter 10. Upload Workload Recovery | 작성 완료 | `chapter-10-upload-workload-recovery.md` |
+| Chapter 10 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-10-reference-and-evidence.md` |
+| Chapter 10 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-10-scanner-trigger-map-20260630.md` |
+| Chapter 10 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-10-external-link-check-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -82,8 +86,10 @@
 | `tools/validate_final_handover_trial_artifact.py` | Chapter 8 final/negative-control claim-strength validator |
 | `harness/scripts/run-aws-controlled-public-chrome-trial.sh` | Chapter 9 AWS controlled public Chrome trial wrapper |
 | `tools/summarize_chrome_rebinding_range_matrix.py` | Chapter 9 local range control summarizer |
+| `tools/summarize_chrome_rebinding_upload_matrix.py` | Chapter 10 local upload control summarizer |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
 | `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
 | `docs/results/controlled-public-range-retry-iphone-usb-handover-20260629.md` | Chapter 9 byte-range retry public handover result |
+| `docs/results/iphone-usb-upload-retry-pilot-20260626.md` | Chapter 10 upload retry public handover result |
