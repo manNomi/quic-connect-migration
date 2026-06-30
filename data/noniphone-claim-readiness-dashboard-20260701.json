@@ -55,7 +55,7 @@
       "aws_s2n_live_claim",
       "safari_cross_browser_claim"
     ],
-    "bundle_item_count": 45,
+    "bundle_item_count": 46,
     "missing_evidence_by_claim": {},
     "paper_decision": "The current corpus is ready for a conservative maturity/gap report, but not for Chrome public CM success or live AWS+s2n success claims."
   },
@@ -170,6 +170,7 @@
       "paper_ready_wording": "The current controlled-public Chrome corpus supports a negative/gap statement: no tracked active row combines application completion, client active path change, server tuple change, qlog path validation, and single target Chrome QUIC session.",
       "evidence_ids": [
         "controlled-public-chrome-bridge-synthesis",
+        "controlled-public-chrome-artifact-classifier-contract",
         "user-provided-public-origin-readiness",
         "noniphone-desktop-path-change-readiness",
         "noniphone-public-workload-trial-packet",
@@ -182,9 +183,10 @@
         "The current desktop host lacks a non-iPhone active secondary path."
       ],
       "do_not_claim": "Do not claim Chrome public-origin single-session Connection Migration success.",
-      "next_action": "Open both gates: deploy an H3 Alt-Svc public origin and connect a non-iPhone secondary desktop path, then run the public workload trial packet.",
+      "next_action": "Open both gates: deploy an H3 Alt-Svc public origin and connect a non-iPhone secondary desktop path, then run the public workload trial packet and classify every row with the artifact contract.",
       "evidence_found": [
         "controlled-public-chrome-bridge-synthesis",
+        "controlled-public-chrome-artifact-classifier-contract",
         "user-provided-public-origin-readiness",
         "noniphone-desktop-path-change-readiness",
         "noniphone-public-workload-trial-packet",

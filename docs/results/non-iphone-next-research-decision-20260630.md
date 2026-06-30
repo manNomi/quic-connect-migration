@@ -14,7 +14,7 @@ This document chooses the next research step using only public-safe committed ev
 | candidate tracks | `6` |
 | runnable now | `[]` |
 | blocked track count | `6` |
-| missing evidence IDs | `{}` |
+| missing evidence IDs | `{'chrome-controlled-public-workloads': ['controlled-public-chrome-artifact-classifier-contract']}` |
 
 ## Recommendation
 
@@ -42,7 +42,7 @@ This document chooses the next research step using only public-safe committed ev
 | track | evidence IDs | missing | next action |
 | --- | --- | --- | --- |
 | `aws-s2n-nlb-live-forwarding` | `s2n-nlb-cid-provider-proof`, `s2n-nlb-live-readiness`, `aws-s2n-nlb-live-runner`, `s2n-active-migration-api-audit`, `aws-s2n-phase2-rebinding-runner-audit`, `aws-s2n-phase2-artifact-classifier-contract`, `non-iphone-gate-rerun-20260701` | - | Refresh AWS credentials, run `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh`, then run it again with `PATH_CHANGE_MODE=rebinding_proxy PAYLOAD_CHUNKS=8 CHUNK_DELAY_MS=250` if forwarding echo passes; classify resulting summaries with `tools/classify_aws_s2n_phase2_artifact.py --require-accepted`. |
-| `chrome-controlled-public-workloads` | `chromium-cronet-policy-evidence`, `user-provided-public-origin-readiness`, `non-iphone-gate-rerun-20260701`, `controlled-public-chrome-bridge-synthesis`, `chrome-desktop-noniphone-media-local-refresh`, `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh`, `noniphone-workload-qoe-synthesis`, `controlled-public-origin-workload-deploy-packet`, `noniphone-desktop-path-change-readiness`, `noniphone-public-workload-trial-packet` | - | Prepare public origin, then run the controlled public Chrome media/range/upload wrappers. |
+| `chrome-controlled-public-workloads` | `chromium-cronet-policy-evidence`, `user-provided-public-origin-readiness`, `non-iphone-gate-rerun-20260701`, `controlled-public-chrome-bridge-synthesis`, `controlled-public-chrome-artifact-classifier-contract`, `chrome-desktop-noniphone-media-local-refresh`, `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh`, `noniphone-workload-qoe-synthesis`, `controlled-public-origin-workload-deploy-packet`, `noniphone-desktop-path-change-readiness`, `noniphone-public-workload-trial-packet` | `controlled-public-chrome-artifact-classifier-contract` | Prepare public origin, run the controlled public Chrome media/range/upload wrappers, then classify each row with the controlled-public Chrome artifact classifier contract before using it in the paper. |
 | `nginx-quic-bpf-linux` | `nginx-active-client-migration-runtime`, `nginx-quic-bpf-readiness`, `nginx-quic-bpf-linux-runner` | - | Run `harness/scripts/run-nginx-quic-bpf-linux-demo.sh` on a suitable Linux host. |
 | `openlitespeed-production-like` | `lsquic-preferred-address-app-demo`, `lsquic-nat-rebinding-app-demo`, `openlitespeed-runtime-runner` | - | Run `harness/scripts/run-openlitespeed-active-migration-demo.sh` on Linux/EC2. |
 | `safari-desktop-baseline` | `safari-webdriver-session-readiness`, `non-iphone-gate-rerun-20260701` | - | Rerun `tools/check_browser_cm_observability.py --safari-session-smoke`, then controlled-public Safari baseline. |

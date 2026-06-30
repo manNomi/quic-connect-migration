@@ -37,6 +37,7 @@ def test_dashboard_separates_supported_and_blocked_claims() -> None:
     assert claims["controlled_public_chrome_cm"]["claim_allowed"] is False
     assert claims["controlled_public_chrome_cm"]["status"] == "not_supported_yet"
     assert "controlled-public-chrome-bridge-synthesis" in claims["controlled_public_chrome_cm"]["evidence_found"]
+    assert "controlled-public-chrome-artifact-classifier-contract" in claims["controlled_public_chrome_cm"]["evidence_found"]
     assert claims["aws_s2n_live_claim"]["status"] == "blocked"
     assert claims["safari_cross_browser_claim"]["status"] == "blocked_feasibility"
     assert claims["streaming_qoe_claim"]["claim_allowed"] is True

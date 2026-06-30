@@ -39,6 +39,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "user-provided-public-origin-readiness" in ids
     assert "non-iphone-gate-rerun-20260701" in ids
     assert "controlled-public-chrome-bridge-synthesis" in ids
+    assert "controlled-public-chrome-artifact-classifier-contract" in ids
     assert "chrome-desktop-noniphone-media-local-refresh" in ids
     assert "chrome-desktop-noniphone-musiclike-local-refresh" in ids
     assert "chrome-desktop-noniphone-buffered-media-local-refresh" in ids

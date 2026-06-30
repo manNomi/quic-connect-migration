@@ -7,7 +7,11 @@
   "track_count": 6,
   "runnable_now": [],
   "blocked_track_count": 6,
-  "missing_evidence_ids": {},
+  "missing_evidence_ids": {
+    "chrome-controlled-public-workloads": [
+      "controlled-public-chrome-artifact-classifier-contract"
+    ]
+  },
   "recommendation": {
     "main": "Do not keep expanding generic implementation survey now; the next paper-critical gain is a deployment/browser bridge.",
     "first": "Refresh AWS credentials and run AWS NLB + s2n-quic live forwarding echo.",
@@ -57,12 +61,13 @@
       "needed_from_user_or_environment": "Configure the public domain or an AWS public origin with WebPKI TLS, HTTP/3, Alt-Svc, and workload endpoints; connect or enable a non-iPhone secondary desktop path before setting NETWORK_CHANGE_CMD.",
       "paper_value": "High: bridges local browser evidence to real public-origin web workload continuity without iPhone.",
       "risk": "Even a PASS must prove single target QUIC session, path validation, path-change, and task completion together.",
-      "next_command_or_action": "Prepare public origin, then run the controlled public Chrome media/range/upload wrappers.",
+      "next_command_or_action": "Prepare public origin, run the controlled public Chrome media/range/upload wrappers, then classify each row with the controlled-public Chrome artifact classifier contract before using it in the paper.",
       "supporting_evidence_ids": [
         "chromium-cronet-policy-evidence",
         "user-provided-public-origin-readiness",
         "non-iphone-gate-rerun-20260701",
         "controlled-public-chrome-bridge-synthesis",
+        "controlled-public-chrome-artifact-classifier-contract",
         "chrome-desktop-noniphone-media-local-refresh",
         "chrome-desktop-noniphone-musiclike-local-refresh",
         "chrome-desktop-noniphone-buffered-media-local-refresh",
@@ -89,7 +94,9 @@
         "noniphone-desktop-path-change-readiness",
         "noniphone-public-workload-trial-packet"
       ],
-      "supporting_evidence_missing": []
+      "supporting_evidence_missing": [
+        "controlled-public-chrome-artifact-classifier-contract"
+      ]
     },
     {
       "rank": 3,

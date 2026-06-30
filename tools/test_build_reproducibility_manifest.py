@@ -75,6 +75,8 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["controlled_public_chrome_bridge_synthesis"]["exists"] is True
     assert paths["controlled_public_chrome_bridge_synthesis_json"]["exists"] is True
     assert paths["controlled_public_chrome_bridge_synthesis_csv"]["exists"] is True
+    assert paths["controlled_public_chrome_artifact_classifier_contract"]["exists"] is True
+    assert paths["controlled_public_chrome_artifact_classifier_contract_json"]["exists"] is True
     assert paths["quicly_e2e_path_migration"]["exists"] is True
     assert paths["s2n_nlb_live_readiness"]["exists"] is True
     assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
@@ -104,7 +106,7 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_iphone_next_research_decision_json"]["exists"] is True
     assert paths["mvfst_migration_test_readiness"]["exists"] is True
     assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "aws-s2n-phase2-artifact-classifier-contract"
+    assert manifest["experiment_matrix"]["latest_item"] == "controlled-public-chrome-artifact-classifier-contract"
 
 
 def test_generated_date_uses_utc_day() -> None:

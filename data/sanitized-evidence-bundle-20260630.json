@@ -1,11 +1,11 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 45,
+  "item_count": 46,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
-    "artifact_classifier_contract": 1,
+    "artifact_classifier_contract": 2,
     "bridge_gap_negative_controls": 1,
     "broad_test_suite": 1,
     "deployment_positive": 1,
@@ -30,6 +30,7 @@
     "strong_local_positive": 1
   },
   "category_counts": {
+    "browser-artifact-classifier": 1,
     "browser-deployment-bridge-synthesis": 1,
     "browser-local-buffered-media-control": 1,
     "browser-local-control": 1,
@@ -535,6 +536,22 @@
       "supports": "Tracked controlled-public Chrome validation records include H3 no-change baselines and active network-change negative controls; none combine active network change, application continuity, tuple change, and QUIC path validation.",
       "do_not_claim": "Controlled-public Chrome single-session Connection Migration success, final browser handover success, or upload coverage from untracked local validation notes.",
       "next_gap": "Open a controlled public H3 origin and rerun page-ready media/range/upload trials with artifact-bundle validation.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "controlled-public-chrome-artifact-classifier-contract",
+      "chapter": "7-11",
+      "category": "browser-artifact-classifier",
+      "implementation": "Chrome + controlled public H3 workload artifacts",
+      "evidence_doc": "docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md",
+      "runner_or_tool": "tools/build_controlled_public_chrome_artifact_classifier_contract.py",
+      "local_artifact_id": "controlled-public-chrome-artifact-classifier-contract-20260701",
+      "claim_strength": "artifact_classifier_contract",
+      "supports": "A strict public Chrome artifact contract that separates H3 baseline, no-change controls, application recovery/reconnect, negative controls, and strong single-session CM rows.",
+      "do_not_claim": "A future public Chrome row is strong CM evidence without application completion, client active path change, target tuple change, qlog path validation, and exactly one Chrome target QUIC session in the same row.",
+      "next_gap": "After public-origin and desktop path gates open, run the source classifier on each row and apply this contract before converting results into paper claims.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

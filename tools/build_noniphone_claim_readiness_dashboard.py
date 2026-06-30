@@ -115,6 +115,7 @@ CLAIM_ROWS = [
         paper_ready_wording="The current controlled-public Chrome corpus supports a negative/gap statement: no tracked active row combines application completion, client active path change, server tuple change, qlog path validation, and single target Chrome QUIC session.",
         evidence_ids=(
             "controlled-public-chrome-bridge-synthesis",
+            "controlled-public-chrome-artifact-classifier-contract",
             "user-provided-public-origin-readiness",
             "noniphone-desktop-path-change-readiness",
             "noniphone-public-workload-trial-packet",
@@ -127,7 +128,7 @@ CLAIM_ROWS = [
             "The current desktop host lacks a non-iPhone active secondary path.",
         ),
         do_not_claim="Do not claim Chrome public-origin single-session Connection Migration success.",
-        next_action="Open both gates: deploy an H3 Alt-Svc public origin and connect a non-iPhone secondary desktop path, then run the public workload trial packet.",
+        next_action="Open both gates: deploy an H3 Alt-Svc public origin and connect a non-iPhone secondary desktop path, then run the public workload trial packet and classify every row with the artifact contract.",
     ),
     ClaimRow(
         id="aws_s2n_live_claim",

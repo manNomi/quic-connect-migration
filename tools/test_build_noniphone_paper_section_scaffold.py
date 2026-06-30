@@ -34,6 +34,7 @@ def test_scaffold_maps_evidence_to_paper_sections() -> None:
     rows = {row["id"]: row for row in scaffold["sections"]}
     assert "noniphone-paper-wording-guard" in rows["abstract_positioning"]["evidence_ids"]
     assert "controlled-public-chrome-bridge-synthesis" in rows["method_public_cm_acceptance"]["evidence_ids"]
+    assert "controlled-public-chrome-artifact-classifier-contract" in rows["method_public_cm_acceptance"]["evidence_ids"]
     assert rows["limitations_future_work"]["section"] == "Limitations"
 
 

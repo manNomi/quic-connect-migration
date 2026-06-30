@@ -20,7 +20,7 @@
     ],
     "missing_evidence_ids": {},
     "missing_wording_sections": {},
-    "bundle_item_count": 45,
+    "bundle_item_count": 46,
     "scaffold_decision": "Use this scaffold to draft a conservative maturity/gap paper before opening public browser or AWS positive-result gates."
   },
   "sections": [
@@ -83,7 +83,8 @@
       "evidence_ids": [
         "noniphone-public-workload-trial-packet",
         "controlled-public-origin-workload-deploy-packet",
-        "controlled-public-chrome-bridge-synthesis"
+        "controlled-public-chrome-bridge-synthesis",
+        "controlled-public-chrome-artifact-classifier-contract"
       ],
       "wording_sections": [
         "method"

@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "c447895",
+    "commit": "f344031",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,12 +54,12 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 149,
+    "total_items": 150,
     "status_counts": {
-      "done": 145,
+      "done": 146,
       "planned": 4
     },
-    "latest_item": "aws-s2n-phase2-artifact-classifier-contract"
+    "latest_item": "controlled-public-chrome-artifact-classifier-contract"
   },
   "verification": {
     "checks": "109",
@@ -279,6 +279,14 @@
     },
     "controlled_public_chrome_bridge_synthesis_csv": {
       "path": "data/controlled-public-chrome-bridge-synthesis-20260701.csv",
+      "exists": true
+    },
+    "controlled_public_chrome_artifact_classifier_contract": {
+      "path": "docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md",
+      "exists": true
+    },
+    "controlled_public_chrome_artifact_classifier_contract_json": {
+      "path": "data/controlled-public-chrome-artifact-classifier-contract-20260701.json",
       "exists": true
     },
     "haproxy_negative_control": {
