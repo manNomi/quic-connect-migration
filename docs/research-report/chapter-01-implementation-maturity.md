@@ -291,8 +291,9 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 | 항목 | 결과 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test까지 실행한 구현체 | 8 |
-| source inspected | 15 |
+| local test/demo까지 실행한 구현체 | 9 |
+| 2026-06-30 fresh rerun/demo artifact 확보 | 9 |
+| source inspected only | 6 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |

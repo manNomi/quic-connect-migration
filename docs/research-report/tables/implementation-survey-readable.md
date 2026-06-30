@@ -27,9 +27,9 @@
 | 항목 | 값 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test까지 실행한 구현체 | 8 |
-| 2026-06-30 fresh rerun artifact 확보 | 8 |
-| source inspected | 15 |
+| local test까지 실행한 구현체 | 9 |
+| 2026-06-30 fresh rerun artifact 확보 | 9 |
+| source inspected only | 6 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |
@@ -49,7 +49,7 @@
 | 6 | MsQuic | library/server | O | O | ? check | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `source_inspected` | Confirm active migration sample/API and LB assumptions |
 | 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Rust migration/rebind comparison |
 | 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Firefox-adjacent broad migration test evidence |
-| 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L2_L4` | `source_inspected` | Assess docs language/build feasibility |
+| 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; retry full run_tests on Linux because macOS AppleClang Werror blocks QPACK unit build |
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_runtime_policy_dependent` | `source_and_local_browser_baseline` | Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults |
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | ? s2n | `yes` | `L5_deployment_candidate` | `partial_deferred` | Start only after s2n-quic custom CID compatibility is verified |
@@ -70,6 +70,7 @@
 | Cloudflare quiche | PathEvent/log/qlog로 migration lifecycle 설명에 좋음 |
 | picoquic | migration edge-case test가 풍부함 |
 | s2n-quic | AWS/NLB/CID-aware deployment 연구와 연결성이 좋음 |
+| XQUIC | NAT rebinding demo가 실제 client/server로 통과했지만 full suite는 Linux 재실행 필요 |
 
 ### 2. production/deployment 논의 후보
 

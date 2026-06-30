@@ -14,9 +14,9 @@ Chapter 2는 CM이 잘 보이지 않는 이유가 여러 계층에 흩어져 있
 
 현재까지의 결과는 다음과 같이 정리된다.
 
-> quic-go, quiche, picoquic, s2n-quic 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했다.
+> quic-go, quiche, picoquic, s2n-quic, XQUIC 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했다.
 
-2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했다. 다만 이 결론은 library/client-server positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
+2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. 다만 이 결론은 library/client-server positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
 
 ## 3. 현재 repo에서 재실행한 검수
 
@@ -71,6 +71,7 @@ quic-go 편중을 줄이기 위해 2026-06-30에 다음 구현체를 현재 HEAD
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable active migration tests | PASS | readable passive/path-validation reference |
 | Quinn | `953b466747e667a9dfda0596b8051a0644f8333d` | `quinn-proto` migration, endpoint rebind | PASS | Rust stack migration/rebind evidence |
 | Neqo | `3ba227d37f46a5684e984ead831b73344d9fec63` | `neqo-transport` migration suite | PASS | Firefox-adjacent broad migration evidence |
+| XQUIC | `96155cffbde7f062fe45ac3f6899f47e25709d30` | `test_client`/`test_server` NAT rebinding demo | PASS demo, full suite partial | NAT rebinding implementation evidence with macOS build caveat |
 
 상세 명령과 로그 위치는 [implementation-rerun-results-20260630.md](../results/implementation-rerun-results-20260630.md)에 분리했다. raw log는 `harness/results/impl-rerun-20260630T070249Z` 아래에 있으며, `harness/results/`가 ignored artifact path라 공개 repo에는 요약만 남긴다.
 
@@ -99,10 +100,11 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 | ngtcp2 | 2026-06-30 fresh rerun PASS | client migration test, path validation, disable active migration, frame encode | C library primitive 비교군 |
 | Quinn | 2026-06-30 fresh rerun PASS | proto migration, PATH_CHALLENGE/PATH_RESPONSE, rebind receive path | Rust stack 비교군 |
 | Neqo | 2026-06-30 fresh rerun PASS | rebind, graceful/immediate migration, preferred address, disabled migration, ECN/PMTUD migration | Firefox-adjacent 비교군 |
+| XQUIC | 2026-06-30 NAT rebinding demo PASS | client/server NAT rebinding, PATH_CHALLENGE/PATH_RESPONSE, pass marker | full suite는 macOS QPACK `-Werror` build caveat |
 
 주의:
 
-> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, ngtcp2, aioquic, Quinn, Neqo의 raw execution artifact는 로컬 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
+> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
 
 ## 6. 논문에서 쓸 수 있는 주장
 
@@ -139,6 +141,7 @@ controlled implementation positive control이 확인되면, 다음 질문은 dep
 | aioquic fresh rerun | PASS |
 | Quinn fresh rerun | PASS |
 | Neqo fresh rerun | PASS |
+| XQUIC NAT rebinding demo | PASS, full suite partial |
 | qlog validator false negative 수정 | PASS |
 | 현재 repo 코드 링크 | `repro/quic-go-min-repro`, `harness/scripts/run-local-quic-go.sh` |
 | 외부 구현체/source 링크 | `chapter-03-reference-and-evidence.md`에 정리 |
