@@ -28,6 +28,7 @@
 | --- | ---: |
 | 총 조사 대상 | 18 |
 | local test까지 실행한 구현체 | 8 |
+| 2026-06-30 fresh rerun artifact 확보 | 6 |
 | source inspected | 15 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
@@ -40,10 +41,10 @@
 
 | # | 구현체/스택 | 분류 | RFC | Passive | Active API | 관찰성 | Tests | 배포/LB | 판정 | 증거 | 다음 액션 |
 | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | quic-go | library/server | O | O | O | `qlog` | O | `manual` | `L4` | `source_inspected` | Prototype AddPath/Probe/Switch local or EC2 test |
-| 2 | Cloudflare quiche | library/server | O | O | O | `qlog/logs` | O | `library_yes_cloud_unclear` | `L4` | `source_inspected` | Build small quiche client/server reproduction |
-| 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `source_inspected` | Verify custom CID generator and NLB 8-byte Server ID compatibility |
-| 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4` | `source_inspected` | Confirm example client/server migration commands |
+| 1 | quic-go | library/server | O | O | O | `qlog` | O | `manual` | `L4` | `fresh_rerun_20260630` | Maintain as strong AddPath/Probe/Switch positive control |
+| 2 | Cloudflare quiche | library/server | O | O | O | `qlog/logs` | O | `library_yes_cloud_unclear` | `L4` | `fresh_rerun_20260630` | Use as cross-implementation client/server migration evidence |
+| 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `fresh_rerun_20260630` | Verify custom CID generator and NLB 8-byte Server ID compatibility |
+| 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4` | `fresh_rerun_20260630` | Use as C library primitive/path-validation comparison |
 | 5 | LiteSpeed lsquic | server | O | O | O | `logs` | O | `likely` | `L4_L5_candidate` | `source_inspected` | Check OpenLiteSpeed/lsquic instrumentation and setup cost |
 | 6 | MsQuic | library/server | O | O | ? check | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `source_inspected` | Confirm active migration sample/API and LB assumptions |
 | 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `source_inspected` | Inspect public API for active local address migration |
@@ -53,10 +54,10 @@
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
 | 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | ? s2n | `yes` | `L5_deployment_candidate` | `partial_deferred` | Start only after s2n-quic custom CID compatibility is verified |
 | 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use as large-scale implementation maturity evidence; not first experiment |
-| 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `source_inspected` | Use as controlled experiment or preferred-address comparison after quic-go/quiche |
+| 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |
 | 15 | nginx QUIC | server | O | O | X | `logs` | ? test | `server_deploy` | `L3_L4` | `source_inspected` | Use as server-side passive migration and web-server deployment evidence |
 | 16 | quicly | library/server | O | O | internal | `stats_logs` | O | `manual` | `L3_L4` | `source_inspected` | Use as RFC primitive and C implementation comparison |
-| 17 | aioquic | library/tooling | O | △ | X | `logs_tests` | O | `manual` | `L2_L3` | `source_inspected` | Use as readable passive path-validation reference, not primary experiment |
+| 17 | aioquic | library/tooling | O | △ | X | `logs_tests` | O | `manual` | `L2_L3` | `fresh_rerun_20260630` | Use as readable passive path-validation reference, not primary experiment |
 | 18 | HAProxy QUIC | proxy | △ | △ | X | `stats` | ? | `deployment_constraint` | `L1_L2` | `source_inspected` | Use as evidence that HTTP/3 support does not imply Connection Migration support |
 
 ## 보고용 해석

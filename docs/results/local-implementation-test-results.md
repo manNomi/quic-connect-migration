@@ -3,6 +3,8 @@
 작성일: 2026-06-22  
 범위: AWS CLI/EC2 없이 로컬 머신에서 실행 가능한 QUIC 구현체별 Connection Migration 관련 테스트와 샘플을 검수한다.
 
+> 2026-06-30 업데이트: 이 문서는 2026-06-22 당시의 로컬 실행 기록이다. quic-go 편중을 줄이기 위해 quiche, picoquic, s2n-quic, ngtcp2, aioquic을 현재 HEAD 기준으로 다시 실행한 최신 요약은 [implementation-rerun-results-20260630.md](implementation-rerun-results-20260630.md)를 기준으로 본다.
+
 ## 1. 결론
 
 로컬에서 실제 테스트까지 실행한 구현체는 다음 8개다.
