@@ -66,7 +66,7 @@ run_case() {
   SERVER_PID=""
 
   if command -v rg >/dev/null 2>&1; then
-    rg -n "path_challenge|path_response|http3:frame|chosen_alpn" "$case_dir/qlog" >"$case_dir/results/qlog-path-validation.txt" || true
+    rg --no-ignore --text -n "path_challenge|path_response|http3:frame|chosen_alpn" "$case_dir/qlog" >"$case_dir/results/qlog-path-validation.txt" || true
   else
     grep -R -n -E "path_challenge|path_response|http3:frame|chosen_alpn" "$case_dir/qlog" >"$case_dir/results/qlog-path-validation.txt" || true
   fi

@@ -15,6 +15,9 @@
 | Chapter 2. CM 미사용/저가시성 원인 분석 | 작성 완료 | `chapter-02-underuse-friction.md` |
 | Chapter 2 부록. 실제 참고 링크와 friction trigger 근거 | 작성 완료 | `chapter-02-reference-and-evidence.md` |
 | Chapter 2 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-02-external-link-check-20260630.md` |
+| Chapter 3. 구현체 Positive Control | 작성 완료 | `chapter-03-implementation-positive-control.md` |
+| Chapter 3 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-03-reference-and-evidence.md` |
+| Chapter 3 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-03-external-link-check-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -37,6 +40,9 @@
 | `data/cm-operational-friction-rubric.csv` | Chapter 2 friction_id별 matching term |
 | `data/cm-operational-friction-matrix-20260624.csv` | Chapter 2 friction matrix 원본 CSV |
 | `tools/build_cm_operational_friction_matrix.py` | Chapter 2 friction matrix builder |
+| `repro/quic-go-min-repro/` | Chapter 3 quic-go positive-control 재현 코드 |
+| `harness/scripts/run-local-quic-go.sh` | Chapter 3 local quic-go 재현 wrapper |
+| `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
