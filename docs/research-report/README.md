@@ -75,6 +75,8 @@
 | 원본 | 역할 |
 | --- | --- |
 | `data/implementation-survey.csv` | Chapter 1 구현체별 원본 조사표 |
+| `docs/results/reproducibility-manifest-20260630.md` | 2026-06-30 구현체 재검수/runner까지 반영한 public-safe reproducibility manifest |
+| `data/reproducibility-manifest-20260630.json` | 위 manifest의 machine-readable JSON |
 | `docs/research-report/reference-link-catalog-20260630.md` | 전체 외부 참고자료 링크 카탈로그 |
 | `docs/research-report/scanner-trigger-audit-index-20260630.md` | 전체 scanner/classifier/builder trigger 감사 인덱스 |
 | `tools/scan_implementation_evidence.py` | 구현체 repo에서 CM 관련 evidence 후보를 찾는 scanner |

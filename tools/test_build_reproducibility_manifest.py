@@ -16,7 +16,10 @@ def test_manifest_contains_core_public_safe_fields() -> None:
     assert manifest["experiment_corpus"]["total_trials"] >= 1
     assert "verification" in manifest
     assert "research_audit" in manifest
+    assert "implementation_corpus" in manifest
+    assert "evidence_paths_20260630" in manifest
     assert "final_browser_handover_trials" in manifest["research_audit"]
+    assert manifest["implementation_corpus"]["total_implementations"] >= 18
     assert "PRIVATE KEY" not in markdown
     assert "AWS_SECRET" not in markdown
     assert "AKIA" not in markdown
@@ -33,6 +36,15 @@ def test_manifest_points_to_authoritative_artifacts() -> None:
     assert paths["p0_baseline_preflight_redaction_smoke"].endswith("final-p0-baseline-preflight-redaction-smoke-20260625.md")
 
 
+def test_manifest_points_to_current_implementation_evidence() -> None:
+    manifest = build_manifest(include_ci=False)
+    paths = manifest["evidence_paths_20260630"]
+    assert paths["implementation_rerun_results"]["exists"] is True
+    assert paths["openlitespeed_runtime_runner"]["exists"] is True
+    assert paths["nginx_haproxy_boundary"]["exists"] is True
+    assert manifest["experiment_matrix"]["latest_item"] == "reproducibility-manifest-20260630"
+
+
 def test_generated_date_uses_utc_day() -> None:
     assert utc_date_iso() == datetime.now(timezone.utc).date().isoformat()
 
@@ -40,6 +52,7 @@ def test_generated_date_uses_utc_day() -> None:
 def main() -> int:
     test_manifest_contains_core_public_safe_fields()
     test_manifest_points_to_authoritative_artifacts()
+    test_manifest_points_to_current_implementation_evidence()
     test_generated_date_uses_utc_day()
     print("build_reproducibility_manifest=ok")
     return 0

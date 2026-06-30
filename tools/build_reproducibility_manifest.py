@@ -69,6 +69,21 @@ def parse_markdown_summary(path: Path) -> dict[str, str]:
     return summary
 
 
+def count_by(rows: list[dict[str, str]], field: str) -> dict[str, int]:
+    counts = Counter(row.get(field, "") or "-" for row in rows)
+    return dict(sorted(counts.items()))
+
+
+def path_status(paths: dict[str, str]) -> dict[str, dict[str, Any]]:
+    return {
+        key: {
+            "path": path,
+            "exists": Path(path).exists(),
+        }
+        for key, path in paths.items()
+    }
+
+
 def newest_ci_summary() -> dict[str, str]:
     gh = run(["gh", "run", "list", "--repo", "manNomi/quic-connect-migration", "--limit", "1"], timeout=20)
     if gh.returncode != 0 or not gh.stdout.strip():
@@ -92,12 +107,31 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
     root = Path(".")
     git = git_state()
     experiments = read_csv(root / "data" / "experiment-results.csv")
+    implementation_survey = read_csv(root / "data" / "implementation-survey.csv")
+    experiment_matrix = read_csv(root / "harness" / "manifests" / "experiment-matrix.csv")
     requirements = read_csv(root / "data" / "final-browser-handover-required-trials.csv")
     status_counts = Counter(row.get("status", "") for row in experiments)
     final_summary = parse_markdown_summary(root / "docs" / "results" / "research-bundle-audit-20260624.md")
     verification_summary = parse_markdown_summary(root / "docs" / "results" / "research-verification-report-20260624.md")
     external_inputs = parse_markdown_summary(root / "docs" / "results" / "final-handover-external-inputs-20260624.md")
     ci = newest_ci_summary() if include_ci else {"available": "not-requested"}
+    evidence_paths_20260630 = {
+        "implementation_rerun_results": "docs/results/implementation-rerun-results-20260630.md",
+        "implementation_survey_csv": "data/implementation-survey.csv",
+        "experiment_matrix": "harness/manifests/experiment-matrix.csv",
+        "non_iphone_gap_plan": "docs/results/non-iphone-research-gap-plan-20260630.md",
+        "nginx_haproxy_boundary": "docs/results/nginx-haproxy-quic-cm-boundary-20260630.md",
+        "nginx_runtime_demo": "docs/results/nginx-quic-active-migration-runtime-20260630.md",
+        "haproxy_negative_control": "docs/results/haproxy-http3-negative-control-rerun-20260630.md",
+        "lsquic_preferred_address_demo": "docs/results/lsquic-preferred-address-app-demo-20260630.md",
+        "lsquic_nat_rebinding_demo": "docs/results/lsquic-nat-rebinding-app-demo-20260630.md",
+        "openlitespeed_source_feasibility": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",
+        "openlitespeed_runtime_preflight": "docs/results/openlitespeed-runtime-preflight-20260630.md",
+        "openlitespeed_runtime_runner": "docs/results/openlitespeed-active-migration-runner-20260630.md",
+        "mvfst_source_audit": "docs/results/mvfst-cm-source-audit-20260630.md",
+        "s2n_nlb_cid_provider_rerun": "docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md",
+        "research_report_index": "docs/research-report/README.md",
+    }
 
     return {
         "generated": utc_date_iso(),
@@ -108,6 +142,17 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "total_trials": len(experiments),
             "status_counts": dict(sorted(status_counts.items())),
             "final_required_rows": len(requirements),
+        },
+        "implementation_corpus": {
+            "total_implementations": len(implementation_survey),
+            "evidence_status_counts": count_by(implementation_survey, "evidence_status"),
+            "current_level_counts": count_by(implementation_survey, "current_level"),
+            "top_priority_names": [row.get("name", "-") for row in implementation_survey[:5]],
+        },
+        "experiment_matrix": {
+            "total_items": len(experiment_matrix),
+            "status_counts": count_by(experiment_matrix, "status"),
+            "latest_item": experiment_matrix[-1].get("id", "-") if experiment_matrix else "-",
         },
         "verification": {
             "checks": verification_summary.get("checks", "-"),
@@ -154,6 +199,7 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
             "aws_identity_readiness": "docs/results/aws-identity-readiness-20260625.md",
             "active_path_cookbook": "docs/results/active-path-change-operator-cookbook-20260624.md",
         },
+        "evidence_paths_20260630": path_status(evidence_paths_20260630),
     }
 
 
@@ -173,6 +219,10 @@ def emit_markdown(manifest: dict[str, Any]) -> str:
         f"| branch | `{manifest['git']['branch']}` |",
         f"| total trials | `{manifest['experiment_corpus']['total_trials']}` |",
         f"| status counts | `{manifest['experiment_corpus']['status_counts']}` |",
+        f"| implementation survey rows | `{manifest['implementation_corpus']['total_implementations']}` |",
+        f"| implementation evidence status counts | `{manifest['implementation_corpus']['evidence_status_counts']}` |",
+        f"| experiment matrix items | `{manifest['experiment_matrix']['total_items']}` |",
+        f"| latest experiment matrix item | `{manifest['experiment_matrix']['latest_item']}` |",
         f"| verification | `{manifest['verification']['passed']}/{manifest['verification']['checks']} passed; ok={manifest['verification']['ok']}` |",
         f"| final browser handover | `{manifest['research_audit']['final_browser_handover_trials']}` |",
         f"| goal complete | `{manifest['research_audit']['goal_complete']}` |",
@@ -188,6 +238,17 @@ def emit_markdown(manifest: dict[str, Any]) -> str:
     ]
     for key, path in manifest["key_paths"].items():
         lines.append(f"| `{key}` | `{path}` |")
+    lines.extend(
+        [
+            "",
+            "## 2026-06-30 Evidence Paths",
+            "",
+            "| item | path | exists |",
+            "| --- | --- | --- |",
+        ]
+    )
+    for key, item in manifest["evidence_paths_20260630"].items():
+        lines.append(f"| `{key}` | `{item['path']}` | `{'yes' if item['exists'] else 'no'}` |")
     lines.extend(
         [
             "",
