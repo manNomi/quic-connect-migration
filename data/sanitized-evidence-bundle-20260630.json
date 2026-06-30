@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 48,
+  "item_count": 49,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -27,6 +27,7 @@
     "runner_readiness_audit": 1,
     "safety_audit": 1,
     "server_runtime_positive": 1,
+    "source_linked_api_boundary": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
     "strong_local_positive": 1
@@ -58,6 +59,7 @@
     "deployment-safety-audit": 1,
     "desktop-path-readiness": 1,
     "implementation-api-audit": 1,
+    "implementation-api-boundary": 1,
     "implementation-app-demo": 2,
     "implementation-depth-boundary": 1,
     "implementation-focused-e2e": 1,
@@ -844,6 +846,22 @@
       "supports": "A row-level explanation of why quic-go has the deepest controlled AddPath/Probe/Switch evidence while non-quic-go stacks still contribute test-suite, runtime, source, deployment-readiness, and negative-control evidence.",
       "do_not_claim": "New runtime evidence, equal active migration control across all stacks, browser handover success, or managed deployment continuity.",
       "next_gap": "Use the remaining-deepening candidates to decide whether AWS NLB+s2n, mvfst Linux build, CloudFront edge, XQUIC Linux, quicly full e2e, or Chrome/Cronet runtime rows are worth opening next.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "msquic-migration-api-boundary-audit",
+      "chapter": "1",
+      "category": "implementation-api-boundary",
+      "implementation": "MsQuic",
+      "evidence_doc": "docs/results/msquic-migration-api-boundary-audit-20260701.md",
+      "runner_or_tool": "tools/build_msquic_migration_api_boundary_audit.py",
+      "local_artifact_id": "msquic-migration-api-boundary-audit-20260701",
+      "claim_strength": "source_linked_api_boundary",
+      "supports": "MsQuic exposes MigrationEnabled, address-change events, constrained QUIC_PARAM_CONN_LOCAL_ADDRESS control, and NAT rebinding tests while documenting a QUIC-aware load-balancing boundary.",
+      "do_not_claim": "quic-go-style AddPath/Probe/Switch control, managed-LB continuity, browser handover success, or new runtime payload continuity beyond existing MsQuic tests.",
+      "next_gap": "Build a focused MsQuic runtime harness only if reviewers require a second production-oriented active-control artifact.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

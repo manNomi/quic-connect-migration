@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "f3d85dd",
+    "commit": "634d67e",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -54,16 +54,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 152,
+    "total_items": 153,
     "status_counts": {
-      "done": 148,
+      "done": 149,
       "planned": 4
     },
-    "latest_item": "non-quicgo-execution-depth-audit"
+    "latest_item": "msquic-migration-api-boundary-audit"
   },
   "verification": {
-    "checks": "135",
-    "passed": "135",
+    "checks": "137",
+    "passed": "137",
     "ok": "yes"
   },
   "research_audit": {
@@ -263,6 +263,14 @@
     },
     "non_quicgo_execution_depth_audit_csv": {
       "path": "data/non-quicgo-execution-depth-audit-20260701.csv",
+      "exists": true
+    },
+    "msquic_migration_api_boundary_audit": {
+      "path": "docs/results/msquic-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "msquic_migration_api_boundary_audit_json": {
+      "path": "data/msquic-migration-api-boundary-audit-20260701.json",
       "exists": true
     },
     "chrome_desktop_noniphone_range_local_refresh": {

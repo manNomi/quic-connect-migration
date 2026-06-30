@@ -657,6 +657,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="New runtime evidence, equal active migration control across all stacks, browser handover success, or managed deployment continuity.",
         next_gap="Use the remaining-deepening candidates to decide whether AWS NLB+s2n, mvfst Linux build, CloudFront edge, XQUIC Linux, quicly full e2e, or Chrome/Cronet runtime rows are worth opening next.",
     ),
+    EvidenceItem(
+        id="msquic-migration-api-boundary-audit",
+        chapter="1",
+        category="implementation-api-boundary",
+        implementation="MsQuic",
+        evidence_doc="docs/results/msquic-migration-api-boundary-audit-20260701.md",
+        runner_or_tool="tools/build_msquic_migration_api_boundary_audit.py",
+        local_artifact_id="msquic-migration-api-boundary-audit-20260701",
+        claim_strength="source_linked_api_boundary",
+        supports="MsQuic exposes MigrationEnabled, address-change events, constrained QUIC_PARAM_CONN_LOCAL_ADDRESS control, and NAT rebinding tests while documenting a QUIC-aware load-balancing boundary.",
+        do_not_claim="quic-go-style AddPath/Probe/Switch control, managed-LB continuity, browser handover success, or new runtime payload continuity beyond existing MsQuic tests.",
+        next_gap="Build a focused MsQuic runtime harness only if reviewers require a second production-oriented active-control artifact.",
+    ),
 ]
 
 

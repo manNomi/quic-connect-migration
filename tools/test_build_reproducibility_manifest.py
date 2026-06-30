@@ -112,7 +112,9 @@ def test_manifest_points_to_current_implementation_evidence() -> None:
     assert paths["non_quicgo_execution_depth_audit"]["exists"] is True
     assert paths["non_quicgo_execution_depth_audit_json"]["exists"] is True
     assert paths["non_quicgo_execution_depth_audit_csv"]["exists"] is True
-    assert manifest["experiment_matrix"]["latest_item"] == "non-quicgo-execution-depth-audit"
+    assert paths["msquic_migration_api_boundary_audit"]["exists"] is True
+    assert paths["msquic_migration_api_boundary_audit_json"]["exists"] is True
+    assert manifest["experiment_matrix"]["latest_item"] == "msquic-migration-api-boundary-audit"
 
 
 def test_generated_date_uses_utc_day() -> None:

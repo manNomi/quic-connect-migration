@@ -112,7 +112,7 @@
       "usage_reason": "Microsoft ecosystem; mature deployment docs and rebind/path-validation tests",
       "rfc_primitives": "yes",
       "passive_migration": "yes",
-      "active_migration_api": "needs_api_check",
+      "active_migration_api": "policy_constrained",
       "preferred_address": "yes",
       "observability": "ETW/logs",
       "tests": "yes",
@@ -120,9 +120,9 @@
       "aws_suitability": "medium",
       "current_level": "L4_L5_caveat",
       "evidence_status": "fresh_rerun_20260630",
-      "next_action": "Use as production-relevant NAT rebinding/path-validation evidence; still verify QUIC-aware LB deployment assumptions",
+      "next_action": "Use as production-relevant NAT rebinding/path-validation evidence; API audit shows constrained local-address control rather than quic-go-style AddPath/Probe/Switch",
       "claim_class": "strong_cross_implementation_positive",
-      "risk_note": "NAT rebind/path validation tests are positive; QUIC-aware load balancing remains a deployment assumption to verify."
+      "risk_note": "NAT rebind/path validation tests are positive; API audit shows constrained local-address control, while QUIC-aware load balancing remains a deployment boundary."
     },
     {
       "priority": "7",

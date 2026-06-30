@@ -75,6 +75,7 @@
 | controlled-public Chrome artifact classifier contract. public Chrome row claim 판정 기준 | 작성 완료 | `../results/controlled-public-chrome-artifact-classifier-contract-20260701.md` |
 | controlled-public Chrome contract application audit. 기존 public Chrome row contract 적용 결과 | 작성 완료 | `../results/controlled-public-chrome-contract-application-audit-20260701.md` |
 | quic-go 외 구현체 실행 깊이 감사. 왜 quic-go만 가장 깊은 positive control인지 | 작성 완료 | `../results/non-quicgo-execution-depth-audit-20260701.md` |
+| MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -198,5 +199,6 @@
 | `docs/results/noniphone-paper-section-scaffold-20260701.md` | 현재 evidence와 wording guard를 abstract/introduction/method/results/limitations 섹션에 배치하는 논문 구조 scaffold |
 | `docs/results/non-quicgo-implementation-findings-20260701.md` | quic-go를 제외한 17개 구현체/스택의 검수 결과와 claim boundary |
 | `docs/results/non-quicgo-execution-depth-audit-20260701.md` | quic-go 외 구현체의 실행 깊이 차이, 남은 deepening 후보, AWS gate 최신 상태 |
+| `docs/results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic public API, NAT rebinding tests, QUIC-aware LB deployment boundary를 source link로 고정 |
 | `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | AWS NLB+s2n live runner의 fail-closed gate, 임시 리소스 inventory, cleanup coverage, risk boundary |
 | `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | AWS NLB+s2n forwarding echo 이후 NAT-rebinding proxy, Linux namespace/SNAT, test-IO rebind, public API/fork variant의 claim boundary |

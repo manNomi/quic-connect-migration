@@ -155,6 +155,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "non_quicgo_execution_depth_audit": "docs/results/non-quicgo-execution-depth-audit-20260701.md",
         "non_quicgo_execution_depth_audit_json": "data/non-quicgo-execution-depth-audit-20260701.json",
         "non_quicgo_execution_depth_audit_csv": "data/non-quicgo-execution-depth-audit-20260701.csv",
+        "msquic_migration_api_boundary_audit": "docs/results/msquic-migration-api-boundary-audit-20260701.md",
+        "msquic_migration_api_boundary_audit_json": "data/msquic-migration-api-boundary-audit-20260701.json",
         "chrome_desktop_noniphone_range_local_refresh": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
         "chrome_desktop_noniphone_range_local_refresh_csv": "data/chrome-desktop-noniphone-range-local-refresh-20260630.csv",
         "chrome_desktop_noniphone_upload_local_refresh": "docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md",
