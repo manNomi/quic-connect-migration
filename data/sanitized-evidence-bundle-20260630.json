@@ -1,13 +1,14 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 46,
+  "item_count": 47,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
     "artifact_classifier_contract": 2,
     "bridge_gap_negative_controls": 1,
     "broad_test_suite": 1,
+    "claim_boundary_audit": 1,
     "deployment_positive": 1,
     "experiment_design": 1,
     "focused_e2e_positive": 1,
@@ -31,6 +32,7 @@
   },
   "category_counts": {
     "browser-artifact-classifier": 1,
+    "browser-claim-audit": 1,
     "browser-deployment-bridge-synthesis": 1,
     "browser-local-buffered-media-control": 1,
     "browser-local-control": 1,
@@ -552,6 +554,22 @@
       "supports": "A strict public Chrome artifact contract that separates H3 baseline, no-change controls, application recovery/reconnect, negative controls, and strong single-session CM rows.",
       "do_not_claim": "A future public Chrome row is strong CM evidence without application completion, client active path change, target tuple change, qlog path validation, and exactly one Chrome target QUIC session in the same row.",
       "next_gap": "After public-origin and desktop path gates open, run the source classifier on each row and apply this contract before converting results into paper claims.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "controlled-public-chrome-contract-application-audit",
+      "chapter": "7-11",
+      "category": "browser-claim-audit",
+      "implementation": "Chrome + tracked controlled public H3 rows",
+      "evidence_doc": "docs/results/controlled-public-chrome-contract-application-audit-20260701.md",
+      "runner_or_tool": "tools/build_controlled_public_chrome_contract_application_audit.py",
+      "local_artifact_id": "controlled-public-chrome-contract-application-audit-20260701",
+      "claim_strength": "claim_boundary_audit",
+      "supports": "Applying the Chrome artifact contract to the tracked bridge rows yields public H3 baselines, task-completion-without-CM rows, and negative/gap records, with zero strong single-session CM rows.",
+      "do_not_claim": "The two active application-completion rows prove browser Connection Migration; they still miss qlog path validation and Chrome single-session evidence.",
+      "next_gap": "Use this audit as the public Chrome claim ledger until new rows pass the source classifier and contract.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

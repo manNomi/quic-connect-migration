@@ -303,6 +303,7 @@
 - [Non-iPhone desktop path-change readiness](docs/results/noniphone-desktop-path-change-readiness-20260701.md)
 - [Controlled public Chrome bridge synthesis](docs/results/controlled-public-chrome-bridge-synthesis-20260701.md)
 - [Controlled public Chrome artifact classifier contract](docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md)
+- [Controlled public Chrome contract application audit](docs/results/controlled-public-chrome-contract-application-audit-20260701.md)
 - [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
 - [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)
 - [Non-iPhone next research decision brief](docs/results/non-iphone-next-research-decision-20260630.md)

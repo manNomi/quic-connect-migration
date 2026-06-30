@@ -147,6 +147,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     aws_s2n_phase2_artifact_classifier_contract_json = "data/aws-s2n-phase2-artifact-classifier-contract-20260701.json"
     controlled_public_chrome_artifact_classifier_contract = "docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md"
     controlled_public_chrome_artifact_classifier_contract_json = "data/controlled-public-chrome-artifact-classifier-contract-20260701.json"
+    controlled_public_chrome_contract_application_audit = "docs/results/controlled-public-chrome-contract-application-audit-20260701.md"
+    controlled_public_chrome_contract_application_audit_json = "data/controlled-public-chrome-contract-application-audit-20260701.json"
+    controlled_public_chrome_contract_application_audit_csv = "data/controlled-public-chrome-contract-application-audit-20260701.csv"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
@@ -235,6 +238,9 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         aws_s2n_phase2_artifact_classifier_contract_json = str(generated_dir / "aws-s2n-phase2-artifact-classifier-contract.json")
         controlled_public_chrome_artifact_classifier_contract = str(generated_dir / "controlled-public-chrome-artifact-classifier-contract.md")
         controlled_public_chrome_artifact_classifier_contract_json = str(generated_dir / "controlled-public-chrome-artifact-classifier-contract.json")
+        controlled_public_chrome_contract_application_audit = str(generated_dir / "controlled-public-chrome-contract-application-audit.md")
+        controlled_public_chrome_contract_application_audit_json = str(generated_dir / "controlled-public-chrome-contract-application-audit.json")
+        controlled_public_chrome_contract_application_audit_csv = str(generated_dir / "controlled-public-chrome-contract-application-audit.csv")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
@@ -293,6 +299,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/audit_aws_s2n_phase2_rebinding_runner.py",
                 "tools/classify_aws_s2n_phase2_artifact.py",
                 "tools/build_controlled_public_chrome_artifact_classifier_contract.py",
+                "tools/build_controlled_public_chrome_contract_application_audit.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
@@ -362,6 +369,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_audit_aws_s2n_phase2_rebinding_runner.py",
                 "tools/test_classify_aws_s2n_phase2_artifact.py",
                 "tools/test_build_controlled_public_chrome_artifact_classifier_contract.py",
+                "tools/test_build_controlled_public_chrome_contract_application_audit.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
@@ -1258,6 +1266,27 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 controlled_public_chrome_artifact_classifier_contract,
                 "--json-output",
                 controlled_public_chrome_artifact_classifier_contract_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_chrome_contract_application_audit_regression",
+            [python_bin, "tools/test_build_controlled_public_chrome_contract_application_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_chrome_contract_application_audit",
+            [
+                python_bin,
+                "tools/build_controlled_public_chrome_contract_application_audit.py",
+                "--output",
+                controlled_public_chrome_contract_application_audit,
+                "--json-output",
+                controlled_public_chrome_contract_application_audit_json,
+                "--csv-output",
+                controlled_public_chrome_contract_application_audit_csv,
             ],
             {0},
             30,

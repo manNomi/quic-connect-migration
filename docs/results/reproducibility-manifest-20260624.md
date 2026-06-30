@@ -8,15 +8,15 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `f344031` |
+| source commit at generation | `4a46f81` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `150` |
-| latest experiment matrix item | `controlled-public-chrome-artifact-classifier-contract` |
-| verification | `109/109 passed; ok=yes` |
+| experiment matrix items | `151` |
+| latest experiment matrix item | `controlled-public-chrome-contract-application-audit` |
+| verification | `131/131 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
@@ -102,6 +102,9 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `controlled_public_chrome_bridge_synthesis_csv` | `data/controlled-public-chrome-bridge-synthesis-20260701.csv` | `yes` |
 | `controlled_public_chrome_artifact_classifier_contract` | `docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md` | `yes` |
 | `controlled_public_chrome_artifact_classifier_contract_json` | `data/controlled-public-chrome-artifact-classifier-contract-20260701.json` | `yes` |
+| `controlled_public_chrome_contract_application_audit` | `docs/results/controlled-public-chrome-contract-application-audit-20260701.md` | `yes` |
+| `controlled_public_chrome_contract_application_audit_json` | `data/controlled-public-chrome-contract-application-audit-20260701.json` | `yes` |
+| `controlled_public_chrome_contract_application_audit_csv` | `data/controlled-public-chrome-contract-application-audit-20260701.csv` | `yes` |
 | `haproxy_negative_control` | `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | `yes` |
 | `lsquic_preferred_address_demo` | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | `yes` |
 | `lsquic_nat_rebinding_demo` | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | `yes` |

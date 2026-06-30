@@ -11,7 +11,7 @@ This dashboard is public-safe. It maps current evidence to paper wording boundar
 | claim count | `8` |
 | claim allowed count | `5` |
 | claim blocked count | `3` |
-| bundle item count | `46` |
+| bundle item count | `47` |
 | missing evidence by claim | `{}` |
 | paper decision | The current corpus is ready for a conservative maturity/gap report, but not for Chrome public CM success or live AWS+s2n success claims. |
 
@@ -50,7 +50,7 @@ This dashboard is public-safe. It maps current evidence to paper wording boundar
 | `implementation_maturity` | `cross-implementation-fresh-rerun`, `quiche-path-event-observability`, `lsquic-preferred-address-app-demo`, `lsquic-nat-rebinding-app-demo`, `quicly-focused-e2e-path-migration`, `nginx-active-client-migration-runtime`, `s2n-active-migration-api-audit`, `mvfst-source-audit` | - |
 | `deployment_routing_boundary` | `aws-nlb-cid-aware-positive-control`, `aws-nlb-negative-controls`, `aws-nlb-http3-workload`, `haproxy-http3-negative-control`, `s2n-nlb-cid-provider-proof`, `s2n-nlb-live-readiness`, `aws-s2n-nlb-live-runner`, `nginx-quic-bpf-readiness`, `nginx-quic-bpf-linux-runner` | - |
 | `local_chrome_workload_controls` | `chrome-local-rebinding-workload-controls`, `chrome-desktop-noniphone-media-local-refresh`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh`, `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `noniphone-workload-qoe-synthesis` | - |
-| `controlled_public_chrome_cm` | `controlled-public-chrome-bridge-synthesis`, `controlled-public-chrome-artifact-classifier-contract`, `user-provided-public-origin-readiness`, `noniphone-desktop-path-change-readiness`, `noniphone-public-workload-trial-packet`, `controlled-public-origin-workload-deploy-packet`, `non-iphone-gate-rerun-20260701` | - |
+| `controlled_public_chrome_cm` | `controlled-public-chrome-bridge-synthesis`, `controlled-public-chrome-artifact-classifier-contract`, `controlled-public-chrome-contract-application-audit`, `user-provided-public-origin-readiness`, `noniphone-desktop-path-change-readiness`, `noniphone-public-workload-trial-packet`, `controlled-public-origin-workload-deploy-packet`, `non-iphone-gate-rerun-20260701` | - |
 | `aws_s2n_live_claim` | `s2n-nlb-cid-provider-proof`, `s2n-nlb-live-readiness`, `aws-s2n-nlb-live-runner`, `s2n-active-migration-api-audit`, `non-iphone-gate-rerun-20260701` | - |
 | `safari_cross_browser_claim` | `safari-webdriver-session-readiness`, `non-iphone-gate-rerun-20260701` | - |
 | `streaming_qoe_claim` | `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `noniphone-workload-qoe-synthesis` | - |

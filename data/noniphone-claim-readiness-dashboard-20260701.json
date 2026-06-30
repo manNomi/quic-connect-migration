@@ -7,6 +7,7 @@
     "gate_rerun": "data/non-iphone-gate-rerun-20260701.json",
     "desktop_path": "data/noniphone-desktop-path-change-readiness-20260701.json",
     "controlled_public_bridge": "data/controlled-public-chrome-bridge-synthesis-20260701.json",
+    "controlled_public_contract_application_audit": "data/controlled-public-chrome-contract-application-audit-20260701.json",
     "qoe_synthesis": "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv"
   },
   "source_exists": {
@@ -29,6 +30,16 @@
     "controlled_public_active_count": 12,
     "controlled_public_h3_baseline_count": 6,
     "controlled_public_strong_cm_success_count": 0,
+    "controlled_public_contract_class_counts": {
+      "application_recovery_or_reconnect": 2,
+      "negative_control_record": 10,
+      "public_h3_baseline_positive": 6
+    },
+    "controlled_public_contract_strong_cm_rows": [],
+    "controlled_public_contract_application_completion_without_cm_rows": [
+      "controlled-public-chrome-range-retry-network-change-page-ready-fresh-20260629-001",
+      "controlled-public-chrome-range-retry-network-change-page-ready-fresh-20260629-003"
+    ],
     "qoe_workload_groups": [
       "buffered video playback",
       "large byte-range download",
@@ -55,7 +66,7 @@
       "aws_s2n_live_claim",
       "safari_cross_browser_claim"
     ],
-    "bundle_item_count": 46,
+    "bundle_item_count": 47,
     "missing_evidence_by_claim": {},
     "paper_decision": "The current corpus is ready for a conservative maturity/gap report, but not for Chrome public CM success or live AWS+s2n success claims."
   },
@@ -171,6 +182,7 @@
       "evidence_ids": [
         "controlled-public-chrome-bridge-synthesis",
         "controlled-public-chrome-artifact-classifier-contract",
+        "controlled-public-chrome-contract-application-audit",
         "user-provided-public-origin-readiness",
         "noniphone-desktop-path-change-readiness",
         "noniphone-public-workload-trial-packet",
@@ -187,6 +199,7 @@
       "evidence_found": [
         "controlled-public-chrome-bridge-synthesis",
         "controlled-public-chrome-artifact-classifier-contract",
+        "controlled-public-chrome-contract-application-audit",
         "user-provided-public-origin-readiness",
         "noniphone-desktop-path-change-readiness",
         "noniphone-public-workload-trial-packet",

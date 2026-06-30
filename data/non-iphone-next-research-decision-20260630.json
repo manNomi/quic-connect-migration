@@ -3,15 +3,11 @@
   "public_safe": true,
   "source_bundle": "data/sanitized-evidence-bundle-20260630.json",
   "source_bundle_exists": true,
-  "source_bundle_item_count": 45,
+  "source_bundle_item_count": 47,
   "track_count": 6,
   "runnable_now": [],
   "blocked_track_count": 6,
-  "missing_evidence_ids": {
-    "chrome-controlled-public-workloads": [
-      "controlled-public-chrome-artifact-classifier-contract"
-    ]
-  },
+  "missing_evidence_ids": {},
   "recommendation": {
     "main": "Do not keep expanding generic implementation survey now; the next paper-critical gain is a deployment/browser bridge.",
     "first": "Refresh AWS credentials and run AWS NLB + s2n-quic live forwarding echo.",
@@ -68,6 +64,7 @@
         "non-iphone-gate-rerun-20260701",
         "controlled-public-chrome-bridge-synthesis",
         "controlled-public-chrome-artifact-classifier-contract",
+        "controlled-public-chrome-contract-application-audit",
         "chrome-desktop-noniphone-media-local-refresh",
         "chrome-desktop-noniphone-musiclike-local-refresh",
         "chrome-desktop-noniphone-buffered-media-local-refresh",
@@ -84,6 +81,8 @@
         "user-provided-public-origin-readiness",
         "non-iphone-gate-rerun-20260701",
         "controlled-public-chrome-bridge-synthesis",
+        "controlled-public-chrome-artifact-classifier-contract",
+        "controlled-public-chrome-contract-application-audit",
         "chrome-desktop-noniphone-media-local-refresh",
         "chrome-desktop-noniphone-musiclike-local-refresh",
         "chrome-desktop-noniphone-buffered-media-local-refresh",
@@ -94,9 +93,7 @@
         "noniphone-desktop-path-change-readiness",
         "noniphone-public-workload-trial-packet"
       ],
-      "supporting_evidence_missing": [
-        "controlled-public-chrome-artifact-classifier-contract"
-      ]
+      "supporting_evidence_missing": []
     },
     {
       "rank": 3,

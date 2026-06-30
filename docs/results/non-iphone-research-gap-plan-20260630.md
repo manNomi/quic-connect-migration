@@ -205,6 +205,10 @@
 
 > `docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md`로 future controlled-public Chrome row의 판정 기준을 고정했다. 이 contract는 H3 baseline, no-change control, application recovery/reconnect, negative-control, strong single-session CM을 분리하며, strong CM row에는 동일 row 안의 application completion, client active path change, target H3 tuple change, qlog PATH_CHALLENGE/PATH_RESPONSE, Chrome target QUIC session `1`개를 모두 요구한다. 따라서 이후 public origin과 desktop path-change gate가 열려도 결과를 정해놓고 해석하지 않고, 각 row를 먼저 classifier와 contract로 통과시킨 뒤 논문 claim으로 옮긴다.
 
+2026-07-01 controlled-public Chrome contract application audit:
+
+> `docs/results/controlled-public-chrome-contract-application-audit-20260701.md`로 위 contract를 tracked bridge row 18개에 적용했다. 결과는 no-change H3 baseline `6`개, application completion without CM support `2`개, negative/gap record `10`개, strong single-session CM row `0`개였다. 특히 active row 전체는 Chrome single-session gate가 tracked bridge summary에 없고, task completion row 2개도 qlog path validation이 없어 public Chrome CM 성공으로 승격되지 않는다.
+
 2026-06-30 user-provided public origin readiness:
 
 > 사용자가 제안한 public HTTPS origin 후보를 `tools/check_public_origin_readiness.py`로 redacted 검사했다. 결과는 HTTPS reachability `true`, final status `HTTP/2 200`, `h3 Alt-Svc=false`였다. 따라서 이 후보는 그대로 controlled-public H3 workload target이 아니며, 해당 도메인을 쓰려면 WebPKI TLS, HTTP/3 listener, `Alt-Svc: h3`, workload endpoint를 우리가 통제하도록 설정해야 한다. 결과는 `docs/results/user-provided-public-origin-readiness-20260630.md`와 `data/user-provided-public-origin-readiness-20260630.json`에 기록했다.

@@ -73,6 +73,7 @@ TRACKS = [
             "non-iphone-gate-rerun-20260701",
             "controlled-public-chrome-bridge-synthesis",
             "controlled-public-chrome-artifact-classifier-contract",
+            "controlled-public-chrome-contract-application-audit",
             "chrome-desktop-noniphone-media-local-refresh",
             "chrome-desktop-noniphone-musiclike-local-refresh",
             "chrome-desktop-noniphone-buffered-media-local-refresh",

@@ -73,6 +73,7 @@
 | AWS s2n phase-2 rebinding runner audit. NAT-rebinding proxy runner 구현/경계 검수 | 작성 완료 | `../results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` |
 | AWS s2n phase-2 artifact classifier contract. live artifact PASS/FAIL 판정 기준 | 작성 완료 | `../results/aws-s2n-phase2-artifact-classifier-contract-20260701.md` |
 | controlled-public Chrome artifact classifier contract. public Chrome row claim 판정 기준 | 작성 완료 | `../results/controlled-public-chrome-artifact-classifier-contract-20260701.md` |
+| controlled-public Chrome contract application audit. 기존 public Chrome row contract 적용 결과 | 작성 완료 | `../results/controlled-public-chrome-contract-application-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -184,6 +185,7 @@
 | `docs/results/user-provided-public-origin-readiness-20260630.md` | Chapter 7 user-provided public origin 후보의 HTTPS/H3 Alt-Svc readiness 결과 |
 | `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md` | Chapter 7-9 tracked controlled-public Chrome validation row 18개의 bridge gap synthesis |
 | `docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md` | Chapter 7-11 future controlled-public Chrome row의 baseline/strong CM/recovery/negative-control 판정 기준 |
+| `docs/results/controlled-public-chrome-contract-application-audit-20260701.md` | Chapter 7-11 기존 controlled-public Chrome row 18개에 contract를 적용한 claim class 감사 |
 | `docs/results/literature-claim-positioning-20260629.md` | Chapter 12 literature claim positioning |
 | `docs/results/non-iphone-research-gap-plan-20260630.md` | iPhone 없이 이어갈 후속 연구 공백 보강 계획 |
 | `docs/results/non-iphone-next-research-decision-20260630.md` | evidence bundle 기준 다음 non-iPhone 연구 트랙 우선순위와 blocker |

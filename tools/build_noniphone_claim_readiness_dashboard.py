@@ -18,6 +18,7 @@ DEFAULT_DECISION = "data/non-iphone-next-research-decision-20260630.json"
 DEFAULT_GATE_RERUN = "data/non-iphone-gate-rerun-20260701.json"
 DEFAULT_DESKTOP_PATH = "data/noniphone-desktop-path-change-readiness-20260701.json"
 DEFAULT_BRIDGE = "data/controlled-public-chrome-bridge-synthesis-20260701.json"
+DEFAULT_CONTRACT_AUDIT = "data/controlled-public-chrome-contract-application-audit-20260701.json"
 DEFAULT_QOE = "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv"
 DEFAULT_OUTPUT = "docs/results/noniphone-claim-readiness-dashboard-20260701.md"
 DEFAULT_JSON_OUTPUT = "data/noniphone-claim-readiness-dashboard-20260701.json"
@@ -116,6 +117,7 @@ CLAIM_ROWS = [
         evidence_ids=(
             "controlled-public-chrome-bridge-synthesis",
             "controlled-public-chrome-artifact-classifier-contract",
+            "controlled-public-chrome-contract-application-audit",
             "user-provided-public-origin-readiness",
             "noniphone-desktop-path-change-readiness",
             "noniphone-public-workload-trial-packet",
@@ -221,6 +223,7 @@ def derive_context(
     gate: dict[str, Any],
     desktop_path: dict[str, Any],
     bridge: dict[str, Any],
+    contract_audit: dict[str, Any],
     qoe_rows: list[dict[str, str]],
     decision: dict[str, Any],
 ) -> dict[str, Any]:
@@ -236,6 +239,9 @@ def derive_context(
         "controlled_public_active_count": bridge.get("active_network_change_count", 0),
         "controlled_public_h3_baseline_count": bridge.get("baseline_h3_confirmed_count", 0),
         "controlled_public_strong_cm_success_count": bridge.get("strong_cm_success_count", 0),
+        "controlled_public_contract_class_counts": contract_audit.get("contract_class_counts", {}),
+        "controlled_public_contract_strong_cm_rows": contract_audit.get("strong_single_session_cm_rows", []),
+        "controlled_public_contract_application_completion_without_cm_rows": contract_audit.get("application_completion_without_cm_rows", []),
         "qoe_workload_groups": [row.get("workload_group", "-") for row in qoe_rows],
         "next_decision_runnable_now": decision.get("runnable_now", []),
         "next_decision_blocked_track_count": decision.get("blocked_track_count", "-"),
@@ -248,6 +254,7 @@ def build_dashboard(
     gate_path: Path = Path(DEFAULT_GATE_RERUN),
     desktop_path: Path = Path(DEFAULT_DESKTOP_PATH),
     bridge_path: Path = Path(DEFAULT_BRIDGE),
+    contract_audit_path: Path = Path(DEFAULT_CONTRACT_AUDIT),
     qoe_path: Path = Path(DEFAULT_QOE),
 ) -> dict[str, Any]:
     bundle = read_json(bundle_path)
@@ -255,6 +262,7 @@ def build_dashboard(
     gate = read_json(gate_path)
     desktop = read_json(desktop_path)
     bridge = read_json(bridge_path)
+    contract_audit = read_json(contract_audit_path)
     qoe_rows = read_csv_rows(qoe_path)
     evidence = evidence_index(bundle)
 
@@ -271,7 +279,7 @@ def build_dashboard(
 
     claim_allowed = [row["id"] for row in rows if row["claim_allowed"]]
     claim_blocked = [row["id"] for row in rows if not row["claim_allowed"]]
-    context = derive_context(gate, desktop, bridge, qoe_rows, decision)
+    context = derive_context(gate, desktop, bridge, contract_audit, qoe_rows, decision)
     missing_by_claim = {
         row["id"]: row["evidence_missing"]
         for row in rows
@@ -287,6 +295,7 @@ def build_dashboard(
             "gate_rerun": gate_path.as_posix(),
             "desktop_path": desktop_path.as_posix(),
             "controlled_public_bridge": bridge_path.as_posix(),
+            "controlled_public_contract_application_audit": contract_audit_path.as_posix(),
             "qoe_synthesis": qoe_path.as_posix(),
         },
         "source_exists": {

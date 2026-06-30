@@ -35,6 +35,7 @@ def test_decision_prioritizes_deployment_and_browser_bridge() -> None:
     assert "user-provided-public-origin-readiness" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "controlled-public-chrome-bridge-synthesis" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "controlled-public-chrome-artifact-classifier-contract" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
+    assert "controlled-public-chrome-contract-application-audit" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-musiclike-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "chrome-desktop-noniphone-buffered-media-local-refresh" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
     assert "noniphone-workload-qoe-synthesis" in tracks["chrome-controlled-public-workloads"]["supporting_evidence_found"]
