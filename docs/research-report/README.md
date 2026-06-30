@@ -29,6 +29,10 @@
 | Chapter 6 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-06-reference-and-evidence.md` |
 | Chapter 6 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-06-scanner-trigger-map-20260630.md` |
 | Chapter 6 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-06-external-link-check-20260630.md` |
+| Chapter 7. Controlled Public Origin 구축 및 HTTP/3 Baseline | 작성 완료 | `chapter-07-controlled-public-origin-baseline.md` |
+| Chapter 7 부록. 실제 구현 코드와 reference 근거 | 작성 완료 | `chapter-07-reference-and-evidence.md` |
+| Chapter 7 표. scanner trigger 위치 | 작성 완료 | `tables/chapter-07-scanner-trigger-map-20260630.md` |
+| Chapter 7 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-07-external-link-check-20260630.md` |
 
 ## 폴더 운영 방식
 
@@ -61,6 +65,8 @@
 | `tools/classify_controlled_public_h3_network_change.py` | Chapter 5 controlled public-origin network-change classifier |
 | `repro/quic-go-min-repro/cmd/udprebindproxy/main.go` | Chapter 6 local UDP NAT rebinding proxy |
 | `repro/quic-go-min-repro/scripts/run-chrome-h3-rebinding-proxy.sh` | Chapter 6 local Chrome H3 rebinding harness |
+| `tools/check_public_origin_readiness.py` | Chapter 7 public origin readiness scanner |
+| `tools/classify_controlled_public_h3_baseline.py` | Chapter 7 controlled public application H3 baseline classifier |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
