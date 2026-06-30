@@ -60,12 +60,17 @@
 
 > mobile handover가 아니라도, AWS NLB passthrough에서 CID-aware routing과 QUIC path continuity 조건을 검증한다.
 
+상태:
+
+> 부분 완료. `experiments/s2n-quic-nlb-cid-provider` proof crate를 복원했고, `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md`에 `cargo test` 3개 PASS와 local s2n-quic echo proof PASS를 정리했다. AWS live NLB target A/B forwarding은 아직 후속이다.
+
 실행 방향:
 
-1. EC2 server에서 s2n-quic 또는 quic-go HTTP/3 origin 구동
-2. NLB UDP/TCP_UDP listener 구성
-3. desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
-4. NLB가 같은 backend로 보냈는지 server log/qlog로 확인
+1. 완료: s2n-quic custom CID provider local proof 복원 및 rerun
+2. 후속: EC2 server에서 s2n-quic 또는 quic-go HTTP/3 origin 구동
+3. 후속: NLB `QUIC` 또는 `TCP_QUIC` target group 구성
+4. 후속: desktop client에서 local source port rebinding 또는 multi-path client로 path change 유도
+5. 후속: NLB가 같은 backend로 보냈는지 server log/qlog로 확인
 
 핵심 질문:
 

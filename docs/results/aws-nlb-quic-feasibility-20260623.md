@@ -170,15 +170,22 @@ cargo test --manifest-path experiments/s2n-quic-nlb-cid-provider/Cargo.toml
 Result:
 
 ```text
-running 2 tests
-test tests::generated_cid_starts_with_aws_server_id ... ok
-test tests::validator_rejects_unknown_server_id_and_short_packets ... ok
-test result: ok. 2 passed; 0 failed
+running 3 tests
+test tests::generates_aws_nlb_plaintext_cid_layout ... ok
+test tests::parses_server_id_hex_with_or_without_prefix ... ok
+test tests::simulated_route_table_uses_embedded_server_id ... ok
+test result: ok. 3 passed; 0 failed
 ```
 
 Artifact:
 
-- `experiments/aws-nlb-quic-feasibility-20260623/logs/s2n-quic-nlb-cid-provider-test-pass.log`
+- 2026-06-30 rerun summary: `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md`
+- local ignored raw artifact: `experiments/s2n-quic-nlb-cid-provider/results/local-data-plane-20260630T101625Z/`
+
+Additional 2026-06-30 result:
+
+- `./harness/scripts/run-local-s2n-nlb-cid-proof.sh` now runs end-to-end again.
+- The local proof starts a real s2n-quic server with the custom CID provider installed and completes a local s2n-quic client echo workload with `echo_matches=true`.
 
 ## 6. Interpretation
 

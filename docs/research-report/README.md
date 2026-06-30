@@ -113,6 +113,7 @@
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
 | `docs/results/local-implementation-test-results.md` | 초기 8개 구현체 local test 결과 |
 | `docs/results/implementation-rerun-results-20260630.md` | 2026-06-30 구현체 fresh rerun/demo/partial 결과 |
+| `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | s2n-quic AWS NLB CID provider proof 복원 및 rerun 결과 |
 | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | LSQUIC preferred-address HTTP/3 app demo 결과 |
 | `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
 | `docs/results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |

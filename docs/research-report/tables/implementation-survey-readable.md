@@ -46,7 +46,7 @@
 | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | quic-go | library/server | O | O | O | `qlog` | O | `manual` | `L4` | `fresh_rerun_20260630` | Maintain as strong AddPath/Probe/Switch positive control |
 | 2 | Cloudflare quiche | library/server | O | O | O | `qlog/logs` | O | `library_yes_cloud_unclear` | `L4` | `fresh_rerun_20260630` | Use as cross-implementation client/server migration evidence |
-| 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `fresh_rerun_20260630` | Verify custom CID generator and NLB 8-byte Server ID compatibility |
+| 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `fresh_rerun_20260630` | Custom AWS NLB CID provider proof restored and rerun; live AWS NLB+s2n target test remains follow-up |
 | 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4` | `fresh_rerun_20260630` | Use as C library primitive/path-validation comparison |
 | 5 | LiteSpeed lsquic | server | O | O | O | `logs` | O | `likely` | `L4_L5_candidate` | `fresh_app_demo_20260630` | Use as preferred-address app-level positive control; NAT rebinding and OpenLiteSpeed production-like demo remain follow-up |
 | 6 | MsQuic | library/server | O | O | ? check | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `fresh_rerun_20260630` | Use as production-relevant NAT rebinding/path-validation evidence; still verify QUIC-aware LB deployment assumptions |
@@ -55,7 +55,7 @@
 | 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; retry full run_tests on Linux because macOS AppleClang Werror blocks QPACK unit build |
 | 10 | Chromium Chrome Cronet | client | O | policy | O | `NetLog` | O | `n/a` | `L4_client_runtime_policy_dependent` | `source_and_local_browser_baseline` | Run Android/Cronet active interface handover; compare Chrome policy with Cronet network-change migration defaults |
 | 11 | AWS CloudFront | managed edge | - | - | - | `limited` | managed | `yes` | `L5_edge` | `partial_deferred` | Design viewer-edge experiment and clarify non-end-to-end interpretation |
-| 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | ? s2n | `yes` | `L5_deployment_candidate` | `partial_deferred` | Start only after s2n-quic custom CID compatibility is verified |
+| 12 | AWS NLB plus s2n-quic | lb_plus_server | O | O | △ likely | `qlog_likely` | s2n local provider proof | `yes` | `L5_deployment_candidate` | `partial_deferred` | s2n custom CID local provider proof PASS; next run live AWS NLB target A/B forwarding and migration continuity |
 | 13 | mvfst | library/server | O | O | O | `qlog_stats` | O | `complex_manual` | `L5_candidate` | `source_inspected` | Use source audit appendix as large-scale implementation maturity evidence; Linux build/test remains follow-up |
 | 14 | picoquic | library/tooling | O | O | O | `callbacks_logs` | O | `manual` | `L4_L5` | `fresh_rerun_20260630` | Use as edge-case maturity and preferred-address comparison |
 | 15 | nginx QUIC | server | O | O | X | `logs` | ? test | `server_deploy` | `L3_L4` | `source_inspected` | Use boundary appendix as server-side passive migration source evidence; runtime handover remains follow-up |
@@ -86,7 +86,7 @@
 | LiteSpeed lsquic | preferred-address app-level positive control까지 확보했으며 OpenLiteSpeed/서버 배포 논의에 연결 가능 |
 | mvfst | 대규모 deployment 후보이며 source audit appendix에서 path manager/client/server migration test 구조를 고정함. build/test cost가 큼 |
 | nginx QUIC | 실제 server deployment와 연결 가능하나 현재는 source-only 근거. boundary appendix에서 server passive migration source flow를 고정함 |
-| AWS NLB + s2n-quic | CID-aware routing 실험으로 이어짐 |
+| AWS NLB + s2n-quic | s2n custom CID local provider proof가 PASS했고, live AWS NLB target A/B forwarding 실험으로 이어짐 |
 | AWS CloudFront | end-to-end CM이 아니라 edge-level continuity로 해석해야 함 |
 
 ### 3. 주의해야 할 대상

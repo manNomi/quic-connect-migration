@@ -41,6 +41,7 @@
 | [docs/results/aws-nlb-quic-data-plane-results-20260624.md](../results/aws-nlb-quic-data-plane-results-20260624.md) | NLB `QUIC` data-plane positive control |
 | [docs/results/aws-nlb-quic-negative-control-results-20260624.md](../results/aws-nlb-quic-negative-control-results-20260624.md) | malformed CID / Server ID mismatch negative controls |
 | [docs/results/aws-nlb-tcp-quic-443-results-20260624.md](../results/aws-nlb-tcp-quic-443-results-20260624.md) | `TCP_QUIC :443` repeat positive control |
+| [docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md](../results/s2n-quic-nlb-cid-provider-rerun-20260630.md) | s2n-quic custom CID provider 복원/rerun, AWS NLB deployment prerequisite |
 | [docs/results/aws-nlb-http3-workload-results-20260624.md](../results/aws-nlb-http3-workload-results-20260624.md) | HTTP/3 POST-before / migration / GET-after workload |
 | [docs/results/haproxy-http3-negative-control-results-20260623.md](../results/haproxy-http3-negative-control-results-20260623.md) | HTTP/3 proxy support != active CM support negative control |
 | [docs/results/nginx-haproxy-quic-cm-boundary-20260630.md](../results/nginx-haproxy-quic-cm-boundary-20260630.md) | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |

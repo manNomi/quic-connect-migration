@@ -4,6 +4,12 @@
 상태: PASS  
 목적: AWS NLB QUIC data-plane 실험 전, `s2n-quic` 서버에 AWS NLB용 QUIC-LB plaintext CID provider를 실제로 주입할 수 있고 로컬 QUIC workload가 성공하는지 확인한다.
 
+2026-06-30 재검수:
+
+- 누락되어 있던 `experiments/s2n-quic-nlb-cid-provider` proof crate를 복원했다.
+- `./harness/scripts/run-local-s2n-nlb-cid-proof.sh`를 재실행했고, `cargo test` 3개와 local s2n-quic echo proof가 PASS했다.
+- 상세 결과는 [s2n-quic-nlb-cid-provider-rerun-20260630.md](s2n-quic-nlb-cid-provider-rerun-20260630.md)에 정리했다.
+
 ## Result
 
 Command:
