@@ -125,6 +125,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     controlled_public_origin_deploy_packet = "docs/results/controlled-public-origin-deploy-packet-20260624.md"
     reproducibility_manifest = "docs/results/reproducibility-manifest-20260624.md"
     reproducibility_manifest_json = "data/reproducibility-manifest-20260624.json"
+    noniphone_claim_readiness_dashboard = "docs/results/noniphone-claim-readiness-dashboard-20260701.md"
+    noniphone_claim_readiness_dashboard_json = "data/noniphone-claim-readiness-dashboard-20260701.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
@@ -191,6 +193,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         controlled_public_origin_deploy_packet = str(generated_dir / "controlled-public-origin-deploy-packet.md")
         reproducibility_manifest = str(generated_dir / "reproducibility-manifest.md")
         reproducibility_manifest_json = str(generated_dir / "reproducibility-manifest.json")
+        noniphone_claim_readiness_dashboard = str(generated_dir / "noniphone-claim-readiness-dashboard.md")
+        noniphone_claim_readiness_dashboard_json = str(generated_dir / "noniphone-claim-readiness-dashboard.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
@@ -238,6 +242,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_paper_evidence_gap_register.py",
                 "tools/build_paper_claim_support_matrix.py",
                 "tools/build_reproducibility_manifest.py",
+                "tools/build_noniphone_claim_readiness_dashboard.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
@@ -296,6 +301,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_paper_evidence_gap_register.py",
                 "tools/test_build_paper_claim_support_matrix.py",
                 "tools/test_build_reproducibility_manifest.py",
+                "tools/test_build_noniphone_claim_readiness_dashboard.py",
                 "tools/test_build_final_handover_external_inputs.py",
                 "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
@@ -982,6 +988,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 reproducibility_manifest,
                 "--json-output",
                 reproducibility_manifest_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_claim_readiness_dashboard_regression",
+            [python_bin, "tools/test_build_noniphone_claim_readiness_dashboard.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_claim_readiness_dashboard",
+            [
+                python_bin,
+                "tools/build_noniphone_claim_readiness_dashboard.py",
+                "--output",
+                noniphone_claim_readiness_dashboard,
+                "--json-output",
+                noniphone_claim_readiness_dashboard_json,
             ],
             {0},
             30,

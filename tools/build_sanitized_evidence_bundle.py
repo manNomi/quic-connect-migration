@@ -488,6 +488,19 @@ EVIDENCE_ITEMS = [
         do_not_claim="Any public workload has been executed or that browser Connection Migration succeeded.",
         next_gap="Open the H3 public-origin and desktop path-change gates, then execute the packet in order and classify each row.",
     ),
+    EvidenceItem(
+        id="noniphone-claim-readiness-dashboard",
+        chapter="12",
+        category="claim-readiness-synthesis",
+        implementation="cross-layer evidence corpus",
+        evidence_doc="docs/results/noniphone-claim-readiness-dashboard-20260701.md",
+        runner_or_tool="tools/build_noniphone_claim_readiness_dashboard.py",
+        local_artifact_id="noniphone-claim-readiness-dashboard-20260701",
+        claim_strength="paper_synthesis",
+        supports="Current evidence can be separated into paper-ready maturity/local-QoE claims and blocked public-browser/AWS/Safari claims without relying on raw private artifacts.",
+        do_not_claim="New runtime evidence, public Chrome Connection Migration success, live AWS NLB+s2n success, or Safari handover success.",
+        next_gap="Use the dashboard as the professor-facing decision table, then open AWS credentials or public-origin plus desktop-path gates for stronger positive evidence.",
+    ),
 ]
 
 

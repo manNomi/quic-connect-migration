@@ -8,14 +8,14 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `1b8f481` |
+| source commit at generation | `f005b19` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_20260630': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 2, 'source_and_local_browser_baseline': 1, 'source_inspected': 1}` |
-| experiment matrix items | `139` |
-| latest experiment matrix item | `noniphone-desktop-path-change-readiness` |
+| experiment matrix items | `140` |
+| latest experiment matrix item | `noniphone-claim-readiness-dashboard` |
 | verification | `109/109 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
@@ -81,6 +81,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `noniphone_desktop_path_change_readiness_json` | `data/noniphone-desktop-path-change-readiness-20260701.json` | `yes` |
 | `noniphone_public_workload_trial_packet` | `docs/results/noniphone-public-workload-trial-packet-20260701.md` | `yes` |
 | `noniphone_public_workload_trial_packet_json` | `data/noniphone-public-workload-trial-packet-20260701.json` | `yes` |
+| `noniphone_claim_readiness_dashboard` | `docs/results/noniphone-claim-readiness-dashboard-20260701.md` | `yes` |
+| `noniphone_claim_readiness_dashboard_json` | `data/noniphone-claim-readiness-dashboard-20260701.json` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh` | `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | `yes` |
 | `chrome_desktop_noniphone_range_local_refresh_csv` | `data/chrome-desktop-noniphone-range-local-refresh-20260630.csv` | `yes` |
 | `chrome_desktop_noniphone_upload_local_refresh` | `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | `yes` |

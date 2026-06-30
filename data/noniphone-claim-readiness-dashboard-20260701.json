@@ -1,0 +1,300 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "source_paths": {
+    "bundle": "data/sanitized-evidence-bundle-20260630.json",
+    "decision": "data/non-iphone-next-research-decision-20260630.json",
+    "gate_rerun": "data/non-iphone-gate-rerun-20260701.json",
+    "desktop_path": "data/noniphone-desktop-path-change-readiness-20260701.json",
+    "controlled_public_bridge": "data/controlled-public-chrome-bridge-synthesis-20260701.json",
+    "qoe_synthesis": "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv"
+  },
+  "source_exists": {
+    "bundle": true,
+    "decision": true,
+    "gate_rerun": true,
+    "desktop_path": true,
+    "controlled_public_bridge": true,
+    "qoe_synthesis": true
+  },
+  "context": {
+    "open_gates": [],
+    "all_key_gates_blocked": true,
+    "aws_identity_classification": "invalid_client_token",
+    "safari_session_ready": false,
+    "public_origin_h3_alt_svc": false,
+    "noniphone_desktop_path_ready": false,
+    "noniphone_secondary_interfaces": [],
+    "controlled_public_trial_count": 18,
+    "controlled_public_active_count": 12,
+    "controlled_public_h3_baseline_count": 6,
+    "controlled_public_strong_cm_success_count": 0,
+    "qoe_workload_groups": [
+      "buffered video playback",
+      "large byte-range download",
+      "large upload",
+      "music-like segment",
+      "video-like segment"
+    ],
+    "next_decision_runnable_now": [],
+    "next_decision_blocked_track_count": 6
+  },
+  "summary": {
+    "claim_count": 8,
+    "claim_allowed_count": 5,
+    "claim_blocked_count": 3,
+    "claim_allowed": [
+      "implementation_maturity",
+      "deployment_routing_boundary",
+      "local_chrome_workload_controls",
+      "streaming_qoe_claim",
+      "paper_scope_decision"
+    ],
+    "claim_blocked": [
+      "controlled_public_chrome_cm",
+      "aws_s2n_live_claim",
+      "safari_cross_browser_claim"
+    ],
+    "bundle_item_count": 36,
+    "missing_evidence_by_claim": {},
+    "paper_decision": "The current corpus is ready for a conservative maturity/gap report, but not for Chrome public CM success or live AWS+s2n success claims."
+  },
+  "claims": [
+    {
+      "id": "implementation_maturity",
+      "label": "Implementation-level CM maturity",
+      "status": "supported",
+      "claim_allowed": true,
+      "claim_strength": "paper_ready_limited",
+      "paper_ready_wording": "Several major QUIC implementations expose or test path validation, rebinding, migration, preferred-address, or related primitives; CM is not merely an unimplemented idea.",
+      "evidence_ids": [
+        "cross-implementation-fresh-rerun",
+        "quiche-path-event-observability",
+        "lsquic-preferred-address-app-demo",
+        "lsquic-nat-rebinding-app-demo",
+        "quicly-focused-e2e-path-migration",
+        "nginx-active-client-migration-runtime",
+        "s2n-active-migration-api-audit",
+        "mvfst-source-audit"
+      ],
+      "blockers": [],
+      "do_not_claim": "Do not claim every implementation exposes the same active migration API or production deployment behavior.",
+      "next_action": "Use this as the paper's implementation-maturity foundation, then shift attention to deployment and browser gates.",
+      "evidence_found": [
+        "cross-implementation-fresh-rerun",
+        "quiche-path-event-observability",
+        "lsquic-preferred-address-app-demo",
+        "lsquic-nat-rebinding-app-demo",
+        "quicly-focused-e2e-path-migration",
+        "nginx-active-client-migration-runtime",
+        "s2n-active-migration-api-audit",
+        "mvfst-source-audit"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "deployment_routing_boundary",
+      "label": "Deployment and routing boundary",
+      "status": "partially_supported",
+      "claim_allowed": true,
+      "claim_strength": "paper_ready_with_caveat",
+      "paper_ready_wording": "Deployment support is separate from library support: CID-aware routing can preserve backend continuity, while proxy or mismatched-CID controls show that HTTP/3 availability alone is insufficient.",
+      "evidence_ids": [
+        "aws-nlb-cid-aware-positive-control",
+        "aws-nlb-negative-controls",
+        "aws-nlb-http3-workload",
+        "haproxy-http3-negative-control",
+        "s2n-nlb-cid-provider-proof",
+        "s2n-nlb-live-readiness",
+        "aws-s2n-nlb-live-runner",
+        "nginx-quic-bpf-readiness",
+        "nginx-quic-bpf-linux-runner"
+      ],
+      "blockers": [
+        "AWS NLB+s2n live forwarding is still credential-blocked.",
+        "nginx quic_bpf production-routing validation requires a Linux/root or capability environment."
+      ],
+      "do_not_claim": "Do not claim live AWS NLB+s2n migration success, CDN end-to-end CM, or Linux quic_bpf success from the current host.",
+      "next_action": "Refresh AWS credentials first; if unavailable, run nginx quic_bpf or OpenLiteSpeed on a suitable Linux/EC2 host.",
+      "evidence_found": [
+        "aws-nlb-cid-aware-positive-control",
+        "aws-nlb-negative-controls",
+        "aws-nlb-http3-workload",
+        "haproxy-http3-negative-control",
+        "s2n-nlb-cid-provider-proof",
+        "s2n-nlb-live-readiness",
+        "aws-s2n-nlb-live-runner",
+        "nginx-quic-bpf-readiness",
+        "nginx-quic-bpf-linux-runner"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "local_chrome_workload_controls",
+      "label": "Local Chrome workload controls",
+      "status": "supported_local_only",
+      "claim_allowed": true,
+      "claim_strength": "local_control_only",
+      "paper_ready_wording": "Local Chrome forced-H3 UDP-rebinding controls show that range/download and upload workloads can produce cleaner single-session evidence than streaming-like workloads, which require QoE and session-churn framing.",
+      "evidence_ids": [
+        "chrome-local-rebinding-workload-controls",
+        "chrome-desktop-noniphone-media-local-refresh",
+        "chrome-desktop-noniphone-range-local-refresh",
+        "chrome-desktop-noniphone-upload-local-refresh",
+        "chrome-desktop-noniphone-musiclike-local-refresh",
+        "chrome-desktop-noniphone-buffered-media-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "blockers": [
+        "Local UDP rebinding is not the same as public Wi-Fi/LTE or desktop interface handover."
+      ],
+      "do_not_claim": "Do not call local forced-H3 rebinding a public browser handover result.",
+      "next_action": "Use local rows to prioritize public workload order: range/upload first, buffered/music-like streaming with QoE metrics after.",
+      "evidence_found": [
+        "chrome-local-rebinding-workload-controls",
+        "chrome-desktop-noniphone-media-local-refresh",
+        "chrome-desktop-noniphone-range-local-refresh",
+        "chrome-desktop-noniphone-upload-local-refresh",
+        "chrome-desktop-noniphone-musiclike-local-refresh",
+        "chrome-desktop-noniphone-buffered-media-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "controlled_public_chrome_cm",
+      "label": "Controlled-public Chrome CM success",
+      "status": "not_supported_yet",
+      "claim_allowed": false,
+      "claim_strength": "gap_evidence",
+      "paper_ready_wording": "The current controlled-public Chrome corpus supports a negative/gap statement: no tracked active row combines application completion, client active path change, server tuple change, qlog path validation, and single target Chrome QUIC session.",
+      "evidence_ids": [
+        "controlled-public-chrome-bridge-synthesis",
+        "user-provided-public-origin-readiness",
+        "noniphone-desktop-path-change-readiness",
+        "noniphone-public-workload-trial-packet",
+        "controlled-public-origin-workload-deploy-packet",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "blockers": [
+        "No controlled-public strong CM success row exists yet.",
+        "The user-provided public HTTPS origin is not H3 Alt-Svc ready.",
+        "The current desktop host lacks a non-iPhone active secondary path."
+      ],
+      "do_not_claim": "Do not claim Chrome public-origin single-session Connection Migration success.",
+      "next_action": "Open both gates: deploy an H3 Alt-Svc public origin and connect a non-iPhone secondary desktop path, then run the public workload trial packet.",
+      "evidence_found": [
+        "controlled-public-chrome-bridge-synthesis",
+        "user-provided-public-origin-readiness",
+        "noniphone-desktop-path-change-readiness",
+        "noniphone-public-workload-trial-packet",
+        "controlled-public-origin-workload-deploy-packet",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "aws_s2n_live_claim",
+      "label": "AWS NLB + s2n live claim",
+      "status": "blocked",
+      "claim_allowed": false,
+      "claim_strength": "readiness_only",
+      "paper_ready_wording": "The repository has a dedicated AWS NLB+s2n runner and local CID-provider prerequisite evidence, but the current live AWS gate is blocked before resource creation.",
+      "evidence_ids": [
+        "s2n-nlb-cid-provider-proof",
+        "s2n-nlb-live-readiness",
+        "aws-s2n-nlb-live-runner",
+        "s2n-active-migration-api-audit",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "blockers": [
+        "AWS identity classifies as invalid_client_token on the current host."
+      ],
+      "do_not_claim": "Do not claim live AWS NLB+s2n forwarding or active migration success.",
+      "next_action": "Refresh AWS credentials and run the fail-closed live forwarding runner before any active migration variant.",
+      "evidence_found": [
+        "s2n-nlb-cid-provider-proof",
+        "s2n-nlb-live-readiness",
+        "aws-s2n-nlb-live-runner",
+        "s2n-active-migration-api-audit",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "safari_cross_browser_claim",
+      "label": "Safari cross-browser feasibility",
+      "status": "blocked_feasibility",
+      "claim_allowed": false,
+      "claim_strength": "readiness_only",
+      "paper_ready_wording": "Safari is currently a feasibility follow-up, not an evidence pillar: binaries exist, but WebDriver session creation is blocked by the local Safari remote-automation setting.",
+      "evidence_ids": [
+        "safari-webdriver-session-readiness",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "blockers": [
+        "Safari Allow remote automation is not enabled."
+      ],
+      "do_not_claim": "Do not claim Safari H3 baseline, Safari handover, or Safari browser-internal session continuity.",
+      "next_action": "Enable Safari Allow remote automation, rerun the session smoke, then treat Safari results as lower-ceiling feasibility evidence.",
+      "evidence_found": [
+        "safari-webdriver-session-readiness",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "streaming_qoe_claim",
+      "label": "Streaming/QoE framing",
+      "status": "supported_as_boundary",
+      "claim_allowed": true,
+      "claim_strength": "paper_ready_local_qoe_boundary",
+      "paper_ready_wording": "Streaming workloads should be reported with QoE and session attribution, because playback completion can hide rebuffering, retry/reconnect behavior, and multiple target QUIC sessions.",
+      "evidence_ids": [
+        "chrome-desktop-noniphone-musiclike-local-refresh",
+        "chrome-desktop-noniphone-buffered-media-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "blockers": [
+        "Public streaming handover has not been executed."
+      ],
+      "do_not_claim": "Do not claim zero-impact video or music continuity, or single-session CM, from completion alone.",
+      "next_action": "For public trials, collect startup delay, rebuffer count, retry count, session count, tuple change, qlog path validation, and task completion together.",
+      "evidence_found": [
+        "chrome-desktop-noniphone-musiclike-local-refresh",
+        "chrome-desktop-noniphone-buffered-media-local-refresh",
+        "noniphone-workload-qoe-synthesis"
+      ],
+      "evidence_missing": []
+    },
+    {
+      "id": "paper_scope_decision",
+      "label": "Paper scope decision",
+      "status": "partial_ready",
+      "claim_allowed": true,
+      "claim_strength": "scope_ready",
+      "paper_ready_wording": "A defensible paper can now argue that CM maturity is multi-layered: implementation primitives are common, deployment/browser continuity remains gated, and workload-level continuity must be separated from transport/session continuity.",
+      "evidence_ids": [
+        "cross-implementation-fresh-rerun",
+        "haproxy-http3-negative-control",
+        "controlled-public-chrome-bridge-synthesis",
+        "noniphone-workload-qoe-synthesis",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "blockers": [
+        "The paper should not yet present a successful public/browser CM result.",
+        "The paper should not yet present live AWS NLB+s2n success."
+      ],
+      "do_not_claim": "Do not frame the current work as proving that HTTP/3 CM guarantees web task continuity.",
+      "next_action": "Ask for professor decision: either open AWS/public-origin/path gates for stronger positive results, or scope the paper around maturity gaps and conservative negative controls.",
+      "evidence_found": [
+        "cross-implementation-fresh-rerun",
+        "haproxy-http3-negative-control",
+        "controlled-public-chrome-bridge-synthesis",
+        "noniphone-workload-qoe-synthesis",
+        "non-iphone-gate-rerun-20260701"
+      ],
+      "evidence_missing": []
+    }
+  ]
+}

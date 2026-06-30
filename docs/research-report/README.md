@@ -62,6 +62,7 @@
 | 후속 연구 디시전 브리프. iPhone 없이 다음에 할 연구 | 작성 완료 | `../results/non-iphone-next-research-decision-20260630.md` |
 | 후속 연구 gate 재검사. 2026-07-01 non-iPhone gates | 작성 완료 | `../results/non-iphone-gate-rerun-20260701.md` |
 | 후속 연구 bridge synthesis. tracked controlled-public Chrome 결과 통합 | 작성 완료 | `../results/controlled-public-chrome-bridge-synthesis-20260701.md` |
+| 후속 연구 claim readiness. 논문 claim 가능/불가능 판정 | 작성 완료 | `../results/noniphone-claim-readiness-dashboard-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -176,3 +177,4 @@
 | `docs/results/non-iphone-research-gap-plan-20260630.md` | iPhone 없이 이어갈 후속 연구 공백 보강 계획 |
 | `docs/results/non-iphone-next-research-decision-20260630.md` | evidence bundle 기준 다음 non-iPhone 연구 트랙 우선순위와 blocker |
 | `docs/results/non-iphone-gate-rerun-20260701.md` | 2026-07-01 AWS/Safari/public-origin non-iPhone gate 재검사 결과 |
+| `docs/results/noniphone-claim-readiness-dashboard-20260701.md` | 현재 evidence로 허용 가능한 논문 claim과 막아야 할 public/browser/AWS claim 분리 |
