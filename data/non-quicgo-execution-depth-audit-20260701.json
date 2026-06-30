@@ -245,15 +245,15 @@
       "priority": "16",
       "name": "quicly",
       "category": "library/server",
-      "current_level": "L3_L4_focused_e2e",
-      "evidence_status": "fresh_focused_e2e_20260630",
+      "current_level": "L3_L4_focused_e2e_full_gate",
+      "evidence_status": "fresh_focused_e2e_full_gate_20260701",
       "depth_class": "focused_partial_runtime",
       "evidence_strength": "focused_positive_but_not_full_stack",
       "active_migration_api": "internal",
       "passive_migration": "yes",
       "tests": "yes",
-      "why_not_quic_go_depth": "The focused path-migration e2e subtest passed, while the full e2e run still has unrelated host-specific failures.",
-      "next_non_iphone_gate": "Rerun full e2e on a Linux/upstream-compatible timing environment."
+      "why_not_quic_go_depth": "The focused path-migration e2e subtest passed and a fail-closed Linux full-e2e runner is packaged, while the current study still lacks a clean full t/e2e.t PASS artifact.",
+      "next_non_iphone_gate": "Run harness/scripts/run-quicly-full-e2e-linux.sh on Linux and accept full-e2e promotion only when validation=ok_full_e2e."
     },
     {
       "priority": "17",

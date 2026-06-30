@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "4a46f81",
+    "commit": "78f707d",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -19,7 +19,7 @@
     "total_implementations": 18,
     "evidence_status_counts": {
       "fresh_app_demo_20260630": 1,
-      "fresh_focused_e2e_20260630": 1,
+      "fresh_focused_e2e_full_gate_20260701": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
       "fresh_rerun_20260630": 9,
@@ -32,7 +32,7 @@
       "L1_L2": 1,
       "L2_L3": 1,
       "L3_L4": 2,
-      "L3_L4_focused_e2e": 1,
+      "L3_L4_focused_e2e_full_gate": 1,
       "L3_L4_partial": 1,
       "L4": 3,
       "L4_AWS_L5_candidate": 1,
@@ -54,16 +54,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 151,
+    "total_items": 156,
     "status_counts": {
-      "done": 147,
+      "done": 152,
       "planned": 4
     },
-    "latest_item": "controlled-public-chrome-contract-application-audit"
+    "latest_item": "quicly-full-e2e-linux-audit"
   },
   "verification": {
-    "checks": "131",
-    "passed": "131",
+    "checks": "143",
+    "passed": "143",
     "ok": "yes"
   },
   "research_audit": {
@@ -253,6 +253,38 @@
       "path": "data/non-quicgo-implementation-findings-20260701.json",
       "exists": true
     },
+    "non_quicgo_execution_depth_audit": {
+      "path": "docs/results/non-quicgo-execution-depth-audit-20260701.md",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit_json": {
+      "path": "data/non-quicgo-execution-depth-audit-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit_csv": {
+      "path": "data/non-quicgo-execution-depth-audit-20260701.csv",
+      "exists": true
+    },
+    "msquic_migration_api_boundary_audit": {
+      "path": "docs/results/msquic-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "msquic_migration_api_boundary_audit_json": {
+      "path": "data/msquic-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "xquic_full_suite_linux_audit": {
+      "path": "docs/results/xquic-full-suite-linux-audit-20260701.md",
+      "exists": true
+    },
+    "xquic_full_suite_linux_audit_json": {
+      "path": "data/xquic-full-suite-linux-audit-20260701.json",
+      "exists": true
+    },
+    "xquic_full_suite_linux_runner": {
+      "path": "harness/scripts/run-xquic-full-suite-linux.sh",
+      "exists": true
+    },
     "chrome_desktop_noniphone_range_local_refresh": {
       "path": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
       "exists": true
@@ -317,6 +349,18 @@
       "path": "docs/results/quicly-e2e-path-migration-20260630.md",
       "exists": true
     },
+    "quicly_full_e2e_linux_audit": {
+      "path": "docs/results/quicly-full-e2e-linux-audit-20260701.md",
+      "exists": true
+    },
+    "quicly_full_e2e_linux_audit_json": {
+      "path": "data/quicly-full-e2e-linux-audit-20260701.json",
+      "exists": true
+    },
+    "quicly_full_e2e_linux_runner": {
+      "path": "harness/scripts/run-quicly-full-e2e-linux.sh",
+      "exists": true
+    },
     "openlitespeed_source_feasibility": {
       "path": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",
       "exists": true
@@ -339,6 +383,18 @@
     },
     "mvfst_migration_test_readiness_json": {
       "path": "data/mvfst-migration-test-readiness-20260630.json",
+      "exists": true
+    },
+    "mvfst_focused_linux_runner_audit": {
+      "path": "docs/results/mvfst-focused-linux-runner-audit-20260701.md",
+      "exists": true
+    },
+    "mvfst_focused_linux_runner_audit_json": {
+      "path": "data/mvfst-focused-linux-runner-audit-20260701.json",
+      "exists": true
+    },
+    "mvfst_focused_linux_runner": {
+      "path": "harness/scripts/run-mvfst-focused-migration-tests-linux.sh",
       "exists": true
     },
     "s2n_nlb_cid_provider_rerun": {

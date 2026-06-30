@@ -45,7 +45,11 @@ def classify(row: dict[str, str]) -> str:
         return "negative_control"
     if status in {"fresh_app_demo_20260630", "fresh_runtime_20260630"}:
         return "server_or_app_runtime_positive"
-    if status in {"fresh_rebind_demo_20260630", "fresh_focused_e2e_20260630"} or "partial" in level:
+    if status in {
+        "fresh_rebind_demo_20260630",
+        "fresh_focused_e2e_20260630",
+        "fresh_focused_e2e_full_gate_20260701",
+    } or "partial" in level:
         return "focused_or_partial_positive"
     if status == "fresh_rerun_20260630":
         return "strong_cross_implementation_positive"
@@ -75,7 +79,7 @@ def risk_note(row: dict[str, str]) -> str:
     if name == "nginx QUIC":
         return "Server runtime evidence is positive; Linux quic_bpf and browser handover are separate claims."
     if name == "quicly":
-        return "Focused path-migration e2e is positive; full e2e still has unrelated host-specific failures."
+        return "Focused path-migration e2e is positive and a Linux full-e2e gate is packaged; full e2e PASS still requires validation=ok_full_e2e."
     if name == "XQUIC":
         return "NAT rebinding demo passed and Linux full-suite replay runner is packaged; full-suite PASS still requires a Linux ok artifact."
     if name == "HAProxy QUIC":

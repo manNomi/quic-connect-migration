@@ -146,6 +146,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     xquic_full_suite_linux_audit_json = "data/xquic-full-suite-linux-audit-20260701.json"
     mvfst_focused_linux_runner_audit = "docs/results/mvfst-focused-linux-runner-audit-20260701.md"
     mvfst_focused_linux_runner_audit_json = "data/mvfst-focused-linux-runner-audit-20260701.json"
+    quicly_full_e2e_linux_audit = "docs/results/quicly-full-e2e-linux-audit-20260701.md"
+    quicly_full_e2e_linux_audit_json = "data/quicly-full-e2e-linux-audit-20260701.json"
     aws_s2n_live_runner_safety_audit = "docs/results/aws-s2n-live-runner-safety-audit-20260701.md"
     aws_s2n_live_runner_safety_audit_json = "data/aws-s2n-live-runner-safety-audit-20260701.json"
     aws_s2n_phase2_path_change_design = "docs/results/aws-s2n-phase2-path-change-design-20260701.md"
@@ -246,6 +248,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         xquic_full_suite_linux_audit_json = str(generated_dir / "xquic-full-suite-linux-audit.json")
         mvfst_focused_linux_runner_audit = str(generated_dir / "mvfst-focused-linux-runner-audit.md")
         mvfst_focused_linux_runner_audit_json = str(generated_dir / "mvfst-focused-linux-runner-audit.json")
+        quicly_full_e2e_linux_audit = str(generated_dir / "quicly-full-e2e-linux-audit.md")
+        quicly_full_e2e_linux_audit_json = str(generated_dir / "quicly-full-e2e-linux-audit.json")
         aws_s2n_live_runner_safety_audit = str(generated_dir / "aws-s2n-live-runner-safety-audit.md")
         aws_s2n_live_runner_safety_audit_json = str(generated_dir / "aws-s2n-live-runner-safety-audit.json")
         aws_s2n_phase2_path_change_design = str(generated_dir / "aws-s2n-phase2-path-change-design.md")
@@ -316,6 +320,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_msquic_migration_api_boundary_audit.py",
                 "tools/build_xquic_full_suite_linux_audit.py",
                 "tools/build_mvfst_focused_linux_runner_audit.py",
+                "tools/build_quicly_full_e2e_linux_audit.py",
                 "tools/audit_aws_s2n_live_runner_safety.py",
                 "tools/build_aws_s2n_phase2_path_change_design.py",
                 "tools/audit_aws_s2n_phase2_rebinding_runner.py",
@@ -390,6 +395,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_msquic_migration_api_boundary_audit.py",
                 "tools/test_build_xquic_full_suite_linux_audit.py",
                 "tools/test_build_mvfst_focused_linux_runner_audit.py",
+                "tools/test_build_quicly_full_e2e_linux_audit.py",
                 "tools/test_audit_aws_s2n_live_runner_safety.py",
                 "tools/test_build_aws_s2n_phase2_path_change_design.py",
                 "tools/test_audit_aws_s2n_phase2_rebinding_runner.py",
@@ -1274,6 +1280,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 mvfst_focused_linux_runner_audit,
                 "--json-output",
                 mvfst_focused_linux_runner_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "quicly_full_e2e_linux_audit_regression",
+            [python_bin, "tools/test_build_quicly_full_e2e_linux_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "quicly_full_e2e_linux_audit",
+            [
+                python_bin,
+                "tools/build_quicly_full_e2e_linux_audit.py",
+                "--output",
+                quicly_full_e2e_linux_audit,
+                "--json-output",
+                quicly_full_e2e_linux_audit_json,
             ],
             {0},
             30,

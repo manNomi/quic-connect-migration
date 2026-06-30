@@ -78,6 +78,7 @@
 | MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
 | XQUIC full-suite Linux audit. NAT rebinding demo와 Linux replay gate 경계 | 작성 완료 | `../results/xquic-full-suite-linux-audit-20260701.md` |
 | mvfst focused Linux runner audit. production 후보 focused BUCK test 실행 gate | 작성 완료 | `../results/mvfst-focused-linux-runner-audit-20260701.md` |
+| quicly full-e2e Linux runner audit. focused PASS와 full-e2e 승격 gate | 작성 완료 | `../results/quicly-full-e2e-linux-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -113,6 +114,7 @@
 | `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
 | `harness/scripts/run-nginx-quic-active-migration-demo.sh` | Chapter 3 nginx QUIC active migration runtime demo |
 | `harness/scripts/run-quicly-e2e-path-migration-check.sh` | Chapter 3 quicly focused e2e path-migration check |
+| `harness/scripts/run-quicly-full-e2e-linux.sh` | Chapter 3 quicly Linux full-e2e replay gate |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
 | `harness/scripts/run-nginx-quic-bpf-linux-demo.sh` | Chapter 4 nginx Linux `quic_bpf on;` active migration runner |
@@ -162,6 +164,7 @@
 | `docs/results/local-implementation-test-results.md` | 초기 8개 구현체 local test 결과 |
 | `docs/results/implementation-rerun-results-20260630.md` | 2026-06-30 구현체 fresh rerun/demo/partial 결과 |
 | `docs/results/quicly-e2e-path-migration-20260630.md` | quicly focused e2e path-migration result와 full e2e caveat |
+| `docs/results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused e2e PASS와 Linux full-e2e replay runner claim boundary |
 | `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | s2n-quic AWS NLB CID provider proof 복원 및 rerun 결과 |
 | `docs/results/lsquic-preferred-address-app-demo-20260630.md` | LSQUIC preferred-address HTTP/3 app demo 결과 |
 | `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | LSQUIC local UDP proxy NAT rebinding HTTP/3 app demo 결과 |
@@ -205,5 +208,6 @@
 | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic public API, NAT rebinding tests, QUIC-aware LB deployment boundary를 source link로 고정 |
 | `docs/results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo PASS, macOS Werror blocker, Linux full-suite replay runner claim boundary |
 | `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst source/test map을 Linux focused BUCK runner로 재현 가능하게 고정 |
+| `docs/results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused path-migration e2e PASS를 full-e2e Linux gate와 분리해 고정 |
 | `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | AWS NLB+s2n live runner의 fail-closed gate, 임시 리소스 inventory, cleanup coverage, risk boundary |
 | `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | AWS NLB+s2n forwarding echo 이후 NAT-rebinding proxy, Linux namespace/SNAT, test-IO rebind, public API/fork variant의 claim boundary |

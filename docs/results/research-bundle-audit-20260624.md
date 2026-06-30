@@ -11,7 +11,7 @@ Generated: `2026-06-30`
 | experiment trials | `99` |
 | experiment status counts | `{'PASS': 33, 'PASS_NEGATIVE_CONTROL': 60, 'PASS_FEASIBILITY': 6}` |
 | experiment ids unique | `yes` |
-| matrix items | `155` |
+| matrix items | `156` |
 | matrix ids unique | `yes` |
 | paper tables current | `yes` |
 | final browser handover trials | `3/6` |
@@ -26,7 +26,7 @@ Generated: `2026-06-30`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `13.24` |
+| disk available GiB | `13.82` |
 | local artifact roots total | `36.3 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |

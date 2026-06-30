@@ -171,7 +171,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 | LiteSpeed LSQUIC | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS |
 | nginx QUIC | HTTP/3 server runtime demo, quiche active migration, server path seq:1 validation | PASS |
 | HAProxy QUIC | HTTP/3 proxy baseline PASS, quiche active migration path validation FAIL | PASS_NEGATIVE_CONTROL |
-| quicly | build `test.t`/`cli`/`udpfw`, migration-related unit evidence, focused e2e `path-migration` subtest | PASS_FOCUSED_E2E |
+| quicly | build `test.t`/`cli`/`udpfw`, migration-related unit evidence, focused e2e `path-migration` subtest, Linux full-e2e replay runner | PASS_FOCUSED_E2E, full-e2e gate packaged |
 
 초기 local test 결과는 `docs/results/local-implementation-test-results.md`에, 2026-06-30 fresh rerun 상세 결과는 `docs/results/implementation-rerun-results-20260630.md`에 정리되어 있다.
 
@@ -361,10 +361,11 @@ quicly는 H2O 계열의 C QUIC library로, path validation과 path promotion int
 - `migration-during-handshake` unit subtest `ok`
 - e2e `path-migration` subtest `ok`
 - CID-enabled path probe에서 CID sequence 1 사용 check `ok`
+- `harness/scripts/run-quicly-full-e2e-linux.sh` fail-closed Linux full-e2e runner
 
 해석:
 
-> quicly는 migration primitive와 path promotion 내부 구조가 확인되고, Perl dependency를 보강한 뒤 full `t/e2e.t` 중 `path-migration` subtest가 통과했다. 다만 full `t/e2e.t`는 unrelated `slow-start` subtest 실패로 exit 1이므로 전체 e2e PASS라고 쓰면 안 된다. 따라서 quicly는 focused e2e path-migration evidence가 있는 비교군으로 분리한다.
+> quicly는 migration primitive와 path promotion 내부 구조가 확인되고, Perl dependency를 보강한 뒤 full `t/e2e.t` 중 `path-migration` subtest가 통과했다. 다만 full `t/e2e.t`는 unrelated `slow-start` subtest 실패로 exit 1이므로 전체 e2e PASS라고 쓰면 안 된다. 따라서 quicly는 focused e2e path-migration evidence가 있는 비교군으로 분리하고, full e2e 승격은 Linux runner에서 `validation=ok_full_e2e`가 나온 뒤에만 주장한다.
 
 ## 8. 결과 요약
 
@@ -421,6 +422,7 @@ Chapter 1의 결론은 다음이다.
 | `../results/quiche-path-event-timeline-20260623.md` | quiche migration lifecycle |
 | `../results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic migration API/deployment boundary |
 | `../results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo, macOS Werror blocker, Linux full-suite replay gate |
+| `../results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused path-migration PASS와 Linux full-e2e replay gate |
 | `../results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control |
 | `../results/nginx-quic-active-migration-runtime-20260630.md` | nginx HTTP/3 runtime active-client-migration demo |
 | `../results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun |

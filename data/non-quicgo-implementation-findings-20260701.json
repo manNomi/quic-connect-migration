@@ -14,7 +14,7 @@
     },
     "evidence_status_counts": {
       "fresh_app_demo_20260630": 1,
-      "fresh_focused_e2e_20260630": 1,
+      "fresh_focused_e2e_full_gate_20260701": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
       "fresh_rerun_20260630": 8,
@@ -308,11 +308,11 @@
       "tests": "yes",
       "lb_or_cloud_deployability": "manual",
       "aws_suitability": "low",
-      "current_level": "L3_L4_focused_e2e",
-      "evidence_status": "fresh_focused_e2e_20260630",
-      "next_action": "Use as focused e2e path-migration evidence; full e2e still fails unrelated slow-start subtest on this host",
+      "current_level": "L3_L4_focused_e2e_full_gate",
+      "evidence_status": "fresh_focused_e2e_full_gate_20260701",
+      "next_action": "Use as focused e2e path-migration evidence plus packaged Linux full-e2e runner; full t/e2e.t PASS still requires validation=ok_full_e2e",
       "claim_class": "focused_or_partial_positive",
-      "risk_note": "Focused path-migration e2e is positive; full e2e still has unrelated host-specific failures."
+      "risk_note": "Focused path-migration e2e is positive and a Linux full-e2e gate is packaged; full e2e PASS still requires validation=ok_full_e2e."
     },
     {
       "priority": "17",

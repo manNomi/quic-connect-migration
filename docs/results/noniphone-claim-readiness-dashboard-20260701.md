@@ -11,7 +11,7 @@ This dashboard is public-safe. It maps current evidence to paper wording boundar
 | claim count | `8` |
 | claim allowed count | `5` |
 | claim blocked count | `3` |
-| bundle item count | `51` |
+| bundle item count | `52` |
 | missing evidence by claim | `{}` |
 | paper decision | The current corpus is ready for a conservative maturity/gap report, but not for Chrome public CM success or live AWS+s2n success claims. |
 

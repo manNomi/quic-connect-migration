@@ -37,6 +37,7 @@ DEPTH_BY_STATUS = {
     "fresh_runtime_20260630": "local_runtime_or_app_demo",
     "fresh_rebind_demo_20260630": "focused_partial_runtime",
     "fresh_focused_e2e_20260630": "focused_partial_runtime",
+    "fresh_focused_e2e_full_gate_20260701": "focused_partial_runtime",
     "source_and_local_browser_baseline": "client_policy_source_plus_local_baseline",
     "source_inspected": "source_test_map_only",
     "partial_deferred": "managed_or_external_deployment_gate",
@@ -59,7 +60,7 @@ WHY_NOT_QUIC_GO_DEPTH = {
     "mvfst": "Source/test coverage is strong and a focused Linux runner is now packaged, but local build/test execution is still gated by Buck/getdeps/disk/toolchain cost.",
     "picoquic": "The test suite is rich and positive, but it is used here as an edge-case maturity comparison rather than the primary browser/deployment harness.",
     "nginx QUIC": "The server runtime demo is positive, but nginx is server-side only; Linux quic_bpf and browser handover are separate deployment claims.",
-    "quicly": "The focused path-migration e2e subtest passed, while the full e2e run still has unrelated host-specific failures.",
+    "quicly": "The focused path-migration e2e subtest passed and a fail-closed Linux full-e2e runner is packaged, while the current study still lacks a clean full t/e2e.t PASS artifact.",
     "aioquic": "The Python implementation is a readable passive/path-validation reference, not the strongest active-migration API candidate.",
     "HAProxy QUIC": "This is intentionally a negative control showing that HTTP/3 proxy availability does not imply active Connection Migration support.",
 }
@@ -80,7 +81,7 @@ NEXT_NON_IPHONE_GATE = {
     "mvfst": "Run harness/scripts/run-mvfst-focused-migration-tests-linux.sh on a Linux builder with buck2 and enough disk; accept only validation=ok for all three focused targets.",
     "picoquic": "Use as edge-case appendix evidence; no immediate deeper run is required unless reviewers ask for another active API baseline.",
     "nginx QUIC": "Run the Linux quic_bpf runner on EC2 or another Linux host with the required privileges.",
-    "quicly": "Rerun full e2e on a Linux/upstream-compatible timing environment.",
+    "quicly": "Run harness/scripts/run-quicly-full-e2e-linux.sh on Linux and accept full-e2e promotion only when validation=ok_full_e2e.",
     "aioquic": "Keep as readable reference evidence unless a Python passive rebind demonstration is needed.",
     "HAProxy QUIC": "Keep version-scoped negative control paired with HTTP/3 proxy support evidence.",
 }

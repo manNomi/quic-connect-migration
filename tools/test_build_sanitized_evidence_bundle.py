@@ -27,6 +27,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert not bundle["missing_runners_or_tools"]
     ids = {item["id"] for item in bundle["items"]}
     assert "quicly-focused-e2e-path-migration" in ids
+    assert "quicly-full-e2e-linux-audit" in ids
     assert "haproxy-http3-negative-control" in ids
     assert "s2n-nlb-live-readiness" in ids
     assert "aws-s2n-nlb-live-runner" in ids

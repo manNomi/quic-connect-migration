@@ -105,6 +105,7 @@
 93. MsQuic migration API boundary audit를 추가했다. MsQuic은 `MigrationEnabled`, address-change event, NAT rebind/path-validation tests가 있어 구현 부재 설명을 약화하지만, public control surface는 `QUIC_PARAM_CONN_LOCAL_ADDRESS` 기반의 policy-constrained local-address control이며 quic-go식 `AddPath -> Probe -> Switch` positive control과 같다고 쓰면 안 된다.
 94. XQUIC full-suite Linux audit와 fail-closed runner를 추가했다. XQUIC은 source callback, NAT rebinding validation, local NAT rebinding demo PASS 근거가 있지만 full suite PASS는 아직 아니므로 `harness/scripts/run-xquic-full-suite-linux.sh`를 Linux에서 실행해 `validation=ok` artifact가 나와야 claim을 승격할 수 있다.
 95. mvfst focused Linux runner audit를 추가했다. mvfst는 dedicated path manager, client active migration, server passive migration/NAT rebinding, focused BUCK target 3개, 106개 observed test case 근거가 있지만 local PASS는 아니므로 `harness/scripts/run-mvfst-focused-migration-tests-linux.sh`가 Linux/buck2 환경에서 `validation=ok`를 내야 실행 근거로 승격한다.
+96. quicly full-e2e Linux runner audit를 추가했다. quicly는 focused `path-migration` e2e와 CID seq 1 first path probe check가 PASS지만 full `t/e2e.t`는 아직 clean PASS가 아니므로 `harness/scripts/run-quicly-full-e2e-linux.sh`가 Linux에서 `validation=ok_full_e2e`를 내야 full-e2e claim을 승격한다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -303,6 +304,7 @@
 - [MsQuic migration API boundary audit](docs/results/msquic-migration-api-boundary-audit-20260701.md)
 - [XQUIC full-suite Linux audit](docs/results/xquic-full-suite-linux-audit-20260701.md)
 - [mvfst focused Linux runner audit](docs/results/mvfst-focused-linux-runner-audit-20260701.md)
+- [quicly full-e2e Linux runner audit](docs/results/quicly-full-e2e-linux-audit-20260701.md)
 - [AWS s2n live runner safety audit](docs/results/aws-s2n-live-runner-safety-audit-20260701.md)
 - [AWS s2n phase-2 path-change design](docs/results/aws-s2n-phase2-path-change-design-20260701.md)
 - [AWS s2n phase-2 rebinding runner audit](docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md)
