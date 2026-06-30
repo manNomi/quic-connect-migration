@@ -181,6 +181,8 @@ def build_manifest(include_ci: bool = False) -> dict[str, Any]:
         "quicly_full_e2e_linux_runner": "harness/scripts/run-quicly-full-e2e-linux.sh",
         "chromium_cronet_policy_boundary_audit": "docs/results/chromium-cronet-policy-boundary-audit-20260701.md",
         "chromium_cronet_policy_boundary_audit_json": "data/chromium-cronet-policy-boundary-audit-20260701.json",
+        "firefox_neqo_browser_boundary_audit": "docs/results/firefox-neqo-browser-boundary-audit-20260701.md",
+        "firefox_neqo_browser_boundary_audit_json": "data/firefox-neqo-browser-boundary-audit-20260701.json",
         "cdn_edge_cm_boundary_audit": "docs/results/cdn-edge-cm-boundary-audit-20260701.md",
         "cdn_edge_cm_boundary_audit_json": "data/cdn-edge-cm-boundary-audit-20260701.json",
         "openlitespeed_source_feasibility": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",

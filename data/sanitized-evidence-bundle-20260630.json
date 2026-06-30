@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-30",
   "public_safe": true,
-  "item_count": 54,
+  "item_count": 55,
   "claim_strength_counts": {
     "app_level_positive": 2,
     "application_bridge_positive": 1,
@@ -31,6 +31,7 @@
     "safety_audit": 1,
     "server_runtime_positive": 1,
     "source_linked_api_boundary": 1,
+    "source_linked_browser_adjacency_boundary": 1,
     "source_linked_policy_boundary": 1,
     "source_policy_evidence": 1,
     "source_test_audit": 2,
@@ -50,6 +51,7 @@
     "browser-policy-boundary": 1,
     "browser-policy-source": 1,
     "browser-readiness": 1,
+    "browser-runtime-boundary": 1,
     "cdn-edge-boundary": 1,
     "claim-readiness-synthesis": 1,
     "cross-gate-readiness": 1,
@@ -550,6 +552,22 @@
       "supports": "Chromium has client migration hooks and NetLog migration event taxonomy, while Cronet's inspected QUIC path explicitly disables network-change migration by default.",
       "do_not_claim": "Chrome browser, Android platform HTTP, or Cronet embedded-app live single-session handover success.",
       "next_gap": "Run Chrome/Cronet active network-change rows with target-session NetLog trigger/success/failure, client path-change, server/qlog, and workload-completion evidence.",
+      "evidence_doc_exists": true,
+      "runner_or_tool_exists": true,
+      "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."
+    },
+    {
+      "id": "firefox-neqo-browser-boundary-audit",
+      "chapter": "1",
+      "category": "browser-runtime-boundary",
+      "implementation": "Firefox + Neqo",
+      "evidence_doc": "docs/results/firefox-neqo-browser-boundary-audit-20260701.md",
+      "runner_or_tool": "tools/build_firefox_neqo_browser_boundary_audit.py",
+      "local_artifact_id": "firefox-neqo-browser-boundary-audit-20260701",
+      "claim_strength": "source_linked_browser_adjacency_boundary",
+      "supports": "Neqo is Firefox-adjacent and has explicit migration API/source support, rebinding handling, preferred-address coverage, qlog transport-parameter observability, and fresh local migration test evidence.",
+      "do_not_claim": "Firefox desktop/mobile live single-session HTTP/3 handover, browser workload continuity, or Firefox runtime policy success.",
+      "next_gap": "Run Firefox desktop against a controlled H3 origin or local neqo-server with Firefox/Necko logging plus server qlog/tuple evidence.",
       "evidence_doc_exists": true,
       "runner_or_tool_exists": true,
       "public_safe_note": "No raw qlog, keylog, pcap, private host, credential, account ID, or device identifier is included."

@@ -8,15 +8,15 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `cdd3693` |
+| source commit at generation | `d48c610` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
 | implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
-| experiment matrix items | `158` |
-| latest experiment matrix item | `cdn-edge-cm-boundary-audit` |
-| verification | `147/147 passed; ok=yes` |
+| experiment matrix items | `159` |
+| latest experiment matrix item | `firefox-neqo-browser-boundary-audit` |
+| verification | `149/149 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
@@ -122,6 +122,8 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `quicly_full_e2e_linux_runner` | `harness/scripts/run-quicly-full-e2e-linux.sh` | `yes` |
 | `chromium_cronet_policy_boundary_audit` | `docs/results/chromium-cronet-policy-boundary-audit-20260701.md` | `yes` |
 | `chromium_cronet_policy_boundary_audit_json` | `data/chromium-cronet-policy-boundary-audit-20260701.json` | `yes` |
+| `firefox_neqo_browser_boundary_audit` | `docs/results/firefox-neqo-browser-boundary-audit-20260701.md` | `yes` |
+| `firefox_neqo_browser_boundary_audit_json` | `data/firefox-neqo-browser-boundary-audit-20260701.json` | `yes` |
 | `cdn_edge_cm_boundary_audit` | `docs/results/cdn-edge-cm-boundary-audit-20260701.md` | `yes` |
 | `cdn_edge_cm_boundary_audit_json` | `data/cdn-edge-cm-boundary-audit-20260701.json` | `yes` |
 | `openlitespeed_source_feasibility` | `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md` | `yes` |

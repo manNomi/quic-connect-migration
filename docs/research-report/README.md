@@ -80,6 +80,7 @@
 | mvfst focused Linux runner audit. production 후보 focused BUCK test 실행 gate | 작성 완료 | `../results/mvfst-focused-linux-runner-audit-20260701.md` |
 | quicly full-e2e Linux runner audit. focused PASS와 full-e2e 승격 gate | 작성 완료 | `../results/quicly-full-e2e-linux-audit-20260701.md` |
 | Chromium/Cronet policy boundary audit. browser client source hook과 runtime policy claim 경계 | 작성 완료 | `../results/chromium-cronet-policy-boundary-audit-20260701.md` |
+| Firefox/Neqo browser boundary audit. Neqo transport maturity와 Firefox runtime handover claim 경계 | 작성 완료 | `../results/firefox-neqo-browser-boundary-audit-20260701.md` |
 | CDN edge CM boundary audit. CloudFront/Cloudflare edge와 origin end-to-end claim 경계 | 작성 완료 | `../results/cdn-edge-cm-boundary-audit-20260701.md` |
 
 ## 폴더 운영 방식
@@ -118,6 +119,7 @@
 | `harness/scripts/run-quicly-e2e-path-migration-check.sh` | Chapter 3 quicly focused e2e path-migration check |
 | `harness/scripts/run-quicly-full-e2e-linux.sh` | Chapter 3 quicly Linux full-e2e replay gate |
 | `tools/build_chromium_cronet_policy_boundary_audit.py` | Chapter 1/5 Chromium/Cronet source policy boundary audit builder |
+| `tools/build_firefox_neqo_browser_boundary_audit.py` | Chapter 1/5 Firefox-adjacent Neqo transport maturity와 Firefox runtime claim boundary audit builder |
 | `tools/build_cdn_edge_cm_boundary_audit.py` | Chapter 4 CloudFront/Cloudflare CDN edge claim boundary audit builder |
 | `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
 | `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
@@ -214,6 +216,7 @@
 | `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst source/test map을 Linux focused BUCK runner로 재현 가능하게 고정 |
 | `docs/results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused path-migration e2e PASS를 full-e2e Linux gate와 분리해 고정 |
 | `docs/results/chromium-cronet-policy-boundary-audit-20260701.md` | Chromium client migration hooks, NetLog taxonomy, Cronet default-disable policy boundary를 source link로 고정 |
+| `docs/results/firefox-neqo-browser-boundary-audit-20260701.md` | Neqo source/test migration maturity와 Firefox browser runtime handover proof를 분리해 고정 |
 | `docs/results/cdn-edge-cm-boundary-audit-20260701.md` | CloudFront viewer-edge HTTP/3 CM과 Cloudflare user-edge HTTP/3를 origin end-to-end CM과 분리 |
 | `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | AWS NLB+s2n live runner의 fail-closed gate, 임시 리소스 inventory, cleanup coverage, risk boundary |
 | `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | AWS NLB+s2n forwarding echo 이후 NAT-rebinding proxy, Linux namespace/SNAT, test-IO rebind, public API/fork variant의 claim boundary |

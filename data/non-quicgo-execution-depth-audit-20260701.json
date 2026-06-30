@@ -140,8 +140,8 @@
       "active_migration_api": "yes",
       "passive_migration": "yes",
       "tests": "yes",
-      "why_not_quic_go_depth": "Mozilla-adjacent tests provide broad migration evidence, but this did not become a browser runtime proof without Firefox/Necko controlled handover rows.",
-      "next_non_iphone_gate": "Optional: run Firefox/Necko-adjacent controlled rows or keep Neqo as implementation maturity evidence."
+      "why_not_quic_go_depth": "Mozilla-adjacent tests and the Firefox/Neqo boundary audit provide broad migration maturity evidence, but this did not become a Firefox browser runtime proof without Firefox/Necko controlled handover rows.",
+      "next_non_iphone_gate": "Use the Firefox/Neqo browser-boundary audit now; run Firefox/Necko controlled rows only when browser-runtime evidence becomes reviewer-critical."
     },
     {
       "priority": "9",

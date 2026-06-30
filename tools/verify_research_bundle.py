@@ -163,6 +163,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     controlled_public_chrome_contract_application_audit_csv = "data/controlled-public-chrome-contract-application-audit-20260701.csv"
     chromium_cronet_policy_boundary_audit = "docs/results/chromium-cronet-policy-boundary-audit-20260701.md"
     chromium_cronet_policy_boundary_audit_json = "data/chromium-cronet-policy-boundary-audit-20260701.json"
+    firefox_neqo_browser_boundary_audit = "docs/results/firefox-neqo-browser-boundary-audit-20260701.md"
+    firefox_neqo_browser_boundary_audit_json = "data/firefox-neqo-browser-boundary-audit-20260701.json"
     cdn_edge_cm_boundary_audit = "docs/results/cdn-edge-cm-boundary-audit-20260701.md"
     cdn_edge_cm_boundary_audit_json = "data/cdn-edge-cm-boundary-audit-20260701.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
@@ -269,6 +271,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         controlled_public_chrome_contract_application_audit_csv = str(generated_dir / "controlled-public-chrome-contract-application-audit.csv")
         chromium_cronet_policy_boundary_audit = str(generated_dir / "chromium-cronet-policy-boundary-audit.md")
         chromium_cronet_policy_boundary_audit_json = str(generated_dir / "chromium-cronet-policy-boundary-audit.json")
+        firefox_neqo_browser_boundary_audit = str(generated_dir / "firefox-neqo-browser-boundary-audit.md")
+        firefox_neqo_browser_boundary_audit_json = str(generated_dir / "firefox-neqo-browser-boundary-audit.json")
         cdn_edge_cm_boundary_audit = str(generated_dir / "cdn-edge-cm-boundary-audit.md")
         cdn_edge_cm_boundary_audit_json = str(generated_dir / "cdn-edge-cm-boundary-audit.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
@@ -336,6 +340,7 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_controlled_public_chrome_artifact_classifier_contract.py",
                 "tools/build_controlled_public_chrome_contract_application_audit.py",
                 "tools/build_chromium_cronet_policy_boundary_audit.py",
+                "tools/build_firefox_neqo_browser_boundary_audit.py",
                 "tools/build_cdn_edge_cm_boundary_audit.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
@@ -1445,6 +1450,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 chromium_cronet_policy_boundary_audit,
                 "--json-output",
                 chromium_cronet_policy_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "firefox_neqo_browser_boundary_audit_regression",
+            [python_bin, "tools/test_build_firefox_neqo_browser_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "firefox_neqo_browser_boundary_audit",
+            [
+                python_bin,
+                "tools/build_firefox_neqo_browser_boundary_audit.py",
+                "--output",
+                firefox_neqo_browser_boundary_audit,
+                "--json-output",
+                firefox_neqo_browser_boundary_audit_json,
             ],
             {0},
             30,

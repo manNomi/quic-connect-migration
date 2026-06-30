@@ -159,7 +159,7 @@
       "aws_suitability": "low",
       "current_level": "L3_L4",
       "evidence_status": "fresh_rerun_20260630",
-      "next_action": "Use as Firefox-adjacent broad migration test evidence",
+      "next_action": "Use as Firefox-adjacent transport maturity evidence; Firefox browser runtime proof remains a separate gate",
       "claim_class": "strong_cross_implementation_positive",
       "risk_note": "Use as implementation maturity evidence, not as browser or managed-deployment proof."
     },
