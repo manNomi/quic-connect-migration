@@ -1,0 +1,162 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "implementation": "Chromium Chrome Cronet",
+  "source_repository": "https://chromium.googlesource.com/chromium/src",
+  "source_commit": "fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7",
+  "source_ref": "refs/heads/main observed via git ls-remote on 2026-07-01",
+  "summary": {
+    "evidence_items": 13,
+    "client_socket_migration_hook_present": "yes",
+    "network_change_policy_knobs_present": "yes",
+    "netlog_migration_observability_present": "yes",
+    "cronet_network_change_migration_default": "disabled_when_quic_enabled",
+    "android_cronet_policy_api_present": "yes",
+    "browser_runtime_handover_proven_by_this_audit": "no",
+    "interpretation": "Chromium/Cronet weakens an implementation-absence explanation because source hooks, policy knobs, and NetLog events exist; it strengthens the runtime-policy explanation because Cronet explicitly disables network-change migration by default in the inspected path."
+  },
+  "conclusion": {
+    "transport_implementation_status": "client_stack_has_internal_migration_primitives",
+    "runtime_policy_status": "policy_dependent_and_embedding_specific",
+    "observability_status": "NetLog_can_expose_mode_trigger_success_failure_and_probing_events",
+    "cronet_boundary": "network_change_migration_disabled_by_default_in_url_request_context_config",
+    "paper_use": "Use Chromium/Cronet as a high-usage client policy-boundary audit, not as proof that Chrome or Cronet migrated a live HTTP/3 browser workload."
+  },
+  "evidence": [
+    {
+      "id": "quicparams-default-network-migration-policy",
+      "source": "Chromium source",
+      "file": "net/quic/quic_context.h",
+      "lines": "176-184",
+      "topic": "QuicParams network-change migration flags",
+      "observation": "QuicParams includes migrate_sessions_on_network_change_v2 and migrate_sessions_early_v2 fields for network-change and poor-path migration policy.",
+      "implication": "Chromium has browser-stack policy knobs for migration; support is not a missing primitive.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/quic/quic_context.h#176"
+    },
+    {
+      "id": "quicparams-idle-and-port-migration-policy",
+      "source": "Chromium source",
+      "file": "net/quic/quic_context.h",
+      "lines": "186-194",
+      "topic": "Idle and port migration flags",
+      "observation": "QuicParams includes migrate_idle_sessions and allow_port_migration fields that control idle-session and port-change behavior.",
+      "implication": "Migration behavior is intentionally configurable rather than universally enabled.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/quic/quic_context.h#186"
+    },
+    {
+      "id": "client-session-migrate-to-socket",
+      "source": "Chromium source",
+      "file": "net/quic/quic_chromium_client_session.h",
+      "lines": "930-936",
+      "topic": "QuicChromiumClientSession::MigrateToSocket",
+      "observation": "QuicChromiumClientSession declares MigrateToSocket with new socket reader/writer ownership.",
+      "implication": "The Chrome client stack has an internal socket migration primitive.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/quic/quic_chromium_client_session.h#930"
+    },
+    {
+      "id": "client-session-network-connected-callback",
+      "source": "Chromium source",
+      "file": "net/quic/quic_chromium_client_session.h",
+      "lines": "938-941",
+      "topic": "Network connected callback",
+      "observation": "OnNetworkConnected can migrate a session to a newly connected network when pending migration exists.",
+      "implication": "Network-change notifications can drive migration decisions inside the browser stack.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/quic/quic_chromium_client_session.h#938"
+    },
+    {
+      "id": "client-session-disconnected-default-callbacks",
+      "source": "Chromium source",
+      "file": "net/quic/quic_chromium_client_session.h",
+      "lines": "943-949",
+      "topic": "Disconnected and default-network callbacks",
+      "observation": "The session class has callbacks for disconnected networks and new default networks, including a comment that migration occurs if appropriate.",
+      "implication": "A browser handover claim must prove that the runtime policy actually chose these paths.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/quic/quic_chromium_client_session.h#943"
+    },
+    {
+      "id": "client-session-path-degrading-callback",
+      "source": "Chromium source",
+      "file": "net/quic/quic_chromium_client_session.h",
+      "lines": "797-805",
+      "topic": "Path degrading callback",
+      "observation": "QuicChromiumClientSession overrides OnPathDegrading and related forward-progress callbacks.",
+      "implication": "Chromium can react to path-quality degradation, not only hard interface loss.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/quic/quic_chromium_client_session.h#797"
+    },
+    {
+      "id": "netlog-migration-mode-trigger",
+      "source": "Chromium source",
+      "file": "net/log/net_log_event_type_list.h",
+      "lines": "3168-3177",
+      "topic": "NetLog migration mode and trigger events",
+      "observation": "NetLog defines QUIC_CONNECTION_MIGRATION_MODE and QUIC_CONNECTION_MIGRATION_TRIGGERED events.",
+      "implication": "Mode evidence is useful but must be paired with trigger/session evidence before claiming migration.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/log/net_log_event_type_list.h#3168"
+    },
+    {
+      "id": "netlog-migration-success-failure",
+      "source": "Chromium source",
+      "file": "net/log/net_log_event_type_list.h",
+      "lines": "3179-3192",
+      "topic": "NetLog migration failure and success events",
+      "observation": "NetLog defines QUIC_CONNECTION_MIGRATION_FAILURE and QUIC_CONNECTION_MIGRATION_SUCCESS.",
+      "implication": "A strong browser artifact should contain success/failure evidence for the target session.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/log/net_log_event_type_list.h#3179"
+    },
+    {
+      "id": "netlog-network-change-events",
+      "source": "Chromium source",
+      "file": "net/log/net_log_event_type_list.h",
+      "lines": "3194-3228",
+      "topic": "NetLog network-change migration events",
+      "observation": "NetLog defines events for connected network, new default network, disconnected network, write error, waiting for a network, and path degrading.",
+      "implication": "Classifier logic should require event-chain evidence rather than tuple-change-only inference.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/log/net_log_event_type_list.h#3194"
+    },
+    {
+      "id": "netlog-probing-events",
+      "source": "Chromium source",
+      "file": "net/log/net_log_event_type_list.h",
+      "lines": "3237-3247",
+      "topic": "NetLog probing success/failure events",
+      "observation": "NetLog defines post-probing migration success, failure, and waiting-for-network timeout events.",
+      "implication": "Browser CM maturity includes observability for failed attempts, not just completed migrations.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/net/log/net_log_event_type_list.h#3237"
+    },
+    {
+      "id": "cronet-explicitly-disables-network-change-migration",
+      "source": "Chromium source",
+      "file": "components/cronet/url_request_context_config.cc",
+      "lines": "918-924",
+      "topic": "Cronet default network-change migration policy",
+      "observation": "When QUIC is enabled, Cronet sets goaway_sessions_on_ip_change=false but explicitly sets migrate_sessions_on_network_change_v2=false.",
+      "implication": "Chromium-derived clients can suppress network-change migration by default, so Chrome, Cronet embedding, and Android platform behavior must be tested separately.",
+      "url": "https://chromium.googlesource.com/chromium/src/+/fd49b92dc0dc7d4353e2e79ad155e43ca7947ab7/components/cronet/url_request_context_config.cc#918"
+    },
+    {
+      "id": "android-cronet-connection-migration-options",
+      "source": "Android Developers",
+      "file": "ConnectionMigrationOptions",
+      "lines": "n/a",
+      "topic": "Cronet migration policy API",
+      "observation": "The Android Cronet API exposes ConnectionMigrationOptions so applications can configure migration-related behavior.",
+      "implication": "Cronet migration is an embedding policy question, not a guaranteed browser-runtime outcome.",
+      "url": "https://developer.android.com/develop/connectivity/cronet/reference/org/chromium/net/ConnectionMigrationOptions"
+    },
+    {
+      "id": "android-platform-connection-migration-options-builder",
+      "source": "Android Developers",
+      "file": "android.net.http.ConnectionMigrationOptions.Builder",
+      "lines": "n/a",
+      "topic": "Platform HTTP stack migration policy API",
+      "observation": "The Android platform API exposes a builder for connection migration options.",
+      "implication": "Android browser/app experiments must record client policy, platform stack, and defaults.",
+      "url": "https://developer.android.com/reference/android/net/http/ConnectionMigrationOptions.Builder"
+    }
+  ],
+  "reporting_boundary": {
+    "safe_claim": "Chromium/Cronet has migration hooks, policy knobs, and NetLog observability; Cronet's inspected default path disables network-change migration when QUIC is enabled.",
+    "unsafe_claim": "Chrome browser, Android platform HTTP, or a Cronet-embedded app successfully performs single-session HTTP/3 Connection Migration in a live handover based on source hooks alone.",
+    "next_non_iphone_gate": "When a non-iPhone secondary path or Android/Cronet device path is available, run a Chrome/Cronet active network-change trial and require target-session NetLog trigger/success, client path change, server tuple/qlog evidence, and workload completion."
+  }
+}

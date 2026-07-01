@@ -23,7 +23,8 @@ def fake_args(**overrides):
         "origin_host_placeholder": "<origin-host-or-ip>",
         "remote_dir": "/home/ec2-user/quic-go-min-repro",
         "run_id": "controlled-public-chrome-h3-baseline-001",
-        "expected_requests": 4,
+        "expected_requests": 2,
+        "workload_packet": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
     }
     values.update(overrides)
     return argparse.Namespace(**values)
@@ -34,6 +35,10 @@ def test_default_packet_is_public_safe() -> None:
     markdown = emit_markdown(packet)
     assert packet.public_safe is True
     assert "controlled-public-chrome-h3-baseline-001" in markdown
+    assert "noniphone-public-workload-trial-packet-20260701.md" in markdown
+    assert "Run non-iPhone Public Workload Packet" in markdown
+    assert "Chrome target QUIC session count is one" in markdown
+    assert "not evidence that a public workload or browser Connection Migration trial has succeeded" in markdown
     assert "<public-origin-host>" in markdown
     assert "<webpki-private-key-path>" in markdown
     assert "AWS_SECRET" not in markdown

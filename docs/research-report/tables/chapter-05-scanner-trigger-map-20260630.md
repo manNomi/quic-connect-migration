@@ -8,9 +8,10 @@
 
 | 코드 위치 | trigger/input | 출력 필드 | 해석 |
 | --- | --- | --- | --- |
-| [check_browser_cm_observability.py#L93-L143](../../../tools/check_browser_cm_observability.py#L93-L143) | Chrome/Safari/Safari TP path, `safaridriver`, `tcpdump`, `rvictl`, `networksetup`, `route`, `ifconfig` | `chrome_netlog_ready`, `safari_webdriver_ready`, `packet_capture_tooling_ready`, `ios_remote_capture_candidate`, `blockers` | 실험 도구 준비 상태만 판단 |
-| [check_browser_cm_observability.py#L109-L125](../../../tools/check_browser_cm_observability.py#L109-L125) | executable/command availability | blockers | Safari는 NetLog equivalent가 없으므로 server qlog/pcap 필요 |
-| [check_browser_cm_observability.py#L156-L176](../../../tools/check_browser_cm_observability.py#L156-L176) | readiness object | markdown report table | 공개 보고용으로 stdout/stderr raw output을 제외 |
+| [check_browser_cm_observability.py#L93-L180](../../../tools/check_browser_cm_observability.py#L93-L180) | optional Safari WebDriver session smoke, `create_session`, `delete_session` | `safari_webdriver_session_checked`, `safari_webdriver_session_ready`, `safari_webdriver_session_error` | `safaridriver --version`과 실제 session 생성 가능 여부를 분리 |
+| [check_browser_cm_observability.py#L182-L247](../../../tools/check_browser_cm_observability.py#L182-L247) | Chrome/Safari/Safari TP path, `safaridriver`, `tcpdump`, `rvictl`, `networksetup`, `route`, `ifconfig` | `chrome_netlog_ready`, `safari_webdriver_binary_ready`, `safari_webdriver_ready`, `packet_capture_tooling_ready`, `ios_remote_capture_candidate`, `blockers` | 실험 도구 준비 상태만 판단 |
+| [check_browser_cm_observability.py#L205-L222](../../../tools/check_browser_cm_observability.py#L205-L222) | executable/command availability and optional session failure | blockers | Safari는 NetLog equivalent가 없고 session creation gate도 별도로 통과해야 함 |
+| [check_browser_cm_observability.py#L260-L284](../../../tools/check_browser_cm_observability.py#L260-L284) | readiness object | markdown report table | 공개 보고용으로 stdout/stderr raw output을 제외하고 session readiness만 요약 |
 
 ## 2. Chrome Artifact Classifier
 

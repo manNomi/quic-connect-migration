@@ -27,9 +27,10 @@ results/
 **/*.tar.gz
 
 # Build outputs
-bin/
+/bin/
 dist/
 tmp/
+**/target/
 *.test
 __pycache__/
 .pytest_cache/

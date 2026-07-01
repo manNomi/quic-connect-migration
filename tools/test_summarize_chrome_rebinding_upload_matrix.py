@@ -89,6 +89,8 @@ def test_upload_rows_include_sink_bytes() -> None:
         assert rows[0]["proxy_client_packets_a"] == "1"
         assert rows[0]["proxy_client_packets_b"] == "1"
         assert rows[0]["proxy_packet_rebind_observed"] == "true"
+        assert rows[0]["proxy_upstream_a_addr"] == "<loopback-a>"
+        assert rows[0]["proxy_upstream_b_addr"] == "<loopback-b>"
         assert rows[0]["netlog_target_path_validation_observed"] == "true"
         markdown = emit_markdown(rows)
         assert "Chrome H3 Local UDP Rebinding Upload Summary" in markdown

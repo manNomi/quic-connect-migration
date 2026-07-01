@@ -1,0 +1,150 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "implementation": "MsQuic",
+  "source_commit": "51d449b7d2deb553d6503591f72a8e62d1071054",
+  "local_clone": {
+    "observed": true,
+    "commit": "51d449b7d2deb553d6503591f72a8e62d1071054",
+    "matches_expected_commit": "yes",
+    "remote": "https://github.com/microsoft/msquic.git"
+  },
+  "runner": {
+    "path": "harness/scripts/run-msquic-rebind-pathvalidation-demo.sh",
+    "exists": true,
+    "result_env": "harness/results/msquic-rebind-pathvalidation-local-20260701/results/result.env",
+    "result_env_exists": true,
+    "result_env_values": {
+      "run_id": "msquic-rebind-pathvalidation-local-20260701",
+      "artifact_dir": "harness/results/msquic-rebind-pathvalidation-local-20260701",
+      "system_name": "Darwin",
+      "system_machine": "arm64",
+      "msquic_dir": "/private/tmp/quic-cm-scan-repos/msquic",
+      "msquic_expected_commit": "51d449b7d2deb553d6503591f72a8e62d1071054",
+      "msquic_observed_commit": "51d449b7d2deb553d6503591f72a8e62d1071054",
+      "msquic_commit_matches": "yes",
+      "msquic_bin": "/private/tmp/quic-cm-scan-repos/msquic/build-local/bin/Debug/msquictest",
+      "require_ready": "1",
+      "dry_run": "0",
+      "filter_v4": "Basic/WithFamilyArgs.RebindPort/0:Basic/WithFamilyArgs.RebindAddr/0:Basic/WithFamilyArgs.PathValidationTimeout/0:Basic/WithFamilyArgs.PathValidationLastPathClose/0",
+      "filter_v6": "Basic/WithFamilyArgs.RebindPort/1:Basic/WithFamilyArgs.RebindAddr/1:Basic/WithFamilyArgs.PathValidationTimeout/1:Basic/WithFamilyArgs.PathValidationLastPathClose/1",
+      "preflight_missing_commands": "none",
+      "msquictest_list_exit": "0",
+      "msquictest_v4_exit": "0",
+      "msquictest_v6_exit": "0",
+      "listed_rebind_pathvalidation_count": "8",
+      "v4_ok_count": "4",
+      "v6_ok_count": "4",
+      "total_ok_count": "8",
+      "passed_summary_count": "2",
+      "failed_marker_count": "0",
+      "validation": "ok",
+      "blocked_or_failed_reason": "none",
+      "stage": "msquictest_selected_filters"
+    }
+  },
+  "runtime_trial": {
+    "status": "ready_or_passed",
+    "reason": "runner_validation_ok",
+    "can_claim_runtime_pass": "yes",
+    "can_claim_browser_or_deployment": "no"
+  },
+  "claim_boundary": {
+    "safe_claim": "MsQuic has source/API evidence plus a local user-mode selected rebind/path-validation PASS: v4 and v6 RebindPort, RebindAddr, PathValidationTimeout, and PathValidationLastPathClose all passed under msquictest.",
+    "unsafe_claim": "MsQuic browser handover, HTTP/3 application continuity, AWS NLB/CloudFront deployment success, or quic-go-equivalent AddPath/Probe/Switch control.",
+    "next_gap": "Use this as selected MsQuic runtime-test evidence; build a separate application payload or live LB experiment only if reviewers require deployment/application continuity evidence."
+  },
+  "evidence": [
+    {
+      "id": "migration-setting",
+      "source": "docs/Settings.md",
+      "line": 55,
+      "topic": "Client migration setting",
+      "observation": "MsQuic documents MigrationEnabled as client migration support for IP address and tuple changes with a cooperative load balancer or no load balancer.",
+      "implication": "MsQuic treats migration as a configurable deployment-sensitive feature rather than unconditional application continuity.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/docs/Settings.md#L55"
+    },
+    {
+      "id": "local-address-param-doc",
+      "source": "docs/Settings.md",
+      "line": 183,
+      "topic": "Local address control parameter",
+      "observation": "QUIC_PARAM_CONN_LOCAL_ADDRESS is settable on clients before start or after handshake confirmation.",
+      "implication": "MsQuic exposes policy-constrained local-address control, unlike quic-go's AddPath/Probe/Switch shape.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/docs/Settings.md#L183"
+    },
+    {
+      "id": "client-migration-deployment-doc",
+      "source": "docs/Deployment.md",
+      "line": 107,
+      "topic": "Deployment boundary",
+      "observation": "The deployment guide separates client migration from load-balancer routing requirements.",
+      "implication": "A selected local MsQuic rebind PASS must not be promoted to generic LB/CDN deployment success.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/docs/Deployment.md#L107"
+    },
+    {
+      "id": "rebind-port-gtest",
+      "source": "src/test/bin/quic_gtest.cpp",
+      "line": 1868,
+      "topic": "NAT port rebind test registration",
+      "observation": "The RebindPort gtest invokes QuicTestNatPortRebind_NoPadding for user-mode tests.",
+      "implication": "The local runner exercises MsQuic's selected NAT port rebinding test path.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/test/bin/quic_gtest.cpp#L1868"
+    },
+    {
+      "id": "rebind-addr-gtest",
+      "source": "src/test/bin/quic_gtest.cpp",
+      "line": 1924,
+      "topic": "NAT address rebind test registration",
+      "observation": "The RebindAddr gtest invokes QuicTestNatAddrRebind_NoPadding for user-mode tests.",
+      "implication": "The local runner exercises MsQuic's selected NAT address rebinding test path.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/test/bin/quic_gtest.cpp#L1924"
+    },
+    {
+      "id": "path-validation-gtests",
+      "source": "src/test/bin/quic_gtest.cpp",
+      "line": 1973,
+      "topic": "Path validation selected tests",
+      "observation": "PathValidationTimeout and PathValidationLastPathClose are registered as WithFamilyArgs tests.",
+      "implication": "The selected runner ties NAT rebinding evidence to path-validation failure handling.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/test/bin/quic_gtest.cpp#L1973"
+    },
+    {
+      "id": "test-local-address-helper",
+      "source": "src/test/lib/TestConnection.cpp",
+      "line": 363,
+      "topic": "Test local-address helper",
+      "observation": "TestConnection::SetLocalAddr sets QUIC_PARAM_CONN_LOCAL_ADDRESS with retry handling after handshake confirmation.",
+      "implication": "The tests use the documented local-address control surface rather than only parser-level checks.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/test/lib/TestConnection.cpp#L363"
+    },
+    {
+      "id": "core-local-address-param",
+      "source": "src/core/connection.c",
+      "line": 6380,
+      "topic": "Core local-address parameter handling",
+      "observation": "The core connection parameter handler validates QUIC_PARAM_CONN_LOCAL_ADDRESS and rejects invalid states such as server-side use or pre-confirmation changes.",
+      "implication": "MsQuic local-address control is real but policy-constrained.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/core/connection.c#L6380"
+    },
+    {
+      "id": "disable-active-migration-transport-param",
+      "source": "src/core/connection.c",
+      "line": 2412,
+      "topic": "Disable active migration transport parameter",
+      "observation": "Server transport parameters include disable_active_migration when MigrationEnabled is false.",
+      "implication": "MsQuic migration behavior is explicitly controlled by policy and settings.",
+      "source_base": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/core/connection.c#L2412"
+    }
+  ],
+  "public_safety_scan_ok": true
+}

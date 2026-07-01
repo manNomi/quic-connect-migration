@@ -1,0 +1,159 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "implementation": "quicly",
+  "source_commit": "ed83c7c7d545a01650651c9523466f561ec5d4bb",
+  "source_repository": "https://github.com/h2o/quicly",
+  "local_clone": {
+    "path": "/private/tmp/quic-cm-scan-repos/quicly",
+    "exists": true,
+    "commit": "ed83c7c7d545a01650651c9523466f561ec5d4bb",
+    "matches_audit_commit": "yes"
+  },
+  "summary": {
+    "source_evidence_items": 11,
+    "focused_e2e_status": "PASS_FOCUSED_E2E",
+    "focused_path_subtest_ok": "yes",
+    "focused_cid_seq_check_ok": "yes",
+    "focused_full_prove_exit": "1",
+    "focused_slow_start_failed": "yes",
+    "linux_runner_ready": "yes",
+    "paper_use": "Use quicly as focused e2e path-migration evidence plus a fail-closed Linux full-e2e replay gate; do not claim full e2e PASS until validation=ok_full_e2e exists.",
+    "interpretation": "quicly has concrete path validation/promotion internals and a focused e2e PASS, but the current study still lacks a clean full t/e2e.t PASS artifact."
+  },
+  "focused_e2e_input": {
+    "input_path": "harness/results/quicly-e2e-path-migration-local-20260630/results/result.env",
+    "input_exists": true,
+    "status": "PASS_FOCUSED_E2E",
+    "ready": "yes",
+    "prove_exit": "1",
+    "path_subtest_seen": "yes",
+    "path_subtest_ok": "yes",
+    "cid_seq_check_ok": "yes",
+    "slow_start_failed": "yes",
+    "validation": "ok_path_migration"
+  },
+  "linux_runner": {
+    "path": "harness/scripts/run-quicly-full-e2e-linux.sh",
+    "exists": true,
+    "required_tokens_present": true,
+    "token_status": {
+      "linux_gate": true,
+      "commit_gate": true,
+      "net_empty_port_gate": true,
+      "submodule_update": true,
+      "cmake_configure": true,
+      "build_targets": true,
+      "unit_test": true,
+      "prove_e2e": true,
+      "full_pass_boundary": true,
+      "public_safe_readme": true
+    }
+  },
+  "evidence": [
+    {
+      "id": "official-build-instructions",
+      "file": "README.md",
+      "lines": "8-18",
+      "topic": "Build prerequisites",
+      "observation": "The README documents submodule initialization, CMake/make builds, and OpenSSL as a build dependency.",
+      "implication": "A full e2e replay needs a real build gate, not only a source scan or prebuilt local binary.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/README.md#L8"
+    },
+    {
+      "id": "official-test-instructions",
+      "file": "README.md",
+      "lines": "24-42",
+      "topic": "Perl dependency and make check path",
+      "observation": "The README documents Perl dependency installation before running make check.",
+      "implication": "The runner must fail closed when Net::EmptyPort or other Perl-side prerequisites are missing.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/README.md#L24"
+    },
+    {
+      "id": "frame-primitive",
+      "file": "lib/frame.c",
+      "lines": "28-30",
+      "topic": "PATH_CHALLENGE/PATH_RESPONSE frame encoding",
+      "observation": "The frame encoder selects PATH_RESPONSE or PATH_CHALLENGE and copies the 8-byte challenge payload.",
+      "implication": "quicly contains the RFC path-validation frame primitive used by the e2e migration test.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/lib/frame.c#L28"
+    },
+    {
+      "id": "path-validation-state",
+      "file": "lib/quicly.c",
+      "lines": "226-240",
+      "topic": "Path challenge/response state",
+      "observation": "Each path tracks PATH_CHALLENGE scheduling/data and PATH_RESPONSE data.",
+      "implication": "Path validation is represented in connection path state, not only in stateless frame parsing.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/lib/quicly.c#L226"
+    },
+    {
+      "id": "promote-path",
+      "file": "lib/quicly.c",
+      "lines": "2091-2096",
+      "topic": "Path promotion",
+      "observation": "promote_path logs a promote_path event and promotes a validated path index.",
+      "implication": "The e2e test's promote_path log checks are tied to a concrete path switch implementation point.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/lib/quicly.c#L2091"
+    },
+    {
+      "id": "path-challenge-send-logging",
+      "file": "lib/quicly.c",
+      "lines": "5317-5330",
+      "topic": "PATH_CHALLENGE/PATH_RESPONSE send logging",
+      "observation": "Sending path challenge/response frames updates stats and emits path_challenge_send/path_response_send logs.",
+      "implication": "The implementation can expose migration evidence through stats/log events.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/lib/quicly.c#L5317"
+    },
+    {
+      "id": "path-response-validation",
+      "file": "lib/quicly.c",
+      "lines": "6615-6630",
+      "topic": "PATH_RESPONSE receive validation",
+      "observation": "PATH_RESPONSE data is compared against the outstanding PATH_CHALLENGE and path validation is completed when it matches.",
+      "implication": "The e2e path-migration PASS covers the same validation mechanism that decides whether a path can be promoted.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/lib/quicly.c#L6615"
+    },
+    {
+      "id": "disable-active-migration-boundary",
+      "file": "lib/quicly.c",
+      "lines": "7687-7689",
+      "topic": "disable_active_migration policy",
+      "observation": "The receive path respects the peer's disable_active_migration transport parameter after TLS handshake completion.",
+      "implication": "quicly has policy boundaries; implementation support does not mean every peer/path migration is allowed.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/lib/quicly.c#L7687"
+    },
+    {
+      "id": "path-migration-e2e",
+      "file": "t/e2e.t",
+      "lines": "371-430",
+      "topic": "Focused path-migration e2e test",
+      "observation": "The e2e test respawns a UDP forwarder twice, checks two promote_path events, and verifies CID sequence 1 is used for the first path probe in the CID-enabled case.",
+      "implication": "The focused local PASS is migration-specific and stronger than primitive-only evidence.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/t/e2e.t#L371"
+    },
+    {
+      "id": "slow-start-boundary",
+      "file": "t/e2e.t",
+      "lines": "432-546",
+      "topic": "Unrelated full e2e timing caveat",
+      "observation": "The slow-start subtest is a separate congestion-control timing test after path-migration.",
+      "implication": "The observed macOS full-e2e failure should not be reported as a path-migration failure, but it also prevents a full e2e PASS claim.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/t/e2e.t#L432"
+    },
+    {
+      "id": "stats-surface",
+      "file": "include/quicly.h",
+      "lines": "785-790",
+      "topic": "Path stats",
+      "observation": "Public stats include validated paths, validation failures, migration-elicited paths, promoted paths, and closed-no-DCID paths.",
+      "implication": "quicly exposes migration/path state as measurable counters useful for implementation maturity reporting.",
+      "url": "https://github.com/h2o/quicly/blob/ed83c7c7d545a01650651c9523466f561ec5d4bb/include/quicly.h#L785"
+    }
+  ],
+  "reporting_boundary": {
+    "safe_claim": "quicly's focused path-migration e2e subtest passed locally, including CID sequence 1 first path probe evidence, and the repository now has a Linux full-e2e replay gate.",
+    "unsafe_claim": "quicly full t/e2e.t PASS, production H2O deployment continuity, browser handover success, or quic-go-equivalent public AddPath/Probe/Switch control.",
+    "next_non_iphone_gate": "Run harness/scripts/run-quicly-full-e2e-linux.sh on Linux; accept full-e2e promotion only when validation=ok_full_e2e with unit_test_exit=0, prove_exit=0, path_subtest_ok=yes, and cid_seq_check_ok=yes."
+  }
+}

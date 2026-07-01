@@ -3,6 +3,8 @@
 작성일: 2026-06-24
 목적: Chrome/Cronet 계층에서 QUIC Connection Migration을 해석할 때, 구현 primitive와 runtime policy를 구분하기 위한 source-level 근거를 정리한다.
 
+2026-07-01 보강: line-linked Chromium source evidence, Cronet default-disable boundary, Android Cronet policy API, NetLog classifier implication은 [chromium-cronet-policy-boundary-audit-20260701.md](chromium-cronet-policy-boundary-audit-20260701.md)에 추가로 고정했다.
+
 ## 1. 확인한 primary source
 
 | source | 관찰 |

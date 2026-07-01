@@ -59,6 +59,35 @@
 | Chapter 12 부록. 실제 source link와 builder 근거 | 작성 완료 | `chapter-12-reference-and-evidence.md` |
 | Chapter 12 표. builder trigger 위치 | 작성 완료 | `tables/chapter-12-scanner-trigger-map-20260630.md` |
 | Chapter 12 표. 외부 링크 검수 결과 | 작성 완료 | `tables/chapter-12-external-link-check-20260630.md` |
+| 후속 연구 디시전 브리프. iPhone 없이 다음에 할 연구 | 작성 완료 | `../results/non-iphone-next-research-decision-20260630.md` |
+| 후속 연구 gate 재검사. 2026-07-01 non-iPhone gates | 작성 완료 | `../results/non-iphone-gate-rerun-20260701.md` |
+| 후속 연구 bridge synthesis. tracked controlled-public Chrome 결과 통합 | 작성 완료 | `../results/controlled-public-chrome-bridge-synthesis-20260701.md` |
+| 후속 연구 claim readiness. 논문 claim 가능/불가능 판정 | 작성 완료 | `../results/noniphone-claim-readiness-dashboard-20260701.md` |
+| 후속 연구 교수님 decision packet. 미팅용 판단 자료 | 작성 완료 | `../results/noniphone-professor-decision-packet-20260701.md` |
+| 후속 연구 reviewer risk audit. 논문 방어/타당도 리스크 | 작성 완료 | `../results/noniphone-reviewer-risk-audit-20260701.md` |
+| 후속 연구 paper wording guard. 논문 문장 안전장치 | 작성 완료 | `../results/noniphone-paper-wording-guard-20260701.md` |
+| 후속 연구 paper section scaffold. 논문 섹션 배치도 | 작성 완료 | `../results/noniphone-paper-section-scaffold-20260701.md` |
+| quic-go 외 구현체 검수 결과. 교수님 질의 대응용 구현체별 boundary | 작성 완료 | `../results/non-quicgo-implementation-findings-20260701.md` |
+| AWS s2n live runner safety audit. live 실행 전 cleanup/cost/safety boundary | 작성 완료 | `../results/aws-s2n-live-runner-safety-audit-20260701.md` |
+| AWS s2n phase-2 path-change design. forwarding echo 이후 경로변경 실험 설계 | 작성 완료 | `../results/aws-s2n-phase2-path-change-design-20260701.md` |
+| AWS s2n phase-2 rebinding runner audit. NAT-rebinding proxy runner 구현/경계 검수 | 작성 완료 | `../results/aws-s2n-phase2-rebinding-runner-audit-20260701.md` |
+| AWS s2n phase-2 artifact classifier contract. live artifact PASS/FAIL 판정 기준 | 작성 완료 | `../results/aws-s2n-phase2-artifact-classifier-contract-20260701.md` |
+| controlled-public Chrome artifact classifier contract. public Chrome row claim 판정 기준 | 작성 완료 | `../results/controlled-public-chrome-artifact-classifier-contract-20260701.md` |
+| controlled-public Chrome contract application audit. 기존 public Chrome row contract 적용 결과 | 작성 완료 | `../results/controlled-public-chrome-contract-application-audit-20260701.md` |
+| quic-go 외 구현체 실행 깊이 감사. 왜 quic-go만 가장 깊은 positive control인지 | 작성 완료 | `../results/non-quicgo-execution-depth-audit-20260701.md` |
+| MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
+| MsQuic rebind/path-validation packet. selected v4/v6 runtime-test PASS와 app/browser/LB claim boundary | 작성 완료 | `../results/msquic-rebind-pathvalidation-packet-20260701.md` |
+| ngtcp2 migration API boundary audit. C library direct migration API와 browser/deployment claim boundary | 작성 완료 | `../results/ngtcp2-migration-api-boundary-audit-20260701.md` |
+| ngtcp2 runtime trial packet. 공식 HTTP/3 example migration runner의 local runtime PASS와 browser/deployment claim boundary | 작성 완료 | `../results/ngtcp2-runtime-trial-packet-20260701.md` |
+| Quinn migration API boundary audit. Rust stack endpoint rebind와 quic-go식 per-connection active control 경계 | 작성 완료 | `../results/quinn-migration-api-boundary-audit-20260701.md` |
+| Quinn rebind runtime packet. endpoint-wide rebind runtime PASS와 browser/HTTP/3 application/deployment claim boundary | 작성 완료 | `../results/quinn-rebind-runtime-packet-20260701.md` |
+| XQUIC full-suite Linux audit. NAT rebinding demo와 Linux replay gate 경계 | 작성 완료 | `../results/xquic-full-suite-linux-audit-20260701.md` |
+| mvfst focused Linux runner audit. production 후보 focused BUCK test 실행 gate | 작성 완료 | `../results/mvfst-focused-linux-runner-audit-20260701.md` |
+| quicly full-e2e Linux runner audit. focused PASS와 full-e2e 승격 gate | 작성 완료 | `../results/quicly-full-e2e-linux-audit-20260701.md` |
+| Chromium/Cronet policy boundary audit. browser client source hook과 runtime policy claim 경계 | 작성 완료 | `../results/chromium-cronet-policy-boundary-audit-20260701.md` |
+| Firefox/Neqo browser boundary audit. Neqo transport maturity와 Firefox runtime handover claim 경계 | 작성 완료 | `../results/firefox-neqo-browser-boundary-audit-20260701.md` |
+| Firefox desktop runtime trial packet. Firefox runtime row 승격에 필요한 local Neqo/public H3/active path-change evidence gate | 작성 완료 | `../results/firefox-desktop-runtime-trial-packet-20260701.md` |
+| CDN edge CM boundary audit. CloudFront/Cloudflare edge와 origin end-to-end claim 경계 | 작성 완료 | `../results/cdn-edge-cm-boundary-audit-20260701.md` |
 
 ## 폴더 운영 방식
 
@@ -75,6 +104,10 @@
 | 원본 | 역할 |
 | --- | --- |
 | `data/implementation-survey.csv` | Chapter 1 구현체별 원본 조사표 |
+| `docs/results/reproducibility-manifest-20260630.md` | 2026-06-30 구현체 재검수/runner까지 반영한 public-safe reproducibility manifest |
+| `data/reproducibility-manifest-20260630.json` | 위 manifest의 machine-readable JSON |
+| `docs/results/sanitized-evidence-bundle-20260630.md` | claim별 근거 문서, runner/tool, do-not-claim boundary를 묶은 public-safe evidence bundle |
+| `data/sanitized-evidence-bundle-20260630.json` | 위 evidence bundle의 machine-readable JSON |
 | `docs/research-report/reference-link-catalog-20260630.md` | 전체 외부 참고자료 링크 카탈로그 |
 | `docs/research-report/scanner-trigger-audit-index-20260630.md` | 전체 scanner/classifier/builder trigger 감사 인덱스 |
 | `tools/scan_implementation_evidence.py` | 구현체 repo에서 CM 관련 evidence 후보를 찾는 scanner |
@@ -88,11 +121,48 @@
 | `repro/quic-go-min-repro/` | Chapter 3 quic-go positive-control 재현 코드 |
 | `harness/scripts/run-local-quic-go.sh` | Chapter 3 local quic-go 재현 wrapper |
 | `harness/scripts/validate-quic-go-artifacts.sh` | Chapter 3 artifact validator |
+| `harness/scripts/run-nginx-quic-active-migration-demo.sh` | Chapter 3 nginx QUIC active migration runtime demo |
+| `harness/scripts/run-quicly-e2e-path-migration-check.sh` | Chapter 3 quicly focused e2e path-migration check |
+| `harness/scripts/run-quicly-full-e2e-linux.sh` | Chapter 3 quicly Linux full-e2e replay gate |
+| `tools/build_chromium_cronet_policy_boundary_audit.py` | Chapter 1/5 Chromium/Cronet source policy boundary audit builder |
+| `tools/build_firefox_neqo_browser_boundary_audit.py` | Chapter 1/5 Firefox-adjacent Neqo transport maturity와 Firefox runtime claim boundary audit builder |
+| `tools/build_firefox_desktop_runtime_trial_packet.py` | Chapter 5/7 Firefox desktop runtime trial packet builder |
+| `tools/build_msquic_rebind_pathvalidation_packet.py` | Chapter 1 MsQuic selected v4/v6 rebind/path-validation runtime-test packet builder |
+| `harness/scripts/run-msquic-rebind-pathvalidation-demo.sh` | MsQuic `msquictest` selected v4/v6 rebind/path-validation tests를 fail-closed로 재실행하는 runner |
+| `tools/build_quinn_migration_api_boundary_audit.py` | Chapter 1 Quinn endpoint rebind/API boundary audit builder |
+| `tools/build_quinn_rebind_runtime_packet.py` | Chapter 1/3 Quinn endpoint-rebind runtime packet builder |
+| `harness/scripts/run-quinn-rebind-runtime-demo.sh` | Quinn upstream `rebind_recv`와 `quinn-proto` migration test를 fail-closed로 재실행하는 runner |
+| `tools/build_ngtcp2_runtime_trial_packet.py` | Chapter 1 ngtcp2 example runtime trial packet builder |
+| `harness/scripts/run-ngtcp2-example-migration-demo.sh` | ngtcp2 osslclient/osslserver HTTP/3 migration runtime runner |
+| `tools/build_cdn_edge_cm_boundary_audit.py` | Chapter 4 CloudFront/Cloudflare CDN edge claim boundary audit builder |
+| `harness/scripts/run-haproxy-http3-negative-control.sh` | Chapter 4 HAProxy HTTP/3 negative-control runner |
+| `harness/scripts/check-nginx-quic-bpf-readiness.sh` | Chapter 4 nginx Linux `quic_bpf` production-routing readiness gate |
+| `harness/scripts/run-nginx-quic-bpf-linux-demo.sh` | Chapter 4 nginx Linux `quic_bpf on;` active migration runner |
+| `docs/results/nginx-quic-bpf-readiness-20260630.md` | Chapter 4 nginx local runtime demo와 Linux `quic_bpf` 검증 경계 |
+| `docs/results/nginx-quic-bpf-linux-runner-20260630.md` | Chapter 4 nginx `quic_bpf` Linux runner와 macOS `linux_required` blocked result |
+| `harness/scripts/openlitespeed-runtime-preflight.sh` | Chapter 4 OpenLiteSpeed production-like runtime readiness gate |
+| `harness/scripts/run-openlitespeed-active-migration-demo.sh` | Chapter 4 OpenLiteSpeed Linux/EC2 active-migration runtime runner |
+| `tools/report_artifact_storage.py` | Chapter 4 OpenLiteSpeed runtime 전 local artifact/disk usage report |
+| `tools/audit_artifact_cleanup_safety.py` | Chapter 4 cleanup 후보가 기존 CSV 근거를 건드리는지 점검하는 safety audit |
+| `tools/plan_artifact_cleanup.py` | Chapter 4 cleanup dry-run planner; 삭제 없이 회수 가능 용량만 계산 |
+| `docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md` | Chapter 4 OpenLiteSpeed production-like follow-up source feasibility |
+| `docs/results/openlitespeed-runtime-preflight-20260630.md` | Chapter 4 OpenLiteSpeed runtime preflight result |
+| `docs/results/openlitespeed-active-migration-runner-20260630.md` | Chapter 4 OpenLiteSpeed runtime runner와 local blocked result |
+| `docs/results/artifact-storage-report-20260630-openlitespeed-preflight.md` | Chapter 4 OpenLiteSpeed runtime 전 local artifact storage report |
+| `docs/results/artifact-cleanup-safety-audit-20260630-openlitespeed-preflight.md` | Chapter 4 cleanup safety audit; referenced/planned raw artifact 보호 |
+| `docs/results/artifact-cleanup-dry-run-20260630-openlitespeed-preflight.md` | Chapter 4 cleanup dry-run; 안전 후보만으로는 30GiB 목표 미달 |
 | `docs/research-report/tables/chapter-03-scanner-trigger-map-20260630.md` | Chapter 3 quic-go positive-control trigger 추적표 |
 | `repro/quic-go-min-repro/internal/common/aws_nlb_cid.go` | Chapter 4 AWS NLB routable CID generator |
 | `harness/scripts/run-aws-nlb-quic-data-plane.sh` | Chapter 4 AWS NLB positive/negative control harness |
+| `harness/scripts/check-s2n-nlb-live-readiness.sh` | Chapter 4 s2n-quic AWS NLB live 실험 readiness gate |
+| `harness/scripts/run-aws-s2n-nlb-live-data-plane.sh` | Chapter 4 s2n-quic AWS NLB dedicated live runner; 현재 AWS identity gate에서 fail-closed |
+| `tools/audit_s2n_active_migration_feasibility.py` | Chapter 4 s2n-quic public active migration API boundary 감사 도구 |
+| `docs/results/s2n-nlb-live-readiness-20260630.md` | Chapter 4 s2n-quic AWS NLB live readiness 결과와 현재 blocker |
+| `docs/results/aws-s2n-nlb-live-runner-20260630.md` | Chapter 4 s2n live runner 구현, local binary smoke, blocked artifact |
+| `docs/results/s2n-active-migration-api-audit-20260630.md` | Chapter 4 s2n focused migration test PASS와 public active trigger API 부재 근거 |
 | `docs/research-report/tables/chapter-04-scanner-trigger-map-20260630.md` | Chapter 4 AWS NLB/H3 deployment trigger 추적표 |
 | `tools/check_browser_cm_observability.py` | Chapter 5 browser observability readiness scanner |
+| `docs/results/safari-webdriver-session-readiness-20260630.md` | Chapter 5 Safari WebDriver binary/session readiness 분리 결과 |
 | `tools/classify_chrome_h3_artifacts.py` | Chapter 5 Chrome local H3/rebinding artifact classifier |
 | `tools/classify_controlled_public_h3_network_change.py` | Chapter 5 controlled public-origin network-change classifier |
 | `repro/quic-go-min-repro/cmd/udprebindproxy/main.go` | Chapter 6 local UDP NAT rebinding proxy |
@@ -111,11 +181,61 @@
 | `tools/summarize_chrome_rebinding_buffered_media_matrix.py` | Chapter 11 local buffered media summarizer |
 | `tools/build_literature_claim_positioning.py` | Chapter 12 literature-to-claim positioning builder |
 | `docs/results/chapter1-implementation-maturity-methodology-20260630.md` | Chapter 1 상세 방법론 원본 |
-| `docs/results/local-implementation-test-results.md` | 8개 구현체 local test 결과 |
+| `docs/results/local-implementation-test-results.md` | 초기 8개 구현체 local test 결과 |
+| `docs/results/implementation-rerun-results-20260630.md` | 2026-06-30 구현체 fresh rerun/demo/partial 결과 |
+| `docs/results/quicly-e2e-path-migration-20260630.md` | quicly focused e2e path-migration result와 full e2e caveat |
+| `docs/results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused e2e PASS와 Linux full-e2e replay runner claim boundary |
+| `docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md` | s2n-quic AWS NLB CID provider proof 복원 및 rerun 결과 |
+| `docs/results/lsquic-preferred-address-app-demo-20260630.md` | LSQUIC preferred-address HTTP/3 app demo 결과 |
+| `docs/results/lsquic-nat-rebinding-app-demo-20260630.md` | LSQUIC local UDP proxy NAT rebinding HTTP/3 app demo 결과 |
+| `docs/results/nginx-quic-active-migration-runtime-20260630.md` | nginx HTTP/3 server active-client-migration runtime demo 결과 |
+| `docs/results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun 결과 |
+| `docs/results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control boundary |
+| `docs/results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
+| `tools/check_mvfst_migration_test_readiness.py` | mvfst focused migration test target map과 local blocker를 생성하는 readiness 도구 |
+| `docs/results/mvfst-migration-test-readiness-20260630.md` | mvfst latest HEAD focused migration/path test case 106개와 현재 local blocker |
+| `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst focused BUCK target 3개와 Linux runner claim boundary |
 | `docs/results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |
 | `docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md` | Chapter 8 full-response downlink public handover result |
 | `docs/results/controlled-public-range-retry-iphone-usb-handover-20260629.md` | Chapter 9 byte-range retry public handover result |
 | `docs/results/iphone-usb-upload-retry-pilot-20260626.md` | Chapter 10 upload retry public handover result |
+| `docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md` | Chapter 10 fresh non-iPhone Chrome desktop upload local control |
 | `docs/results/streaming-workload-case-analysis-20260629.md` | Chapter 11 streaming workload synthesis |
 | `docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md` | Chapter 11 buffered media local control |
+| `docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md` | Chapter 11 fresh non-iPhone Chrome desktop media local control |
+| `docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md` | Chapter 11 fresh non-iPhone Chrome desktop music-like segment local control |
+| `docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md` | Chapter 11 fresh non-iPhone Chrome desktop buffered-media QoE local control |
+| `docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md` | Chapter 9-11 non-iPhone workload continuity/QoE synthesis |
+| `docs/results/noniphone-public-workload-trial-packet-20260701.md` | Chapter 9-11 non-iPhone controlled-public workload trial packet |
+| `docs/results/controlled-public-origin-workload-deploy-packet-20260701.md` | Chapter 7/9-11 controlled public H3 origin deployment packet for non-iPhone workloads |
+| `docs/results/noniphone-desktop-path-change-readiness-20260701.md` | Chapter 7/9-11 non-iPhone desktop active path-change readiness |
+| `docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md` | Chapter 9 fresh non-iPhone Chrome desktop range local control |
+| `docs/results/user-provided-public-origin-readiness-20260630.md` | Chapter 7 user-provided public origin 후보의 HTTPS/H3 Alt-Svc readiness 결과 |
+| `docs/results/controlled-public-chrome-bridge-synthesis-20260701.md` | Chapter 7-9 tracked controlled-public Chrome validation row 18개의 bridge gap synthesis |
+| `docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md` | Chapter 7-11 future controlled-public Chrome row의 baseline/strong CM/recovery/negative-control 판정 기준 |
+| `docs/results/controlled-public-chrome-contract-application-audit-20260701.md` | Chapter 7-11 기존 controlled-public Chrome row 18개에 contract를 적용한 claim class 감사 |
 | `docs/results/literature-claim-positioning-20260629.md` | Chapter 12 literature claim positioning |
+| `docs/results/non-iphone-research-gap-plan-20260630.md` | iPhone 없이 이어갈 후속 연구 공백 보강 계획 |
+| `docs/results/non-iphone-next-research-decision-20260630.md` | evidence bundle 기준 다음 non-iPhone 연구 트랙 우선순위와 blocker |
+| `docs/results/non-iphone-gate-rerun-20260701.md` | 2026-07-01 AWS/Safari/public-origin non-iPhone gate 재검사 결과 |
+| `docs/results/noniphone-claim-readiness-dashboard-20260701.md` | 현재 evidence로 허용 가능한 논문 claim과 막아야 할 public/browser/AWS claim 분리 |
+| `docs/results/noniphone-professor-decision-packet-20260701.md` | 교수님 미팅에서 scope/positive-result gate/Safari appendix 결정을 받을 수 있는 한국어 decision packet |
+| `docs/results/noniphone-reviewer-risk-audit-20260701.md` | 리뷰어가 공격할 수 있는 overclaim/external validity/AWS/browser/Safari/QoE 리스크와 방어 문장 |
+| `docs/results/noniphone-paper-wording-guard-20260701.md` | abstract/introduction/method/results/limitations용 한국어/영어 safe wording과 금지 문장 |
+| `docs/results/noniphone-paper-section-scaffold-20260701.md` | 현재 evidence와 wording guard를 abstract/introduction/method/results/limitations 섹션에 배치하는 논문 구조 scaffold |
+| `docs/results/non-quicgo-implementation-findings-20260701.md` | quic-go를 제외한 17개 구현체/스택의 검수 결과와 claim boundary |
+| `docs/results/non-quicgo-execution-depth-audit-20260701.md` | quic-go 외 구현체의 실행 깊이 차이, 남은 deepening 후보, AWS gate 최신 상태 |
+| `docs/results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic public API, NAT rebinding tests, QUIC-aware LB deployment boundary를 source link로 고정 |
+| `docs/results/msquic-rebind-pathvalidation-packet-20260701.md` | MsQuic selected v4/v6 `RebindPort`/`RebindAddr`/`PathValidationTimeout`/`PathValidationLastPathClose` runtime-test PASS와 claim boundary를 고정 |
+| `docs/results/ngtcp2-runtime-trial-packet-20260701.md` | ngtcp2 example client/server local runtime PASS와 browser/deployment claim boundary를 고정 |
+| `docs/results/quinn-migration-api-boundary-audit-20260701.md` | Quinn server migration policy, endpoint rebind, preferred-address, path validation, test evidence와 quic-go API shape 차이를 고정 |
+| `docs/results/quinn-rebind-runtime-packet-20260701.md` | Quinn endpoint-wide rebind runtime PASS, proto migration/path-validation evidence, browser/HTTP/3 application/deployment claim boundary를 고정 |
+| `docs/results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo PASS, macOS Werror blocker, Linux full-suite replay runner claim boundary |
+| `docs/results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst source/test map을 Linux focused BUCK runner로 재현 가능하게 고정 |
+| `docs/results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused path-migration e2e PASS를 full-e2e Linux gate와 분리해 고정 |
+| `docs/results/chromium-cronet-policy-boundary-audit-20260701.md` | Chromium client migration hooks, NetLog taxonomy, Cronet default-disable policy boundary를 source link로 고정 |
+| `docs/results/firefox-neqo-browser-boundary-audit-20260701.md` | Neqo source/test migration maturity와 Firefox browser runtime handover proof를 분리해 고정 |
+| `docs/results/firefox-desktop-runtime-trial-packet-20260701.md` | Firefox desktop runtime row 승격에 필요한 local Neqo/public H3/active path-change trial gate를 고정 |
+| `docs/results/cdn-edge-cm-boundary-audit-20260701.md` | CloudFront viewer-edge HTTP/3 CM과 Cloudflare user-edge HTTP/3를 origin end-to-end CM과 분리 |
+| `docs/results/aws-s2n-live-runner-safety-audit-20260701.md` | AWS NLB+s2n live runner의 fail-closed gate, 임시 리소스 inventory, cleanup coverage, risk boundary |
+| `docs/results/aws-s2n-phase2-path-change-design-20260701.md` | AWS NLB+s2n forwarding echo 이후 NAT-rebinding proxy, Linux namespace/SNAT, test-IO rebind, public API/fork variant의 claim boundary |

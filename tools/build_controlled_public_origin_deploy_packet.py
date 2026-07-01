@@ -14,6 +14,7 @@ from pathlib import Path
 
 DEFAULT_OUTPUT = "docs/results/controlled-public-origin-deploy-packet-20260624.md"
 DEFAULT_PACKAGE_SCRIPT = "harness/scripts/package-quic-go-ec2.sh"
+DEFAULT_WORKLOAD_PACKET = "docs/results/noniphone-public-workload-trial-packet-20260701.md"
 
 
 @dataclass
@@ -28,6 +29,7 @@ class DeployPacket:
     run_id: str
     artifact_dir: str
     expected_requests: int
+    workload_packet: str
     public_safe: bool
 
 
@@ -95,6 +97,7 @@ def build_packet(args: argparse.Namespace) -> DeployPacket:
         run_id=args.run_id,
         artifact_dir=f"artifacts/{args.run_id}",
         expected_requests=args.expected_requests,
+        workload_packet=args.workload_packet,
         public_safe=True,
     )
 
@@ -125,6 +128,7 @@ def emit_markdown(packet: DeployPacket) -> str:
         f"| remote dir | `{packet.remote_dir}` |",
         f"| baseline run id | `{packet.run_id}` |",
         f"| expected requests | `{packet.expected_requests}` |",
+        f"| workload trial packet | `{packet.workload_packet}` |",
         f"| public safe | `{'yes' if packet.public_safe else 'no'}` |",
         "",
         "## 1. Build Local Package",
@@ -196,19 +200,56 @@ def emit_markdown(packet: DeployPacket) -> str:
         "",
         "## 5. Run Baseline Browser Trial",
         "",
-        "Use the generated final handover trial packet for the exact server/client commands:",
+        "First prove that the origin serves application HTTP/3 before attempting path-change workloads:",
         "",
         "```bash",
-        "python3 tools/build_final_handover_trial_packet.py --use-local-config --redact-sensitive --output docs/results/final-handover-trial-packet-20260624.md",
+        "cd repro/quic-go-min-repro",
+        f"RUN_ID={packet.run_id} \\",
+        f"ARTIFACT_DIR={packet.artifact_dir} \\",
+        "PUBLIC_ORIGIN_URL=\"${PUBLIC_ORIGIN_BOOTSTRAP_URL:-$PUBLIC_ORIGIN_BASE/browser-slow?duration_ms=3000&chunks=3&label=public-bootstrap}\" \\",
+        "SECOND_URL=\"${PUBLIC_ORIGIN_BASE:?set PUBLIC_ORIGIN_BASE like https://h3.example.com}/browser-slow?duration_ms=3000&chunks=3&label=public-h3-baseline\" \\",
+        f"CONTROLLED_PUBLIC_EXPECTED_REQUESTS={packet.expected_requests} \\",
+        "REQUIRE_H3_ALT_SVC=1 \\",
+        "RUN_CONTROLLED_PUBLIC_CLASSIFIER=1 \\",
+        "CHROME_RUNNER=cdp \\",
+        "CHROME_HOLD_SECONDS=25 \\",
+        "CHROME_TIMEOUT_SECONDS=45 \\",
+        "./scripts/run-controlled-public-h3-browser-baseline.sh",
         "```",
         "",
-        "After the browser baseline finishes, register only if the artifact bundle and final-countable gates pass:",
+        "Then bind the baseline summary path for active controlled-public workload trials:",
         "",
         "```bash",
-        f"python3 tools/check_final_handover_trial_artifact_bundle.py --trial-id {packet.run_id} --artifact-dir repro/quic-go-min-repro/{packet.artifact_dir} --require-final-countable --require-complete",
-        f"python3 tools/append_final_handover_result_row.py --trial-id {packet.run_id} --artifact-dir repro/quic-go-min-repro/{packet.artifact_dir} --require-final-countable --require-artifact-bundle --apply",
-        "python3 tools/audit_final_browser_handover_trials.py --output docs/results/final-browser-handover-trial-audit-20260624.md",
-        "python3 tools/verify_research_bundle.py --output docs/results/research-verification-report-20260624.md",
+        f"export CONTROLLED_PUBLIC_BASELINE_SUMMARY=\"{packet.artifact_dir}/results/controlled-public-h3-baseline-summary.json\"",
+        "```",
+        "",
+        "## 6. Run non-iPhone Public Workload Packet",
+        "",
+        "Use the non-iPhone public workload packet for the exact range, upload, buffered-video, and music-like commands:",
+        "",
+        "```bash",
+        f"open {packet.workload_packet}",
+        "# Execute the packet order only after the baseline summary is PASS and a non-iPhone NETWORK_CHANGE_CMD is set.",
+        "```",
+        "",
+        "Strong CM acceptance for each active row requires all of the following evidence:",
+        "",
+        "1. application task completion is true for the workload-specific DOM metric",
+        "2. client active path changed according to route snapshots",
+        "3. server target H3 remote tuple count changed",
+        "4. server qlog records PATH_CHALLENGE and PATH_RESPONSE",
+        "5. Chrome target QUIC session count is one",
+        "",
+        "## 7. Register Results Only After Classification",
+        "",
+        "After each public workload finishes, classify the row and commit only public-safe summary documents:",
+        "",
+        "```bash",
+        "python3 tools/classify_controlled_public_h3_network_change.py \\",
+        "  --artifact-dir repro/quic-go-min-repro/artifacts/<trial-id> \\",
+        "  --server-artifact-dir repro/quic-go-min-repro/artifacts/<trial-id>-server \\",
+        "  --output docs/results/<trial-id>-validation.md \\",
+        "  --json-output data/<trial-id>-validation.json",
         "```",
         "",
         "## Safe Handling",
@@ -216,6 +257,7 @@ def emit_markdown(packet: DeployPacket) -> str:
         "- Do not commit `harness/config/controlled-public-origin.env`.",
         "- Do not commit certificate files, private keys, SSH keys, qlogs, keylogs, pcaps, NetLogs, or raw artifacts.",
         "- If the origin host is not AWS-managed, this packet still applies as long as TCP/UDP 443 and WebPKI TLS are available.",
+        "- This packet is a deployment/run plan. It is not evidence that a public workload or browser Connection Migration trial has succeeded.",
     ]
     return "\n".join(lines).rstrip() + "\n"
 
@@ -244,7 +286,8 @@ def main() -> int:
     parser.add_argument("--origin-host-placeholder", default="<origin-host-or-ip>")
     parser.add_argument("--remote-dir", default="/home/ec2-user/quic-go-min-repro")
     parser.add_argument("--run-id", default="controlled-public-chrome-h3-baseline-001")
-    parser.add_argument("--expected-requests", type=int, default=4)
+    parser.add_argument("--expected-requests", type=int, default=2)
+    parser.add_argument("--workload-packet", default=DEFAULT_WORKLOAD_PACKET)
     args = parser.parse_args()
 
     packet = build_packet(args)

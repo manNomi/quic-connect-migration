@@ -1,0 +1,174 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "implementation": "mvfst",
+  "source_commit": "d9d65a3ab3e6ffba785d6605afe6f05b8db015ec",
+  "source_repository": "https://github.com/facebook/mvfst",
+  "local_clone": {
+    "path": "/private/tmp/quic-cm-scan-repos/mvfst",
+    "exists": true,
+    "commit": "d9d65a3ab3e6ffba785d6605afe6f05b8db015ec",
+    "matches_audit_commit": "yes"
+  },
+  "summary": {
+    "source_evidence_items": 10,
+    "focused_target_count": 3,
+    "test_cases_observed": 106,
+    "high_value_test_cases_observed": 78,
+    "readiness_validation": "blocked",
+    "linux_runner_ready": "yes",
+    "paper_use": "Use mvfst as production-relevant source/test maturity evidence with a packaged Linux focused-test gate; do not claim local mvfst execution until the runner produces an ok artifact.",
+    "interpretation": "mvfst has strong migration-specific source/test structure, but the current study still lacks executed Linux Buck/getdeps results."
+  },
+  "readiness_input": {
+    "path": "data/mvfst-migration-test-readiness-20260630.json",
+    "exists": true,
+    "input_present": true,
+    "source_commit": "d9d65a3ab3e6ffba785d6605afe6f05b8db015ec",
+    "remote_head_at_readiness": "d9d65a3ab3e6ffba785d6605afe6f05b8db015ec",
+    "validation": "blocked",
+    "blocked_reasons": [
+      "disk_below_threshold",
+      "buck2_missing",
+      "focused_files_not_directly_exposed_by_current_cmake"
+    ],
+    "total_test_cases_observed": 106,
+    "total_high_value_test_cases_observed": 78,
+    "focused_target_count": 3,
+    "focused_targets": [
+      {
+        "kind": "path-manager",
+        "file": "quic/state/test/QuicPathManagerTest.cpp",
+        "buck_target": "quic/state/test:quic_path_manager_test",
+        "test_case_count": 55,
+        "high_value_test_count": 27
+      },
+      {
+        "kind": "client-active-migration",
+        "file": "quic/client/test/QuicClientTransportLiteMigrationTest.cpp",
+        "buck_target": "quic/client/test:QuicClientTransportLiteMigrationTest",
+        "test_case_count": 14,
+        "high_value_test_count": 14
+      },
+      {
+        "kind": "server-passive-migration",
+        "file": "quic/server/test/QuicServerTransportMigrationTest.cpp",
+        "buck_target": "quic/server/test:QuicServerTransportMigrationTest",
+        "test_case_count": 37,
+        "high_value_test_count": 37
+      }
+    ]
+  },
+  "linux_runner": {
+    "path": "harness/scripts/run-mvfst-focused-migration-tests-linux.sh",
+    "exists": true,
+    "required_tokens_present": true,
+    "token_status": {
+      "linux_gate": true,
+      "commit_gate": true,
+      "buck_mode": true,
+      "focused_targets": true,
+      "buck_command": true,
+      "getdeps_fallback": true,
+      "public_safe_readme": true,
+      "paper_ready_boundary": true
+    }
+  },
+  "evidence": [
+    {
+      "id": "path-manager-purpose",
+      "file": "quic/state/QuicPathManager.h",
+      "lines": "117-121",
+      "topic": "Dedicated path manager",
+      "observation": "QuicPathManager is documented as managing QUIC path probing and connection migration functionality.",
+      "implication": "mvfst treats migration/path probing as a first-class state-management concern.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/state/QuicPathManager.h#L117"
+    },
+    {
+      "id": "client-start-path-probe",
+      "file": "quic/client/QuicClientTransportLite.cpp",
+      "lines": "1972-2064",
+      "topic": "Client active path probe",
+      "observation": "startPathProbe checks active-migration support, handshake state, socket binding, address family, adds a path, schedules PATH_CHALLENGE, and assigns a destination CID.",
+      "implication": "mvfst has an explicit client active-probe flow that is richer than passive rebinding only.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/client/QuicClientTransportLite.cpp#L1972"
+    },
+    {
+      "id": "client-migrate-connection",
+      "file": "quic/client/QuicClientTransportLite.cpp",
+      "lines": "2071-2137",
+      "topic": "Client active migration",
+      "observation": "migrateConnection switches the current path, optionally resets congestion/RTT, emits qlog/stat migration hooks, and sends a ping to trigger migration.",
+      "implication": "The client transport has an active path switch execution path.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/client/QuicClientTransportLite.cpp#L2071"
+    },
+    {
+      "id": "server-passive-migration",
+      "file": "quic/server/state/ServerStateMachine.cpp",
+      "lines": "812-878",
+      "topic": "Server passive migration state machine",
+      "observation": "Server-side migration handles validated/fallback paths, NAT rebinding detection, qlog update, congestion state, and current path switch.",
+      "implication": "mvfst has server-side passive migration logic that must be tested separately from client active migration.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/server/state/ServerStateMachine.cpp#L812"
+    },
+    {
+      "id": "buck-path-manager-target",
+      "file": "quic/state/test/BUCK",
+      "lines": "220-224",
+      "topic": "Focused BUCK target",
+      "observation": "BUCK defines quic_path_manager_test using QuicPathManagerTest.cpp.",
+      "implication": "The path-manager primitive tests can be addressed as a focused target on a Buck-capable host.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/state/test/BUCK#L220"
+    },
+    {
+      "id": "buck-client-migration-target",
+      "file": "quic/client/test/BUCK",
+      "lines": "101-105",
+      "topic": "Focused BUCK target",
+      "observation": "BUCK defines QuicClientTransportLiteMigrationTest using QuicClientTransportLiteMigrationTest.cpp.",
+      "implication": "Client active migration can be tested without running the entire mvfst suite if Buck is available.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/client/test/BUCK#L101"
+    },
+    {
+      "id": "buck-server-migration-target",
+      "file": "quic/server/test/BUCK",
+      "lines": "103-108",
+      "topic": "Focused BUCK target",
+      "observation": "BUCK defines QuicServerTransportMigrationTest using QuicServerTransportMigrationTest.cpp.",
+      "implication": "Server passive migration can be tested as a focused target.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/server/test/BUCK#L103"
+    },
+    {
+      "id": "path-manager-test-cases",
+      "file": "quic/state/test/QuicPathManagerTest.cpp",
+      "lines": "250-299",
+      "topic": "PATH_CHALLENGE primitive tests",
+      "observation": "Tests cover challenge lookup and challenge preparation, including nonexistent and already-validated path cases.",
+      "implication": "Focused path-manager coverage includes path-validation primitives that underpin migration.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/state/test/QuicPathManagerTest.cpp#L250"
+    },
+    {
+      "id": "client-migration-test-cases",
+      "file": "quic/client/test/QuicClientTransportLiteMigrationTest.cpp",
+      "lines": "181-287",
+      "topic": "Client path probe and migration tests",
+      "observation": "Tests cover path probe success with and without migration, current-path switch, and probe timeout.",
+      "implication": "Focused client tests exercise the active probe/migrate boundary directly.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/client/test/QuicClientTransportLiteMigrationTest.cpp#L181"
+    },
+    {
+      "id": "server-nat-rebinding-test-cases",
+      "file": "quic/server/test/QuicServerTransportMigrationTest.cpp",
+      "lines": "1148-1263",
+      "topic": "Server NAT rebinding tests",
+      "observation": "Tests include client port-change NAT rebinding and client address-change NAT rebinding cases.",
+      "implication": "Focused server tests cover passive migration and NAT rebinding behavior.",
+      "url": "https://github.com/facebook/mvfst/blob/d9d65a3ab3e6ffba785d6605afe6f05b8db015ec/quic/server/test/QuicServerTransportMigrationTest.cpp#L1148"
+    }
+  ],
+  "reporting_boundary": {
+    "safe_claim": "mvfst has dedicated path manager, client active probe/migration, server passive migration/NAT rebinding logic, focused BUCK targets, and 106 observed migration/path-related test cases in the readiness map.",
+    "unsafe_claim": "Local mvfst build/test PASS, browser handover success, production Meta deployment behavior, or equal controllability to the quic-go AddPath/Probe/Switch positive control.",
+    "next_non_iphone_gate": "Run harness/scripts/run-mvfst-focused-migration-tests-linux.sh on a Linux host with buck2 and enough disk; accept only validation=ok with all three focused BUCK targets exiting 0."
+  }
+}

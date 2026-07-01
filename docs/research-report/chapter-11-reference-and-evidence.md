@@ -57,10 +57,24 @@
 | [docs/results/chrome-h3-rebinding-media-segment-pilot-20260629.md](../results/chrome-h3-rebinding-media-segment-pilot-20260629.md) | initial media segment pilot |
 | [docs/results/chrome-h3-rebinding-media-segment-replication-20260629.md](../results/chrome-h3-rebinding-media-segment-replication-20260629.md) | video-like segment replication |
 | [data/chrome-h3-rebinding-media-segment-replication-20260629.csv](../../data/chrome-h3-rebinding-media-segment-replication-20260629.csv) | video-like media CSV |
+| [docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md](../results/chrome-desktop-noniphone-media-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop media local control |
+| [data/chrome-desktop-noniphone-media-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-media-local-refresh-20260630.csv) | fresh media local control CSV |
 | [docs/results/chrome-h3-rebinding-music-like-media-control-20260629.md](../results/chrome-h3-rebinding-music-like-media-control-20260629.md) | music-like segment control |
 | [data/chrome-h3-rebinding-music-like-media-control-20260629.csv](../../data/chrome-h3-rebinding-music-like-media-control-20260629.csv) | music-like media CSV |
+| [docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md](../results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md) | fresh non-iPhone Chrome desktop music-like local control |
+| [data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv](../../data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv) | fresh music-like local control CSV |
 | [docs/results/chrome-h3-rebinding-buffered-media-control-20260629.md](../results/chrome-h3-rebinding-buffered-media-control-20260629.md) | buffered playback control |
 | [data/chrome-h3-rebinding-buffered-media-control-20260629.csv](../../data/chrome-h3-rebinding-buffered-media-control-20260629.csv) | buffered playback CSV |
+| [docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md](../results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md) | fresh non-iPhone Chrome desktop buffered-media QoE local control |
+| [data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv](../../data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv) | fresh buffered-media QoE local control CSV |
+| [docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md](../results/noniphone-workload-qoe-continuity-synthesis-20260701.md) | non-iPhone workload continuity/QoE synthesis |
+| [data/noniphone-workload-qoe-continuity-synthesis-20260701.csv](../../data/noniphone-workload-qoe-continuity-synthesis-20260701.csv) | normalized workload synthesis CSV |
+| [docs/results/noniphone-public-workload-trial-packet-20260701.md](../results/noniphone-public-workload-trial-packet-20260701.md) | non-iPhone public workload trial packet |
+| [data/noniphone-public-workload-trial-packet-20260701.json](../../data/noniphone-public-workload-trial-packet-20260701.json) | structured public workload trial packet |
+| [docs/results/controlled-public-origin-workload-deploy-packet-20260701.md](../results/controlled-public-origin-workload-deploy-packet-20260701.md) | controlled public H3 origin deployment packet for the non-iPhone workload trial |
+| [data/controlled-public-origin-workload-deploy-packet-20260701.json](../../data/controlled-public-origin-workload-deploy-packet-20260701.json) | structured public origin workload deployment packet |
+| [docs/results/noniphone-desktop-path-change-readiness-20260701.md](../results/noniphone-desktop-path-change-readiness-20260701.md) | non-iPhone desktop active path-change readiness before public workload trials |
+| [data/noniphone-desktop-path-change-readiness-20260701.json](../../data/noniphone-desktop-path-change-readiness-20260701.json) | structured non-iPhone desktop path-change readiness |
 
 ## 5. Reproducibility Commands
 

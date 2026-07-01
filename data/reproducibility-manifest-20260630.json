@@ -1,0 +1,546 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
+  "git": {
+    "commit": "ab9f3fa",
+    "branch": "docs/quinn-neqo-rerun-20260630"
+  },
+  "experiment_corpus": {
+    "total_trials": 99,
+    "status_counts": {
+      "PASS": 33,
+      "PASS_FEASIBILITY": 6,
+      "PASS_NEGATIVE_CONTROL": 60
+    },
+    "final_required_rows": 6
+  },
+  "implementation_corpus": {
+    "total_implementations": 18,
+    "evidence_status_counts": {
+      "fresh_app_demo_20260630": 1,
+      "fresh_focused_e2e_full_gate_20260701": 1,
+      "fresh_negative_control_20260630": 1,
+      "fresh_rebind_demo_20260630": 1,
+      "fresh_rerun_20260630": 9,
+      "fresh_runtime_20260630": 1,
+      "partial_deferred": 1,
+      "source_edge_boundary_audit_20260701": 1,
+      "source_inspected": 1,
+      "source_policy_audit_20260701": 1
+    },
+    "current_level_counts": {
+      "L1_L2": 1,
+      "L2_L3": 1,
+      "L3_L4": 2,
+      "L3_L4_focused_e2e_full_gate": 1,
+      "L3_L4_partial": 1,
+      "L4": 3,
+      "L4_AWS_L5_candidate": 1,
+      "L4_L5": 1,
+      "L4_L5_candidate": 1,
+      "L4_L5_caveat": 1,
+      "L4_client_policy_boundary_audit": 1,
+      "L4_server_runtime": 1,
+      "L5_candidate": 1,
+      "L5_deployment_candidate": 1,
+      "L5_edge_boundary_audit": 1
+    },
+    "top_priority_names": [
+      "quic-go",
+      "Cloudflare quiche",
+      "AWS s2n-quic",
+      "ngtcp2",
+      "LiteSpeed lsquic"
+    ]
+  },
+  "experiment_matrix": {
+    "total_items": 162,
+    "status_counts": {
+      "done": 158,
+      "planned": 4
+    },
+    "latest_item": "ngtcp2-migration-api-boundary-audit"
+  },
+  "verification": {
+    "checks": "155",
+    "passed": "155",
+    "ok": "yes"
+  },
+  "research_audit": {
+    "publication_bundle_ok": "yes",
+    "required_files_ok": "yes",
+    "paper_tables_current": "yes",
+    "final_browser_handover_trials": "3/6",
+    "goal_complete": "no"
+  },
+  "readiness": {
+    "next_trial": "controlled-public-chrome-downlink-noheartbeat-network-change-001",
+    "next_trial_ready": "no",
+    "codex_can_run_next_trial_now": "no",
+    "needed_now_inputs": "0"
+  },
+  "ci": {
+    "available": "not-requested"
+  },
+  "key_paths": {
+    "audit": "docs/results/research-bundle-audit-20260624.md",
+    "verification": "docs/results/research-verification-report-20260624.md",
+    "status_dashboard": "docs/results/research-status-dashboard-20260624.md",
+    "cm_operational_friction_matrix": "docs/results/cm-operational-friction-matrix-20260624.md",
+    "final_protocol_readiness_matrix": "docs/results/final-protocol-readiness-matrix-20260624.md",
+    "p0_unblock_status": "docs/results/p0-unblock-status-20260624.md",
+    "p0_baseline_execution_packet": "docs/results/p0-baseline-execution-packet-20260624.md",
+    "p0_baseline_preflight": "docs/results/p0-baseline-preflight-check-20260624.md",
+    "p0_baseline_preflight_controls": "docs/results/p0-baseline-preflight-control-report-20260624.md",
+    "p0_baseline_preflight_redaction_smoke": "docs/results/final-p0-baseline-preflight-redaction-smoke-20260625.md",
+    "final_capture_storage_budget": "docs/results/final-capture-storage-budget-20260624.md",
+    "artifact_cleanup_apply_report": "docs/results/artifact-cleanup-apply-report-20260625.md",
+    "artifact_cleanup_execution_log": "docs/results/artifact-cleanup-execution-log-20260625.md",
+    "final_trial_acceptance_scorecard": "docs/results/final-trial-acceptance-scorecard-20260624.md",
+    "paper_gap_register": "docs/results/paper-evidence-gap-register-20260624.md",
+    "paper_claim_support_matrix": "docs/results/paper-claim-support-matrix-20260624.md",
+    "replication_sufficiency_audit": "docs/results/replication-sufficiency-audit-20260624.md",
+    "replication_run_plan": "docs/results/replication-run-plan-20260624.md",
+    "external_inputs": "docs/results/final-handover-external-inputs-20260624.md",
+    "trial_packet": "docs/results/final-handover-trial-packet-20260624.md",
+    "deploy_packet": "docs/results/controlled-public-origin-deploy-packet-20260624.md",
+    "controlled_public_package_smoke": "docs/results/controlled-public-package-smoke-20260625.md",
+    "aws_identity_readiness": "docs/results/aws-identity-readiness-20260625.md",
+    "active_path_cookbook": "docs/results/active-path-change-operator-cookbook-20260624.md"
+  },
+  "evidence_paths_20260630": {
+    "implementation_rerun_results": {
+      "path": "docs/results/implementation-rerun-results-20260630.md",
+      "exists": true
+    },
+    "implementation_survey_csv": {
+      "path": "data/implementation-survey.csv",
+      "exists": true
+    },
+    "experiment_matrix": {
+      "path": "harness/manifests/experiment-matrix.csv",
+      "exists": true
+    },
+    "sanitized_evidence_bundle": {
+      "path": "docs/results/sanitized-evidence-bundle-20260630.md",
+      "exists": true
+    },
+    "sanitized_evidence_bundle_json": {
+      "path": "data/sanitized-evidence-bundle-20260630.json",
+      "exists": true
+    },
+    "non_iphone_gap_plan": {
+      "path": "docs/results/non-iphone-research-gap-plan-20260630.md",
+      "exists": true
+    },
+    "nginx_haproxy_boundary": {
+      "path": "docs/results/nginx-haproxy-quic-cm-boundary-20260630.md",
+      "exists": true
+    },
+    "nginx_runtime_demo": {
+      "path": "docs/results/nginx-quic-active-migration-runtime-20260630.md",
+      "exists": true
+    },
+    "nginx_quic_bpf_readiness": {
+      "path": "docs/results/nginx-quic-bpf-readiness-20260630.md",
+      "exists": true
+    },
+    "nginx_quic_bpf_linux_runner": {
+      "path": "docs/results/nginx-quic-bpf-linux-runner-20260630.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_media_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-media-local-refresh-20260630.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_media_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-media-local-refresh-20260630.csv",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_musiclike_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_musiclike_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-musiclike-local-refresh-20260701.csv",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_buffered_media_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_buffered_media_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.csv",
+      "exists": true
+    },
+    "noniphone_workload_qoe_synthesis": {
+      "path": "docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md",
+      "exists": true
+    },
+    "noniphone_workload_qoe_synthesis_csv": {
+      "path": "data/noniphone-workload-qoe-continuity-synthesis-20260701.csv",
+      "exists": true
+    },
+    "controlled_public_origin_workload_deploy_packet": {
+      "path": "docs/results/controlled-public-origin-workload-deploy-packet-20260701.md",
+      "exists": true
+    },
+    "controlled_public_origin_workload_deploy_packet_json": {
+      "path": "data/controlled-public-origin-workload-deploy-packet-20260701.json",
+      "exists": true
+    },
+    "noniphone_desktop_path_change_readiness": {
+      "path": "docs/results/noniphone-desktop-path-change-readiness-20260701.md",
+      "exists": true
+    },
+    "noniphone_desktop_path_change_readiness_json": {
+      "path": "data/noniphone-desktop-path-change-readiness-20260701.json",
+      "exists": true
+    },
+    "noniphone_public_workload_trial_packet": {
+      "path": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
+      "exists": true
+    },
+    "noniphone_public_workload_trial_packet_json": {
+      "path": "data/noniphone-public-workload-trial-packet-20260701.json",
+      "exists": true
+    },
+    "noniphone_claim_readiness_dashboard": {
+      "path": "docs/results/noniphone-claim-readiness-dashboard-20260701.md",
+      "exists": true
+    },
+    "noniphone_claim_readiness_dashboard_json": {
+      "path": "data/noniphone-claim-readiness-dashboard-20260701.json",
+      "exists": true
+    },
+    "noniphone_professor_decision_packet": {
+      "path": "docs/results/noniphone-professor-decision-packet-20260701.md",
+      "exists": true
+    },
+    "noniphone_professor_decision_packet_json": {
+      "path": "data/noniphone-professor-decision-packet-20260701.json",
+      "exists": true
+    },
+    "noniphone_reviewer_risk_audit": {
+      "path": "docs/results/noniphone-reviewer-risk-audit-20260701.md",
+      "exists": true
+    },
+    "noniphone_reviewer_risk_audit_json": {
+      "path": "data/noniphone-reviewer-risk-audit-20260701.json",
+      "exists": true
+    },
+    "noniphone_paper_wording_guard": {
+      "path": "docs/results/noniphone-paper-wording-guard-20260701.md",
+      "exists": true
+    },
+    "noniphone_paper_wording_guard_json": {
+      "path": "data/noniphone-paper-wording-guard-20260701.json",
+      "exists": true
+    },
+    "noniphone_paper_section_scaffold": {
+      "path": "docs/results/noniphone-paper-section-scaffold-20260701.md",
+      "exists": true
+    },
+    "noniphone_paper_section_scaffold_json": {
+      "path": "data/noniphone-paper-section-scaffold-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_implementation_findings": {
+      "path": "docs/results/non-quicgo-implementation-findings-20260701.md",
+      "exists": true
+    },
+    "non_quicgo_implementation_findings_json": {
+      "path": "data/non-quicgo-implementation-findings-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit": {
+      "path": "docs/results/non-quicgo-execution-depth-audit-20260701.md",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit_json": {
+      "path": "data/non-quicgo-execution-depth-audit-20260701.json",
+      "exists": true
+    },
+    "non_quicgo_execution_depth_audit_csv": {
+      "path": "data/non-quicgo-execution-depth-audit-20260701.csv",
+      "exists": true
+    },
+    "msquic_migration_api_boundary_audit": {
+      "path": "docs/results/msquic-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "msquic_migration_api_boundary_audit_json": {
+      "path": "data/msquic-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "ngtcp2_migration_api_boundary_audit": {
+      "path": "docs/results/ngtcp2-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "ngtcp2_migration_api_boundary_audit_json": {
+      "path": "data/ngtcp2-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "quinn_migration_api_boundary_audit": {
+      "path": "docs/results/quinn-migration-api-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "quinn_migration_api_boundary_audit_json": {
+      "path": "data/quinn-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "xquic_full_suite_linux_audit": {
+      "path": "docs/results/xquic-full-suite-linux-audit-20260701.md",
+      "exists": true
+    },
+    "xquic_full_suite_linux_audit_json": {
+      "path": "data/xquic-full-suite-linux-audit-20260701.json",
+      "exists": true
+    },
+    "xquic_full_suite_linux_runner": {
+      "path": "harness/scripts/run-xquic-full-suite-linux.sh",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_range_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_range_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-range-local-refresh-20260630.csv",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_upload_local_refresh": {
+      "path": "docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md",
+      "exists": true
+    },
+    "chrome_desktop_noniphone_upload_local_refresh_csv": {
+      "path": "data/chrome-desktop-noniphone-upload-local-refresh-20260630.csv",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis": {
+      "path": "docs/results/controlled-public-chrome-bridge-synthesis-20260701.md",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis_json": {
+      "path": "data/controlled-public-chrome-bridge-synthesis-20260701.json",
+      "exists": true
+    },
+    "controlled_public_chrome_bridge_synthesis_csv": {
+      "path": "data/controlled-public-chrome-bridge-synthesis-20260701.csv",
+      "exists": true
+    },
+    "controlled_public_chrome_artifact_classifier_contract": {
+      "path": "docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md",
+      "exists": true
+    },
+    "controlled_public_chrome_artifact_classifier_contract_json": {
+      "path": "data/controlled-public-chrome-artifact-classifier-contract-20260701.json",
+      "exists": true
+    },
+    "controlled_public_chrome_contract_application_audit": {
+      "path": "docs/results/controlled-public-chrome-contract-application-audit-20260701.md",
+      "exists": true
+    },
+    "controlled_public_chrome_contract_application_audit_json": {
+      "path": "data/controlled-public-chrome-contract-application-audit-20260701.json",
+      "exists": true
+    },
+    "controlled_public_chrome_contract_application_audit_csv": {
+      "path": "data/controlled-public-chrome-contract-application-audit-20260701.csv",
+      "exists": true
+    },
+    "haproxy_negative_control": {
+      "path": "docs/results/haproxy-http3-negative-control-rerun-20260630.md",
+      "exists": true
+    },
+    "lsquic_preferred_address_demo": {
+      "path": "docs/results/lsquic-preferred-address-app-demo-20260630.md",
+      "exists": true
+    },
+    "lsquic_nat_rebinding_demo": {
+      "path": "docs/results/lsquic-nat-rebinding-app-demo-20260630.md",
+      "exists": true
+    },
+    "quicly_e2e_path_migration": {
+      "path": "docs/results/quicly-e2e-path-migration-20260630.md",
+      "exists": true
+    },
+    "quicly_full_e2e_linux_audit": {
+      "path": "docs/results/quicly-full-e2e-linux-audit-20260701.md",
+      "exists": true
+    },
+    "quicly_full_e2e_linux_audit_json": {
+      "path": "data/quicly-full-e2e-linux-audit-20260701.json",
+      "exists": true
+    },
+    "quicly_full_e2e_linux_runner": {
+      "path": "harness/scripts/run-quicly-full-e2e-linux.sh",
+      "exists": true
+    },
+    "chromium_cronet_policy_boundary_audit": {
+      "path": "docs/results/chromium-cronet-policy-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "chromium_cronet_policy_boundary_audit_json": {
+      "path": "data/chromium-cronet-policy-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "firefox_neqo_browser_boundary_audit": {
+      "path": "docs/results/firefox-neqo-browser-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "firefox_neqo_browser_boundary_audit_json": {
+      "path": "data/firefox-neqo-browser-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "firefox_desktop_runtime_trial_packet": {
+      "path": "docs/results/firefox-desktop-runtime-trial-packet-20260701.md",
+      "exists": true
+    },
+    "firefox_desktop_runtime_trial_packet_json": {
+      "path": "data/firefox-desktop-runtime-trial-packet-20260701.json",
+      "exists": true
+    },
+    "cdn_edge_cm_boundary_audit": {
+      "path": "docs/results/cdn-edge-cm-boundary-audit-20260701.md",
+      "exists": true
+    },
+    "cdn_edge_cm_boundary_audit_json": {
+      "path": "data/cdn-edge-cm-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "openlitespeed_source_feasibility": {
+      "path": "docs/results/openlitespeed-quic-cm-source-feasibility-20260630.md",
+      "exists": true
+    },
+    "openlitespeed_runtime_preflight": {
+      "path": "docs/results/openlitespeed-runtime-preflight-20260630.md",
+      "exists": true
+    },
+    "openlitespeed_runtime_runner": {
+      "path": "docs/results/openlitespeed-active-migration-runner-20260630.md",
+      "exists": true
+    },
+    "mvfst_source_audit": {
+      "path": "docs/results/mvfst-cm-source-audit-20260630.md",
+      "exists": true
+    },
+    "mvfst_migration_test_readiness": {
+      "path": "docs/results/mvfst-migration-test-readiness-20260630.md",
+      "exists": true
+    },
+    "mvfst_migration_test_readiness_json": {
+      "path": "data/mvfst-migration-test-readiness-20260630.json",
+      "exists": true
+    },
+    "mvfst_focused_linux_runner_audit": {
+      "path": "docs/results/mvfst-focused-linux-runner-audit-20260701.md",
+      "exists": true
+    },
+    "mvfst_focused_linux_runner_audit_json": {
+      "path": "data/mvfst-focused-linux-runner-audit-20260701.json",
+      "exists": true
+    },
+    "mvfst_focused_linux_runner": {
+      "path": "harness/scripts/run-mvfst-focused-migration-tests-linux.sh",
+      "exists": true
+    },
+    "s2n_nlb_cid_provider_rerun": {
+      "path": "docs/results/s2n-quic-nlb-cid-provider-rerun-20260630.md",
+      "exists": true
+    },
+    "s2n_nlb_live_readiness": {
+      "path": "docs/results/s2n-nlb-live-readiness-20260630.md",
+      "exists": true
+    },
+    "aws_s2n_nlb_live_runner": {
+      "path": "docs/results/aws-s2n-nlb-live-runner-20260630.md",
+      "exists": true
+    },
+    "aws_s2n_live_runner_safety_audit": {
+      "path": "docs/results/aws-s2n-live-runner-safety-audit-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_live_runner_safety_audit_json": {
+      "path": "data/aws-s2n-live-runner-safety-audit-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_path_change_design": {
+      "path": "docs/results/aws-s2n-phase2-path-change-design-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_path_change_design_json": {
+      "path": "data/aws-s2n-phase2-path-change-design-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_rebinding_preflight_fixture": {
+      "path": "data/aws-s2n-phase2-rebinding-preflight-20260701.txt",
+      "exists": true
+    },
+    "aws_s2n_phase2_rebinding_runner_audit": {
+      "path": "docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_rebinding_runner_audit_json": {
+      "path": "data/aws-s2n-phase2-rebinding-runner-audit-20260701.json",
+      "exists": true
+    },
+    "aws_s2n_phase2_artifact_classifier_contract": {
+      "path": "docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md",
+      "exists": true
+    },
+    "aws_s2n_phase2_artifact_classifier_contract_json": {
+      "path": "data/aws-s2n-phase2-artifact-classifier-contract-20260701.json",
+      "exists": true
+    },
+    "s2n_active_migration_api_audit": {
+      "path": "docs/results/s2n-active-migration-api-audit-20260630.md",
+      "exists": true
+    },
+    "s2n_active_migration_api_audit_json": {
+      "path": "data/s2n-active-migration-api-audit-20260630.json",
+      "exists": true
+    },
+    "browser_cm_observability_refresh": {
+      "path": "docs/results/browser-cm-observability-readiness-refresh-20260630.md",
+      "exists": true
+    },
+    "browser_cm_observability_refresh_json": {
+      "path": "data/browser-cm-observability-refresh-20260630.json",
+      "exists": true
+    },
+    "safari_webdriver_session_readiness": {
+      "path": "docs/results/safari-webdriver-session-readiness-20260630.md",
+      "exists": true
+    },
+    "user_provided_public_origin_readiness": {
+      "path": "docs/results/user-provided-public-origin-readiness-20260630.md",
+      "exists": true
+    },
+    "user_provided_public_origin_readiness_json": {
+      "path": "data/user-provided-public-origin-readiness-20260630.json",
+      "exists": true
+    },
+    "non_iphone_gate_rerun": {
+      "path": "docs/results/non-iphone-gate-rerun-20260701.md",
+      "exists": true
+    },
+    "non_iphone_gate_rerun_json": {
+      "path": "data/non-iphone-gate-rerun-20260701.json",
+      "exists": true
+    },
+    "non_iphone_next_research_decision": {
+      "path": "docs/results/non-iphone-next-research-decision-20260630.md",
+      "exists": true
+    },
+    "non_iphone_next_research_decision_json": {
+      "path": "data/non-iphone-next-research-decision-20260630.json",
+      "exists": true
+    },
+    "research_report_index": {
+      "path": "docs/research-report/README.md",
+      "exists": true
+    }
+  }
+}

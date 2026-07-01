@@ -1,6 +1,6 @@
 # Final Handover Trial Packet
 
-Generated: `2026-06-26`
+Generated: `2026-07-01`
 
 ## Summary
 
@@ -17,8 +17,9 @@ Generated: `2026-06-26`
 
 ## Missing Required Gates
 
+- baseline_summary_ready
 - network_change_command_present
-- desktop_secondary_path_ready
+- desktop_path_change_ready
 
 ## Final Protocol Blockers
 

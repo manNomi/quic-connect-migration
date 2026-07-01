@@ -1,6 +1,6 @@
 # Final Browser Handover Trial Audit
 
-Generated: `2026-06-26`
+Generated: `2026-07-01`
 
 ## Summary
 

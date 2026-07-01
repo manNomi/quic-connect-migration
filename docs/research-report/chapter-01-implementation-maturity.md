@@ -154,7 +154,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 
 ### 5.4 Local test 실행
 
-빌드와 테스트가 가능한 구현체는 실제로 실행했다. 실행까지 한 구현체는 8개다.
+빌드와 테스트가 가능한 구현체는 실제로 실행했다. 초기 local test는 8개 구현체에서 시작했고, 2026-06-30 fresh rerun에서 MsQuic, XQUIC, LiteSpeed LSQUIC, quicly, nginx QUIC, HAProxy negative-control까지 보강해 총 14개 구현체/스택의 local test/demo/partial/negative-control artifact를 확보했다.
 
 | 구현체 | 실행한 검수 | 결과 |
 | --- | --- | --- |
@@ -163,11 +163,17 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 | picoquic | NAT rebinding/migration/preferred-address 등 13개 test | PASS |
 | s2n-quic | connection migration tests | PASS |
 | aioquic | path challenge/response unit tests | PASS |
-| ngtcp2 | client migration/path validation tests | PASS |
-| Quinn | migration/rebind tests | PASS |
+| ngtcp2 | client migration/path validation tests + official `osslclient/osslserver` local HTTP/3 runtime migration row | PASS |
+| Quinn | endpoint-wide rebind runtime packet + proto migration/path-validation tests | PASS |
 | Neqo | migration test suite | PASS |
+| MsQuic | dedicated packet으로 NAT rebind/path-validation selected gtests, IPv4/IPv6 재실행 | PASS |
+| XQUIC | loopback client/server NAT rebinding demo, Linux full-suite replay runner | PASS demo, full suite Linux gate packaged |
+| LiteSpeed LSQUIC | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS |
+| nginx QUIC | HTTP/3 server runtime demo, quiche active migration, server path seq:1 validation | PASS |
+| HAProxy QUIC | HTTP/3 proxy baseline PASS, quiche active migration path validation FAIL | PASS_NEGATIVE_CONTROL |
+| quicly | build `test.t`/`cli`/`udpfw`, migration-related unit evidence, focused e2e `path-migration` subtest, Linux full-e2e replay runner | PASS_FOCUSED_E2E, full-e2e gate packaged |
 
-이 local test 결과는 `docs/results/local-implementation-test-results.md`에 정리되어 있다.
+초기 local test 결과는 `docs/results/local-implementation-test-results.md`에, 2026-06-30 fresh rerun 상세 결과는 `docs/results/implementation-rerun-results-20260630.md`에 정리되어 있다.
 
 ## 6. PASS로 인정한 기준
 
@@ -270,7 +276,67 @@ s2n-quic은 AWS 연구와 연결성이 높다.
 
 > s2n-quic은 AWS/NLB/CID-aware deployment 연구로 이어질 수 있는 후보군이다.
 
-### 7.5 Chromium/Cronet
+### 7.5 MsQuic
+
+MsQuic은 Microsoft ecosystem과 production deployment relevance가 큰 구현체다.
+
+확인한 것:
+
+- `MigrationEnabled` setting
+- `LoadBalancingMode` deployment setting
+- `QUIC_PARAM_CONN_LOCAL_ADDRESS` client-side local address control
+- `QUIC_CONNECTION_EVENT_PEER_ADDRESS_CHANGED` observability
+- NAT port rebind gtest
+- NAT address rebind gtest
+- path validation timeout gtest
+- last path close gtest
+- v4/v6 selected tests PASS
+- dedicated fail-closed packet `validation=ok`, `total_ok_count=8`, `passed_summary_count=2`, `failed_marker_count=0`
+
+해석:
+
+> MsQuic은 구현체 수준의 NAT rebinding/path-validation 성숙도 근거가 강하다. 2026-07-01 API boundary audit에서는 public API가 `MigrationEnabled`, address-change event, `QUIC_PARAM_CONN_LOCAL_ADDRESS` 기반의 제약 있는 local-address control을 제공하지만, quic-go의 `AddPath -> Probe -> Switch`와 같은 실험 친화적 active migration API 형태는 아니라고 정리했다. 추가로 dedicated selected runtime-test packet에서 v4/v6 `RebindPort`, `RebindAddr`, `PathValidationTimeout`, `PathValidationLastPathClose`가 모두 PASS였다. 다만 이 결과도 HTTP/3 application continuity나 managed LB 환경의 end-to-end CM 보장이 아니라 selected runtime-test positive control로만 해석해야 한다.
+
+### 7.6 LiteSpeed LSQUIC
+
+LSQUIC은 LiteSpeed/OpenLiteSpeed 생태계와 연결되는 서버 측 구현체다. 이번 보강에서는 source inspection에 머물지 않고, 현재 HEAD 기준으로 full unit suite를 빌드/실행했고, 추가로 example HTTP/3 client/server에서 preferred-address 기반 app-level migration demo와 local UDP proxy 기반 NAT rebinding app demo를 재현했다.
+
+확인한 것:
+
+- `LSQUIC_DF_ALLOW_MIGRATION`
+- `es_allow_migration`
+- `es_optimistic_nat`
+- `es_preferred_address`
+- preferred address transport parameter encode/decode test
+- qlog/parser/packet primitive selected CTest
+- full CTest `79/79` PASS
+- example `http_client`/`http_server` preferred-address demo
+- local UDP proxy 기반 NAT rebinding demo
+- `GET /file-1M` workload completion with path 1 STREAM evidence
+
+해석:
+
+> LSQUIC은 더 이상 source-only 후보가 아니다. 서버 스택 관점의 unit-test maturity evidence, preferred-address 기반 app-level positive control, NAT rebinding 기반 app-level positive control을 확보했다. 다만 이 실험들은 example binary local loopback 실험이며, OpenLiteSpeed production-like server demo는 후속 실험으로 남긴다.
+
+### 7.7 nginx QUIC
+
+nginx QUIC은 실제 web server 관점에서 중요하다. 기존에는 `ngx_event_quic_migration.c` source audit로 server-side passive migration 근거만 고정했지만, 이번 보강에서는 nginx HTTP/3 server를 직접 띄우고 quiche client의 active source-port migration을 처리하는 runtime demo를 실행했다.
+
+확인한 것:
+
+- `nginx/1.31.3`, `--with-http_v3_module`, `--with-debug`
+- `GET /file-1M` HTTP/3 response 1MiB 완료
+- `quic tp disable active migration: 0`
+- `quic path seq:1 created`
+- `PATH_CHALLENGE` / `PATH_RESPONSE`
+- `quic path seq:1 ... successfully validated`
+- quiche client final summary에서 old path `active=false`, new path `active=true`
+
+해석:
+
+> nginx QUIC은 source-only 후보에서 server-side runtime positive control로 올라갔다. 다만 migration trigger는 quiche client가 수행했으므로, nginx가 client active migration API를 제공한다는 뜻은 아니다. 또한 이 결과는 Chrome/Safari handover나 production nginx deployment 보장이 아니라 local loopback HTTP/3 runtime evidence다.
+
+### 7.8 Chromium/Cronet
 
 Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상이다.
 
@@ -279,10 +345,32 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 - migration 관련 runtime policy knob
 - Chrome NetLog 관찰 가능성
 - Android Cronet migration option
+- `QuicChromiumClientSession::MigrateToSocket`, network connected/disconnected/default callbacks, path-degrading callback
+- NetLog `QUIC_CONNECTION_MIGRATION_TRIGGERED`, `SUCCESS`, `FAILURE`, network-change, probing event family
+- Cronet `URLRequestContextConfig`에서 QUIC enabled 경로의 network-change migration explicit disable
 
 해석:
 
 > Chromium/Cronet에는 migration 관련 policy와 observability 근거가 있지만, 이것이 Chrome browser에서 실제 Wi-Fi/cellular handover 중 single-session CM이 성공했다는 뜻은 아니다.
+> 특히 Cronet은 Chromium 기반이라도 default embedding policy가 다를 수 있음을 보여주는 좋은 근거다. 따라서 논문에서는 Chromium/Cronet을 "고사용량 client stack의 policy-boundary evidence"로 쓰고, 실제 Chrome/Cronet handover success는 NetLog trigger/success, client path change, server/qlog, workload completion이 모두 맞는 runtime row가 생긴 뒤에만 주장해야 한다.
+
+### 7.8 quicly
+
+quicly는 H2O 계열의 C QUIC library로, path validation과 path promotion internals를 확인하기 좋은 비교군이다.
+
+확인한 것:
+
+- `PATH_CHALLENGE` / `PATH_RESPONSE` frame encode/decode
+- `disable_active_migration` transport parameter
+- path migration elicited/promoted stats
+- `migration-during-handshake` unit subtest `ok`
+- e2e `path-migration` subtest `ok`
+- CID-enabled path probe에서 CID sequence 1 사용 check `ok`
+- `harness/scripts/run-quicly-full-e2e-linux.sh` fail-closed Linux full-e2e runner
+
+해석:
+
+> quicly는 migration primitive와 path promotion 내부 구조가 확인되고, Perl dependency를 보강한 뒤 full `t/e2e.t` 중 `path-migration` subtest가 통과했다. 다만 full `t/e2e.t`는 unrelated `slow-start` subtest 실패로 exit 1이므로 전체 e2e PASS라고 쓰면 안 된다. 따라서 quicly는 focused e2e path-migration evidence가 있는 비교군으로 분리하고, full e2e 승격은 Linux runner에서 `validation=ok_full_e2e`가 나온 뒤에만 주장한다.
 
 ## 8. 결과 요약
 
@@ -291,8 +379,13 @@ Chromium/Cronet은 구현체라기보다 browser runtime policy의 핵심 대상
 | 항목 | 결과 |
 | --- | ---: |
 | 총 조사 대상 | 18 |
-| local test까지 실행한 구현체 | 8 |
-| source inspected | 15 |
+| local test/demo까지 실행한 구현체 | 14 |
+| 2026-06-30 fresh rerun/demo/negative-control/focused-e2e artifact 확보 | 14 |
+| fresh app-level/runtime demo artifact 확보 | 5 |
+| fresh negative-control artifact 확보 | 1 |
+| fresh focused e2e artifact 확보 | 1 |
+| fresh partial build/test artifact 확보 | 0 |
+| source inspected only | 1 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
 | active migration API `yes` | 8 |
@@ -321,7 +414,7 @@ Chapter 1의 결론은 다음이다.
 
 연구 검토 시에는 다음처럼 요약할 수 있다.
 
-> 챕터 1에서는 QUIC WG 구현체 목록을 출발점으로 18개 구현체/스택을 선정했고, path validation, NAT rebinding, active migration API, migration policy, preferred address, CID/LB, qlog/event, test 여부를 CSV로 정리했습니다. 이후 scanner로 1차 evidence 후보를 찾고, source/test를 수동 검수했으며, 8개 구현체는 local test까지 실행했습니다. 결론적으로 CM은 구현체 수준에서는 존재하지만, 실제 브라우저나 CDN/LB에서 end-to-end CM으로 보이는지는 별도 문제라서 Chapter 2에서 deployment/runtime friction을 분석하게 되었습니다.
+> 챕터 1에서는 QUIC WG 구현체 목록을 출발점으로 18개 구현체/스택을 선정했고, path validation, NAT rebinding, active migration API, migration policy, preferred address, CID/LB, qlog/event, test 여부를 CSV로 정리했습니다. 이후 scanner로 1차 evidence 후보를 찾고, source/test를 수동 검수했으며, 2026-06-30 기준 14개 구현체/스택은 local test/demo/partial build/negative-control까지 실행했습니다. 결론적으로 CM은 구현체 수준에서는 존재하지만, 실제 브라우저나 CDN/LB에서 end-to-end CM으로 보이는지는 별도 문제라서 Chapter 2에서 deployment/runtime friction을 분석하게 되었습니다.
 
 ## 11. 연결 문서
 
@@ -332,4 +425,15 @@ Chapter 1의 결론은 다음이다.
 | `../results/local-implementation-test-results.md` | local test 결과 원본 |
 | `../results/quic-go-minimum-reproduction-results.md` | quic-go positive control |
 | `../results/quiche-path-event-timeline-20260623.md` | quiche migration lifecycle |
+| `../results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic migration API/deployment boundary |
+| `../results/msquic-rebind-pathvalidation-packet-20260701.md` | MsQuic selected v4/v6 rebind/path-validation runtime-test PASS와 claim boundary |
+| `../results/xquic-full-suite-linux-audit-20260701.md` | XQUIC NAT rebinding demo, macOS Werror blocker, Linux full-suite replay gate |
+| `../results/quicly-full-e2e-linux-audit-20260701.md` | quicly focused path-migration PASS와 Linux full-e2e replay gate |
+| `../results/nginx-haproxy-quic-cm-boundary-20260630.md` | nginx server passive migration source evidence와 HAProxy proxy negative-control |
+| `../results/nginx-quic-active-migration-runtime-20260630.md` | nginx HTTP/3 runtime active-client-migration demo |
+| `../results/haproxy-http3-negative-control-rerun-20260630.md` | HAProxy HTTP/3 fresh negative-control rerun |
+| `../results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
+| `../results/mvfst-migration-test-readiness-20260630.md` | mvfst latest HEAD focused migration test target map과 local blocker |
+| `../results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst focused BUCK target Linux runner와 claim boundary |
+| `../results/quinn-rebind-runtime-packet-20260701.md` | Quinn endpoint-wide rebind runtime PASS와 browser/HTTP/3 application/deployment claim boundary |
 | `../results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

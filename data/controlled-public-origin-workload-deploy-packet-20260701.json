@@ -1,0 +1,14 @@
+{
+  "generated": "2026-06-30",
+  "package_script": "harness/scripts/package-quic-go-ec2.sh",
+  "package_path": "harness/results/packages/<generated-quic-go-min-repro>.tar.gz",
+  "package_built": false,
+  "ssh_user": "ec2-user",
+  "origin_host_placeholder": "<origin-host-or-ip>",
+  "remote_dir": "/home/ec2-user/quic-go-min-repro",
+  "run_id": "controlled-public-chrome-h3-baseline-001",
+  "artifact_dir": "artifacts/controlled-public-chrome-h3-baseline-001",
+  "expected_requests": 2,
+  "workload_packet": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
+  "public_safe": true
+}

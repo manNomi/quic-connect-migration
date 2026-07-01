@@ -1,0 +1,25 @@
+{
+  "check_date": "2026-06-30",
+  "url": "<redacted-url>",
+  "host": "<redacted-host>",
+  "port": 443,
+  "dns_addresses": [
+    "<redacted-address>"
+  ],
+  "tcp_tls_ok": true,
+  "python_tls_ok": false,
+  "curl_https_ok": true,
+  "tls_version": "curl-verified",
+  "tls_cipher": "",
+  "tls_subject": "",
+  "tls_issuer": "",
+  "curl_exit": 0,
+  "final_status": "HTTP/2 200",
+  "has_h3_alt_svc": false,
+  "alt_svc_headers": "",
+  "errors": [
+    "tls: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)"
+  ],
+  "ok": true,
+  "redacted": true
+}

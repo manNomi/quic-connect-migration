@@ -1,0 +1,84 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "scope": "managed_cdn_edge_connection_migration_boundary",
+  "implementations": [
+    "AWS CloudFront",
+    "Cloudflare managed edge"
+  ],
+  "summary": {
+    "evidence_items": 6,
+    "cloudfront_viewer_edge_http3_cm": "supported_by_official_docs",
+    "cloudfront_origin_end_to_end_quic_cm": "not_established_by_official_docs",
+    "cloudflare_viewer_edge_http3": "supported_by_official_docs",
+    "cloudflare_origin_http3": "not_supported_in_inspected_official_doc",
+    "live_edge_trial_completed": "no",
+    "interpretation": "Managed CDN HTTP/3 support is a deployment-layer boundary. It can support viewer-to-edge continuity while still terminating or translating the origin leg."
+  },
+  "conclusion": {
+    "safe_cdn_claim": "viewer_edge_http3_continuity_or_capability",
+    "unsafe_cdn_claim": "origin_end_to_end_quic_connection_migration_without_separate_origin_evidence",
+    "paper_use": "Use this audit to prevent CloudFront/Cloudflare HTTP/3 support from being misreported as end-to-end browser-origin Connection Migration."
+  },
+  "evidence": [
+    {
+      "id": "cloudfront-viewer-supported-http-versions",
+      "source": "AWS CloudFront Developer Guide",
+      "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesGeneral.html",
+      "lines": "147-152",
+      "topic": "Supported HTTP versions",
+      "observation": "CloudFront documentation scopes supported HTTP versions to viewers communicating with CloudFront and states that CloudFront supports HTTP/3 connection migration.",
+      "implication": "This supports a viewer-to-edge migration claim, not an origin end-to-end QUIC Connection Migration claim."
+    },
+    {
+      "id": "cloudfront-api-httpversion-viewer-scope",
+      "source": "AWS CloudFront API Reference",
+      "url": "https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_DistributionConfig.html",
+      "lines": "154-162",
+      "topic": "DistributionConfig.HttpVersion",
+      "observation": "The HttpVersion field controls the HTTP versions that viewers use to communicate with CloudFront and includes http3/http2and3 values.",
+      "implication": "Configuration evidence is viewer-facing; it does not prove the origin leg is QUIC or migration-preserving."
+    },
+    {
+      "id": "cloudfront-origin-fetch-boundary",
+      "source": "AWS News Blog",
+      "url": "https://aws.amazon.com/blogs/aws/new-http-3-support-for-amazon-cloudfront/",
+      "lines": "56-59",
+      "topic": "Viewer HTTP/3 versus origin fetch",
+      "observation": "The CloudFront HTTP/3 launch post describes client-side migration benefits, then separates viewer HTTP/3 requests to edge locations from origin fetches continuing over HTTP/1.1.",
+      "implication": "CloudFront HTTP/3 should be reported as edge-level continuity unless a separate experiment proves origin end-to-end QUIC semantics."
+    },
+    {
+      "id": "cloudfront-no-origin-change-enable",
+      "source": "AWS News Blog",
+      "url": "https://aws.amazon.com/blogs/aws/new-http-3-support-for-amazon-cloudfront/",
+      "lines": "59-64",
+      "topic": "No origin changes for HTTP/3 enablement",
+      "observation": "The launch post says HTTP/3 can be enabled for CloudFront distributions without origin changes.",
+      "implication": "A no-origin-change enablement model is strong evidence that the managed edge terminates or translates the protocol boundary."
+    },
+    {
+      "id": "cloudflare-user-edge-scope",
+      "source": "Cloudflare Speed Docs",
+      "url": "https://developers.cloudflare.com/speed/optimization/protocol/http3/",
+      "lines": "118-129",
+      "topic": "HTTP/3 setting scope",
+      "observation": "Cloudflare's HTTP/3 page states that the setting is for the connection between the user and Cloudflare and that HTTP/3 connection to the origin is not yet supported.",
+      "implication": "Cloudflare managed-edge HTTP/3 evidence must not be written as origin end-to-end Connection Migration evidence."
+    },
+    {
+      "id": "cloudflare-dashboard-api-toggle",
+      "source": "Cloudflare Speed Docs",
+      "url": "https://developers.cloudflare.com/speed/optimization/protocol/http3/",
+      "lines": "143-157",
+      "topic": "HTTP/3 dashboard/API toggle",
+      "observation": "Cloudflare exposes HTTP/3 as a zone setting through dashboard or API toggles.",
+      "implication": "A CDN setting can make viewer-edge H3 visible while leaving origin transport semantics outside the application's direct control."
+    }
+  ],
+  "reporting_boundary": {
+    "safe_claim": "CloudFront official docs support viewer-to-CloudFront HTTP/3 Connection Migration, and Cloudflare official docs scope HTTP/3 to the user-to-Cloudflare leg.",
+    "unsafe_claim": "A CloudFront or Cloudflare HTTP/3 toggle proves end-to-end origin QUIC Connection Migration, origin qlog path validation, or application-origin single-session continuity.",
+    "next_non_iphone_gate": "For CloudFront, run a viewer-edge continuity experiment and label it edge-level; for origin end-to-end CM, keep using direct-origin or CID-aware load-balancer paths with server qlog and backend routing evidence."
+  }
+}

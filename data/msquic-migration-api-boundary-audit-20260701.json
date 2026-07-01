@@ -1,0 +1,145 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "implementation": "MsQuic",
+  "source_commit": "51d449b7d2deb553d6503591f72a8e62d1071054",
+  "source_repository": "https://github.com/microsoft/msquic",
+  "local_clone": {
+    "path": "/private/tmp/quic-cm-scan-repos/msquic",
+    "exists": true,
+    "commit": "51d449b7d2deb553d6503591f72a8e62d1071054",
+    "matches_audit_commit": "yes"
+  },
+  "summary": {
+    "evidence_items": 12,
+    "migration_enabled_default": "TRUE",
+    "load_balancing_default": "QUIC_LOAD_BALANCING_DISABLED",
+    "nat_rebinding_tests_present": "yes",
+    "peer_address_changed_event_present": "yes",
+    "local_address_param_present": "yes",
+    "quic_go_style_addpath_probe_switch_public_api": "not_established_by_public_header_scan",
+    "interpretation": "MsQuic is mature for client migration/NAT rebinding and QUIC-aware LB deployments, but its public control surface differs from quic-go's direct AddPath/Probe/Switch experiment API."
+  },
+  "conclusion": {
+    "migration_support_status": "implemented_and_tested_for_client_migration_rebinding",
+    "active_api_boundary": "policy_constrained_local_address_control_not_quic_go_style_addpath_probe_switch",
+    "deployment_boundary": "requires_no_load_balancer_or_cooperative_quic_aware_load_balancer",
+    "observability_status": "public_address_changed_events_and_internal_logs_available",
+    "paper_use": "Use MsQuic as production-relevant selected rebind/path-validation runtime-test and deployment-boundary evidence, not as the deepest controllable active-migration positive control."
+  },
+  "evidence": [
+    {
+      "id": "load-balancing-mode-enum",
+      "file": "src/inc/msquic.h",
+      "lines": "90-96",
+      "symbol_or_topic": "QUIC_LOAD_BALANCING_MODE",
+      "observation": "Public API defines disabled, server-id-by-IP, and fixed-server-id load balancing modes.",
+      "implication": "MsQuic has explicit CID/load-balancing support, but it is deployment configuration rather than per-connection migration proof.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/inc/msquic.h#L90"
+    },
+    {
+      "id": "migration-setting-public-api",
+      "file": "src/inc/msquic.h",
+      "lines": "789-843",
+      "symbol_or_topic": "QUIC_SETTINGS.MigrationEnabled",
+      "observation": "The public settings struct exposes a MigrationEnabled bit.",
+      "implication": "Client migration support is a first-class setting in the public API surface.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/inc/msquic.h#L789"
+    },
+    {
+      "id": "default-migration-enabled",
+      "file": "src/core/quicdef.h",
+      "lines": "441-448",
+      "symbol_or_topic": "QUIC_DEFAULT_MIGRATION_ENABLED",
+      "observation": "Migration defaults to TRUE while load balancing defaults to disabled.",
+      "implication": "The implementation is not missing migration support, but production LB routing is not enabled by default.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/core/quicdef.h#L441"
+    },
+    {
+      "id": "settings-doc-migration-lb-boundary",
+      "file": "docs/Settings.md",
+      "lines": "51-55",
+      "symbol_or_topic": "Settings documentation",
+      "observation": "Docs list load balancing as disabled by default and client migration as enabled by default, requiring a cooperative load balancer or no load balancer.",
+      "implication": "A paper claim must separate endpoint support from QUIC-aware deployment routing.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/docs/Settings.md#L51"
+    },
+    {
+      "id": "deployment-doc-lb-configuration",
+      "file": "docs/Deployment.md",
+      "lines": "90-105",
+      "symbol_or_topic": "Deployment load balancing modes",
+      "observation": "Docs state load-balancing encoding is not enabled by default and describe modes 1 and 2.",
+      "implication": "Managed or multi-server deployment evidence requires explicit LoadBalancingMode configuration and routing validation.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/docs/Deployment.md#L90"
+    },
+    {
+      "id": "local-address-connection-param",
+      "file": "src/inc/msquic.h",
+      "lines": "1035-1039",
+      "symbol_or_topic": "QUIC_PARAM_CONN_LOCAL_ADDRESS",
+      "observation": "The connection parameter table exposes local and remote address parameters.",
+      "implication": "Applications can influence local address binding, but this is not the same shape as quic-go AddPath/Probe/Switch.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/inc/msquic.h#L1035"
+    },
+    {
+      "id": "settings-doc-local-address-limits",
+      "file": "docs/Settings.md",
+      "lines": "180-186",
+      "symbol_or_topic": "QUIC_PARAM_CONN_LOCAL_ADDRESS docs",
+      "observation": "Docs say local address is client-only and must be set before start or after handshake confirmation.",
+      "implication": "There is a controlled local-address hook, but it has state and endpoint limits that must be respected in experiments.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/docs/Settings.md#L180"
+    },
+    {
+      "id": "local-address-set-state-check",
+      "file": "src/core/connection.c",
+      "lines": "6380-6405",
+      "symbol_or_topic": "Set QUIC_PARAM_CONN_LOCAL_ADDRESS",
+      "observation": "The setter rejects server use and rejects use between start and handshake confirmation.",
+      "implication": "MsQuic exposes a policy-constrained address-setting API rather than a generic active-path switch primitive.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/core/connection.c#L6380"
+    },
+    {
+      "id": "peer-address-changed-event-api",
+      "file": "src/inc/msquic.h",
+      "lines": "1344-1394",
+      "symbol_or_topic": "QUIC_CONNECTION_EVENT_PEER_ADDRESS_CHANGED",
+      "observation": "The public connection event enum includes local and peer address changed notifications.",
+      "implication": "MsQuic has application-visible observability for tuple change events.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/inc/msquic.h#L1344"
+    },
+    {
+      "id": "peer-address-changed-implementation",
+      "file": "src/core/connection.c",
+      "lines": "5561-5568",
+      "symbol_or_topic": "Indicate peer address changed",
+      "observation": "Core connection code emits the peer-address-changed event when the remote path changes.",
+      "implication": "Passive rebinding/migration can be observed at the application callback layer.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/core/connection.c#L5561"
+    },
+    {
+      "id": "nat-port-rebind-test",
+      "file": "src/test/lib/HandshakeTest.cpp",
+      "lines": "685-735",
+      "symbol_or_topic": "QuicTestNatPortRebind",
+      "observation": "The test changes the observed client port and waits for the server-side peer address change event.",
+      "implication": "There is concrete NAT port rebinding test coverage.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/test/lib/HandshakeTest.cpp#L685"
+    },
+    {
+      "id": "nat-address-rebind-test",
+      "file": "src/test/lib/HandshakeTest.cpp",
+      "lines": "739-790",
+      "symbol_or_topic": "QuicTestNatAddrRebind",
+      "observation": "The test changes the observed client address and waits for the peer address change event.",
+      "implication": "There is concrete NAT address rebinding test coverage.",
+      "url": "https://github.com/microsoft/msquic/blob/51d449b7d2deb553d6503591f72a8e62d1071054/src/test/lib/HandshakeTest.cpp#L739"
+    }
+  ],
+  "reporting_boundary": {
+    "safe_claim": "MsQuic exposes migration settings, address-change events, constrained local-address control, NAT rebinding tests, and a companion selected v4/v6 rebind/path-validation runtime-test PASS artifact.",
+    "unsafe_claim": "MsQuic has the same direct application-triggered active migration API shape as quic-go or proves managed-LB continuity without a QUIC-aware routing experiment.",
+    "next_non_iphone_gate": "Use the companion selected runtime-test packet for MsQuic implementation evidence; build a small payload-continuity harness or live QUIC-aware LB row only if reviewers require it."
+  }
+}

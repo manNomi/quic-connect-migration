@@ -1,0 +1,137 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "source_paths": {
+    "runner": "harness/scripts/run-aws-s2n-nlb-live-data-plane.sh",
+    "client": "experiments/s2n-quic-nlb-cid-provider/src/bin/nlb_live_client.rs",
+    "proxy": "repro/quic-go-min-repro/cmd/udprebindproxy/main.go",
+    "preflight_env": "data/aws-s2n-phase2-rebinding-preflight-20260701.txt"
+  },
+  "source_exists": {
+    "runner": true,
+    "client": true,
+    "proxy": true,
+    "preflight_env": true
+  },
+  "summary": {
+    "runner_mode_ready": true,
+    "chunked_client_ready": true,
+    "remote_proxy_bind_ready": true,
+    "pre_resource_preflight_recorded": true,
+    "preflight_validation": "blocked",
+    "preflight_blocked_reason": "aws_identity_invalid_client_token",
+    "preflight_path_change_mode": "rebinding_proxy",
+    "preflight_go_found": "yes",
+    "preflight_rebinding_proxy_source_ready": "yes",
+    "audit_decision": "The phase-2 NAT-rebinding proxy runner is packaged and fail-closed, but AWS credential gates still block live execution."
+  },
+  "checks": {
+    "runner": [
+      {
+        "name": "mode_flag",
+        "token": "PATH_CHANGE_MODE=\"${PATH_CHANGE_MODE:-forwarding_echo}\"",
+        "present": true,
+        "meaning": "Default remains forwarding echo."
+      },
+      {
+        "name": "rebinding_mode_gate",
+        "token": "PATH_CHANGE_MODE\" == \"rebinding_proxy\"",
+        "present": true,
+        "meaning": "Rebinding mode is explicit."
+      },
+      {
+        "name": "proxy_build",
+        "token": "go build -o \"$RUN_DIR/bin/udprebindproxy\"",
+        "present": true,
+        "meaning": "Proxy is built inside the run artifact."
+      },
+      {
+        "name": "proxy_upstream_bind",
+        "token": "--upstream-bind-ip",
+        "present": true,
+        "meaning": "Proxy can bind local upstream sockets for remote NLB targets."
+      },
+      {
+        "name": "chunk_env",
+        "token": "PAYLOAD_CHUNKS=\"$PAYLOAD_CHUNKS\"",
+        "present": true,
+        "meaning": "Client can be forced to send after the proxy switch."
+      },
+      {
+        "name": "delay_env",
+        "token": "CHUNK_DELAY_MS=\"$CHUNK_DELAY_MS\"",
+        "present": true,
+        "meaning": "Client chunk timing is configurable."
+      },
+      {
+        "name": "proxy_rebind_observed",
+        "token": "proxy_rebind_observed",
+        "present": true,
+        "meaning": "Summary separates proxy-observed rebind from forwarding echo."
+      },
+      {
+        "name": "phase2_claim_boundary",
+        "token": "s2n_nlb_nat_rebinding_proxy_not_public_active_migration",
+        "present": true,
+        "meaning": "Result boundary avoids claiming public active migration API support."
+      }
+    ],
+    "client": [
+      {
+        "name": "payload_chunks",
+        "token": "env_value(\"PAYLOAD_CHUNKS\", \"1\")",
+        "present": true,
+        "meaning": "Chunked send is opt-in and default-compatible."
+      },
+      {
+        "name": "chunk_delay",
+        "token": "env_value(\"CHUNK_DELAY_MS\", \"0\")",
+        "present": true,
+        "meaning": "Chunk delay is opt-in and default-compatible."
+      },
+      {
+        "name": "chunk_sender",
+        "token": "payload_chunks_for",
+        "present": true,
+        "meaning": "Payload is split across multiple sends when configured."
+      },
+      {
+        "name": "client_result_fields",
+        "token": "payload_chunks: usize",
+        "present": true,
+        "meaning": "Client result records the configured chunk count."
+      }
+    ],
+    "proxy": [
+      {
+        "name": "upstream_bind_flag",
+        "token": "flag.String(\"upstream-bind-ip\"",
+        "present": true,
+        "meaning": "Proxy exposes a bind-IP flag."
+      },
+      {
+        "name": "remote_wildcard_bind",
+        "token": "net.IPv4zero",
+        "present": true,
+        "meaning": "Remote upstream targets can use wildcard local binding."
+      },
+      {
+        "name": "loopback_preserved",
+        "token": "serverUDPAddr.IP.IsLoopback()",
+        "present": true,
+        "meaning": "Loopback behavior remains stable for local Chrome controls."
+      },
+      {
+        "name": "bind_recorded",
+        "token": "UpstreamBindIP",
+        "present": true,
+        "meaning": "Proxy result records the bind decision."
+      }
+    ]
+  },
+  "claim_boundary": {
+    "safe_claim": "The repository now has a runnable phase-2 mode that can place a UDP rebinding proxy between the s2n client and AWS NLB, force chunked client traffic after the proxy switch, and classify proxy-observed rebinding separately from forwarding echo.",
+    "unsafe_claim": "This audit proves live AWS NLB+s2n NAT-rebinding continuity, application-triggered active migration, browser handover, or current upstream s2n public active migration API support.",
+    "next_step": "After AWS identity opens, run forwarding echo first; only if that passes, run this mode with PATH_CHANGE_MODE=rebinding_proxy, PAYLOAD_CHUNKS>1, and CHUNK_DELAY_MS>0."
+  }
+}

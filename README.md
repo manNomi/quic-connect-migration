@@ -83,6 +83,38 @@
 71. Polling/dashboard 4000ms local replication 3회를 추가 실행했고 모두 FAIL이었다. 기존 1/3 PASS와 합산하면 4000ms는 1/6 PASS, 5/6 FAIL인 failure-heavy transition zone으로 정리된다.
 72. Upload 4750ms local replication 3회를 추가 실행했고 2/3 PASS였다. 기존 1/3 PASS와 합산하면 4750ms upload는 3/6 PASS, 3/6 FAIL인 중심 transition zone으로 유지된다.
 73. Downlink 5000/5500ms local replication 6회를 추가 실행했고 5000ms는 3/3 PASS, 5500ms는 2/3 PASS였다. 기존 결과와 합산하면 5000ms는 5/6 PASS, 5500ms는 4/6 PASS로 성공 편향 transition zone이다.
+74. AWS NLB + s2n-quic 전용 live runner를 추가했다. 새 s2n live server/client는 local echo smoke를 통과했고, 현재 AWS credential은 `invalid_client_token`이라 runner는 resource 생성 전에 `validation=blocked`로 닫힌다.
+75. s2n-quic active migration API audit를 추가했다. focused `connection_migration` test는 `10 passed`였지만, 현재 public app API에서 quic-go식 `AddPath -> Probe -> Switch` trigger는 확인되지 않아 AWS NLB+s2n active path-change는 forwarding echo 이후 별도 phase로 남긴다.
+76. mvfst migration test readiness runner를 추가했다. latest remote HEAD 기준 focused migration/path test case 106개와 BUCK target 3개를 확인했지만, 현재 로컬은 disk 부족, `buck2` 없음, CMake direct target 미노출로 build/test 실행은 `validation=blocked`로 남긴다.
+77. nginx `quic_bpf` Linux runner를 추가했다. Linux/root/`/sys/fs/bpf` 조건이 열리면 `quic_bpf on;`과 `listen ... reuseport`로 기존 active migration workload를 실행하고, 현재 macOS 로컬에서는 `validation=blocked`, `blocked_reason=linux_required`로 닫힌다.
+78. Chrome desktop non-iPhone media local refresh를 추가했다. fresh local forced-H3 media run은 `PASS`, `nat_rebinding_possible_session_continuity`, Chrome target QUIC session `1`, server remote tuple `2`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐지만, public Wi-Fi/LTE handover claim은 아니다.
+79. Chrome desktop non-iPhone range local refresh를 추가했다. 1MiB byte-range workload 2회가 retry 없이 2/2 PASS였고, 두 row 모두 Chrome target QUIC session `1`, server remote tuple `2`, qlog PATH_CHALLENGE/PATH_RESPONSE `1/1`로 관찰됐다. 이 역시 local UDP rebinding control이지 public handover claim은 아니다.
+80. Chrome desktop non-iPhone upload local refresh를 추가했다. 128KiB upload workload는 retry 없이 PASS였고 Chrome target QUIC session `1`, qlog/NetLog PATH_CHALLENGE/PATH_RESPONSE `1/1`, proxy packet A/B `29/110`이 관찰됐다. 다만 server request-level remote tuple은 `1`개라서 upload에서는 request log만으로 path change를 판단하면 안 된다.
+81. Safari WebDriver readiness를 binary readiness와 session readiness로 분리했다. 현재 장비는 Safari `26.2`, `safaridriver exit=0`, packet capture tooling ready이지만 실제 WebDriver session creation은 Safari Settings의 `Allow remote automation` 미활성화로 실패하므로 Safari controlled-public trial은 아직 실행할 수 없다.
+82. user-provided public origin readiness를 redacted로 확인했다. HTTPS reachability는 있지만 현재 `HTTP/2 200`이고 `h3 Alt-Svc=false`라서, 그대로는 controlled-public Chrome H3/CM 실험 타깃이 아니다.
+83. non-iPhone next research decision brief를 추가했다. 현재 구현체 성숙도 조사를 더 늘리기보다 deployment/browser bridge를 열어야 하며, 1순위는 AWS credential refresh 후 AWS NLB+s2n live forwarding echo, 2순위는 controlled public Chrome media/range/upload trial, Safari는 `PASS_FEASIBILITY` 보강으로 정리된다.
+84. 2026-07-01 non-iPhone gate rerun을 추가했다. AWS는 여전히 `invalid_client_token`, Safari WebDriver session은 `Allow remote automation` 미활성화, user-provided public origin은 `h3 Alt-Svc=false`라서 다음 실험 시작 전 외부 gate가 필요하다.
+85. Chrome desktop non-iPhone music-like local refresh를 추가했다. 6000ms local outage에서 retry0은 0/1 FAIL, retry1은 1/1 PASS였지만 retry1도 Chrome target QUIC session `3`개로 관찰되어, 음악형 streaming completion은 single-session CM이 아니라 application retry/reconnect 회복으로 해석해야 한다.
+86. tracked controlled-public Chrome validation 18개를 bridge synthesis로 묶었다. no-change H3 baseline은 6/6 확인됐지만 active network-change 12개 중 single-session CM 성공으로 볼 수 있는 row는 0개라서, 현재 public-browser evidence는 성공 결론이 아니라 deployment/browser bridge gap과 negative-control 근거로 해석해야 한다.
+87. Chrome desktop non-iPhone buffered-media local refresh를 추가했다. 6000ms local outage에서 low/high buffer row 모두 playback complete였지만 low buffer는 rebuffer `6`, high buffer는 rebuffer `1`, 두 row 모두 Chrome target QUIC session `3`개로 관찰되어 동영상형 completion은 QoE 비용과 session churn을 함께 봐야 함을 보강했다.
+88. non-iPhone workload continuity/QoE synthesis를 추가했다. 기존 local Chrome/quic-go CSV 8개에서 32개 row를 정규화했고, range/download와 upload는 single-session local path-validation evidence가 상대적으로 강한 반면 buffered video와 music-like segment는 completion을 QoE 비용, retry/reconnect, Chrome session churn과 분리해야 함을 확인했다.
+89. non-iPhone public workload trial packet을 추가했다. public H3 origin과 desktop active path-change command가 준비되면 baseline, range no-change, range active 3회, upload no-change, upload active 3회, buffered low/high active, music-like retry0/retry1 active 순서로 실행하며 strong CM acceptance는 task completion, client path change, target tuple change, qlog PATH_CHALLENGE/PATH_RESPONSE, Chrome target QUIC session `1`개를 모두 요구하도록 고정했다.
+90. controlled public origin workload deploy packet을 추가했다. WebPKI TLS, TCP/UDP 443, Alt-Svc `h3`, quic-go H3 server baseline, non-iPhone public workload packet 실행 순서를 하나로 연결해 public origin gate가 열리면 range/upload/media trial로 바로 넘어갈 수 있게 했다.
+91. non-iPhone desktop path-change readiness를 추가했다. 현재 호스트는 active IPv4 interface가 `en0` 하나뿐이라 iPhone을 제외한 desktop active secondary path가 없고, iPhone latent failover와 Android 후보는 desktop public workload gate에서 제외했다. 따라서 public workload active row를 세기 전 Ethernet/USB LAN/Thunderbolt Ethernet 같은 non-iPhone secondary path를 먼저 열어야 한다.
+92. non-quic-go execution depth audit를 추가했다. quic-go는 가장 깊은 controlled AddPath/Probe/Switch positive control이지만, quiche/s2n/ngtcp2/MsQuic/Quinn/Neqo/picoquic 등은 test-suite/runtime/source/deployment-readiness evidence를 제공하므로 "CM이 구현체에 없어서 안 쓰인다"는 설명은 부족하다는 결론을 고정했다.
+93. MsQuic migration API boundary audit를 추가했다. MsQuic은 `MigrationEnabled`, address-change event, NAT rebind/path-validation tests가 있어 구현 부재 설명을 약화하지만, public control surface는 `QUIC_PARAM_CONN_LOCAL_ADDRESS` 기반의 policy-constrained local-address control이며 quic-go식 `AddPath -> Probe -> Switch` positive control과 같다고 쓰면 안 된다.
+94. MsQuic rebind/path-validation packet과 fail-closed runner를 추가했다. MsQuic selected user-mode v4/v6 `RebindPort`/`RebindAddr`/`PathValidationTimeout`/`PathValidationLastPathClose` runner가 `validation=ok`, `total_ok_count=8`, `passed_summary_count=2`, `failed_marker_count=0`으로 통과했다. 단 이 결과는 selected runtime-test positive control이며 HTTP/3 application continuity, browser handover, AWS NLB/CloudFront deployment success는 아니다.
+95. XQUIC full-suite Linux audit와 fail-closed runner를 추가했다. XQUIC은 source callback, NAT rebinding validation, local NAT rebinding demo PASS 근거가 있지만 full suite PASS는 아직 아니므로 `harness/scripts/run-xquic-full-suite-linux.sh`를 Linux에서 실행해 `validation=ok` artifact가 나와야 claim을 승격할 수 있다.
+96. mvfst focused Linux runner audit를 추가했다. mvfst는 dedicated path manager, client active migration, server passive migration/NAT rebinding, focused BUCK target 3개, 106개 observed test case 근거가 있지만 local PASS는 아니므로 `harness/scripts/run-mvfst-focused-migration-tests-linux.sh`가 Linux/buck2 환경에서 `validation=ok`를 내야 실행 근거로 승격한다.
+97. quicly full-e2e Linux runner audit를 추가했다. quicly는 focused `path-migration` e2e와 CID seq 1 first path probe check가 PASS지만 full `t/e2e.t`는 아직 clean PASS가 아니므로 `harness/scripts/run-quicly-full-e2e-linux.sh`가 Linux에서 `validation=ok_full_e2e`를 내야 full-e2e claim을 승격한다.
+98. Chromium/Cronet policy-boundary audit를 추가했다. Chromium client session에는 socket migration hook과 network-change/path-degrading callback이 있고 NetLog에는 migration trigger/success/failure/probing event family가 있지만, Cronet은 QUIC enabled 경로에서 network-change migration을 명시적으로 disable하므로 Chrome/Cronet handover 성공은 runtime row 없이 주장하지 않는다.
+99. CDN edge CM boundary audit를 추가했다. CloudFront 공식 문서는 viewer-CloudFront HTTP/3 connection migration을 지지하지만 origin end-to-end QUIC CM을 증명하지 않고, Cloudflare 공식 문서는 HTTP/3를 user-Cloudflare 구간으로 제한하므로 CDN H3 support는 edge-level continuity로만 해석한다.
+100. Firefox/Neqo browser-boundary audit를 추가했다. Neqo는 Firefox-adjacent 구현체이고 `migrate`, passive rebinding, preferred-address, disable-migration, qlog transport parameter, ECN/PMTUD migration test evidence가 강하지만, standalone Neqo rerun은 Firefox browser HTTP/3 handover proof가 아니므로 Firefox runtime row를 별도 gate로 남긴다.
+101. Firefox desktop runtime trial packet을 추가했다. 현재 호스트에는 Firefox/geckodriver와 non-iPhone desktop path-change gate가 없어 런타임 결과는 없지만, local Neqo H3 baseline, controlled-public H3 baseline, range active, upload active row의 필요 artifact와 claim boundary를 fail-closed로 고정했다.
+102. Quinn migration API boundary audit를 추가했다. Quinn은 server migration policy, endpoint-wide socket rebind, preferred-address, PATH_CHALLENGE/PATH_RESPONSE, fresh migration/rebind tests가 강하지만 public control surface는 quic-go식 per-connection `AddPath -> Probe -> Switch`가 아니라 endpoint rebind 중심이라고 고정했다.
+103. ngtcp2 migration API boundary audit를 추가했다. ngtcp2는 공개 header에 immediate/validation-gated client migration API, path-validation callback, disable-active-migration/preferred-address policy, qlog PATH_CHALLENGE/PATH_RESPONSE 근거가 있어 C-library 비교군으로 강하지만 browser/deployment continuity는 별도 runtime row가 필요하다.
+104. ngtcp2 runtime trial packet과 fail-closed runner를 갱신했다. 공식 `osslclient/osslserver` 기반 HTTP/3 example migration row가 로컬에서 `validation=ok`, `client_exit=0`, local address change `1`, qlog PATH_CHALLENGE/PATH_RESPONSE `34/24`로 통과해 두 번째 C-library runtime positive control로 승격했다. 단 browser/deployment continuity claim은 별도 gate로 남긴다.
+105. Quinn rebind runtime packet과 fail-closed runner를 추가했다. Quinn upstream `rebind_recv`와 `quinn-proto` migration test를 dedicated runner로 재실행했고 `validation=ok`, rebind logs `connected/got conn/rebound`, PATH_CHALLENGE/PATH_RESPONSE `3/3`, new path validated `1`을 확인했다. 단 이 결과는 Rust endpoint-wide rebind positive control이며 browser/HTTP/3 application/deployment continuity claim은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -266,6 +298,41 @@
 - [Chrome H3 local UDP rebinding proxy results](docs/results/chrome-h3-rebinding-proxy-results-20260624.md)
 - [Chrome H3 local UDP rebinding repetition summary](docs/results/chrome-h3-rebinding-repetition-summary-20260624.md)
 - [Chrome H3 local UDP rebinding upload summary](docs/results/chrome-h3-rebinding-upload-summary-20260624.md)
+- [Chrome desktop non-iPhone upload local refresh](docs/results/chrome-desktop-noniphone-upload-local-refresh-20260630.md)
+- [Chrome desktop non-iPhone music-like local refresh](docs/results/chrome-desktop-noniphone-musiclike-local-refresh-20260701.md)
+- [Chrome desktop non-iPhone buffered media local refresh](docs/results/chrome-desktop-noniphone-buffered-media-local-refresh-20260701.md)
+- [Non-iPhone workload continuity and QoE synthesis](docs/results/noniphone-workload-qoe-continuity-synthesis-20260701.md)
+- [Non-iPhone public workload trial packet](docs/results/noniphone-public-workload-trial-packet-20260701.md)
+- [Non-iPhone claim readiness dashboard](docs/results/noniphone-claim-readiness-dashboard-20260701.md)
+- [Non-iPhone professor decision packet](docs/results/noniphone-professor-decision-packet-20260701.md)
+- [Non-iPhone reviewer risk audit](docs/results/noniphone-reviewer-risk-audit-20260701.md)
+- [Non-iPhone paper wording guard](docs/results/noniphone-paper-wording-guard-20260701.md)
+- [Non-iPhone paper section scaffold](docs/results/noniphone-paper-section-scaffold-20260701.md)
+- [Non-quic-go implementation findings](docs/results/non-quicgo-implementation-findings-20260701.md)
+- [Non-quic-go execution depth audit](docs/results/non-quicgo-execution-depth-audit-20260701.md)
+- [MsQuic migration API boundary audit](docs/results/msquic-migration-api-boundary-audit-20260701.md)
+- [MsQuic rebind path-validation packet](docs/results/msquic-rebind-pathvalidation-packet-20260701.md)
+- [ngtcp2 migration API boundary audit](docs/results/ngtcp2-migration-api-boundary-audit-20260701.md)
+- [ngtcp2 runtime trial packet](docs/results/ngtcp2-runtime-trial-packet-20260701.md)
+- [Quinn migration API boundary audit](docs/results/quinn-migration-api-boundary-audit-20260701.md)
+- [Quinn rebind runtime packet](docs/results/quinn-rebind-runtime-packet-20260701.md)
+- [XQUIC full-suite Linux audit](docs/results/xquic-full-suite-linux-audit-20260701.md)
+- [mvfst focused Linux runner audit](docs/results/mvfst-focused-linux-runner-audit-20260701.md)
+- [quicly full-e2e Linux runner audit](docs/results/quicly-full-e2e-linux-audit-20260701.md)
+- [AWS s2n live runner safety audit](docs/results/aws-s2n-live-runner-safety-audit-20260701.md)
+- [AWS s2n phase-2 path-change design](docs/results/aws-s2n-phase2-path-change-design-20260701.md)
+- [AWS s2n phase-2 rebinding runner audit](docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md)
+- [AWS s2n phase-2 artifact classifier contract](docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md)
+- [Controlled public origin workload deploy packet](docs/results/controlled-public-origin-workload-deploy-packet-20260701.md)
+- [Non-iPhone desktop path-change readiness](docs/results/noniphone-desktop-path-change-readiness-20260701.md)
+- [Controlled public Chrome bridge synthesis](docs/results/controlled-public-chrome-bridge-synthesis-20260701.md)
+- [Controlled public Chrome artifact classifier contract](docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md)
+- [Controlled public Chrome contract application audit](docs/results/controlled-public-chrome-contract-application-audit-20260701.md)
+- [Safari WebDriver session readiness](docs/results/safari-webdriver-session-readiness-20260630.md)
+- [User-provided public origin readiness](docs/results/user-provided-public-origin-readiness-20260630.md)
+- [Non-iPhone next research decision brief](docs/results/non-iphone-next-research-decision-20260630.md)
+- [Non-iPhone gate rerun report](docs/results/non-iphone-gate-rerun-20260701.md)
+- [Firefox desktop runtime trial packet](docs/results/firefox-desktop-runtime-trial-packet-20260701.md)
 - [Chrome H3 local transient return-path sweep](docs/results/chrome-h3-rebinding-transient-return-path-sweep-20260624.md)
 - [Chrome H3 local transient boundary repetition](docs/results/chrome-h3-rebinding-transient-boundary-repetition-20260624.md)
 - [Chrome H3 local transient downlink fine boundary](docs/results/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.md)

@@ -1,15 +1,15 @@
 {
-  "generated": "2026-06-26",
+  "generated": "2026-07-01",
   "public_safe": true,
-  "experiment_trials": 96,
+  "experiment_trials": 99,
   "experiment_status_counts": {
-    "PASS": 32,
+    "PASS": 33,
     "PASS_FEASIBILITY": 6,
-    "PASS_NEGATIVE_CONTROL": 58
+    "PASS_NEGATIVE_CONTROL": 60
   },
   "verification": {
-    "checks": "109",
-    "passed": "109",
+    "checks": "157",
+    "passed": "157",
     "ok": "yes"
   },
   "ci": {
@@ -44,6 +44,7 @@
     "transition_zone": 5
   },
   "missing_gate_counts": {
+    "baseline_summary_ready": 7,
     "desktop_secondary_path_ready": 7,
     "network_change_command_present": 7
   },
@@ -54,7 +55,7 @@
     "optional-missing": 2,
     "ready": 3
   },
-  "next_operator_action": "Prepare an active secondary path and an operator-approved NETWORK_CHANGE_CMD.",
+  "next_operator_action": "Run and register the controlled-public Chrome application H3 baseline.",
   "safe_claim_boundary": "Do not claim Chrome/Safari/Android browser handover CM success until the final browser handover protocol has countable rows.",
   "key_paths": {
     "manifest": "data/reproducibility-manifest-20260624.json",

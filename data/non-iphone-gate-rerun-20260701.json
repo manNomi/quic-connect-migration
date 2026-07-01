@@ -1,0 +1,45 @@
+{
+  "generated_local_date": "2026-07-01",
+  "public_safe": true,
+  "missing_inputs": [],
+  "open_gates": [],
+  "all_key_gates_blocked": true,
+  "aws": {
+    "input_path": "harness/results/s2n-nlb-live-readiness-20260701-gate/results/result.env",
+    "input_exists": true,
+    "identity_ok": "no",
+    "identity_classification": "invalid_client_token",
+    "s2n_live_nlb_runner_ready": "yes",
+    "can_run_live_s2n_nlb_now": "no",
+    "blocked_reason": "aws_identity_invalid_client_token"
+  },
+  "safari": {
+    "input_path": "harness/results/browser-cm-observability-20260701-after-safaridriver-enable/results/browser-cm-observability.json",
+    "input_exists": true,
+    "chrome_netlog_ready": true,
+    "safari_webdriver_binary_ready": true,
+    "safari_webdriver_session_checked": true,
+    "safari_webdriver_session_ready": false,
+    "safari_webdriver_ready": false,
+    "safari_session_error_class": "allow_remote_automation_disabled",
+    "safaridriver_enable_status": "exit_1_password_prompt_required",
+    "packet_capture_tooling_ready": true
+  },
+  "public_origin": {
+    "input_path": "harness/results/user-provided-public-origin-readiness-20260701-gate/results/public-origin-readiness-redacted.json",
+    "input_exists": true,
+    "ok": true,
+    "tcp_tls_ok": true,
+    "curl_https_ok": true,
+    "final_status": "HTTP/2 200",
+    "has_h3_alt_svc": false,
+    "redacted": true,
+    "error_class": "certificate_verify_failed"
+  },
+  "next_required_inputs": [
+    "Refresh AWS credentials for AWS NLB+s2n live forwarding.",
+    "Configure a controlled public H3 origin with WebPKI TLS, Alt-Svc, and workload endpoints.",
+    "Enable Safari Allow remote automation if Safari feasibility trials are needed."
+  ],
+  "claim_boundary": "This rerun is readiness evidence only. It is not browser Connection Migration, AWS NLB forwarding, or Safari HTTP/3 continuity evidence."
+}

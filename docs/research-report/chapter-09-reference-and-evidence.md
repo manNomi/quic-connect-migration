@@ -64,6 +64,8 @@
 | [docs/results/controlled-public-chrome-range-retry-network-change-page-ready-fresh-20260629-002-validation.md](../results/controlled-public-chrome-range-retry-network-change-page-ready-fresh-20260629-002-validation.md) | retry=2 active trial 002 validation |
 | [docs/results/controlled-public-chrome-range-retry-network-change-page-ready-fresh-20260629-003-validation.md](../results/controlled-public-chrome-range-retry-network-change-page-ready-fresh-20260629-003-validation.md) | retry=2 active trial 003 validation |
 | [docs/results/controlled-public-full-downlink-iphone-usb-handover-20260629.md](../results/controlled-public-full-downlink-iphone-usb-handover-20260629.md) | full-response downlink 비교 결과 |
+| [docs/results/chrome-desktop-noniphone-range-local-refresh-20260630.md](../results/chrome-desktop-noniphone-range-local-refresh-20260630.md) | fresh non-iPhone Chrome desktop range local control |
+| [data/chrome-desktop-noniphone-range-local-refresh-20260630.csv](../../data/chrome-desktop-noniphone-range-local-refresh-20260630.csv) | fresh range local control CSV |
 
 Raw artifacts are intentionally ignored by git:
 

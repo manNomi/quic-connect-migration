@@ -125,6 +125,60 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     controlled_public_origin_deploy_packet = "docs/results/controlled-public-origin-deploy-packet-20260624.md"
     reproducibility_manifest = "docs/results/reproducibility-manifest-20260624.md"
     reproducibility_manifest_json = "data/reproducibility-manifest-20260624.json"
+    noniphone_claim_readiness_dashboard = "docs/results/noniphone-claim-readiness-dashboard-20260701.md"
+    noniphone_claim_readiness_dashboard_json = "data/noniphone-claim-readiness-dashboard-20260701.json"
+    noniphone_professor_decision_packet = "docs/results/noniphone-professor-decision-packet-20260701.md"
+    noniphone_professor_decision_packet_json = "data/noniphone-professor-decision-packet-20260701.json"
+    noniphone_reviewer_risk_audit = "docs/results/noniphone-reviewer-risk-audit-20260701.md"
+    noniphone_reviewer_risk_audit_json = "data/noniphone-reviewer-risk-audit-20260701.json"
+    noniphone_paper_wording_guard = "docs/results/noniphone-paper-wording-guard-20260701.md"
+    noniphone_paper_wording_guard_json = "data/noniphone-paper-wording-guard-20260701.json"
+    noniphone_paper_section_scaffold = "docs/results/noniphone-paper-section-scaffold-20260701.md"
+    noniphone_paper_section_scaffold_json = "data/noniphone-paper-section-scaffold-20260701.json"
+    non_quicgo_implementation_findings = "docs/results/non-quicgo-implementation-findings-20260701.md"
+    non_quicgo_implementation_findings_json = "data/non-quicgo-implementation-findings-20260701.json"
+    non_quicgo_execution_depth_audit = "docs/results/non-quicgo-execution-depth-audit-20260701.md"
+    non_quicgo_execution_depth_audit_json = "data/non-quicgo-execution-depth-audit-20260701.json"
+    non_quicgo_execution_depth_audit_csv = "data/non-quicgo-execution-depth-audit-20260701.csv"
+    msquic_migration_api_boundary_audit = "docs/results/msquic-migration-api-boundary-audit-20260701.md"
+    msquic_migration_api_boundary_audit_json = "data/msquic-migration-api-boundary-audit-20260701.json"
+    msquic_rebind_pathvalidation_packet = "docs/results/msquic-rebind-pathvalidation-packet-20260701.md"
+    msquic_rebind_pathvalidation_packet_json = "data/msquic-rebind-pathvalidation-packet-20260701.json"
+    ngtcp2_migration_api_boundary_audit = "docs/results/ngtcp2-migration-api-boundary-audit-20260701.md"
+    ngtcp2_migration_api_boundary_audit_json = "data/ngtcp2-migration-api-boundary-audit-20260701.json"
+    ngtcp2_runtime_trial_packet = "docs/results/ngtcp2-runtime-trial-packet-20260701.md"
+    ngtcp2_runtime_trial_packet_json = "data/ngtcp2-runtime-trial-packet-20260701.json"
+    quinn_migration_api_boundary_audit = "docs/results/quinn-migration-api-boundary-audit-20260701.md"
+    quinn_migration_api_boundary_audit_json = "data/quinn-migration-api-boundary-audit-20260701.json"
+    quinn_rebind_runtime_packet = "docs/results/quinn-rebind-runtime-packet-20260701.md"
+    quinn_rebind_runtime_packet_json = "data/quinn-rebind-runtime-packet-20260701.json"
+    xquic_full_suite_linux_audit = "docs/results/xquic-full-suite-linux-audit-20260701.md"
+    xquic_full_suite_linux_audit_json = "data/xquic-full-suite-linux-audit-20260701.json"
+    mvfst_focused_linux_runner_audit = "docs/results/mvfst-focused-linux-runner-audit-20260701.md"
+    mvfst_focused_linux_runner_audit_json = "data/mvfst-focused-linux-runner-audit-20260701.json"
+    quicly_full_e2e_linux_audit = "docs/results/quicly-full-e2e-linux-audit-20260701.md"
+    quicly_full_e2e_linux_audit_json = "data/quicly-full-e2e-linux-audit-20260701.json"
+    aws_s2n_live_runner_safety_audit = "docs/results/aws-s2n-live-runner-safety-audit-20260701.md"
+    aws_s2n_live_runner_safety_audit_json = "data/aws-s2n-live-runner-safety-audit-20260701.json"
+    aws_s2n_phase2_path_change_design = "docs/results/aws-s2n-phase2-path-change-design-20260701.md"
+    aws_s2n_phase2_path_change_design_json = "data/aws-s2n-phase2-path-change-design-20260701.json"
+    aws_s2n_phase2_rebinding_runner_audit = "docs/results/aws-s2n-phase2-rebinding-runner-audit-20260701.md"
+    aws_s2n_phase2_rebinding_runner_audit_json = "data/aws-s2n-phase2-rebinding-runner-audit-20260701.json"
+    aws_s2n_phase2_artifact_classifier_contract = "docs/results/aws-s2n-phase2-artifact-classifier-contract-20260701.md"
+    aws_s2n_phase2_artifact_classifier_contract_json = "data/aws-s2n-phase2-artifact-classifier-contract-20260701.json"
+    controlled_public_chrome_artifact_classifier_contract = "docs/results/controlled-public-chrome-artifact-classifier-contract-20260701.md"
+    controlled_public_chrome_artifact_classifier_contract_json = "data/controlled-public-chrome-artifact-classifier-contract-20260701.json"
+    controlled_public_chrome_contract_application_audit = "docs/results/controlled-public-chrome-contract-application-audit-20260701.md"
+    controlled_public_chrome_contract_application_audit_json = "data/controlled-public-chrome-contract-application-audit-20260701.json"
+    controlled_public_chrome_contract_application_audit_csv = "data/controlled-public-chrome-contract-application-audit-20260701.csv"
+    chromium_cronet_policy_boundary_audit = "docs/results/chromium-cronet-policy-boundary-audit-20260701.md"
+    chromium_cronet_policy_boundary_audit_json = "data/chromium-cronet-policy-boundary-audit-20260701.json"
+    firefox_neqo_browser_boundary_audit = "docs/results/firefox-neqo-browser-boundary-audit-20260701.md"
+    firefox_neqo_browser_boundary_audit_json = "data/firefox-neqo-browser-boundary-audit-20260701.json"
+    firefox_desktop_runtime_trial_packet = "docs/results/firefox-desktop-runtime-trial-packet-20260701.md"
+    firefox_desktop_runtime_trial_packet_json = "data/firefox-desktop-runtime-trial-packet-20260701.json"
+    cdn_edge_cm_boundary_audit = "docs/results/cdn-edge-cm-boundary-audit-20260701.md"
+    cdn_edge_cm_boundary_audit_json = "data/cdn-edge-cm-boundary-audit-20260701.json"
     controlled_public_config = "docs/results/controlled-public-config-check-20260624.md"
     controlled_public_config_worksheet = "docs/results/controlled-public-config-worksheet-20260624.md"
     controlled_public_baseline_unlock = "docs/results/controlled-public-baseline-unlock-check-20260624.md"
@@ -191,6 +245,60 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         controlled_public_origin_deploy_packet = str(generated_dir / "controlled-public-origin-deploy-packet.md")
         reproducibility_manifest = str(generated_dir / "reproducibility-manifest.md")
         reproducibility_manifest_json = str(generated_dir / "reproducibility-manifest.json")
+        noniphone_claim_readiness_dashboard = str(generated_dir / "noniphone-claim-readiness-dashboard.md")
+        noniphone_claim_readiness_dashboard_json = str(generated_dir / "noniphone-claim-readiness-dashboard.json")
+        noniphone_professor_decision_packet = str(generated_dir / "noniphone-professor-decision-packet.md")
+        noniphone_professor_decision_packet_json = str(generated_dir / "noniphone-professor-decision-packet.json")
+        noniphone_reviewer_risk_audit = str(generated_dir / "noniphone-reviewer-risk-audit.md")
+        noniphone_reviewer_risk_audit_json = str(generated_dir / "noniphone-reviewer-risk-audit.json")
+        noniphone_paper_wording_guard = str(generated_dir / "noniphone-paper-wording-guard.md")
+        noniphone_paper_wording_guard_json = str(generated_dir / "noniphone-paper-wording-guard.json")
+        noniphone_paper_section_scaffold = str(generated_dir / "noniphone-paper-section-scaffold.md")
+        noniphone_paper_section_scaffold_json = str(generated_dir / "noniphone-paper-section-scaffold.json")
+        non_quicgo_implementation_findings = str(generated_dir / "non-quicgo-implementation-findings.md")
+        non_quicgo_implementation_findings_json = str(generated_dir / "non-quicgo-implementation-findings.json")
+        non_quicgo_execution_depth_audit = str(generated_dir / "non-quicgo-execution-depth-audit.md")
+        non_quicgo_execution_depth_audit_json = str(generated_dir / "non-quicgo-execution-depth-audit.json")
+        non_quicgo_execution_depth_audit_csv = str(generated_dir / "non-quicgo-execution-depth-audit.csv")
+        msquic_migration_api_boundary_audit = str(generated_dir / "msquic-migration-api-boundary-audit.md")
+        msquic_migration_api_boundary_audit_json = str(generated_dir / "msquic-migration-api-boundary-audit.json")
+        msquic_rebind_pathvalidation_packet = str(generated_dir / "msquic-rebind-pathvalidation-packet.md")
+        msquic_rebind_pathvalidation_packet_json = str(generated_dir / "msquic-rebind-pathvalidation-packet.json")
+        ngtcp2_migration_api_boundary_audit = str(generated_dir / "ngtcp2-migration-api-boundary-audit.md")
+        ngtcp2_migration_api_boundary_audit_json = str(generated_dir / "ngtcp2-migration-api-boundary-audit.json")
+        ngtcp2_runtime_trial_packet = str(generated_dir / "ngtcp2-runtime-trial-packet.md")
+        ngtcp2_runtime_trial_packet_json = str(generated_dir / "ngtcp2-runtime-trial-packet.json")
+        quinn_migration_api_boundary_audit = str(generated_dir / "quinn-migration-api-boundary-audit.md")
+        quinn_migration_api_boundary_audit_json = str(generated_dir / "quinn-migration-api-boundary-audit.json")
+        quinn_rebind_runtime_packet = str(generated_dir / "quinn-rebind-runtime-packet.md")
+        quinn_rebind_runtime_packet_json = str(generated_dir / "quinn-rebind-runtime-packet.json")
+        xquic_full_suite_linux_audit = str(generated_dir / "xquic-full-suite-linux-audit.md")
+        xquic_full_suite_linux_audit_json = str(generated_dir / "xquic-full-suite-linux-audit.json")
+        mvfst_focused_linux_runner_audit = str(generated_dir / "mvfst-focused-linux-runner-audit.md")
+        mvfst_focused_linux_runner_audit_json = str(generated_dir / "mvfst-focused-linux-runner-audit.json")
+        quicly_full_e2e_linux_audit = str(generated_dir / "quicly-full-e2e-linux-audit.md")
+        quicly_full_e2e_linux_audit_json = str(generated_dir / "quicly-full-e2e-linux-audit.json")
+        aws_s2n_live_runner_safety_audit = str(generated_dir / "aws-s2n-live-runner-safety-audit.md")
+        aws_s2n_live_runner_safety_audit_json = str(generated_dir / "aws-s2n-live-runner-safety-audit.json")
+        aws_s2n_phase2_path_change_design = str(generated_dir / "aws-s2n-phase2-path-change-design.md")
+        aws_s2n_phase2_path_change_design_json = str(generated_dir / "aws-s2n-phase2-path-change-design.json")
+        aws_s2n_phase2_rebinding_runner_audit = str(generated_dir / "aws-s2n-phase2-rebinding-runner-audit.md")
+        aws_s2n_phase2_rebinding_runner_audit_json = str(generated_dir / "aws-s2n-phase2-rebinding-runner-audit.json")
+        aws_s2n_phase2_artifact_classifier_contract = str(generated_dir / "aws-s2n-phase2-artifact-classifier-contract.md")
+        aws_s2n_phase2_artifact_classifier_contract_json = str(generated_dir / "aws-s2n-phase2-artifact-classifier-contract.json")
+        controlled_public_chrome_artifact_classifier_contract = str(generated_dir / "controlled-public-chrome-artifact-classifier-contract.md")
+        controlled_public_chrome_artifact_classifier_contract_json = str(generated_dir / "controlled-public-chrome-artifact-classifier-contract.json")
+        controlled_public_chrome_contract_application_audit = str(generated_dir / "controlled-public-chrome-contract-application-audit.md")
+        controlled_public_chrome_contract_application_audit_json = str(generated_dir / "controlled-public-chrome-contract-application-audit.json")
+        controlled_public_chrome_contract_application_audit_csv = str(generated_dir / "controlled-public-chrome-contract-application-audit.csv")
+        chromium_cronet_policy_boundary_audit = str(generated_dir / "chromium-cronet-policy-boundary-audit.md")
+        chromium_cronet_policy_boundary_audit_json = str(generated_dir / "chromium-cronet-policy-boundary-audit.json")
+        firefox_neqo_browser_boundary_audit = str(generated_dir / "firefox-neqo-browser-boundary-audit.md")
+        firefox_neqo_browser_boundary_audit_json = str(generated_dir / "firefox-neqo-browser-boundary-audit.json")
+        firefox_desktop_runtime_trial_packet = str(generated_dir / "firefox-desktop-runtime-trial-packet.md")
+        firefox_desktop_runtime_trial_packet_json = str(generated_dir / "firefox-desktop-runtime-trial-packet.json")
+        cdn_edge_cm_boundary_audit = str(generated_dir / "cdn-edge-cm-boundary-audit.md")
+        cdn_edge_cm_boundary_audit_json = str(generated_dir / "cdn-edge-cm-boundary-audit.json")
         controlled_public_config = str(generated_dir / "controlled-public-config-check.md")
         controlled_public_config_worksheet = str(generated_dir / "controlled-public-config-worksheet.md")
         controlled_public_baseline_unlock = str(generated_dir / "controlled-public-baseline-unlock-check.md")
@@ -238,6 +346,31 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/build_paper_evidence_gap_register.py",
                 "tools/build_paper_claim_support_matrix.py",
                 "tools/build_reproducibility_manifest.py",
+                "tools/build_noniphone_claim_readiness_dashboard.py",
+                "tools/build_noniphone_professor_decision_packet.py",
+                "tools/build_noniphone_reviewer_risk_audit.py",
+                "tools/build_noniphone_paper_wording_guard.py",
+                "tools/build_noniphone_paper_section_scaffold.py",
+                "tools/build_non_quicgo_implementation_findings.py",
+                "tools/build_non_quicgo_execution_depth_audit.py",
+                "tools/build_msquic_migration_api_boundary_audit.py",
+                "tools/build_msquic_rebind_pathvalidation_packet.py",
+                "tools/build_ngtcp2_migration_api_boundary_audit.py",
+                "tools/build_ngtcp2_runtime_trial_packet.py",
+                "tools/build_quinn_migration_api_boundary_audit.py",
+                "tools/build_xquic_full_suite_linux_audit.py",
+                "tools/build_mvfst_focused_linux_runner_audit.py",
+                "tools/build_quicly_full_e2e_linux_audit.py",
+                "tools/audit_aws_s2n_live_runner_safety.py",
+                "tools/build_aws_s2n_phase2_path_change_design.py",
+                "tools/audit_aws_s2n_phase2_rebinding_runner.py",
+                "tools/classify_aws_s2n_phase2_artifact.py",
+                "tools/build_controlled_public_chrome_artifact_classifier_contract.py",
+                "tools/build_controlled_public_chrome_contract_application_audit.py",
+                "tools/build_chromium_cronet_policy_boundary_audit.py",
+                "tools/build_firefox_neqo_browser_boundary_audit.py",
+                "tools/build_firefox_desktop_runtime_trial_packet.py",
+                "tools/build_cdn_edge_cm_boundary_audit.py",
                 "tools/build_final_handover_external_inputs.py",
                 "tools/check_aws_identity_readiness.py",
                 "tools/check_controlled_public_config.py",
@@ -296,7 +429,29 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 "tools/test_build_paper_evidence_gap_register.py",
                 "tools/test_build_paper_claim_support_matrix.py",
                 "tools/test_build_reproducibility_manifest.py",
+                "tools/test_build_noniphone_claim_readiness_dashboard.py",
+                "tools/test_build_noniphone_professor_decision_packet.py",
+                "tools/test_build_noniphone_reviewer_risk_audit.py",
+                "tools/test_build_noniphone_paper_wording_guard.py",
+                "tools/test_build_noniphone_paper_section_scaffold.py",
+                "tools/test_build_non_quicgo_implementation_findings.py",
+                "tools/test_build_non_quicgo_execution_depth_audit.py",
+                "tools/test_build_msquic_migration_api_boundary_audit.py",
+                "tools/test_build_msquic_rebind_pathvalidation_packet.py",
+                "tools/test_build_ngtcp2_migration_api_boundary_audit.py",
+                "tools/test_build_ngtcp2_runtime_trial_packet.py",
+                "tools/test_build_quinn_migration_api_boundary_audit.py",
+                "tools/test_build_xquic_full_suite_linux_audit.py",
+                "tools/test_build_mvfst_focused_linux_runner_audit.py",
+                "tools/test_build_quicly_full_e2e_linux_audit.py",
+                "tools/test_audit_aws_s2n_live_runner_safety.py",
+                "tools/test_build_aws_s2n_phase2_path_change_design.py",
+                "tools/test_audit_aws_s2n_phase2_rebinding_runner.py",
+                "tools/test_classify_aws_s2n_phase2_artifact.py",
+                "tools/test_build_controlled_public_chrome_artifact_classifier_contract.py",
+                "tools/test_build_controlled_public_chrome_contract_application_audit.py",
                 "tools/test_build_final_handover_external_inputs.py",
+                "tools/test_build_firefox_desktop_runtime_trial_packet.py",
                 "tools/test_check_aws_identity_readiness.py",
                 "tools/test_check_controlled_public_config.py",
                 "tools/test_check_controlled_public_experiment_readiness.py",
@@ -982,6 +1137,505 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 reproducibility_manifest,
                 "--json-output",
                 reproducibility_manifest_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_claim_readiness_dashboard_regression",
+            [python_bin, "tools/test_build_noniphone_claim_readiness_dashboard.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_claim_readiness_dashboard",
+            [
+                python_bin,
+                "tools/build_noniphone_claim_readiness_dashboard.py",
+                "--output",
+                noniphone_claim_readiness_dashboard,
+                "--json-output",
+                noniphone_claim_readiness_dashboard_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_professor_decision_packet_regression",
+            [python_bin, "tools/test_build_noniphone_professor_decision_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_professor_decision_packet",
+            [
+                python_bin,
+                "tools/build_noniphone_professor_decision_packet.py",
+                "--output",
+                noniphone_professor_decision_packet,
+                "--json-output",
+                noniphone_professor_decision_packet_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_reviewer_risk_audit_regression",
+            [python_bin, "tools/test_build_noniphone_reviewer_risk_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_reviewer_risk_audit",
+            [
+                python_bin,
+                "tools/build_noniphone_reviewer_risk_audit.py",
+                "--output",
+                noniphone_reviewer_risk_audit,
+                "--json-output",
+                noniphone_reviewer_risk_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_paper_wording_guard_regression",
+            [python_bin, "tools/test_build_noniphone_paper_wording_guard.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_paper_wording_guard",
+            [
+                python_bin,
+                "tools/build_noniphone_paper_wording_guard.py",
+                "--output",
+                noniphone_paper_wording_guard,
+                "--json-output",
+                noniphone_paper_wording_guard_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_paper_section_scaffold_regression",
+            [python_bin, "tools/test_build_noniphone_paper_section_scaffold.py"],
+            {0},
+            30,
+        ),
+        (
+            "noniphone_paper_section_scaffold",
+            [
+                python_bin,
+                "tools/build_noniphone_paper_section_scaffold.py",
+                "--output",
+                noniphone_paper_section_scaffold,
+                "--json-output",
+                noniphone_paper_section_scaffold_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "non_quicgo_implementation_findings_regression",
+            [python_bin, "tools/test_build_non_quicgo_implementation_findings.py"],
+            {0},
+            30,
+        ),
+        (
+            "non_quicgo_implementation_findings",
+            [
+                python_bin,
+                "tools/build_non_quicgo_implementation_findings.py",
+                "--output",
+                non_quicgo_implementation_findings,
+                "--json-output",
+                non_quicgo_implementation_findings_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "non_quicgo_execution_depth_audit_regression",
+            [python_bin, "tools/test_build_non_quicgo_execution_depth_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "non_quicgo_execution_depth_audit",
+            [
+                python_bin,
+                "tools/build_non_quicgo_execution_depth_audit.py",
+                "--output",
+                non_quicgo_execution_depth_audit,
+                "--json-output",
+                non_quicgo_execution_depth_audit_json,
+                "--csv-output",
+                non_quicgo_execution_depth_audit_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "msquic_migration_api_boundary_audit_regression",
+            [python_bin, "tools/test_build_msquic_migration_api_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "msquic_migration_api_boundary_audit",
+            [
+                python_bin,
+                "tools/build_msquic_migration_api_boundary_audit.py",
+                "--output",
+                msquic_migration_api_boundary_audit,
+                "--json-output",
+                msquic_migration_api_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "msquic_rebind_pathvalidation_packet_regression",
+            [python_bin, "tools/test_build_msquic_rebind_pathvalidation_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "msquic_rebind_pathvalidation_packet",
+            [
+                python_bin,
+                "tools/build_msquic_rebind_pathvalidation_packet.py",
+                "--output",
+                msquic_rebind_pathvalidation_packet,
+                "--json-output",
+                msquic_rebind_pathvalidation_packet_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "ngtcp2_migration_api_boundary_audit_regression",
+            [python_bin, "tools/test_build_ngtcp2_migration_api_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "ngtcp2_migration_api_boundary_audit",
+            [
+                python_bin,
+                "tools/build_ngtcp2_migration_api_boundary_audit.py",
+                "--output",
+                ngtcp2_migration_api_boundary_audit,
+                "--json-output",
+                ngtcp2_migration_api_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "ngtcp2_runtime_trial_packet_regression",
+            [python_bin, "tools/test_build_ngtcp2_runtime_trial_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "ngtcp2_runtime_trial_packet",
+            [
+                python_bin,
+                "tools/build_ngtcp2_runtime_trial_packet.py",
+                "--output",
+                ngtcp2_runtime_trial_packet,
+                "--json-output",
+                ngtcp2_runtime_trial_packet_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "quinn_migration_api_boundary_audit_regression",
+            [python_bin, "tools/test_build_quinn_migration_api_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "quinn_migration_api_boundary_audit",
+            [
+                python_bin,
+                "tools/build_quinn_migration_api_boundary_audit.py",
+                "--output",
+                quinn_migration_api_boundary_audit,
+                "--json-output",
+                quinn_migration_api_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "quinn_rebind_runtime_packet_regression",
+            [python_bin, "tools/test_build_quinn_rebind_runtime_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "quinn_rebind_runtime_packet",
+            [
+                python_bin,
+                "tools/build_quinn_rebind_runtime_packet.py",
+                "--output",
+                quinn_rebind_runtime_packet,
+                "--json-output",
+                quinn_rebind_runtime_packet_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "xquic_full_suite_linux_audit_regression",
+            [python_bin, "tools/test_build_xquic_full_suite_linux_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "xquic_full_suite_linux_audit",
+            [
+                python_bin,
+                "tools/build_xquic_full_suite_linux_audit.py",
+                "--output",
+                xquic_full_suite_linux_audit,
+                "--json-output",
+                xquic_full_suite_linux_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "mvfst_focused_linux_runner_audit_regression",
+            [python_bin, "tools/test_build_mvfst_focused_linux_runner_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "mvfst_focused_linux_runner_audit",
+            [
+                python_bin,
+                "tools/build_mvfst_focused_linux_runner_audit.py",
+                "--output",
+                mvfst_focused_linux_runner_audit,
+                "--json-output",
+                mvfst_focused_linux_runner_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "quicly_full_e2e_linux_audit_regression",
+            [python_bin, "tools/test_build_quicly_full_e2e_linux_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "quicly_full_e2e_linux_audit",
+            [
+                python_bin,
+                "tools/build_quicly_full_e2e_linux_audit.py",
+                "--output",
+                quicly_full_e2e_linux_audit,
+                "--json-output",
+                quicly_full_e2e_linux_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_live_runner_safety_audit_regression",
+            [python_bin, "tools/test_audit_aws_s2n_live_runner_safety.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_live_runner_safety_audit",
+            [
+                python_bin,
+                "tools/audit_aws_s2n_live_runner_safety.py",
+                "--output",
+                aws_s2n_live_runner_safety_audit,
+                "--json-output",
+                aws_s2n_live_runner_safety_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_path_change_design_regression",
+            [python_bin, "tools/test_build_aws_s2n_phase2_path_change_design.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_path_change_design",
+            [
+                python_bin,
+                "tools/build_aws_s2n_phase2_path_change_design.py",
+                "--output",
+                aws_s2n_phase2_path_change_design,
+                "--json-output",
+                aws_s2n_phase2_path_change_design_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_rebinding_runner_audit_regression",
+            [python_bin, "tools/test_audit_aws_s2n_phase2_rebinding_runner.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_rebinding_runner_audit",
+            [
+                python_bin,
+                "tools/audit_aws_s2n_phase2_rebinding_runner.py",
+                "--output",
+                aws_s2n_phase2_rebinding_runner_audit,
+                "--json-output",
+                aws_s2n_phase2_rebinding_runner_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_artifact_classifier_regression",
+            [python_bin, "tools/test_classify_aws_s2n_phase2_artifact.py"],
+            {0},
+            30,
+        ),
+        (
+            "aws_s2n_phase2_artifact_classifier_contract",
+            [
+                python_bin,
+                "tools/classify_aws_s2n_phase2_artifact.py",
+                "--contract",
+                "--output",
+                aws_s2n_phase2_artifact_classifier_contract,
+                "--json-output",
+                aws_s2n_phase2_artifact_classifier_contract_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_chrome_artifact_classifier_contract_regression",
+            [python_bin, "tools/test_build_controlled_public_chrome_artifact_classifier_contract.py"],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_chrome_artifact_classifier_contract",
+            [
+                python_bin,
+                "tools/build_controlled_public_chrome_artifact_classifier_contract.py",
+                "--output",
+                controlled_public_chrome_artifact_classifier_contract,
+                "--json-output",
+                controlled_public_chrome_artifact_classifier_contract_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_chrome_contract_application_audit_regression",
+            [python_bin, "tools/test_build_controlled_public_chrome_contract_application_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "controlled_public_chrome_contract_application_audit",
+            [
+                python_bin,
+                "tools/build_controlled_public_chrome_contract_application_audit.py",
+                "--output",
+                controlled_public_chrome_contract_application_audit,
+                "--json-output",
+                controlled_public_chrome_contract_application_audit_json,
+                "--csv-output",
+                controlled_public_chrome_contract_application_audit_csv,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "chromium_cronet_policy_boundary_audit_regression",
+            [python_bin, "tools/test_build_chromium_cronet_policy_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "chromium_cronet_policy_boundary_audit",
+            [
+                python_bin,
+                "tools/build_chromium_cronet_policy_boundary_audit.py",
+                "--output",
+                chromium_cronet_policy_boundary_audit,
+                "--json-output",
+                chromium_cronet_policy_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "firefox_neqo_browser_boundary_audit_regression",
+            [python_bin, "tools/test_build_firefox_neqo_browser_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "firefox_neqo_browser_boundary_audit",
+            [
+                python_bin,
+                "tools/build_firefox_neqo_browser_boundary_audit.py",
+                "--output",
+                firefox_neqo_browser_boundary_audit,
+                "--json-output",
+                firefox_neqo_browser_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "firefox_desktop_runtime_trial_packet_regression",
+            [python_bin, "tools/test_build_firefox_desktop_runtime_trial_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "firefox_desktop_runtime_trial_packet",
+            [
+                python_bin,
+                "tools/build_firefox_desktop_runtime_trial_packet.py",
+                "--output",
+                firefox_desktop_runtime_trial_packet,
+                "--json-output",
+                firefox_desktop_runtime_trial_packet_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "cdn_edge_cm_boundary_audit_regression",
+            [python_bin, "tools/test_build_cdn_edge_cm_boundary_audit.py"],
+            {0},
+            30,
+        ),
+        (
+            "cdn_edge_cm_boundary_audit",
+            [
+                python_bin,
+                "tools/build_cdn_edge_cm_boundary_audit.py",
+                "--output",
+                cdn_edge_cm_boundary_audit,
+                "--json-output",
+                cdn_edge_cm_boundary_audit_json,
             ],
             {0},
             30,

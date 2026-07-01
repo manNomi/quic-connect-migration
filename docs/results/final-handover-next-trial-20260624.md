@@ -1,6 +1,6 @@
 # Final Handover Next Trial
 
-Generated: `2026-06-26`
+Generated: `2026-07-01`
 
 ## Summary
 
@@ -12,7 +12,7 @@ Generated: `2026-06-26`
 | sensitive values redacted | `no` |
 | final protocol complete | `no` |
 | complete requirements | `3/6` |
-| existing trial rows | `71` |
+| existing trial rows | `99` |
 | planned trial executions | `10` |
 
 ## Blockers

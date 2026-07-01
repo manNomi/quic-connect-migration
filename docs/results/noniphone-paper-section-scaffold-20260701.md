@@ -1,0 +1,37 @@
+# non-iPhone Paper Section Scaffold
+
+Generated: `2026-07-01`
+
+This public-safe scaffold maps the current evidence corpus and wording guard into paper sections. It does not include raw qlogs, pcaps, keylogs, NetLogs, private hosts, device IDs, account IDs, or credentials.
+
+## Summary
+
+| field | value |
+| --- | --- |
+| section count | `9` |
+| paper sections | `['Abstract', 'Introduction', 'Limitations', 'Method', 'Results']` |
+| bundle item count | `60` |
+| missing evidence ids | `{}` |
+| missing wording sections | `{}` |
+| scaffold decision | Use this scaffold to draft a conservative maturity/gap paper before opening public browser or AWS positive-result gates. |
+
+## Section Plan
+
+| id | section | purpose | EN seed | KO seed | evidence ids | do not claim | next gap |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `abstract_positioning` | Abstract | State the paper as a conservative maturity/gap evaluation instead of a guarantee claim. | We assess how QUIC/HTTP/3 migration primitives, deployment routing, browser behavior, and workload design shape application-level continuity. | QUIC/HTTP/3 migration primitive, 배포 라우팅, 브라우저 동작, workload 설계가 애플리케이션 수준 작업 연속성에 만드는 경계를 평가한다고 쓴다. | `noniphone-paper-wording-guard`, `noniphone-reviewer-risk-audit` | Do not claim that HTTP/3 CM guarantees seamless continuity. | If a stronger abstract is desired, open public Chrome or AWS positive-result gates first. |
+| `introduction_problem_framing` | Introduction | Separate path change, local rebinding, deployment routing, browser policy, and app recovery terminology. | Motivate the problem as a layer-boundary question: transport migration support does not automatically imply browser-visible task continuity. | 문제 제기는 계층 경계 문제로 잡는다. transport migration 지원이 곧 browser-visible task continuity를 뜻하지 않는다고 설명한다. | `noniphone-paper-wording-guard`, `noniphone-reviewer-risk-audit` | Do not use broad unstable mobile network wording without defining the tested path-change class. | Finalize terminology with the professor before writing the abstract and introduction. |
+| `method_implementation_maturity` | Method | Explain implementation maturity as evidence-level classification rather than a binary support label. | Classify implementation evidence into runtime controls, app demos, source/test audits, deployment gates, and negative controls. | 구현체 근거를 runtime control, app demo, source/test audit, deployment gate, negative control로 나누어 설명한다. | `cross-implementation-fresh-rerun`, `quiche-path-event-observability`, `nginx-active-client-migration-runtime`, `haproxy-http3-negative-control` | Do not state that all surveyed implementations are equally mature. | Run large production-stack focused tests only if the appendix needs more implementation depth. |
+| `method_public_cm_acceptance` | Method | Define conservative strong-CM acceptance criteria for public Chrome rows. | Require application completion, client active path change, target tuple change, qlog path validation, and one Chrome target QUIC session in the same active row. | 동일 active row에서 application completion, client active path change, target tuple change, qlog path validation, Chrome target QUIC session 1개를 모두 요구한다. | `noniphone-public-workload-trial-packet`, `controlled-public-origin-workload-deploy-packet`, `controlled-public-chrome-bridge-synthesis`, `controlled-public-chrome-artifact-classifier-contract`, `controlled-public-chrome-contract-application-audit` | Do not count task completion alone as Connection Migration success. | Open public H3 origin and non-iPhone desktop path gates before claiming public Chrome CM success. |
+| `results_implementation_layer` | Results | Report that implementation primitives exist across stacks while behavior and deployability differ. | Implementation evidence shows CM-related primitives are present across multiple stacks, but API exposure, observability, and deployment readiness differ. | 여러 구현체에 CM 관련 primitive는 존재하지만 API 노출, 관찰성, 배포 readiness는 구현체마다 다르다고 보고한다. | `cross-implementation-fresh-rerun`, `lsquic-preferred-address-app-demo`, `lsquic-nat-rebinding-app-demo`, `s2n-active-migration-api-audit`, `mvfst-source-audit` | Do not generalize a quic-go positive control to all stacks or browser behavior. | Use implementation evidence as foundation, not as final web-continuity proof. |
+| `results_deployment_boundary` | Results | Report CID-aware deployment and proxy negative-control boundaries. | Deployment results should distinguish CID-aware routing, proxy termination boundaries, local prerequisites, and blocked live AWS execution. | 배포 결과는 CID-aware routing, proxy termination boundary, local prerequisite, blocked live AWS execution을 분리해 쓴다. | `aws-nlb-cid-aware-positive-control`, `aws-nlb-negative-controls`, `aws-nlb-http3-workload`, `s2n-nlb-cid-provider-proof`, `s2n-nlb-live-readiness`, `aws-s2n-nlb-live-runner` | Do not claim live AWS NLB+s2n forwarding or active migration success yet. | Refresh AWS credentials to run live forwarding before any AWS positive claim. |
+| `results_browser_workloads` | Results | Use local Chrome controls to prioritize workloads while avoiding public handover overclaim. | Local Chrome forced-H3 controls show that range/download and upload provide cleaner single-session local evidence than streaming-like workloads. | Local Chrome forced-H3 control에서는 range/download와 upload가 streaming형 workload보다 단일 session local evidence가 더 선명하다고 쓴다. | `chrome-local-rebinding-workload-controls`, `chrome-desktop-noniphone-range-local-refresh`, `chrome-desktop-noniphone-upload-local-refresh`, `noniphone-workload-qoe-synthesis` | Do not call local rebinding a public Wi-Fi/LTE or desktop-interface handover result. | Run controlled-public range/upload trials first once public-origin and path-change gates open. |
+| `results_streaming_qoe` | Results | Frame streaming as QoE/session-attribution evidence rather than zero-impact continuity. | Streaming outcomes must include rebuffering, startup delay, retry behavior, and Chrome target session count. | Streaming 결과는 rebuffering, startup delay, retry behavior, Chrome target session count를 함께 보고한다. | `chrome-desktop-noniphone-musiclike-local-refresh`, `chrome-desktop-noniphone-buffered-media-local-refresh`, `noniphone-workload-qoe-synthesis` | Do not treat playback completion alone as continuity or single-session CM. | Public streaming trials need QoE metrics and session attribution together. |
+| `limitations_future_work` | Limitations | Make blocked public Chrome, AWS, Safari, and terminology gaps explicit. | Limitations should state that no tracked active public Chrome row satisfies strong CM success, live AWS+s2n is credential-blocked, and Safari remains feasibility-only. | 한계에서는 tracked active public Chrome strong CM success가 없고, live AWS+s2n은 credential-blocked이며, Safari는 feasibility-only라고 명시한다. | `noniphone-claim-readiness-dashboard`, `noniphone-professor-decision-packet`, `noniphone-reviewer-risk-audit` | Do not hide the absence of public/browser positive rows. | Professor decision should choose maturity/gap scope or external positive-result gate work. |
+
+## Drafting Order
+
+1. Write the abstract and introduction from the boundary framing, not from a guarantee claim.
+2. Write methods around evidence levels and strong-CM acceptance criteria.
+3. Present implementation, deployment, browser workload, and streaming/QoE results as separate layers.
+4. Put public Chrome, live AWS+s2n, and Safari gaps in limitations/future work unless their gates open.

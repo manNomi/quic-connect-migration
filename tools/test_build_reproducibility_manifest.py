@@ -16,10 +16,13 @@ def test_manifest_contains_core_public_safe_fields() -> None:
     assert manifest["experiment_corpus"]["total_trials"] >= 1
     assert "verification" in manifest
     assert "research_audit" in manifest
+    assert "implementation_corpus" in manifest
+    assert "evidence_paths_20260630" in manifest
     assert "final_browser_handover_trials" in manifest["research_audit"]
+    assert manifest["implementation_corpus"]["total_implementations"] >= 18
     assert "PRIVATE KEY" not in markdown
-    assert "AWS_SECRET" not in markdown
-    assert "AKIA" not in markdown
+    assert "AWS_" + "SECRET" not in markdown
+    assert "AK" + "IA" not in markdown
 
 
 def test_manifest_points_to_authoritative_artifacts() -> None:
@@ -33,6 +36,114 @@ def test_manifest_points_to_authoritative_artifacts() -> None:
     assert paths["p0_baseline_preflight_redaction_smoke"].endswith("final-p0-baseline-preflight-redaction-smoke-20260625.md")
 
 
+def test_manifest_points_to_current_implementation_evidence() -> None:
+    manifest = build_manifest(include_ci=False)
+    paths = manifest["evidence_paths_20260630"]
+    assert paths["implementation_rerun_results"]["exists"] is True
+    assert paths["sanitized_evidence_bundle"]["exists"] is True
+    assert paths["sanitized_evidence_bundle_json"]["exists"] is True
+    assert paths["openlitespeed_runtime_runner"]["exists"] is True
+    assert paths["nginx_haproxy_boundary"]["exists"] is True
+    assert paths["nginx_quic_bpf_readiness"]["exists"] is True
+    assert paths["nginx_quic_bpf_linux_runner"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_media_local_refresh"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_media_local_refresh_csv"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_musiclike_local_refresh"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_musiclike_local_refresh_csv"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_buffered_media_local_refresh"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_buffered_media_local_refresh_csv"]["exists"] is True
+    assert paths["noniphone_workload_qoe_synthesis"]["exists"] is True
+    assert paths["noniphone_workload_qoe_synthesis_csv"]["exists"] is True
+    assert paths["noniphone_public_workload_trial_packet"]["exists"] is True
+    assert paths["noniphone_public_workload_trial_packet_json"]["exists"] is True
+    assert paths["noniphone_claim_readiness_dashboard"]["exists"] is True
+    assert paths["noniphone_claim_readiness_dashboard_json"]["exists"] is True
+    assert paths["noniphone_professor_decision_packet"]["exists"] is True
+    assert paths["noniphone_professor_decision_packet_json"]["exists"] is True
+    assert paths["noniphone_reviewer_risk_audit"]["exists"] is True
+    assert paths["noniphone_reviewer_risk_audit_json"]["exists"] is True
+    assert paths["noniphone_paper_wording_guard"]["exists"] is True
+    assert paths["noniphone_paper_wording_guard_json"]["exists"] is True
+    assert paths["noniphone_paper_section_scaffold"]["exists"] is True
+    assert paths["noniphone_paper_section_scaffold_json"]["exists"] is True
+    assert paths["non_quicgo_implementation_findings"]["exists"] is True
+    assert paths["non_quicgo_implementation_findings_json"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_range_local_refresh"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_range_local_refresh_csv"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_upload_local_refresh"]["exists"] is True
+    assert paths["chrome_desktop_noniphone_upload_local_refresh_csv"]["exists"] is True
+    assert paths["controlled_public_chrome_bridge_synthesis"]["exists"] is True
+    assert paths["controlled_public_chrome_bridge_synthesis_json"]["exists"] is True
+    assert paths["controlled_public_chrome_bridge_synthesis_csv"]["exists"] is True
+    assert paths["controlled_public_chrome_artifact_classifier_contract"]["exists"] is True
+    assert paths["controlled_public_chrome_artifact_classifier_contract_json"]["exists"] is True
+    assert paths["controlled_public_chrome_contract_application_audit"]["exists"] is True
+    assert paths["controlled_public_chrome_contract_application_audit_json"]["exists"] is True
+    assert paths["controlled_public_chrome_contract_application_audit_csv"]["exists"] is True
+    assert paths["quicly_e2e_path_migration"]["exists"] is True
+    assert paths["quicly_full_e2e_linux_audit"]["exists"] is True
+    assert paths["quicly_full_e2e_linux_audit_json"]["exists"] is True
+    assert paths["quicly_full_e2e_linux_runner"]["exists"] is True
+    assert paths["chromium_cronet_policy_boundary_audit"]["exists"] is True
+    assert paths["chromium_cronet_policy_boundary_audit_json"]["exists"] is True
+    assert paths["firefox_neqo_browser_boundary_audit"]["exists"] is True
+    assert paths["firefox_neqo_browser_boundary_audit_json"]["exists"] is True
+    assert paths["firefox_desktop_runtime_trial_packet"]["exists"] is True
+    assert paths["firefox_desktop_runtime_trial_packet_json"]["exists"] is True
+    assert paths["cdn_edge_cm_boundary_audit"]["exists"] is True
+    assert paths["cdn_edge_cm_boundary_audit_json"]["exists"] is True
+    assert paths["s2n_nlb_live_readiness"]["exists"] is True
+    assert paths["aws_s2n_nlb_live_runner"]["exists"] is True
+    assert paths["aws_s2n_live_runner_safety_audit"]["exists"] is True
+    assert paths["aws_s2n_live_runner_safety_audit_json"]["exists"] is True
+    assert paths["aws_s2n_phase2_path_change_design"]["exists"] is True
+    assert paths["aws_s2n_phase2_path_change_design_json"]["exists"] is True
+    assert paths["aws_s2n_phase2_rebinding_preflight_fixture"]["exists"] is True
+    assert paths["aws_s2n_phase2_rebinding_runner_audit"]["exists"] is True
+    assert paths["aws_s2n_phase2_rebinding_runner_audit_json"]["exists"] is True
+    assert paths["aws_s2n_phase2_artifact_classifier_contract"]["exists"] is True
+    assert paths["aws_s2n_phase2_artifact_classifier_contract_json"]["exists"] is True
+    assert paths["s2n_active_migration_api_audit"]["exists"] is True
+    assert paths["s2n_active_migration_api_audit_json"]["exists"] is True
+    assert paths["browser_cm_observability_refresh"]["exists"] is True
+    assert paths["browser_cm_observability_refresh_json"]["exists"] is True
+    assert paths["safari_webdriver_session_readiness"]["exists"] is True
+    assert paths["user_provided_public_origin_readiness"]["exists"] is True
+    assert paths["user_provided_public_origin_readiness_json"]["exists"] is True
+    assert paths["controlled_public_origin_workload_deploy_packet"]["exists"] is True
+    assert paths["controlled_public_origin_workload_deploy_packet_json"]["exists"] is True
+    assert paths["noniphone_desktop_path_change_readiness"]["exists"] is True
+    assert paths["noniphone_desktop_path_change_readiness_json"]["exists"] is True
+    assert paths["non_iphone_gate_rerun"]["exists"] is True
+    assert paths["non_iphone_gate_rerun_json"]["exists"] is True
+    assert paths["non_iphone_next_research_decision"]["exists"] is True
+    assert paths["non_iphone_next_research_decision_json"]["exists"] is True
+    assert paths["mvfst_migration_test_readiness"]["exists"] is True
+    assert paths["mvfst_migration_test_readiness_json"]["exists"] is True
+    assert paths["mvfst_focused_linux_runner_audit"]["exists"] is True
+    assert paths["mvfst_focused_linux_runner_audit_json"]["exists"] is True
+    assert paths["mvfst_focused_linux_runner"]["exists"] is True
+    assert paths["non_quicgo_execution_depth_audit"]["exists"] is True
+    assert paths["non_quicgo_execution_depth_audit_json"]["exists"] is True
+    assert paths["non_quicgo_execution_depth_audit_csv"]["exists"] is True
+    assert paths["msquic_migration_api_boundary_audit"]["exists"] is True
+    assert paths["msquic_migration_api_boundary_audit_json"]["exists"] is True
+    assert paths["msquic_rebind_pathvalidation_packet"]["exists"] is True
+    assert paths["msquic_rebind_pathvalidation_packet_json"]["exists"] is True
+    assert paths["msquic_rebind_pathvalidation_runner"]["exists"] is True
+    assert paths["ngtcp2_migration_api_boundary_audit"]["exists"] is True
+    assert paths["ngtcp2_migration_api_boundary_audit_json"]["exists"] is True
+    assert paths["ngtcp2_runtime_trial_packet"]["exists"] is True
+    assert paths["ngtcp2_runtime_trial_packet_json"]["exists"] is True
+    assert paths["ngtcp2_example_migration_runner"]["exists"] is True
+    assert paths["quinn_migration_api_boundary_audit"]["exists"] is True
+    assert paths["quinn_migration_api_boundary_audit_json"]["exists"] is True
+    assert paths["xquic_full_suite_linux_audit"]["exists"] is True
+    assert paths["xquic_full_suite_linux_audit_json"]["exists"] is True
+    assert paths["xquic_full_suite_linux_runner"]["exists"] is True
+    assert manifest["experiment_matrix"]["latest_item"] == "msquic-rebind-pathvalidation-packet"
+
+
 def test_generated_date_uses_utc_day() -> None:
     assert utc_date_iso() == datetime.now(timezone.utc).date().isoformat()
 
@@ -40,6 +151,7 @@ def test_generated_date_uses_utc_day() -> None:
 def main() -> int:
     test_manifest_contains_core_public_safe_fields()
     test_manifest_points_to_authoritative_artifacts()
+    test_manifest_points_to_current_implementation_evidence()
     test_generated_date_uses_utc_day()
     print("build_reproducibility_manifest=ok")
     return 0

@@ -1,6 +1,6 @@
 # CM Operational Friction Matrix
 
-Generated: `2026-06-26`
+Generated: `2026-07-01`
 
 This matrix turns the question "why is connection migration not widely used?" into layer-specific, evidence-linked friction points. It is public-safe and does not print private origin settings, commands, qlogs, pcaps, NetLogs, or credentials.
 
@@ -19,19 +19,19 @@ This matrix turns the question "why is connection migration not widely used?" in
 
 | id | layer | friction | repo evidence | literature evidence | paper use | next proof |
 | --- | --- | --- | --- | --- | --- | --- |
-| `implementation-policy` | implementation | CM primitives exist, but support is implementation- and policy-specific | 61 (PASS=23;PASS_FEASIBILITY=5;PASS_NEGATIVE_CONTROL=33) | 19 (A=16;B=3) | source-backed explanation with repo evidence | Runtime browser and mobile-client migration trials with policy artifacts. |
-| `application-h3-discovery` | browser | HTTP/3 application use must be proven before CM can be tested | 17 (PASS=7;PASS_NEGATIVE_CONTROL=10) | 3 (A=2;B=1) | source-backed explanation with repo evidence | Controlled public WebPKI origin baseline with server H3 request log and qlog. |
+| `implementation-policy` | implementation | CM primitives exist, but support is implementation- and policy-specific | 88 (PASS=28;PASS_FEASIBILITY=5;PASS_NEGATIVE_CONTROL=55) | 19 (A=16;B=3) | source-backed explanation with repo evidence | Runtime browser and mobile-client migration trials with policy artifacts. |
+| `application-h3-discovery` | browser | HTTP/3 application use must be proven before CM can be tested | 18 (PASS=7;PASS_NEGATIVE_CONTROL=11) | 3 (A=2;B=1) | source-backed explanation with repo evidence | Controlled public WebPKI origin baseline with server H3 request log and qlog. |
 | `active-path-proof` | network | The trigger may not change the active client path | 3 (PASS_NEGATIVE_CONTROL=3) | 7 (A=5;B=2) | source-backed explanation with repo evidence | Before/after client path snapshot showing active route or public IP change. |
 | `session-attribution` | browser | Tuple changes can be replacement sessions rather than CM | 4 (PASS=1;PASS_NEGATIVE_CONTROL=3) | 7 (A=6;B=1) | source-backed explanation with repo evidence | NetLog/qlog/server evidence that target workload stayed on the migrated session. |
 | `cid-load-balancing` | load-balancer | Load balancers need CID-aware routing across tuple changes | 8 (PASS=5;PASS_FEASIBILITY=1;PASS_NEGATIVE_CONTROL=2) | 3 (A=2;B=1) | source-backed explanation with repo evidence | Repeat with controlled public HTTP/3 browser workload through the same CID-aware path. |
-| `proxy-termination` | proxy | HTTP/3 proxy support does not imply CM support | 1 (PASS_NEGATIVE_CONTROL=1) | 11 (A=2;B=7;C=2) | source-backed explanation with repo evidence | Add one positive QUIC-aware proxy or tunneling baseline if the paper needs proxy scope. |
-| `cdn-edge-scope` | cdn | CDN HTTP/3 CM can be edge-level rather than end-to-end | 9 (PASS=5;PASS_NEGATIVE_CONTROL=4) | 4 (A=3;B=1) | source-backed explanation with repo evidence | Controlled edge test plus origin log separation if CDN scope is included. |
-| `middlebox-manageability` | middlebox | Middleboxes and firewalls lose 5-tuple semantics | 26 (PASS=13;PASS_FEASIBILITY=3;PASS_NEGATIVE_CONTROL=10) | 8 (A=6;B=2) | cautious explanatory support | Optional Mininet or firewall reproduction only if the paper claims middlebox behavior directly. |
+| `proxy-termination` | proxy | HTTP/3 proxy support does not imply CM support | 2 (PASS_NEGATIVE_CONTROL=2) | 11 (A=2;B=7;C=2) | source-backed explanation with repo evidence | Add one positive QUIC-aware proxy or tunneling baseline if the paper needs proxy scope. |
+| `cdn-edge-scope` | cdn | CDN HTTP/3 CM can be edge-level rather than end-to-end | 10 (PASS=5;PASS_NEGATIVE_CONTROL=5) | 4 (A=3;B=1) | source-backed explanation with repo evidence | Controlled edge test plus origin log separation if CDN scope is included. |
+| `middlebox-manageability` | middlebox | Middleboxes and firewalls lose 5-tuple semantics | 33 (PASS=14;PASS_FEASIBILITY=3;PASS_NEGATIVE_CONTROL=16) | 8 (A=6;B=2) | cautious explanatory support | Optional Mininet or firewall reproduction only if the paper claims middlebox behavior directly. |
 | `security-risk` | security | CM and preferred-address behavior can be operationally sensitive | 0 (-) | 9 (B=9) | related-work support only | Do not overclaim unless testing a specific security appliance or policy. |
-| `silent-client-downlink` | application | Downlink-dominant workloads may not trigger timely migration recovery | 27 (PASS=8;PASS_FEASIBILITY=4;PASS_NEGATIVE_CONTROL=15) | 8 (A=3;B=2;Watch=3) | source-backed explanation with repo evidence | Controlled public active path-change trials with and without heartbeat or retry. |
-| `observability-gap` | methods | Browser and network artifacts are individually ambiguous | 55 (PASS=21;PASS_FEASIBILITY=4;PASS_NEGATIVE_CONTROL=30) | 12 (A=11;B=1) | source-backed explanation with repo evidence | Complete final browser handover rows with all required artifacts. |
-| `measurement-gap` | adoption | HTTP/3 adoption does not equal CM adoption | 13 (PASS=7;PASS_NEGATIVE_CONTROL=6) | 8 (A=6;B=2) | source-backed explanation with repo evidence | Run controlled public browser handover protocol and compare with wild-scan framing. |
-| `performance-risk` | performance | Successful migration can still impose stall, retransmission, or QoE cost | 25 (PASS=11;PASS_FEASIBILITY=4;PASS_NEGATIVE_CONTROL=10) | 6 (B=1;Watch=5) | cautious explanatory support | Measure recovery time, stall duration, and user-visible task success in final browser trials. |
+| `silent-client-downlink` | application | Downlink-dominant workloads may not trigger timely migration recovery | 52 (PASS=12;PASS_FEASIBILITY=4;PASS_NEGATIVE_CONTROL=36) | 8 (A=3;B=2;Watch=3) | source-backed explanation with repo evidence | Controlled public active path-change trials with and without heartbeat or retry. |
+| `observability-gap` | methods | Browser and network artifacts are individually ambiguous | 82 (PASS=25;PASS_FEASIBILITY=4;PASS_NEGATIVE_CONTROL=53) | 12 (A=11;B=1) | source-backed explanation with repo evidence | Complete final browser handover rows with all required artifacts. |
+| `measurement-gap` | adoption | HTTP/3 adoption does not equal CM adoption | 39 (PASS=11;PASS_NEGATIVE_CONTROL=28) | 8 (A=6;B=2) | source-backed explanation with repo evidence | Run controlled public browser handover protocol and compare with wild-scan framing. |
+| `performance-risk` | performance | Successful migration can still impose stall, retransmission, or QoE cost | 47 (PASS=15;PASS_FEASIBILITY=4;PASS_NEGATIVE_CONTROL=28) | 6 (B=1;Watch=5) | cautious explanatory support | Measure recovery time, stall duration, and user-visible task success in final browser trials. |
 
 ## Paper Claim Boundary
 

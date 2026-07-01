@@ -1,6 +1,6 @@
 # Research Bundle Audit
 
-Generated: `2026-06-26`
+Generated: `2026-07-01`
 
 ## Summary
 
@@ -8,10 +8,10 @@ Generated: `2026-06-26`
 | --- | --- |
 | publication bundle ok | `yes` |
 | required files ok | `yes` |
-| experiment trials | `71` |
-| experiment status counts | `{'PASS': 28, 'PASS_NEGATIVE_CONTROL': 37, 'PASS_FEASIBILITY': 6}` |
+| experiment trials | `99` |
+| experiment status counts | `{'PASS': 33, 'PASS_NEGATIVE_CONTROL': 60, 'PASS_FEASIBILITY': 6}` |
 | experiment ids unique | `yes` |
-| matrix items | `112` |
+| matrix items | `163` |
 | matrix ids unique | `yes` |
 | paper tables current | `yes` |
 | final browser handover trials | `3/6` |
@@ -26,8 +26,8 @@ Generated: `2026-06-26`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `27.98` |
-| local artifact roots total | `24.8 GiB` |
+| disk available GiB | `11.84` |
+| local artifact roots total | `36.3 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |
 | packet capture tooling ready | `yes` |

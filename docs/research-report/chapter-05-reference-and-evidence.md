@@ -59,6 +59,9 @@
 | [docs/results/browser-cm-observability-matrix-20260624.md](../results/browser-cm-observability-matrix-20260624.md) | browser별 observability matrix 원본 |
 | [data/browser-cm-observability-matrix-20260624.csv](../../data/browser-cm-observability-matrix-20260624.csv) | browser별 automation/evidence/claim ceiling CSV |
 | [docs/results/browser-cm-observability-readiness-20260624.md](../results/browser-cm-observability-readiness-20260624.md) | 기존 readiness scanner output |
+| [docs/results/browser-cm-observability-readiness-refresh-20260630.md](../results/browser-cm-observability-readiness-refresh-20260630.md) | Safari session smoke를 포함한 fresh browser observability readiness |
+| [data/browser-cm-observability-refresh-20260630.json](../../data/browser-cm-observability-refresh-20260630.json) | fresh browser observability readiness JSON |
+| [docs/results/safari-webdriver-session-readiness-20260630.md](../results/safari-webdriver-session-readiness-20260630.md) | Safari WebDriver binary readiness와 real session readiness 분리 결과 |
 | [docs/results/chromium-cronet-source-evidence-20260624.md](../results/chromium-cronet-source-evidence-20260624.md) | Chromium/Cronet source evidence 정리 |
 | [docs/results/evidence-chain-and-gap-synthesis-20260624.md](../results/evidence-chain-and-gap-synthesis-20260624.md) | 전체 evidence chain과 gap synthesis |
 | [docs/results/literature-refresh-wild-cm-and-netlog-boundary-20260624.md](../results/literature-refresh-wild-cm-and-netlog-boundary-20260624.md) | Wild CM/NetLog claim boundary literature refresh |
@@ -68,7 +71,7 @@
 실행 명령:
 
 ```bash
-python3 tools/check_browser_cm_observability.py --format markdown
+python3 tools/check_browser_cm_observability.py --format markdown --safari-session-smoke
 ```
 
 결과:
@@ -83,12 +86,16 @@ python3 tools/check_browser_cm_observability.py --format markdown
 | Safari TP found | `false` |
 | Safari TP version | `-` |
 | safaridriver | `exit=0` |
-| Safari WebDriver ready | `true` |
+| Safari WebDriver binary ready | `true` |
+| Safari WebDriver session checked | `true` |
+| Safari WebDriver session ready | `false` |
+| Safari WebDriver session error | `Could not create a session: You must enable 'Allow remote automation' in the Developer section of Safari Settings to control Safari via WebDriver.` |
+| Safari WebDriver ready | `false` |
 | tcpdump | `exit=0` |
 | rvictl | `exit=0` |
 | packet capture tooling ready | `true` |
 | iOS remote capture candidate | `true` |
-| blockers | `Safari does not provide a Chrome NetLog-equivalent artifact in this harness; use packet capture and server-side qlog` |
+| blockers | `Safari WebDriver session creation failed; enable Allow remote automation before Safari trials; Safari does not provide a Chrome NetLog-equivalent artifact in this harness; use packet capture and server-side qlog` |
 
 ## 6. Verification Commands
 

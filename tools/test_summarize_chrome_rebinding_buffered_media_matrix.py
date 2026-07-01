@@ -91,6 +91,7 @@ def test_build_markdown_contains_boundary() -> None:
     )
     assert "playback-level continuity" in text
     assert "startup delay and rebuffer events" in text
+    assert "UTC /" in text
 
 
 def main() -> int:

@@ -1,0 +1,129 @@
+{
+  "audited_files": [
+    "quic/s2n-quic-core/src/connection/limits.rs",
+    "quic/s2n-quic-core/src/path/migration.rs",
+    "quic/s2n-quic-qns/src/client/interop.rs",
+    "quic/s2n-quic-tests/src/tests/connection_migration.rs",
+    "quic/s2n-quic-tests/src/tests/zero_length_cid_client_connection_migration.rs",
+    "quic/s2n-quic/src/provider.rs",
+    "quic/s2n-quic/src/provider/path_migration.rs"
+  ],
+  "classification": {
+    "active_path_events_present": true,
+    "migration_tests_present": true,
+    "path_migration_provider_public": false,
+    "qns_active_migration_testcase_supported": false,
+    "recommended_live_runner_phase": "forwarding_echo_first_active_path_change_follow_up"
+  },
+  "do_not_claim": "Do not claim that the AWS NLB+s2n live runner already performs active migration; its current phase is forwarding echo readiness.",
+  "evidence": [
+    {
+      "file": "quic/s2n-quic/src/provider.rs",
+      "id": "path_migration_provider_not_public",
+      "line": 23,
+      "meaning": "The path migration provider is present but not exposed as a public application provider.",
+      "snippet": "pub(crate) mod path_migration;"
+    },
+    {
+      "file": "quic/s2n-quic/src/provider/path_migration.rs",
+      "id": "path_migration_provider_future_public_comment",
+      "line": 4,
+      "meaning": "The provider file itself marks this functionality as currently non-public.",
+      "snippet": "// this functionality isn't public but should be assumed that it"
+    },
+    {
+      "file": "quic/s2n-quic-core/src/path/migration.rs",
+      "id": "core_migration_validator_trait",
+      "line": 110,
+      "meaning": "The core stack has a validator trait for migration attempts.",
+      "snippet": "pub trait Validator: 'static + Send {"
+    },
+    {
+      "file": "quic/s2n-quic-core/src/connection/limits.rs",
+      "id": "active_migration_transport_parameter_toggle",
+      "line": 329,
+      "meaning": "Endpoint limits can advertise or disable active connection migration support.",
+      "snippet": "pub fn with_active_connection_migration("
+    },
+    {
+      "file": "quic/s2n-quic-tests/src/tests/connection_migration.rs",
+      "id": "test_socket_rebind_trigger",
+      "line": 36,
+      "meaning": "The test suite triggers address changes through a test IO socket rebind hook.",
+      "snippet": "socket.rebind(local_addr);"
+    },
+    {
+      "file": "quic/s2n-quic-tests/src/tests/connection_migration.rs",
+      "id": "active_path_event_recorder",
+      "line": 41,
+      "meaning": "The test suite records active path update events.",
+      "snippet": "let active_paths = recorder::ActivePathUpdated::new();"
+    },
+    {
+      "file": "quic/s2n-quic-tests/src/tests/connection_migration.rs",
+      "id": "ip_rebind_test",
+      "line": 213,
+      "meaning": "The test suite covers IP rebinding.",
+      "snippet": "fn ip_rebind_test() {"
+    },
+    {
+      "file": "quic/s2n-quic-tests/src/tests/connection_migration.rs",
+      "id": "port_rebind_test",
+      "line": 218,
+      "meaning": "The test suite covers port rebinding.",
+      "snippet": "fn port_rebind_test() {"
+    },
+    {
+      "file": "quic/s2n-quic-tests/src/tests/connection_migration.rs",
+      "id": "blocked_port_negative_test",
+      "line": 511,
+      "meaning": "The test suite covers a migration-denial/control case.",
+      "snippet": "fn rebind_blocked_port() {"
+    },
+    {
+      "file": "quic/s2n-quic-tests/src/tests/zero_length_cid_client_connection_migration.rs",
+      "id": "zero_length_cid_quiche_interop_enables_active_migration",
+      "line": 79,
+      "meaning": "A zero-length CID interop test enables active migration on the quiche client side.",
+      "snippet": "client_config.set_disable_active_migration(false);"
+    },
+    {
+      "file": "quic/s2n-quic-qns/src/client/interop.rs",
+      "id": "qns_connection_migration_unsupported",
+      "line": 254,
+      "meaning": "The qns client marks the active migration testcase unsupported.",
+      "snippet": "ConnectionMigration => false,"
+    },
+    {
+      "file": "quic/s2n-quic-qns/src/client/interop.rs",
+      "id": "qns_active_migration_todo",
+      "line": 253,
+      "meaning": "The interop client still carries an explicit active-migration TODO.",
+      "snippet": "// TODO support the ability to actively migrate on the client"
+    }
+  ],
+  "generated": "2026-06-30",
+  "public_active_trigger_api_found": false,
+  "public_active_trigger_candidate_counts": {
+    "AddPath": 0,
+    "Probe_call": 0,
+    "Switch_call": 0,
+    "migrate_connection": 0,
+    "migrate_source": 0,
+    "perform_migration": 0,
+    "start_path_probe": 0
+  },
+  "public_safe": true,
+  "s2n_dir_hint": "external checkout; not committed",
+  "source_commit": "0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1",
+  "supports": "s2n-quic has tested connection migration/rebinding machinery and active-path observability, but the current public application API does not expose a quic-go-like AddPath/Probe/Switch trigger.",
+  "test_names_observed": [
+    "fn rebind_after_handshake_confirmed() {",
+    "fn ip_rebind_test() {",
+    "fn port_rebind_test() {",
+    "fn ip_and_port_rebind_test() {",
+    "fn rebind_before_handshake_confirmed() {",
+    "fn rebind_blocked_port() {",
+    "fn rebind_server_addr_before_handshake_confirmed() {"
+  ]
+}

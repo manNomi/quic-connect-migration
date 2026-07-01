@@ -1,0 +1,48 @@
+{
+  "generated": "2026-06-30",
+  "public_safe": true,
+  "read_only": true,
+  "commands_included": false,
+  "source_tool": "tools/suggest_active_path_change_commands.py",
+  "active_ipv4_interface_count": 1,
+  "active_ipv4_interfaces": [
+    "en0"
+  ],
+  "default_interface": "en0",
+  "noniphone_secondary_interfaces": [],
+  "noniphone_desktop_path_ready": false,
+  "ready_candidate_count": 0,
+  "ready_candidates": [],
+  "candidate_rows": [
+    {
+      "id": "macos_wifi_power_cutover",
+      "label": "Turn Wi-Fi off after secondary path is active",
+      "ready": false,
+      "source_ready": false,
+      "reason": "blocked: no active secondary non-loopback IPv4 path was detected",
+      "command_template": "networksetup -setairportpower <wifi-device> off",
+      "restore_template": "networksetup -setairportpower <wifi-device> on",
+      "requires_operator_approval": true
+    },
+    {
+      "id": "macos_service_order_cutover",
+      "label": "Put active secondary service before the current default service",
+      "ready": false,
+      "source_ready": false,
+      "reason": "blocked: no active secondary service was detected",
+      "command_template": "networksetup -ordernetworkservices <secondary-service> <primary-service> <remaining-services...>",
+      "restore_template": "networksetup -ordernetworkservices <primary-service> <secondary-service> <remaining-services...>",
+      "requires_operator_approval": true
+    }
+  ],
+  "excluded_candidate_ids": [
+    "macos_wifi_to_iphone_usb_latent_failover",
+    "android_wifi_to_cellular_cutover"
+  ],
+  "blockers": [
+    "only one active non-loopback IPv4 interface is currently detected",
+    "no active non-iPhone secondary desktop interface is currently detected",
+    "NETWORK_CHANGE_CMD must remain operator-provided and uncommitted"
+  ],
+  "claim_boundary": "This is readiness evidence only. It excludes iPhone latent failover and does not prove browser Connection Migration until a controlled public trial records client path change, server tuple change, qlog path validation, Chrome session continuity, and application completion."
+}

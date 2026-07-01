@@ -55,6 +55,10 @@
 | [docs/results/controlled-public-application-h3-gate-20260624.md](../results/controlled-public-application-h3-gate-20260624.md) | application H3 evidence gate |
 | [docs/results/controlled-public-origin-operations-runbook-20260624.md](../results/controlled-public-origin-operations-runbook-20260624.md) | 운영 runbook |
 | [docs/results/controlled-public-origin-aws-provision-20260625.md](../results/controlled-public-origin-aws-provision-20260625.md) | AWS/public origin provision public-safe report |
+| [docs/results/controlled-public-origin-workload-deploy-packet-20260701.md](../results/controlled-public-origin-workload-deploy-packet-20260701.md) | non-iPhone workload trial로 이어지는 public H3 origin deployment packet |
+| [data/controlled-public-origin-workload-deploy-packet-20260701.json](../../data/controlled-public-origin-workload-deploy-packet-20260701.json) | structured public origin workload deployment packet |
+| [docs/results/noniphone-desktop-path-change-readiness-20260701.md](../results/noniphone-desktop-path-change-readiness-20260701.md) | iPhone을 제외한 desktop active secondary path readiness |
+| [data/noniphone-desktop-path-change-readiness-20260701.json](../../data/noniphone-desktop-path-change-readiness-20260701.json) | structured non-iPhone desktop path-change readiness |
 | [docs/results/controlled-public-baseline-unlock-check-20260624.md](../results/controlled-public-baseline-unlock-check-20260624.md) | final-countable baseline unlock PASS |
 | [docs/results/controlled-public-config-check-20260624.md](../results/controlled-public-config-check-20260624.md) | initial config readiness |
 | [docs/results/controlled-public-config-check-fresh-20260629.md](../results/controlled-public-config-check-fresh-20260629.md) | fresh config readiness |

@@ -25,7 +25,7 @@
 | 4 | ngtcp2 | [GitHub](https://github.com/ngtcp2/ngtcp2), [공식 사이트](https://nghttp2.org/ngtcp2/) | C library/tooling 비교군 |
 | 5 | LiteSpeed lsquic | [GitHub](https://github.com/litespeedtech/lsquic), [LiteSpeed LSQUIC official page](https://www.litespeedtech.com/open-source/quic-http3-library) | 서버 구현체와 preferred address/migration 근거 |
 | 6 | MsQuic | [GitHub](https://github.com/microsoft/msquic), [공식 문서](https://microsoft.github.io/msquic/) | Microsoft ecosystem과 deployment 문서 |
-| 7 | Quinn | [GitHub](https://github.com/quinn-rs/quinn), [docs.rs quinn](https://docs.rs/quinn/latest/quinn/) | Rust implementation 비교군 |
+| 7 | Quinn | [GitHub](https://github.com/quinn-rs/quinn), [docs.rs quinn](https://docs.rs/quinn/latest/quinn/) | Rust implementation 및 endpoint-rebind runtime 비교군 |
 | 8 | Neqo | [GitHub](https://github.com/mozilla/neqo) | Mozilla implementation 비교군 |
 | 9 | XQUIC | [GitHub](https://github.com/alibaba/xquic) | Alibaba implementation, NAT rebinding/migration evidence |
 | 10 | Chromium/Cronet | [Chromium source](https://chromium.googlesource.com/chromium/src/), [Android Cronet ConnectionMigrationOptions](https://developer.android.com/develop/connectivity/cronet/reference/org/chromium/net/ConnectionMigrationOptions) | Chrome/Android browser runtime 정책 확인 |
@@ -33,10 +33,10 @@
 | 12 | AWS NLB + s2n-quic | [NLB QUIC announcement](https://aws.amazon.com/blogs/networking-and-content-delivery/introducing-quic-protocol-support-for-network-load-balancer-accelerating-mobile-first-applications/), [NLB listener docs](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-listeners.html) | passthrough QUIC와 CID routing 실험 후보 |
 | 13 | mvfst | [GitHub](https://github.com/facebook/mvfst) | 대규모 production-oriented QUIC stack |
 | 14 | picoquic | [GitHub](https://github.com/private-octopus/picoquic) | edge-case test가 풍부한 연구/interop 구현체 |
-| 15 | nginx QUIC | [GitHub mirror](https://github.com/nginx/nginx), [NGINX HTTP/3 docs](https://nginx.org/en/docs/http/ngx_http_v3_module.html) | server-side passive migration/web server 근거 |
+| 15 | nginx QUIC | [GitHub mirror](https://github.com/nginx/nginx), [NGINX HTTP/3 docs](https://nginx.org/en/docs/http/ngx_http_v3_module.html) | server-side passive migration/web server 근거와 runtime demo |
 | 16 | quicly | [GitHub](https://github.com/h2o/quicly) | H2O 계열 C implementation 비교군 |
 | 17 | aioquic | [GitHub](https://github.com/aiortc/aioquic), [공식 문서](https://aioquic.readthedocs.io/) | Python readable reference, path validation test |
-| 18 | HAProxy QUIC | [GitHub](https://github.com/haproxy/haproxy), [HAProxy HTTP/3 docs](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/protocol-support/http/) | proxy 반례. HTTP/3 proxy 지원과 CM 지원을 분리 |
+| 18 | HAProxy QUIC | [GitHub](https://github.com/haproxy/haproxy), [HAProxy HTTP/3 docs](https://www.haproxy.com/documentation/haproxy-configuration-tutorials/protocol-support/http/) | proxy 반례. fresh negative-control로 HTTP/3 proxy 지원과 CM 지원을 분리 |
 
 Apple/Safari는 실험 대상 browser로는 볼 수 있지만, Apple QUIC implementation은 비공개라 source/test/qlog 기반 구현체 성숙도 audit 대상에서는 제외했다.
 

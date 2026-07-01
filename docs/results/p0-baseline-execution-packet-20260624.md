@@ -1,6 +1,6 @@
 # P0 Baseline Execution Packet
 
-Generated: `2026-06-26`
+Generated: `2026-07-01`
 
 This packet is public-safe. It orders the next controlled-public Chrome baseline from private config setup through artifact validation without printing private domains, TLS paths, or network-change commands.
 
@@ -12,7 +12,7 @@ This packet is public-safe. It orders the next controlled-public Chrome baseline
 | next phase | `active-network-change` |
 | next trial ready | `no` |
 | packet state | `blocked_by_readiness` |
-| needed-now gates | `desktop_secondary_path_ready; network_change_command_present` |
+| needed-now gates | `baseline_summary_ready; network_change_command_present` |
 
 ## Ordered Stages
 

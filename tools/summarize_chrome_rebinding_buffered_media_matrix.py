@@ -12,7 +12,7 @@ from pathlib import Path
 from statistics import median
 from typing import Any
 
-from research_clock import utc_date_iso
+from research_clock import utc_kst_date_label
 
 
 CSV_FIELDS = [
@@ -231,7 +231,7 @@ def build_markdown(rows: list[dict[str, str]], csv_output: str) -> str:
     sections = [
         "# Chrome H3 Rebinding Buffered Media Control",
         "",
-        f"Generated: `{utc_date_iso()}`",
+        f"Generated: `{utc_kst_date_label()}`",
         "",
         "## Scope",
         "",

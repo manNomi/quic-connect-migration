@@ -1,0 +1,173 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "contract_id": "controlled-public-chrome-artifact-classifier-contract",
+  "source_classifier": "tools/classify_controlled_public_h3_network_change.py",
+  "source_trial_packet": "docs/results/noniphone-public-workload-trial-packet-20260701.md",
+  "source_bridge_synthesis": "docs/results/controlled-public-chrome-bridge-synthesis-20260701.md",
+  "baseline_h3_required_gates": [
+    {
+      "name": "public_origin_https_ok",
+      "required_for": "baseline_h3",
+      "artifact_source": "public-origin-readiness.json",
+      "accept_when": "HTTPS reachability is true and the target origin is controlled by the experiment.",
+      "why": "A browser CM row is meaningless if the public origin itself is not reachable."
+    },
+    {
+      "name": "public_origin_alt_svc_h3",
+      "required_for": "baseline_h3",
+      "artifact_source": "public-origin-readiness.json",
+      "accept_when": "Alt-Svc advertises h3 for the same WebPKI origin.",
+      "why": "Chrome must be offered an ordinary HTTP/3 route without forced local-only overrides."
+    },
+    {
+      "name": "server_application_h3_confirmed",
+      "required_for": "baseline_h3",
+      "artifact_source": "server.json + server qlog",
+      "accept_when": "Server request log and qlog show application HTTP/3 for the target workload.",
+      "why": "H3 discovery alone is not enough; the application request must actually use HTTP/3."
+    },
+    {
+      "name": "chrome_target_quic_session_observed",
+      "required_for": "baseline_h3",
+      "artifact_source": "Chrome NetLog",
+      "accept_when": "Chrome NetLog contains target-origin QUIC session or application QUIC job evidence.",
+      "why": "Server-side H3 should be paired with browser-side attribution when Chrome is the client."
+    },
+    {
+      "name": "expected_workload_requests_reached",
+      "required_for": "baseline_h3",
+      "artifact_source": "server.json",
+      "accept_when": "Expected workload request count is reached for the selected route.",
+      "why": "A partial request sequence should not be promoted to workload continuity evidence."
+    }
+  ],
+  "active_strong_cm_required_gates": [
+    {
+      "name": "application_completion_metric_true",
+      "required_for": "active_strong_cm",
+      "artifact_source": "DOM dump / application-summary",
+      "accept_when": "The workload-specific completion metric is true.",
+      "why": "Connection continuity claims must not ignore whether the user-visible task completed."
+    },
+    {
+      "name": "network_change_command_executed",
+      "required_for": "active_strong_cm",
+      "artifact_source": "network-change.json",
+      "accept_when": "The non-iPhone network-change command is present and exits 0 or an explicitly accepted no-exit condition.",
+      "why": "No-change rows are controls, not active migration trials."
+    },
+    {
+      "name": "client_active_path_changed",
+      "required_for": "active_strong_cm",
+      "artifact_source": "client-path-change-summary.json",
+      "accept_when": "Before/after route snapshots classify an active client path change.",
+      "why": "Server tuple movement alone can be misleading without client-side path evidence."
+    },
+    {
+      "name": "server_target_h3_tuple_changed",
+      "required_for": "active_strong_cm",
+      "artifact_source": "server.json",
+      "accept_when": "Target H3 remote tuple count is greater than one for the workload.",
+      "why": "A single observed tuple cannot prove path migration at the server endpoint."
+    },
+    {
+      "name": "server_qlog_path_validation",
+      "required_for": "active_strong_cm",
+      "artifact_source": "server qlog",
+      "accept_when": "PATH_CHALLENGE and/or PATH_RESPONSE evidence is present for the active row.",
+      "why": "Tuple changes without QUIC path validation are not enough for CM."
+    },
+    {
+      "name": "chrome_single_target_quic_session",
+      "required_for": "active_strong_cm",
+      "artifact_source": "Chrome NetLog",
+      "accept_when": "Target-origin Chrome QUIC session count is exactly one.",
+      "why": "Multiple target sessions indicate reconnect/session churn rather than single-session CM."
+    }
+  ],
+  "negative_control_classes_to_preserve": [
+    "controlled_public_network_change_not_executed",
+    "path_snapshot_missing",
+    "no_client_active_path_change_observed",
+    "application_task_incomplete_without_quic_path_validation",
+    "application_task_incomplete_despite_quic_path_validation",
+    "application_task_failed_without_quic_path_validation",
+    "application_task_failed_despite_quic_path_validation",
+    "tuple_changed_without_path_validation",
+    "reconnect_or_multiple_sessions",
+    "path_validation_without_observed_tuple_change",
+    "application_task_succeeded_without_observed_quic_migration",
+    "no_path_change_after_trigger",
+    "controlled_public_network_change_inconclusive"
+  ],
+  "result_classes": [
+    {
+      "id": "public_h3_baseline_positive",
+      "claim_strength": "baseline_only",
+      "accept_when": "baseline_h3 gates pass and no active network-change command is part of the row.",
+      "safe_claim": "The controlled public origin can serve the selected Chrome workload over HTTP/3.",
+      "do_not_claim": "Do not claim Connection Migration from a no-change or baseline row."
+    },
+    {
+      "id": "strong_single_session_cm_positive",
+      "claim_strength": "browser_deployment_positive",
+      "accept_when": "All active_strong_cm gates pass in the same row.",
+      "safe_claim": "For this controlled public Chrome workload, task completion coincided with client path change, server tuple change, qlog path validation, and a single Chrome target QUIC session.",
+      "do_not_claim": "Do not generalize to mobile Wi-Fi/LTE, other browsers, CDNs, or all workloads."
+    },
+    {
+      "id": "application_recovery_or_reconnect",
+      "claim_strength": "task_recovery_not_cm",
+      "accept_when": "Application completion is true but Chrome target sessions are greater than one, retry is used, or qlog path validation is absent.",
+      "safe_claim": "The application task recovered or completed under disruption.",
+      "do_not_claim": "Do not describe this as single-session QUIC Connection Migration."
+    },
+    {
+      "id": "negative_control_record",
+      "claim_strength": "gap_or_negative_control",
+      "accept_when": "The row maps to a PASS_NEGATIVE_CONTROL classification from the source classifier.",
+      "safe_claim": "The row documents a missing gate or conservative failure mode.",
+      "do_not_claim": "Do not count it as public browser CM success."
+    },
+    {
+      "id": "not_claimable",
+      "claim_strength": "not_claimable",
+      "accept_when": "The row lacks the H3 precondition, server artifact, or workload completion evidence needed for interpretation.",
+      "safe_claim": "No paper result claim should be made from this row.",
+      "do_not_claim": "Do not use incomplete infrastructure rows as CM evidence."
+    }
+  ],
+  "workload_rules": [
+    {
+      "workload": "large byte-range download",
+      "primary_use": "First active public workload because byte accounting and completion are crisp.",
+      "strong_cm_extra_requirement": "Range complete, expected byte count reached, no application retry, and one Chrome target QUIC session.",
+      "fallback_interpretation": "If range completes with multiple sessions or no qlog path validation, report recovery/reconnect rather than CM."
+    },
+    {
+      "workload": "large upload",
+      "primary_use": "Second active public workload because it tests client-sending continuity.",
+      "strong_cm_extra_requirement": "Upload complete, received bytes match intended payload, and packet/path evidence is not inferred from request tuple alone.",
+      "fallback_interpretation": "If upload completes but request-level tuple stays one, use qlog/NetLog/proxy evidence before making any path claim."
+    },
+    {
+      "workload": "buffered video playback",
+      "primary_use": "QoE workload that can hide disruption behind startup buffer or rebuffering.",
+      "strong_cm_extra_requirement": "Playback complete plus startup delay, rebuffer count, target session count, tuple change, and qlog path validation.",
+      "fallback_interpretation": "Playback completion alone is QoE/recovery evidence, not CM."
+    },
+    {
+      "workload": "music-like segment",
+      "primary_use": "Streaming-like boundary workload that separates retry recovery from transport continuity.",
+      "strong_cm_extra_requirement": "Segment completion without retry/reconnect and with all active strong CM gates in one row.",
+      "fallback_interpretation": "Retry-based segment completion should be framed as application recovery."
+    }
+  ],
+  "safe_boundary": {
+    "baseline": "A public H3 baseline proves only that the controlled origin and Chrome can speak HTTP/3 for the workload.",
+    "active": "A strong active CM row requires application completion, client active path change, server target tuple change, qlog path validation, and exactly one Chrome target QUIC session in the same row.",
+    "streaming": "Streaming completion must be reported with QoE and session attribution; completion alone is not CM."
+  },
+  "paper_use": "Run the source classifier on each future controlled-public Chrome row, then use this contract to decide whether the row is baseline evidence, strong single-session CM evidence, task recovery, or a negative control."
+}
