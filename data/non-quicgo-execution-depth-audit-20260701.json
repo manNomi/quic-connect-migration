@@ -16,8 +16,8 @@
   "summary": {
     "survey_rows_excluding_quic_go": 17,
     "depth_counts": {
-      "local_test_suite_rerun": 7,
-      "local_runtime_or_app_demo": 3,
+      "local_test_suite_rerun": 6,
+      "local_runtime_or_app_demo": 4,
       "focused_partial_runtime": 2,
       "client_policy_source_plus_local_baseline": 1,
       "source_test_map_only": 1,
@@ -30,8 +30,8 @@
       "negative_control": 1,
       "policy_dependent_client_evidence": 1,
       "source_level_active_and_passive_evidence": 1,
-      "strong_implementation_or_runtime_evidence": 7,
-      "strong_runtime_or_app_evidence": 3
+      "strong_implementation_or_runtime_evidence": 6,
+      "strong_runtime_or_app_evidence": 4
     },
     "remaining_deepening_candidates": [
       "XQUIC",
@@ -119,15 +119,15 @@
       "priority": "7",
       "name": "Quinn",
       "category": "library/server",
-      "current_level": "L3_L4",
-      "evidence_status": "fresh_rerun_20260630",
-      "depth_class": "local_test_suite_rerun",
-      "evidence_strength": "strong_implementation_or_runtime_evidence",
+      "current_level": "L4_runtime_rebind",
+      "evidence_status": "fresh_runtime_20260701",
+      "depth_class": "local_runtime_or_app_demo",
+      "evidence_strength": "strong_runtime_or_app_evidence",
       "active_migration_api": "partial",
       "passive_migration": "yes",
       "tests": "yes",
-      "why_not_quic_go_depth": "Rust test evidence is useful for maturity comparison, but the active migration surface is less direct than quic-go's controlled API in this corpus.",
-      "next_non_iphone_gate": "Optional: add a small Quinn HTTP/3 or echo migration harness if Rust-stack runtime depth becomes reviewer-critical."
+      "why_not_quic_go_depth": "Rust test evidence plus the endpoint-rebind runtime packet are useful for maturity comparison, but the active migration surface remains endpoint-wide rebind rather than quic-go's per-connection AddPath/Probe/Switch API.",
+      "next_non_iphone_gate": "Use the Quinn rebind runtime packet as Rust-stack endpoint-rebind evidence; add a custom HTTP/3 workload only if reviewers require application-layer Rust evidence."
     },
     {
       "priority": "8",

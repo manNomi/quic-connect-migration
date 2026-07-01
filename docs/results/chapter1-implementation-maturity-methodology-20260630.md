@@ -37,7 +37,7 @@ QUIC WG wiki는 2025-06-09 기준 archived 상태라고 명시되어 있어, 이
 | 4 | ngtcp2 | C 기반 RFC QUIC 구현체와 nghttp3 생태계 |
 | 5 | LiteSpeed lsquic | LiteSpeed/OpenLiteSpeed HTTP/3 deployment와 연결 |
 | 6 | MsQuic | Microsoft ecosystem 및 production deployment relevance |
-| 7 | Quinn | Rust async QUIC stack 비교군 |
+| 7 | Quinn | Rust async QUIC stack 및 endpoint-rebind runtime 비교군 |
 | 8 | Neqo | Mozilla/Firefox 계열 browser-adjacent QUIC stack |
 | 9 | XQUIC | Alibaba cross-platform QUIC/HTTP/3 stack |
 | 10 | Chromium/Cronet | Chrome/Android browser runtime policy의 핵심 |
@@ -170,7 +170,7 @@ Chapter 1에서 가장 강한 근거는 실제 로컬 테스트를 돌린 구현
 | s2n-quic | connection_migration test | PASS | AWS/NLB 후보 근거 |
 | aioquic | path challenge/response unit tests | PASS | passive validation reference |
 | ngtcp2 | client migration/path validation/disable migration tests | PASS | C library primitive 비교군 |
-| Quinn | migration/rebind tests | PASS | Rust stack 비교군 |
+| Quinn | endpoint-wide rebind runtime packet + proto migration/path-validation tests | PASS | Rust endpoint-rebind runtime positive control |
 | Neqo | migration test suite | PASS | Mozilla/browser-adjacent 비교군 |
 | MsQuic | NAT rebind/path-validation selected gtests, IPv4/IPv6 | PASS | production-relevant library evidence |
 | XQUIC | loopback client/server NAT rebinding demo | PASS demo, full suite partial | NAT rebinding implementation evidence |
@@ -323,7 +323,7 @@ ngtcp2는 C library primitive 비교군으로 확인했다.
 
 | 구현체 | 확인 방식 | 결론 |
 | --- | --- | --- |
-| Quinn | `quinn-proto` migration test, `quinn` rebind test | Rust application stack 비교군 |
+| Quinn | `quinn-proto` migration test, `quinn` rebind test, dedicated endpoint-rebind runtime packet | Rust endpoint-wide rebind runtime positive control. HTTP/3 application/browser/deployment claim은 별도 |
 | Neqo | `neqo-transport migration` test suite | Mozilla/browser-adjacent 구현체로 테스트 폭이 넓음 |
 | aioquic | path challenge/response unit tests | active migration 주력보다는 passive validation reference |
 
@@ -352,10 +352,11 @@ ngtcp2는 C library primitive 비교군으로 확인했다.
 | --- | --- |
 | 총 조사 대상 | 18 |
 | local test/demo/partial build/negative-control까지 실행한 구현체 | 14 |
-| 2026-06-30 fresh rerun/demo/negative-control artifact 확보 | 13 |
-| fresh app-level/runtime demo artifact 확보 | 3 |
+| 2026-06-30/2026-07-01 fresh rerun/demo/negative-control/focused-e2e artifact 확보 | 14 |
+| fresh app-level/runtime demo artifact 확보 | 4 |
 | fresh negative-control artifact 확보 | 1 |
-| fresh partial build/test artifact 확보 | 1 |
+| fresh focused e2e artifact 확보 | 1 |
+| fresh partial build/test artifact 확보 | 0 |
 | source inspected only | 1 |
 | source + local browser baseline | 1 |
 | partial/deferred | 2 |
@@ -412,7 +413,7 @@ Level 분포:
 
 1. CM은 구현체 수준에서 존재하는 기능이다.
 2. 주요 구현체 다수는 path validation, NAT rebinding, active/passive migration, qlog/event/test 중 일부 이상을 갖고 있다.
-3. 적어도 quic-go, quiche, picoquic, s2n-quic, ngtcp2, Quinn, Neqo, aioquic은 로컬에서 migration/path validation 관련 test 또는 reproduction을 실행해 근거를 확보했다.
+3. 적어도 quic-go, quiche, picoquic, s2n-quic, ngtcp2, Quinn, Neqo, aioquic은 로컬에서 migration/path validation 관련 test 또는 reproduction을 실행해 근거를 확보했고, Quinn은 endpoint-wide rebind runtime packet으로 test-suite-only 상태를 넘어섰다.
 4. 구현체 maturity와 production/browser availability는 다른 문제다.
 
 ### 12.2 말하면 안 되는 것

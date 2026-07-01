@@ -148,6 +148,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
     ngtcp2_runtime_trial_packet_json = "data/ngtcp2-runtime-trial-packet-20260701.json"
     quinn_migration_api_boundary_audit = "docs/results/quinn-migration-api-boundary-audit-20260701.md"
     quinn_migration_api_boundary_audit_json = "data/quinn-migration-api-boundary-audit-20260701.json"
+    quinn_rebind_runtime_packet = "docs/results/quinn-rebind-runtime-packet-20260701.md"
+    quinn_rebind_runtime_packet_json = "data/quinn-rebind-runtime-packet-20260701.json"
     xquic_full_suite_linux_audit = "docs/results/xquic-full-suite-linux-audit-20260701.md"
     xquic_full_suite_linux_audit_json = "data/xquic-full-suite-linux-audit-20260701.json"
     mvfst_focused_linux_runner_audit = "docs/results/mvfst-focused-linux-runner-audit-20260701.md"
@@ -264,6 +266,8 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
         ngtcp2_runtime_trial_packet_json = str(generated_dir / "ngtcp2-runtime-trial-packet.json")
         quinn_migration_api_boundary_audit = str(generated_dir / "quinn-migration-api-boundary-audit.md")
         quinn_migration_api_boundary_audit_json = str(generated_dir / "quinn-migration-api-boundary-audit.json")
+        quinn_rebind_runtime_packet = str(generated_dir / "quinn-rebind-runtime-packet.md")
+        quinn_rebind_runtime_packet_json = str(generated_dir / "quinn-rebind-runtime-packet.json")
         xquic_full_suite_linux_audit = str(generated_dir / "xquic-full-suite-linux-audit.md")
         xquic_full_suite_linux_audit_json = str(generated_dir / "xquic-full-suite-linux-audit.json")
         mvfst_focused_linux_runner_audit = str(generated_dir / "mvfst-focused-linux-runner-audit.md")
@@ -1338,6 +1342,25 @@ def default_checks(python_bin: str, generated_dir: Path | None = None) -> list[t
                 quinn_migration_api_boundary_audit,
                 "--json-output",
                 quinn_migration_api_boundary_audit_json,
+            ],
+            {0},
+            30,
+        ),
+        (
+            "quinn_rebind_runtime_packet_regression",
+            [python_bin, "tools/test_build_quinn_rebind_runtime_packet.py"],
+            {0},
+            30,
+        ),
+        (
+            "quinn_rebind_runtime_packet",
+            [
+                python_bin,
+                "tools/build_quinn_rebind_runtime_packet.py",
+                "--output",
+                quinn_rebind_runtime_packet,
+                "--json-output",
+                quinn_rebind_runtime_packet_json,
             ],
             {0},
             30,

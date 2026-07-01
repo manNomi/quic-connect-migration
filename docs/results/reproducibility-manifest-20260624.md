@@ -8,15 +8,15 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `129fd75` |
+| source commit at generation | `7dbb29b` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
-| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 8, 'fresh_runtime_20260630': 1, 'fresh_runtime_20260701': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
+| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 7, 'fresh_runtime_20260630': 1, 'fresh_runtime_20260701': 2, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
 | experiment matrix items | `163` |
 | latest experiment matrix item | `ngtcp2-runtime-trial-packet` |
-| verification | `157/157 passed; ok=yes` |
+| verification | `159/159 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
@@ -105,6 +105,9 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `ngtcp2_example_migration_runner` | `harness/scripts/run-ngtcp2-example-migration-demo.sh` | `yes` |
 | `quinn_migration_api_boundary_audit` | `docs/results/quinn-migration-api-boundary-audit-20260701.md` | `yes` |
 | `quinn_migration_api_boundary_audit_json` | `data/quinn-migration-api-boundary-audit-20260701.json` | `yes` |
+| `quinn_rebind_runtime_packet` | `docs/results/quinn-rebind-runtime-packet-20260701.md` | `yes` |
+| `quinn_rebind_runtime_packet_json` | `data/quinn-rebind-runtime-packet-20260701.json` | `yes` |
+| `quinn_rebind_runtime_runner` | `harness/scripts/run-quinn-rebind-runtime-demo.sh` | `yes` |
 | `xquic_full_suite_linux_audit` | `docs/results/xquic-full-suite-linux-audit-20260701.md` | `yes` |
 | `xquic_full_suite_linux_audit_json` | `data/xquic-full-suite-linux-audit-20260701.json` | `yes` |
 | `xquic_full_suite_linux_runner` | `harness/scripts/run-xquic-full-suite-linux.sh` | `yes` |

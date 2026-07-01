@@ -1,0 +1,131 @@
+{
+  "generated": "2026-07-01",
+  "public_safe": true,
+  "implementation": "Quinn",
+  "source_commit": "953b466747e667a9dfda0596b8051a0644f8333d",
+  "local_clone": {
+    "observed": true,
+    "commit": "953b466747e667a9dfda0596b8051a0644f8333d",
+    "matches_expected_commit": "yes",
+    "remote": "https://github.com/quinn-rs/quinn.git"
+  },
+  "runner": {
+    "path": "harness/scripts/run-quinn-rebind-runtime-demo.sh",
+    "exists": true,
+    "result_env": "harness/results/quinn-rebind-runtime-demo-local-20260701/results/result.env",
+    "result_env_exists": true,
+    "result_env_values": {
+      "run_id": "quinn-rebind-runtime-demo-local-20260701",
+      "artifact_dir": "/Users/manwook-han/Desktop/lab/quic-connect-migration/harness/results/quinn-rebind-runtime-demo-local-20260701",
+      "system_name": "Darwin",
+      "system_machine": "arm64",
+      "quinn_dir": "/private/tmp/quic-cm-scan-repos/quinn",
+      "quinn_expected_commit": "953b466747e667a9dfda0596b8051a0644f8333d",
+      "quinn_observed_commit": "953b466747e667a9dfda0596b8051a0644f8333d",
+      "quinn_commit_matches": "yes",
+      "require_ready": "1",
+      "dry_run": "0",
+      "quinn_features": "rustls-ring",
+      "quinn_rebind_rust_log": "info",
+      "preflight_missing_commands": "none",
+      "cargo_quinn_rebind_exit": "0",
+      "cargo_quinn_proto_migration_exit": "0",
+      "rebind_recv_ok_count": "1",
+      "connected_log_count": "1",
+      "got_conn_log_count": "1",
+      "rebound_log_count": "1",
+      "proto_migration_ok_count": "1",
+      "proto_migration_initiated_count": "1",
+      "path_challenge_count": "3",
+      "path_response_count": "3",
+      "new_path_validated_count": "1",
+      "validation": "ok",
+      "blocked_or_failed_reason": "none",
+      "stage": "cargo_tests"
+    }
+  },
+  "runtime_trial": {
+    "status": "ready_or_passed",
+    "reason": "runner_validation_ok",
+    "can_claim_runtime_pass": "yes",
+    "can_claim_browser_or_deployment": "no"
+  },
+  "claim_boundary": {
+    "safe_claim": "Quinn has source/API evidence plus a local endpoint-rebind runtime PASS: the rebind_recv test passed, connected/got-conn/rebound logs appeared, the proto migration test passed, migration was initiated, PATH_CHALLENGE/PATH_RESPONSE counters were nonzero, and the new path was validated.",
+    "unsafe_claim": "Quinn browser handover, HTTP/3 application continuity, managed deployment continuity, or quic-go-equivalent per-connection AddPath/Probe/Switch control.",
+    "next_gap": "Use this as a Rust-stack endpoint-rebind runtime positive control; only build a custom Quinn HTTP/3 workload if reviewers require application-layer Rust evidence."
+  },
+  "evidence": [
+    {
+      "id": "endpoint-rebind-api",
+      "source": "quinn/src/endpoint.rs",
+      "line": 269,
+      "topic": "Endpoint rebind API",
+      "observation": "Endpoint::rebind switches a Quinn endpoint to a new UDP socket.",
+      "implication": "Quinn has a public runtime control surface for endpoint-wide local address changes.",
+      "source_base": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d",
+      "url": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d/quinn/src/endpoint.rs#L269"
+    },
+    {
+      "id": "endpoint-rebind-scope",
+      "source": "quinn/src/endpoint.rs",
+      "line": 279,
+      "topic": "Endpoint-wide rebind scope",
+      "observation": "rebind_abstract updates the endpoint address live and affects all active connections.",
+      "implication": "Quinn's active local-address control is endpoint-wide rather than per-connection AddPath/Probe/Switch.",
+      "source_base": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d",
+      "url": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d/quinn/src/endpoint.rs#L279"
+    },
+    {
+      "id": "runtime-rebind-recv-test",
+      "source": "quinn/src/tests.rs",
+      "line": 692,
+      "topic": "Runtime rebind stream test",
+      "observation": "The rebind_recv Tokio test connects client/server endpoints, rebinds the client UDP socket, and reads a server unidirectional stream.",
+      "implication": "A simple Quinn stream workload can complete after endpoint rebind in the upstream test.",
+      "source_base": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d",
+      "url": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d/quinn/src/tests.rs#L692"
+    },
+    {
+      "id": "proto-migration-test",
+      "source": "quinn-proto/src/tests/mod.rs",
+      "line": 1351,
+      "topic": "Protocol migration test",
+      "observation": "The migration test changes the client address, sends data, and observes the server remote address update.",
+      "implication": "Quinn has protocol-level migration/rebinding evidence beyond the endpoint runtime test.",
+      "source_base": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d",
+      "url": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d/quinn-proto/src/tests/mod.rs#L1351"
+    },
+    {
+      "id": "path-challenge-transmit",
+      "source": "quinn-proto/src/connection/mod.rs",
+      "line": 3268,
+      "topic": "PATH_CHALLENGE evidence",
+      "observation": "Outgoing packets on an unvalidated path include PATH_CHALLENGE and update frame statistics.",
+      "implication": "Runtime claims can be tied to path-validation frame evidence rather than only test exit code.",
+      "source_base": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d",
+      "url": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d/quinn-proto/src/connection/mod.rs#L3268"
+    },
+    {
+      "id": "path-response-transmit",
+      "source": "quinn-proto/src/connection/mod.rs",
+      "line": 3283,
+      "topic": "PATH_RESPONSE evidence",
+      "observation": "Queued path responses are emitted and counted in frame statistics.",
+      "implication": "Quinn implements responder-side path-validation traffic.",
+      "source_base": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d",
+      "url": "https://github.com/quinn-rs/quinn/blob/953b466747e667a9dfda0596b8051a0644f8333d/quinn-proto/src/connection/mod.rs#L3283"
+    },
+    {
+      "id": "local-rerun-summary",
+      "source": "docs/results/implementation-rerun-results-20260630.md",
+      "line": 337,
+      "topic": "Fresh local rerun",
+      "observation": "The study records cargo test -p quinn-proto migration and cargo test -p quinn rebind as passing at the audited commit.",
+      "implication": "The runtime packet deepens an existing Quinn row with a dedicated fail-closed artifact.",
+      "source_base": "https://github.com/manNomi/quic-connect-migration/blob/docs/quinn-neqo-rerun-20260630",
+      "url": "https://github.com/manNomi/quic-connect-migration/blob/docs/quinn-neqo-rerun-20260630/docs/results/implementation-rerun-results-20260630.md#L337"
+    }
+  ],
+  "public_safety_scan_ok": true
+}

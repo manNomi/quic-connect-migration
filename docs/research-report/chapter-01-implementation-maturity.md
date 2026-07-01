@@ -164,7 +164,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 | s2n-quic | connection migration tests | PASS |
 | aioquic | path challenge/response unit tests | PASS |
 | ngtcp2 | client migration/path validation tests + official `osslclient/osslserver` local HTTP/3 runtime migration row | PASS |
-| Quinn | migration/rebind tests | PASS |
+| Quinn | endpoint-wide rebind runtime packet + proto migration/path-validation tests | PASS |
 | Neqo | migration test suite | PASS |
 | MsQuic | NAT rebind/path-validation selected gtests, IPv4/IPv6 | PASS |
 | XQUIC | loopback client/server NAT rebinding demo, Linux full-suite replay runner | PASS demo, full suite Linux gate packaged |
@@ -380,7 +380,7 @@ quicly는 H2O 계열의 C QUIC library로, path validation과 path promotion int
 | 총 조사 대상 | 18 |
 | local test/demo까지 실행한 구현체 | 14 |
 | 2026-06-30 fresh rerun/demo/negative-control/focused-e2e artifact 확보 | 14 |
-| fresh app-level/runtime demo artifact 확보 | 3 |
+| fresh app-level/runtime demo artifact 확보 | 4 |
 | fresh negative-control artifact 확보 | 1 |
 | fresh focused e2e artifact 확보 | 1 |
 | fresh partial build/test artifact 확보 | 0 |
@@ -433,4 +433,5 @@ Chapter 1의 결론은 다음이다.
 | `../results/mvfst-cm-source-audit-20260630.md` | mvfst path manager/client/server migration source-test audit |
 | `../results/mvfst-migration-test-readiness-20260630.md` | mvfst latest HEAD focused migration test target map과 local blocker |
 | `../results/mvfst-focused-linux-runner-audit-20260701.md` | mvfst focused BUCK target Linux runner와 claim boundary |
+| `../results/quinn-rebind-runtime-packet-20260701.md` | Quinn endpoint-wide rebind runtime PASS와 browser/HTTP/3 application/deployment claim boundary |
 | `../results/chaptered-research-synthesis-20260629.md` | 전체 챕터 흐름 |

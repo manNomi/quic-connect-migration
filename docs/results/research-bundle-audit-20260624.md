@@ -26,7 +26,7 @@ Generated: `2026-07-01`
 | desktop handover ready | `no` |
 | Android ready | `no` |
 | AWS identity OK | `no` |
-| disk available GiB | `13.74` |
+| disk available GiB | `11.84` |
 | local artifact roots total | `36.3 GiB` |
 | Chrome NetLog ready | `yes` |
 | Safari WebDriver ready | `yes` |

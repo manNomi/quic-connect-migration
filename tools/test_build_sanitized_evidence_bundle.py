@@ -60,6 +60,7 @@ def test_bundle_has_claim_boundaries() -> None:
     assert "ngtcp2-migration-api-boundary-audit" in ids
     assert "ngtcp2-runtime-trial-packet" in ids
     assert "quinn-migration-api-boundary-audit" in ids
+    assert "quinn-rebind-runtime-packet" in ids
     assert "xquic-full-suite-linux-audit" in ids
     assert "aws-s2n-phase2-rebinding-runner-audit" in ids
     assert "aws-s2n-phase2-artifact-classifier-contract" in ids

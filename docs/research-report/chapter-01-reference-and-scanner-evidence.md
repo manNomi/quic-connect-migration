@@ -25,7 +25,7 @@
 | 4 | ngtcp2 | [GitHub](https://github.com/ngtcp2/ngtcp2), [공식 사이트](https://nghttp2.org/ngtcp2/) | C library/tooling 비교군 |
 | 5 | LiteSpeed lsquic | [GitHub](https://github.com/litespeedtech/lsquic), [LiteSpeed LSQUIC official page](https://www.litespeedtech.com/open-source/quic-http3-library) | 서버 구현체와 preferred address/migration 근거 |
 | 6 | MsQuic | [GitHub](https://github.com/microsoft/msquic), [공식 문서](https://microsoft.github.io/msquic/) | Microsoft ecosystem과 deployment 문서 |
-| 7 | Quinn | [GitHub](https://github.com/quinn-rs/quinn), [docs.rs quinn](https://docs.rs/quinn/latest/quinn/) | Rust implementation 비교군 |
+| 7 | Quinn | [GitHub](https://github.com/quinn-rs/quinn), [docs.rs quinn](https://docs.rs/quinn/latest/quinn/) | Rust implementation 및 endpoint-rebind runtime 비교군 |
 | 8 | Neqo | [GitHub](https://github.com/mozilla/neqo) | Mozilla implementation 비교군 |
 | 9 | XQUIC | [GitHub](https://github.com/alibaba/xquic) | Alibaba implementation, NAT rebinding/migration evidence |
 | 10 | Chromium/Cronet | [Chromium source](https://chromium.googlesource.com/chromium/src/), [Android Cronet ConnectionMigrationOptions](https://developer.android.com/develop/connectivity/cronet/reference/org/chromium/net/ConnectionMigrationOptions) | Chrome/Android browser runtime 정책 확인 |

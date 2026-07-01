@@ -5,8 +5,8 @@
   "summary": {
     "survey_rows_excluding_quic_go": 17,
     "claim_class_counts": {
-      "strong_cross_implementation_positive": 7,
-      "server_or_app_runtime_positive": 3,
+      "strong_cross_implementation_positive": 6,
+      "server_or_app_runtime_positive": 4,
       "focused_or_partial_positive": 2,
       "source_or_readiness_only": 2,
       "negative_control": 1,
@@ -17,9 +17,9 @@
       "fresh_focused_e2e_full_gate_20260701": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
-      "fresh_rerun_20260630": 7,
+      "fresh_rerun_20260630": 6,
       "fresh_runtime_20260630": 1,
-      "fresh_runtime_20260701": 1,
+      "fresh_runtime_20260701": 2,
       "partial_deferred": 1,
       "source_edge_boundary_audit_20260701": 1,
       "source_inspected": 1,
@@ -139,11 +139,11 @@
       "tests": "yes",
       "lb_or_cloud_deployability": "manual",
       "aws_suitability": "medium",
-      "current_level": "L3_L4",
-      "evidence_status": "fresh_rerun_20260630",
-      "next_action": "Use as Rust migration/rebind comparison",
-      "claim_class": "strong_cross_implementation_positive",
-      "risk_note": "Use as implementation maturity evidence, not as browser or managed-deployment proof."
+      "current_level": "L4_runtime_rebind",
+      "evidence_status": "fresh_runtime_20260701",
+      "next_action": "Use as Rust endpoint-rebind runtime positive control; HTTP/3/browser/deployment rows remain follow-up",
+      "claim_class": "server_or_app_runtime_positive",
+      "risk_note": "Endpoint-rebind runtime row is positive; HTTP/3 application, browser handover, and managed deployment remain separate claims."
     },
     {
       "priority": "8",

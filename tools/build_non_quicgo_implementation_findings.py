@@ -74,6 +74,8 @@ def risk_note(row: dict[str, str]) -> str:
         return "Example app demos are positive; OpenLiteSpeed production-like deployment is still follow-up."
     if name == "MsQuic":
         return "NAT rebind/path validation tests are positive; API audit shows constrained local-address control, while QUIC-aware load balancing remains a deployment boundary."
+    if name == "Quinn":
+        return "Endpoint-rebind runtime row is positive; HTTP/3 application, browser handover, and managed deployment remain separate claims."
     if name == "Chromium Chrome Cronet":
         return "Policy hooks, NetLog migration events, and Cronet default-disable evidence exist, but browser handover success still requires runtime rows."
     if name == "AWS CloudFront":

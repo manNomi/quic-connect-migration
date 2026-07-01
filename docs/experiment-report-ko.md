@@ -181,7 +181,8 @@ HTTP/3 client mode:
 | picoquic | NAT rebinding, false migration, preferred address 등 edge-case test 풍부 | edge-case maturity |
 | s2n-quic | rebinding/migration policy test, CID provider 가능성 | AWS/NLB 연계 후보 |
 | ngtcp2 | focused migration/path-validation tests + 공식 `osslclient/osslserver` local HTTP/3 migration runtime PASS | C-library runtime positive control |
-| Quinn/Neqo/aioquic | migration 관련 test evidence | 추가 구현체 근거 |
+| Quinn | endpoint-wide rebind runtime PASS + proto migration/path-validation test evidence | Rust endpoint-rebind runtime positive control |
+| Neqo/aioquic | migration 관련 test evidence | 추가 구현체 근거 |
 | HAProxy | HTTP/3는 지원하지만 QUIC CM은 제한/미지원 | negative control |
 | Chromium/Cronet | migration policy hook 존재 | 후속 browser/client 실험 대상 |
 

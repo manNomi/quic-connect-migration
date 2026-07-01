@@ -23,6 +23,7 @@ This public-safe audit narrows Quinn's role in the implementation survey. It exp
 | path validation | `PATH_CHALLENGE_RESPONSE_state_and_stats` |
 | fresh local tests | `quinn-proto migration 1 passed; quinn rebind 1 passed` |
 | quic go style addpath probe switch | `not_established` |
+| local rebind runtime row | `present_in_companion_runtime_packet` |
 | browser or http3 runtime row | `absent` |
 
 ## Conclusion
@@ -31,7 +32,7 @@ This public-safe audit narrows Quinn's role in the implementation survey. It exp
 | --- | --- |
 | implementation status | `mature_for_server_allowed_client_migration_and_endpoint_rebind` |
 | api boundary | `endpoint_wide_socket_rebind_not_per_connection_addpath_probe_switch` |
-| paper use | `Use Quinn as Rust-stack migration/rebind maturity evidence and optional runtime-follow-up target, not as browser/deployment continuity proof.` |
+| paper use | `Use Quinn as Rust-stack migration/rebind maturity evidence plus companion endpoint-rebind runtime positive control, not as browser/deployment continuity proof.` |
 
 ## Evidence Table
 
@@ -60,12 +61,12 @@ This public-safe audit narrows Quinn's role in the implementation survey. It exp
 
 ## Reporting Boundary
 
-- Safe claim: Quinn exposes server migration policy, endpoint-wide socket rebind, preferred-address support, path-validation machinery, frame stats, and fresh local migration/rebind tests.
+- Safe claim: Quinn exposes server migration policy, endpoint-wide socket rebind, preferred-address support, path-validation machinery, frame stats, fresh local migration/rebind tests, and a companion endpoint-rebind runtime PASS artifact.
 - Unsafe claim: Quinn currently provides the same per-connection AddPath/Probe/Switch control shape as quic-go or proves HTTP/3 browser/deployment workload continuity in this study.
-- Next non-iPhone gap: If reviewers require a Rust runtime row, build a small Quinn echo/HTTP workload harness that calls Endpoint::rebind mid-stream and records frame stats, peer address change, and payload continuity.
+- Next non-iPhone gap: Use the companion runtime packet as Rust-stack endpoint-rebind evidence; build a custom Quinn HTTP/3 workload only if reviewers require application-layer Rust evidence.
 
 ## Paper Interpretation
 
 1. Quinn weakens an implementation-absence explanation because migration policy, rebind, preferred address, and path validation are present and tested.
 2. Quinn strengthens the API-shape explanation because the public runtime trigger is endpoint-wide socket rebind, not quic-go-style per-connection path control.
-3. Quinn should stay in the non-quic-go maturity section unless a dedicated Quinn echo/HTTP runtime harness is added.
+3. Quinn now has a companion endpoint-rebind runtime packet, but browser, HTTP/3 application, and managed-deployment claims remain separate gates.

@@ -113,6 +113,7 @@
 101. Quinn migration API boundary audit를 추가했다. Quinn은 server migration policy, endpoint-wide socket rebind, preferred-address, PATH_CHALLENGE/PATH_RESPONSE, fresh migration/rebind tests가 강하지만 public control surface는 quic-go식 per-connection `AddPath -> Probe -> Switch`가 아니라 endpoint rebind 중심이라고 고정했다.
 102. ngtcp2 migration API boundary audit를 추가했다. ngtcp2는 공개 header에 immediate/validation-gated client migration API, path-validation callback, disable-active-migration/preferred-address policy, qlog PATH_CHALLENGE/PATH_RESPONSE 근거가 있어 C-library 비교군으로 강하지만 browser/deployment continuity는 별도 runtime row가 필요하다.
 103. ngtcp2 runtime trial packet과 fail-closed runner를 갱신했다. 공식 `osslclient/osslserver` 기반 HTTP/3 example migration row가 로컬에서 `validation=ok`, `client_exit=0`, local address change `1`, qlog PATH_CHALLENGE/PATH_RESPONSE `34/24`로 통과해 두 번째 C-library runtime positive control로 승격했다. 단 browser/deployment continuity claim은 별도 gate로 남긴다.
+104. Quinn rebind runtime packet과 fail-closed runner를 추가했다. Quinn upstream `rebind_recv`와 `quinn-proto` migration test를 dedicated runner로 재실행했고 `validation=ok`, rebind logs `connected/got conn/rebound`, PATH_CHALLENGE/PATH_RESPONSE `3/3`, new path validated `1`을 확인했다. 단 이 결과는 Rust endpoint-wide rebind positive control이며 browser/HTTP/3 application/deployment continuity claim은 아니다.
 
 따라서 현재 결론은 "항상 된다"도 "안 된다"도 아니다.
 
@@ -312,6 +313,7 @@
 - [ngtcp2 migration API boundary audit](docs/results/ngtcp2-migration-api-boundary-audit-20260701.md)
 - [ngtcp2 runtime trial packet](docs/results/ngtcp2-runtime-trial-packet-20260701.md)
 - [Quinn migration API boundary audit](docs/results/quinn-migration-api-boundary-audit-20260701.md)
+- [Quinn rebind runtime packet](docs/results/quinn-rebind-runtime-packet-20260701.md)
 - [XQUIC full-suite Linux audit](docs/results/xquic-full-suite-linux-audit-20260701.md)
 - [mvfst focused Linux runner audit](docs/results/mvfst-focused-linux-runner-audit-20260701.md)
 - [quicly full-e2e Linux runner audit](docs/results/quicly-full-e2e-linux-audit-20260701.md)

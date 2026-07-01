@@ -35,7 +35,7 @@
 | ngtcp2 | [GitHub](https://github.com/ngtcp2/ngtcp2), [official site](https://nghttp2.org/ngtcp2/) | Chapter 1, 3 | source scanner and C library comparison |
 | LiteSpeed lsquic | [GitHub](https://github.com/litespeedtech/lsquic), [official LSQUIC page](https://www.litespeedtech.com/open-source/quic-http3-library) | Chapter 1 | source scanner and server-side QUIC comparison |
 | MsQuic | [GitHub](https://github.com/microsoft/msquic), [docs](https://microsoft.github.io/msquic/), [deployment docs](https://microsoft.github.io/msquic/msquicdocs/docs/Deployment.html) | Chapter 1-3 | source scanner and production stack comparison |
-| Quinn | [GitHub](https://github.com/quinn-rs/quinn), [docs.rs](https://docs.rs/quinn/latest/quinn/) | Chapter 1, 3 | source scanner and Rust implementation comparison |
+| Quinn | [GitHub](https://github.com/quinn-rs/quinn), [docs.rs](https://docs.rs/quinn/latest/quinn/) | Chapter 1, 3 | source scanner, endpoint rebind API, and Rust runtime comparison |
 | Neqo | [GitHub](https://github.com/mozilla/neqo) | Chapter 1, 3 | source scanner and Mozilla-adjacent stack |
 | XQUIC | [GitHub](https://github.com/alibaba/xquic) | Chapter 1 | source scanner and implementation comparison |
 | mvfst | [GitHub](https://github.com/facebook/mvfst) | Chapter 1 | source scanner and production-oriented stack |

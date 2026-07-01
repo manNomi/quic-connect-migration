@@ -10,7 +10,7 @@ This public-safe scaffold maps the current evidence corpus and wording guard int
 | --- | --- |
 | section count | `9` |
 | paper sections | `['Abstract', 'Introduction', 'Limitations', 'Method', 'Results']` |
-| bundle item count | `59` |
+| bundle item count | `60` |
 | missing evidence ids | `{}` |
 | missing wording sections | `{}` |
 | scaffold decision | Use this scaffold to draft a conservative maturity/gap paper before opening public browser or AWS positive-result gates. |

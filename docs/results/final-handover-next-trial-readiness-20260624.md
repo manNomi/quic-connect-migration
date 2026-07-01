@@ -14,7 +14,7 @@ Generated: `2026-07-01`
 | next phase | `active-network-change` |
 | next browser | `Chrome` |
 | final completion | `3/6` |
-| disk free GiB | `13.77` |
+| disk free GiB | `11.87` |
 | active IPv4 interfaces | `en0(192.168.0.212)` |
 | desktop path-change mode | `not-ready` |
 | public origin URL | `<configured>` |
