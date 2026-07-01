@@ -1,9 +1,9 @@
 {
-  "generated": "2026-06-30",
+  "generated": "2026-07-01",
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "038ab67",
+    "commit": "129fd75",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -22,8 +22,9 @@
       "fresh_focused_e2e_full_gate_20260701": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
-      "fresh_rerun_20260630": 9,
+      "fresh_rerun_20260630": 8,
       "fresh_runtime_20260630": 1,
+      "fresh_runtime_20260701": 1,
       "partial_deferred": 1,
       "source_edge_boundary_audit_20260701": 1,
       "source_inspected": 1,
@@ -35,12 +36,13 @@
       "L3_L4": 2,
       "L3_L4_focused_e2e_full_gate": 1,
       "L3_L4_partial": 1,
-      "L4": 3,
+      "L4": 2,
       "L4_AWS_L5_candidate": 1,
       "L4_L5": 1,
       "L4_L5_candidate": 1,
       "L4_L5_caveat": 1,
       "L4_client_policy_boundary_audit": 1,
+      "L4_runtime_example": 1,
       "L4_server_runtime": 1,
       "L5_candidate": 1,
       "L5_deployment_candidate": 1,

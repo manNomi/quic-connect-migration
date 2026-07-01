@@ -1,6 +1,6 @@
 # Non-quic-go Execution Depth Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit explains why quic-go has the deepest controlled run while other implementations are still useful evidence. It is generated from `data/implementation-survey.csv` plus the latest AWS s2n readiness artifact when present.
 
@@ -9,8 +9,8 @@ This public-safe audit explains why quic-go has the deepest controlled run while
 | field | value |
 | --- | --- |
 | survey rows excluding quic-go | `17` |
-| depth counts | `{'local_test_suite_rerun': 8, 'local_runtime_or_app_demo': 2, 'focused_partial_runtime': 2, 'client_policy_source_plus_local_baseline': 1, 'source_test_map_only': 1, 'managed_or_external_deployment_gate': 2, 'negative_control_runtime': 1}` |
-| evidence strength counts | `{'deployment_gate_pending': 2, 'focused_positive_but_not_full_stack': 2, 'negative_control': 1, 'policy_dependent_client_evidence': 1, 'source_level_active_and_passive_evidence': 1, 'strong_implementation_or_runtime_evidence': 8, 'strong_runtime_or_app_evidence': 2}` |
+| depth counts | `{'local_test_suite_rerun': 7, 'local_runtime_or_app_demo': 3, 'focused_partial_runtime': 2, 'client_policy_source_plus_local_baseline': 1, 'source_test_map_only': 1, 'managed_or_external_deployment_gate': 2, 'negative_control_runtime': 1}` |
+| evidence strength counts | `{'deployment_gate_pending': 2, 'focused_positive_but_not_full_stack': 2, 'negative_control': 1, 'policy_dependent_client_evidence': 1, 'source_level_active_and_passive_evidence': 1, 'strong_implementation_or_runtime_evidence': 7, 'strong_runtime_or_app_evidence': 3}` |
 | remaining deepening candidates | `['XQUIC', 'Chromium Chrome Cronet', 'AWS CloudFront', 'AWS NLB plus s2n-quic', 'mvfst', 'quicly']` |
 | interpretation | quic-go is the deepest controllable positive control, but non-quic-go evidence is broad enough to show that CM is implemented across multiple stacks at different depths. |
 
@@ -37,7 +37,7 @@ quic-go was used for the deepest controlled migration run because it exposes the
 | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2 | Cloudflare quiche | `local_test_suite_rerun` | `strong_implementation_or_runtime_evidence` | `L4` | `yes` | `yes` | `yes` | Local migration tests and sample evidence are strong, but the target question for Cloudflare's managed edge is a separate deployment-layer claim. | Keep as cross-implementation evidence; only promote Cloudflare managed edge after a separate public edge experiment. |
 | 3 | AWS s2n-quic | `local_test_suite_rerun` | `strong_implementation_or_runtime_evidence` | `L4_AWS_L5_candidate` | `likely` | `yes` | `yes` | Library tests and the local AWS-NLB-compatible CID proof are positive, but live forwarding still depends on the AWS identity gate. | Refresh AWS credentials, rerun the s2n NLB readiness gate, then run forwarding echo before any path-change variant. |
-| 4 | ngtcp2 | `local_test_suite_rerun` | `strong_implementation_or_runtime_evidence` | `L4` | `yes` | `yes` | `yes` | The library exposes migration/path-validation primitives, but this study did not need a second quic-go-style custom AddPath/Probe/Switch positive control. | Optional: build a focused ngtcp2 HTTP/3 migration runner if a second C-library positive control becomes necessary. |
+| 4 | ngtcp2 | `local_runtime_or_app_demo` | `strong_runtime_or_app_evidence` | `L4_runtime_example` | `yes` | `yes` | `yes` | The library exposes migration/path-validation primitives, and the official osslclient/osslserver example now provides a local HTTP/3 runtime migration positive row; it still is not a browser or managed-deployment proof. | Use the ngtcp2 runtime packet as a second C-library positive control; repeat on a clean host only if reviewers require independent replication. |
 | 5 | LiteSpeed lsquic | `local_runtime_or_app_demo` | `strong_runtime_or_app_evidence` | `L4_L5_candidate` | `yes` | `yes` | `yes` | Runtime demos reached app-level evidence, but production-like OpenLiteSpeed deployment needs a Linux/EC2 follow-up. | Run the OpenLiteSpeed or LSQUIC production-like demo on Linux/EC2. |
 | 6 | MsQuic | `local_test_suite_rerun` | `strong_implementation_or_runtime_evidence` | `L4_L5_caveat` | `policy_constrained` | `yes` | `yes` | Selected NAT rebinding and path-validation tests passed, and the focused API audit shows constrained local-address control plus a QUIC-aware LB boundary rather than quic-go-style AddPath/Probe/Switch control. | Optional: build a small MsQuic runtime harness that changes QUIC_PARAM_CONN_LOCAL_ADDRESS after handshake confirmation and verifies peer-address-change plus payload continuity. |
 | 7 | Quinn | `local_test_suite_rerun` | `strong_implementation_or_runtime_evidence` | `L3_L4` | `partial` | `yes` | `yes` | Rust test evidence is useful for maturity comparison, but the active migration surface is less direct than quic-go's controlled API in this corpus. | Optional: add a small Quinn HTTP/3 or echo migration harness if Rust-stack runtime depth becomes reviewer-critical. |

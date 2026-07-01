@@ -1,6 +1,6 @@
 # ngtcp2 Runtime Trial Packet
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe packet turns the ngtcp2 gap into a reproducible runtime gate. It does not claim a runtime PASS unless the fail-closed runner records `validation=ok`.
 
@@ -13,16 +13,16 @@ This public-safe packet turns the ngtcp2 gap into a reproducible runtime gate. I
 | local clone observed | `True` |
 | local clone commit | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` |
 | local clone matches audit commit | `yes` |
-| libev | `missing` |
+| libev | `4.33` |
 | libnghttp3 | `1.16.0` |
 | openssl | `3.6.2` |
 | focused migration tests | `6/6 expected seen` |
-| example ossl binary pair present | `no` |
+| example ossl binary pair present | `yes` |
 | runner exists | `True` |
 | runner result env exists | `True` |
-| runtime trial status | `blocked` |
-| runtime trial reason | `missing_pkg_config_libev` |
-| can claim runtime PASS | `no` |
+| runtime trial status | `ready_or_passed` |
+| runtime trial reason | `runner_validation_ok` |
+| can claim runtime PASS | `yes` |
 | public safety scan | `ok` |
 
 ## Runner
@@ -31,11 +31,15 @@ This public-safe packet turns the ngtcp2 gap into a reproducible runtime gate. I
 | --- | --- |
 | path | `harness/scripts/run-ngtcp2-example-migration-demo.sh` |
 | result env | `harness/results/ngtcp2-example-migration-demo-local-20260701/results/result.env` |
-| validation | `blocked` |
-| blocked or failed reason | `missing_pkg_config_libev` |
-| client exit | `not-run` |
-| path challenge count | `not-run` |
-| path response count | `not-run` |
+| validation | `ok` |
+| blocked or failed reason | `none` |
+| client exit | `0` |
+| client local address changes | `1` |
+| client qlog count | `1` |
+| server qlog count | `1` |
+| path challenge count | `34` |
+| path response count | `24` |
+| payload size bytes | `4194304` |
 
 ## Evidence Table
 
@@ -55,12 +59,12 @@ This public-safe packet turns the ngtcp2 gap into a reproducible runtime gate. I
 
 ## Claim Boundary
 
-- Safe claim: ngtcp2 has strong C-library migration/path-validation API and focused test evidence; a fail-closed example HTTP/3 runtime runner is now packaged, but current local execution is blocked unless dependency gates are open.
-- Unsafe claim: ngtcp2 runtime HTTP/3 workload continuity, browser handover, CDN/LB deployment continuity, or production app continuity.
-- Next gap: Install/provide libev with pkg-config visibility, then run harness/scripts/run-ngtcp2-example-migration-demo.sh with REQUIRE_READY=1 and require client exit 0 plus path-validation frame evidence.
+- Safe claim: ngtcp2 has strong C-library migration/path-validation API and focused test evidence, and the official osslclient/osslserver HTTP/3 example completed a local migration runtime row with client exit 0, local-address-change evidence, and qlog-derived PATH_CHALLENGE/PATH_RESPONSE counters.
+- Unsafe claim: ngtcp2 browser handover, CDN/LB deployment continuity, production app continuity, or equivalence to quic-go's custom AddPath/Probe/Switch control surface.
+- Next gap: Use this as a second C-library runtime positive control; repeat on a clean host or Linux builder only if reviewers require independent replication, while browser/deployment rows remain separate gates.
 
 ## Interpretation
 
 1. ngtcp2 should stay above source-only status because public migration APIs and focused local migration/path-validation tests are already present.
-2. The current local runtime blocker is dependency readiness for the official HTTP/3 examples, especially `libev`, not evidence that ngtcp2 lacks migration behavior.
-3. The new runner makes the next upgrade concrete: install the missing dependency, run with `REQUIRE_READY=1`, and promote only if qlog/log-derived path-validation evidence appears with a successful client exit.
+2. The official ngtcp2 HTTP/3 examples now add a local runtime positive row: the client changed local address, completed the payload request, and produced qlog-derived path-validation frame evidence.
+3. This upgrades ngtcp2 to a second C-library runtime positive control, while browser, CDN/LB, and production application continuity still require separate rows.

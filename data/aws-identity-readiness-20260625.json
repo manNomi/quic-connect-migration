@@ -1,5 +1,5 @@
 {
-  "check_date": "2026-06-30",
+  "check_date": "2026-07-01",
   "public_safe": true,
   "aws_cli_found": true,
   "aws_cli_version": "aws-cli/2.34.38 Python/3.14.4 Darwin/24.6.0 source/arm64",

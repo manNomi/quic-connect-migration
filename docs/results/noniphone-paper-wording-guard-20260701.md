@@ -1,6 +1,6 @@
 # non-iPhone Paper Wording Guard
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe guard converts reviewer risks into bilingual wording rules for the abstract, introduction, method, results, limitations, and artifact policy sections.
 

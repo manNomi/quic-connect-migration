@@ -1,6 +1,6 @@
 # non-iPhone Professor Decision Packet
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 이 문서는 교수님 논의용 public-safe decision packet이다. credential, 계정 ID, hostname, IP, qlog, keylog, pcap, NetLog 원문을 포함하지 않는다.
 

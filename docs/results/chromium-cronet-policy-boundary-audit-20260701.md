@@ -1,6 +1,6 @@
 # Chromium/Cronet Policy Boundary Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit tightens the browser/client part of the implementation survey. Chromium/Cronet is high-impact because Chrome and Android clients matter, but the source evidence must be separated from live browser handover evidence.
 

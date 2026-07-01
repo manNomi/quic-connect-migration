@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-30",
+  "generated": "2026-07-01",
   "public_safe": true,
   "classifier": "tools/classify_aws_s2n_phase2_artifact.py",
   "summary_schema_source": "harness/scripts/run-aws-s2n-nlb-live-data-plane.sh",

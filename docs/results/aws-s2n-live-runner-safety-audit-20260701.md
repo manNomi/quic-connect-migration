@@ -1,6 +1,6 @@
 # AWS s2n Live Runner Safety Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit statically checks the AWS NLB + s2n-quic live runner before live resource creation. It does not include credentials, account IDs, hostnames, IP addresses, key material, qlogs, keylogs, pcaps, or NetLogs.
 

@@ -1,6 +1,6 @@
 # non-iPhone Paper Section Scaffold
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe scaffold maps the current evidence corpus and wording guard into paper sections. It does not include raw qlogs, pcaps, keylogs, NetLogs, private hosts, device IDs, account IDs, or credentials.
 

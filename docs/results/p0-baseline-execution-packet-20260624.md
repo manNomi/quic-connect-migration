@@ -1,6 +1,6 @@
 # P0 Baseline Execution Packet
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This packet is public-safe. It orders the next controlled-public Chrome baseline from private config setup through artifact validation without printing private domains, TLS paths, or network-change commands.
 

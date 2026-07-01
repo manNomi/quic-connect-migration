@@ -1,6 +1,6 @@
 # Firefox Desktop Runtime Trial Packet
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe packet turns the Firefox/Neqo boundary audit into an executable research gate. It is not a Firefox Connection Migration result; it defines the evidence required before Firefox can be used as a runtime row.
 

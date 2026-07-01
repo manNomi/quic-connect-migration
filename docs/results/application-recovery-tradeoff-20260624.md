@@ -1,6 +1,6 @@
 # Application Recovery Tradeoff
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This synthesis combines the Chrome forced-H3 local UDP rebinding upload-only boundary controls. It is an application recovery table, not a browser connection migration success table.
 

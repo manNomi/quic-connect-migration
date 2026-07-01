@@ -1,6 +1,6 @@
 # CDN Edge Connection Migration Boundary Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit narrows the CDN part of the deployment-path claim. It separates viewer-edge HTTP/3 continuity from end-to-end origin QUIC Connection Migration.
 

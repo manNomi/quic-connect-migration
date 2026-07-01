@@ -1,6 +1,6 @@
 # AWS s2n Phase-2 Rebinding Runner Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit checks whether the AWS NLB+s2n live runner has a packaged phase-2 NAT-rebinding proxy mode. It does not include credentials, account IDs, hostnames, IP addresses, key material, qlogs, keylogs, pcaps, or NetLogs.
 

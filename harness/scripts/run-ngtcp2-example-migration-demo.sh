@@ -19,10 +19,14 @@ DRY_RUN="${DRY_RUN:-0}"
 CMAKE_GENERATOR="${CMAKE_GENERATOR:-Ninja}"
 JOBS="${JOBS:-$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)}"
 PORT="${PORT:-44330}"
-CHANGE_LOCAL_ADDR_AFTER="${CHANGE_LOCAL_ADDR_AFTER:-1s}"
+CHANGE_LOCAL_ADDR_AFTER="${CHANGE_LOCAL_ADDR_AFTER:-1ms}"
+PAYLOAD_SIZE_BYTES="${PAYLOAD_SIZE_BYTES:-4194304}"
 CLIENT_TIMEOUT_SECONDS="${CLIENT_TIMEOUT_SECONDS:-20}"
 SERVER_STARTUP_SECONDS="${SERVER_STARTUP_SECONDS:-1}"
 CLIENT_EXTRA_ARGS="${CLIENT_EXTRA_ARGS:-}"
+LIBEV_INCLUDE_DIR="${LIBEV_INCLUDE_DIR:-}"
+LIBEV_LIBRARY="${LIBEV_LIBRARY:-}"
+UPDATE_SUBMODULES="${UPDATE_SUBMODULES:-1}"
 
 mkdir -p "$RESULT_DIR" "$LOG_DIR"
 
@@ -42,8 +46,23 @@ pkg_version() {
   local module="$1"
   if pkg-config --modversion "$module" >/dev/null 2>&1; then
     pkg-config --modversion "$module" 2>/dev/null | head -n 1
+  elif [[ "$module" == "libev" ]]; then
+    if [[ -n "$LIBEV_INCLUDE_DIR" && -n "$LIBEV_LIBRARY" && -f "$LIBEV_INCLUDE_DIR/ev.h" && -f "$LIBEV_LIBRARY" ]]; then
+      awk '/EV_VERSION_MAJOR/ {major=$3} /EV_VERSION_MINOR/ {minor=$3} END {if (major && minor) print major "." minor; else print "present-no-pkg-config"}' "$LIBEV_INCLUDE_DIR/ev.h"
+    else
+      printf 'missing'
+    fi
   else
     printf 'missing'
+  fi
+}
+
+detect_libev_fallback() {
+  if [[ -z "$LIBEV_INCLUDE_DIR" && -f /opt/homebrew/opt/libev/include/ev.h ]]; then
+    LIBEV_INCLUDE_DIR="/opt/homebrew/opt/libev/include"
+  fi
+  if [[ -z "$LIBEV_LIBRARY" && -f /opt/homebrew/opt/libev/lib/libev.dylib ]]; then
+    LIBEV_LIBRARY="/opt/homebrew/opt/libev/lib/libev.dylib"
   fi
 }
 
@@ -63,14 +82,19 @@ write_result() {
     print_kv "build_dir" "$BUILD_DIR"
     print_kv "require_ready" "$REQUIRE_READY"
     print_kv "dry_run" "$DRY_RUN"
+    print_kv "update_submodules" "$UPDATE_SUBMODULES"
     print_kv "cmake_generator" "$CMAKE_GENERATOR"
     print_kv "jobs" "$JOBS"
     print_kv "port" "$PORT"
     print_kv "change_local_addr_after" "$CHANGE_LOCAL_ADDR_AFTER"
+    print_kv "payload_size_bytes" "$PAYLOAD_SIZE_BYTES"
     print_kv "preflight_missing_commands" "${PREFLIGHT_MISSING_COMMANDS:-none}"
     print_kv "pkg_config_libev" "${PKG_LIBEV:-not-run}"
+    print_kv "libev_include_dir" "${LIBEV_INCLUDE_DIR:-not-set}"
+    print_kv "libev_library" "${LIBEV_LIBRARY:-not-set}"
     print_kv "pkg_config_libnghttp3" "${PKG_LIBNGHTTP3:-not-run}"
     print_kv "pkg_config_openssl" "${PKG_OPENSSL:-not-run}"
+    print_kv "submodule_update_exit" "${SUBMODULE_UPDATE_EXIT:-not-run}"
     print_kv "cmake_configure_exit" "${CMAKE_CONFIGURE_EXIT:-not-run}"
     print_kv "cmake_build_exit" "${CMAKE_BUILD_EXIT:-not-run}"
     print_kv "example_binaries_present" "${EXAMPLE_BINARIES_PRESENT:-not-run}"
@@ -159,6 +183,8 @@ if [[ "$NGTCP2_COMMIT_MATCHES" != "yes" && "$ALLOW_COMMIT_MISMATCH" != "1" ]]; t
   fail_or_block "blocked" "ngtcp2_commit_mismatch" "preflight"
 fi
 
+detect_libev_fallback
+
 MISSING=()
 for command_name in git cmake pkg-config openssl python3 cc c++; do
   if ! command -v "$command_name" >/dev/null 2>&1; then
@@ -193,11 +219,32 @@ if [[ "$DRY_RUN" == "1" ]]; then
   exit 0
 fi
 
+if [[ "$UPDATE_SUBMODULES" == "1" ]]; then
+  set +e
+  git -C "$NGTCP2_DIR" submodule update --init --recursive \
+    >"$LOG_DIR/submodule-update.stdout" \
+    2>"$LOG_DIR/submodule-update.stderr"
+  SUBMODULE_UPDATE_EXIT=$?
+  set -e
+  if [[ "$SUBMODULE_UPDATE_EXIT" != "0" ]]; then
+    fail_or_block "failed" "submodule_update_failed" "submodule_update"
+  fi
+fi
+
 set +e
+CMAKE_LIBEV_ARGS=()
+if [[ -n "$LIBEV_INCLUDE_DIR" && -n "$LIBEV_LIBRARY" ]]; then
+  CMAKE_LIBEV_ARGS=(
+    "-DLIBEV_INCLUDE_DIR=$LIBEV_INCLUDE_DIR"
+    "-DLIBEV_LIBRARY=$LIBEV_LIBRARY"
+  )
+fi
+
 cmake -S "$NGTCP2_DIR" -B "$BUILD_DIR" -G "$CMAKE_GENERATOR" \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DENABLE_LIB_ONLY=OFF \
   -DBUILD_TESTING=ON \
+  "${CMAKE_LIBEV_ARGS[@]}" \
   >"$LOG_DIR/cmake-configure.stdout" \
   2>"$LOG_DIR/cmake-configure.stderr"
 CMAKE_CONFIGURE_EXIT=$?
@@ -231,8 +278,23 @@ PRIVATE_DIR="$ARTIFACT_DIR/private"
 HTDOCS_DIR="$ARTIFACT_DIR/htdocs"
 CLIENT_QLOG_DIR="$ARTIFACT_DIR/qlog/client"
 SERVER_QLOG_DIR="$ARTIFACT_DIR/qlog/server"
+rm -rf "$PRIVATE_DIR" "$HTDOCS_DIR" "$ARTIFACT_DIR/qlog"
 mkdir -p "$PRIVATE_DIR" "$HTDOCS_DIR" "$CLIENT_QLOG_DIR" "$SERVER_QLOG_DIR"
 printf 'ngtcp2 example migration demo\n' >"$HTDOCS_DIR/index.txt"
+python3 - "$HTDOCS_DIR/payload.bin" "$PAYLOAD_SIZE_BYTES" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+size = int(sys.argv[2])
+chunk = (b"ngtcp2-migration-payload\n" * 4096)
+remaining = size
+with path.open("wb") as fp:
+    while remaining > 0:
+        data = chunk[: min(len(chunk), remaining)]
+        fp.write(data)
+        remaining -= len(data)
+PY
 
 set +e
 openssl req -newkey rsa:2048 -x509 -nodes \
@@ -240,6 +302,7 @@ openssl req -newkey rsa:2048 -x509 -nodes \
   -new \
   -out "$PRIVATE_DIR/server.crt" \
   -subj /CN=localhost \
+  -addext "subjectAltName=DNS:localhost,IP:127.0.0.1" \
   >"$LOG_DIR/openssl-cert.stdout" \
   2>"$LOG_DIR/openssl-cert.stderr"
 OPENSSL_CERT_EXIT=$?
@@ -266,17 +329,20 @@ CLIENT_ARGS=(
   "--qlog-dir=$CLIENT_QLOG_DIR"
   "--change-local-addr=$CHANGE_LOCAL_ADDR_AFTER"
   "--exit-on-all-streams-close"
+  "--no-http-dump"
 )
 if [[ -n "$CLIENT_EXTRA_ARGS" ]]; then
   # shellcheck disable=SC2206
   EXTRA_ARGS=($CLIENT_EXTRA_ARGS)
   CLIENT_ARGS+=("${EXTRA_ARGS[@]}")
 fi
-CLIENT_ARGS+=(127.0.0.1 "$PORT" "https://localhost:$PORT/index.txt")
+CLIENT_ARGS+=(127.0.0.1 "$PORT" "https://localhost:$PORT/payload.bin")
 
 set +e
+export SSL_CERT_FILE="$PRIVATE_DIR/server.crt"
 run_client_with_timeout "${CLIENT_ARGS[@]}"
 CLIENT_EXIT=$?
+unset SSL_CERT_FILE
 set -e
 
 cleanup
@@ -286,8 +352,8 @@ CLIENT_LOCAL_ADDR_CHANGE_COUNT="$(count_text "Local address is now" "$LOG_DIR/cl
 CLIENT_IMMEDIATE_MIGRATION_ERROR_COUNT="$(count_text "ngtcp2_conn_initiate_immediate_migration" "$LOG_DIR/client.stderr" "$LOG_DIR/client.stdout")"
 CLIENT_QLOG_COUNT="$(find "$CLIENT_QLOG_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')"
 SERVER_QLOG_COUNT="$(find "$SERVER_QLOG_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')"
-PATH_CHALLENGE_COUNT="$(count_text "PATH_CHALLENGE\\|path_challenge" "$CLIENT_QLOG_DIR" "$SERVER_QLOG_DIR" "$LOG_DIR/client.stderr" "$LOG_DIR/server.stderr")"
-PATH_RESPONSE_COUNT="$(count_text "PATH_RESPONSE\\|path_response" "$CLIENT_QLOG_DIR" "$SERVER_QLOG_DIR" "$LOG_DIR/client.stderr" "$LOG_DIR/server.stderr")"
+PATH_CHALLENGE_COUNT="$(count_text "PATH_CHALLENGE|path_challenge" "$CLIENT_QLOG_DIR" "$SERVER_QLOG_DIR" "$LOG_DIR/client.stderr" "$LOG_DIR/server.stderr")"
+PATH_RESPONSE_COUNT="$(count_text "PATH_RESPONSE|path_response" "$CLIENT_QLOG_DIR" "$SERVER_QLOG_DIR" "$LOG_DIR/client.stderr" "$LOG_DIR/server.stderr")"
 
 if [[ "$CLIENT_EXIT" == "0" && "$CLIENT_LOCAL_ADDR_CHANGE_COUNT" != "0" && "$PATH_CHALLENGE_COUNT" != "0" && "$PATH_RESPONSE_COUNT" != "0" ]]; then
   write_result "ok" "none" "client"

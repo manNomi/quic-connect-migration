@@ -1,6 +1,6 @@
 # MsQuic Migration API Boundary Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit narrows the remaining MsQuic question from the non-quic-go execution-depth audit: MsQuic clearly has migration/rebinding support, but the claim boundary differs from the quic-go active AddPath/Probe/Switch positive control.
 

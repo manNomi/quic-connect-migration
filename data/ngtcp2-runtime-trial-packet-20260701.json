@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-30",
+  "generated": "2026-07-01",
   "public_safe": true,
   "implementation": "ngtcp2",
   "source_commit": "c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
@@ -10,7 +10,7 @@
     "remote": "https://github.com/ngtcp2/ngtcp2.git"
   },
   "dependency_state": {
-    "libev": "missing",
+    "libev": "4.33",
     "libnghttp3": "1.16.0",
     "openssl": "3.6.2"
   },
@@ -23,9 +23,12 @@
   },
   "example_binary_state": {
     "candidate_count": 4,
-    "present_count": 0,
-    "present": [],
-    "ossl_pair_present": "no"
+    "present_count": 2,
+    "present": [
+      "/private/tmp/quic-cm-scan-repos/ngtcp2/build-example-migration/examples/osslclient",
+      "/private/tmp/quic-cm-scan-repos/ngtcp2/build-example-migration/examples/osslserver"
+    ],
+    "ossl_pair_present": "yes"
   },
   "runner": {
     "path": "harness/scripts/run-ngtcp2-example-migration-demo.sh",
@@ -42,44 +45,49 @@
       "ngtcp2_observed_commit": "c24b12690c5bdf7ad2715ae427504e76bf5c6ffc",
       "ngtcp2_commit_matches": "yes",
       "build_dir": "/private/tmp/quic-cm-scan-repos/ngtcp2/build-example-migration",
-      "require_ready": "0",
+      "require_ready": "1",
       "dry_run": "0",
+      "update_submodules": "1",
       "cmake_generator": "Ninja",
       "jobs": "11",
       "port": "44330",
-      "change_local_addr_after": "1s",
+      "change_local_addr_after": "1ms",
+      "payload_size_bytes": "4194304",
       "preflight_missing_commands": "none",
-      "pkg_config_libev": "missing",
+      "pkg_config_libev": "4.33",
+      "libev_include_dir": "/opt/homebrew/opt/libev/include",
+      "libev_library": "/opt/homebrew/opt/libev/lib/libev.dylib",
       "pkg_config_libnghttp3": "1.16.0",
       "pkg_config_openssl": "3.6.2",
-      "cmake_configure_exit": "not-run",
-      "cmake_build_exit": "not-run",
-      "example_binaries_present": "not-run",
-      "openssl_cert_exit": "not-run",
+      "submodule_update_exit": "0",
+      "cmake_configure_exit": "0",
+      "cmake_build_exit": "0",
+      "example_binaries_present": "yes",
+      "openssl_cert_exit": "0",
       "server_pid": "not-run",
-      "client_exit": "not-run",
-      "client_timeout_seconds": "20",
-      "client_local_addr_change_count": "not-run",
-      "client_immediate_migration_error_count": "not-run",
-      "client_qlog_count": "not-run",
-      "server_qlog_count": "not-run",
-      "path_challenge_count": "not-run",
-      "path_response_count": "not-run",
-      "validation": "blocked",
-      "blocked_or_failed_reason": "missing_pkg_config_libev",
-      "stage": "preflight"
+      "client_exit": "0",
+      "client_timeout_seconds": "60",
+      "client_local_addr_change_count": "1",
+      "client_immediate_migration_error_count": "0",
+      "client_qlog_count": "1",
+      "server_qlog_count": "1",
+      "path_challenge_count": "34",
+      "path_response_count": "24",
+      "validation": "ok",
+      "blocked_or_failed_reason": "none",
+      "stage": "client"
     }
   },
   "runtime_trial": {
-    "status": "blocked",
-    "reason": "missing_pkg_config_libev",
-    "can_claim_runtime_pass": "no",
+    "status": "ready_or_passed",
+    "reason": "runner_validation_ok",
+    "can_claim_runtime_pass": "yes",
     "can_claim_browser_or_deployment": "no"
   },
   "claim_boundary": {
-    "safe_claim": "ngtcp2 has strong C-library migration/path-validation API and focused test evidence; a fail-closed example HTTP/3 runtime runner is now packaged, but current local execution is blocked unless dependency gates are open.",
-    "unsafe_claim": "ngtcp2 runtime HTTP/3 workload continuity, browser handover, CDN/LB deployment continuity, or production app continuity.",
-    "next_gap": "Install/provide libev with pkg-config visibility, then run harness/scripts/run-ngtcp2-example-migration-demo.sh with REQUIRE_READY=1 and require client exit 0 plus path-validation frame evidence."
+    "safe_claim": "ngtcp2 has strong C-library migration/path-validation API and focused test evidence, and the official osslclient/osslserver HTTP/3 example completed a local migration runtime row with client exit 0, local-address-change evidence, and qlog-derived PATH_CHALLENGE/PATH_RESPONSE counters.",
+    "unsafe_claim": "ngtcp2 browser handover, CDN/LB deployment continuity, production app continuity, or equivalence to quic-go's custom AddPath/Probe/Switch control surface.",
+    "next_gap": "Use this as a second C-library runtime positive control; repeat on a clean host or Linux builder only if reviewers require independent replication, while browser/deployment rows remain separate gates."
   },
   "evidence": [
     {

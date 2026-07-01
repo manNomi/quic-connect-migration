@@ -1,6 +1,6 @@
 # quicly Full e2e Linux Runner Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit narrows the remaining quicly gap from focused e2e path-migration evidence to a reproducible Linux full-e2e gate. It does not claim full quicly e2e success.
 

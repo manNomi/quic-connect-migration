@@ -84,6 +84,38 @@ def test_packet_reads_blocked_runner_result() -> None:
         assert packet["runner"]["result_env_values"]["validation"] == "blocked"
 
 
+def test_packet_reads_ok_runner_result_as_runtime_pass() -> None:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir)
+        log = root / "ngtcp2.log"
+        runner = root / "runner.sh"
+        result = root / "result.env"
+        make_test_log(log)
+        runner.write_text("#!/usr/bin/env bash\n", encoding="utf-8")
+        result.write_text(
+            "validation=ok\n"
+            "blocked_or_failed_reason=none\n"
+            "client_exit=0\n"
+            "client_local_addr_change_count=1\n"
+            "client_qlog_count=1\n"
+            "server_qlog_count=1\n"
+            "path_challenge_count=34\n"
+            "path_response_count=24\n"
+            "payload_size_bytes=4194304\n",
+            encoding="utf-8",
+        )
+        packet = build_packet(
+            Path("/tmp/definitely-missing-ngtcp2-clone"),
+            log,
+            runner,
+            result,
+        )
+        assert packet["runtime_trial"]["status"] == "ready_or_passed"
+        assert packet["runtime_trial"]["reason"] == "runner_validation_ok"
+        assert packet["runtime_trial"]["can_claim_runtime_pass"] == "yes"
+        assert "official osslclient/osslserver" in packet["claim_boundary"]["safe_claim"]
+
+
 def test_markdown_is_public_safe_and_names_runtime_boundary() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         root = Path(tmpdir)
@@ -131,6 +163,7 @@ def test_outputs_are_valid_json_and_markdown() -> None:
 def main() -> int:
     test_packet_classifies_missing_runner_env_without_overclaiming()
     test_packet_reads_blocked_runner_result()
+    test_packet_reads_ok_runner_result_as_runtime_pass()
     test_markdown_is_public_safe_and_names_runtime_boundary()
     test_outputs_are_valid_json_and_markdown()
     print("build_ngtcp2_runtime_trial_packet=ok")

@@ -163,9 +163,37 @@ def run(args: list[str], timeout: int = 10) -> subprocess.CompletedProcess[str]:
 
 def pkg_version(module: str) -> str:
     proc = run(["pkg-config", "--modversion", module], timeout=5)
-    if proc.returncode != 0:
-        return "missing"
-    return proc.stdout.strip().splitlines()[0] if proc.stdout.strip() else "unknown"
+    if proc.returncode == 0:
+        return proc.stdout.strip().splitlines()[0] if proc.stdout.strip() else "unknown"
+    if module == "libev":
+        return libev_header_version()
+    return "missing"
+
+
+def libev_header_version() -> str:
+    candidates = [
+        Path("/opt/homebrew/opt/libev/include/ev.h"),
+        Path("/usr/local/opt/libev/include/ev.h"),
+        Path("/usr/include/ev.h"),
+        Path("/usr/local/include/ev.h"),
+    ]
+    for header in candidates:
+        if not header.exists():
+            continue
+        major = ""
+        minor = ""
+        for raw in header.read_text(encoding="utf-8", errors="ignore").splitlines():
+            parts = raw.split()
+            if len(parts) < 3:
+                continue
+            if parts[0] == "#define" and parts[1] == "EV_VERSION_MAJOR":
+                major = parts[2]
+            if parts[0] == "#define" and parts[1] == "EV_VERSION_MINOR":
+                minor = parts[2]
+        if major and minor:
+            return f"{major}.{minor}"
+        return "present-no-pkg-config"
+    return "missing"
 
 
 def local_clone_state(path: Path) -> dict[str, str | bool]:
@@ -259,6 +287,20 @@ def classify_runtime(pkg: dict[str, str], runner_env: dict[str, str]) -> tuple[s
     return "ready_not_run", "runner_result_env_missing"
 
 
+def build_claim_boundary(runner_env: dict[str, str]) -> dict[str, str]:
+    if runner_env.get("validation") == "ok":
+        return {
+            "safe_claim": "ngtcp2 has strong C-library migration/path-validation API and focused test evidence, and the official osslclient/osslserver HTTP/3 example completed a local migration runtime row with client exit 0, local-address-change evidence, and qlog-derived PATH_CHALLENGE/PATH_RESPONSE counters.",
+            "unsafe_claim": "ngtcp2 browser handover, CDN/LB deployment continuity, production app continuity, or equivalence to quic-go's custom AddPath/Probe/Switch control surface.",
+            "next_gap": "Use this as a second C-library runtime positive control; repeat on a clean host or Linux builder only if reviewers require independent replication, while browser/deployment rows remain separate gates.",
+        }
+    return {
+        "safe_claim": "ngtcp2 has strong C-library migration/path-validation API and focused test evidence; a fail-closed example HTTP/3 runtime runner is now packaged, but current local execution is blocked unless dependency gates are open.",
+        "unsafe_claim": "ngtcp2 runtime HTTP/3 workload continuity, browser handover, CDN/LB deployment continuity, or production app continuity.",
+        "next_gap": "Install/provide libev with CMake visibility, then run harness/scripts/run-ngtcp2-example-migration-demo.sh with REQUIRE_READY=1 and require client exit 0 plus path-validation frame evidence.",
+    }
+
+
 def build_packet(
     ngtcp2_dir: Path,
     test_log: Path,
@@ -297,11 +339,7 @@ def build_packet(
             "can_claim_runtime_pass": "yes" if runner_env.get("validation") == "ok" else "no",
             "can_claim_browser_or_deployment": "no",
         },
-        "claim_boundary": {
-            "safe_claim": "ngtcp2 has strong C-library migration/path-validation API and focused test evidence; a fail-closed example HTTP/3 runtime runner is now packaged, but current local execution is blocked unless dependency gates are open.",
-            "unsafe_claim": "ngtcp2 runtime HTTP/3 workload continuity, browser handover, CDN/LB deployment continuity, or production app continuity.",
-            "next_gap": "Install/provide libev with pkg-config visibility, then run harness/scripts/run-ngtcp2-example-migration-demo.sh with REQUIRE_READY=1 and require client exit 0 plus path-validation frame evidence.",
-        },
+        "claim_boundary": build_claim_boundary(runner_env),
         "evidence": [asdict(item) | {"url": item.url} for item in EVIDENCE],
     }
     text = json.dumps(packet, ensure_ascii=False)
@@ -310,6 +348,19 @@ def build_packet(
 
 
 def emit_markdown(packet: dict[str, Any]) -> str:
+    runner_values = packet["runner"]["result_env_values"]
+    if packet["runtime_trial"]["can_claim_runtime_pass"] == "yes":
+        interpretation = [
+            "1. ngtcp2 should stay above source-only status because public migration APIs and focused local migration/path-validation tests are already present.",
+            "2. The official ngtcp2 HTTP/3 examples now add a local runtime positive row: the client changed local address, completed the payload request, and produced qlog-derived path-validation frame evidence.",
+            "3. This upgrades ngtcp2 to a second C-library runtime positive control, while browser, CDN/LB, and production application continuity still require separate rows.",
+        ]
+    else:
+        interpretation = [
+            "1. ngtcp2 should stay above source-only status because public migration APIs and focused local migration/path-validation tests are already present.",
+            "2. The current local runtime blocker is dependency readiness for the official HTTP/3 examples, especially `libev`, not evidence that ngtcp2 lacks migration behavior.",
+            "3. The new runner makes the next upgrade concrete: install the missing dependency, run with `REQUIRE_READY=1`, and promote only if qlog/log-derived path-validation evidence appears with a successful client exit.",
+        ]
     lines = [
         "# ngtcp2 Runtime Trial Packet",
         "",
@@ -344,11 +395,15 @@ def emit_markdown(packet: dict[str, Any]) -> str:
         "| --- | --- |",
         f"| path | `{packet['runner']['path']}` |",
         f"| result env | `{packet['runner']['result_env']}` |",
-        f"| validation | `{packet['runner']['result_env_values'].get('validation', '-')}` |",
-        f"| blocked or failed reason | `{packet['runner']['result_env_values'].get('blocked_or_failed_reason', '-')}` |",
-        f"| client exit | `{packet['runner']['result_env_values'].get('client_exit', '-')}` |",
-        f"| path challenge count | `{packet['runner']['result_env_values'].get('path_challenge_count', '-')}` |",
-        f"| path response count | `{packet['runner']['result_env_values'].get('path_response_count', '-')}` |",
+        f"| validation | `{runner_values.get('validation', '-')}` |",
+        f"| blocked or failed reason | `{runner_values.get('blocked_or_failed_reason', '-')}` |",
+        f"| client exit | `{runner_values.get('client_exit', '-')}` |",
+        f"| client local address changes | `{runner_values.get('client_local_addr_change_count', '-')}` |",
+        f"| client qlog count | `{runner_values.get('client_qlog_count', '-')}` |",
+        f"| server qlog count | `{runner_values.get('server_qlog_count', '-')}` |",
+        f"| path challenge count | `{runner_values.get('path_challenge_count', '-')}` |",
+        f"| path response count | `{runner_values.get('path_response_count', '-')}` |",
+        f"| payload size bytes | `{runner_values.get('payload_size_bytes', '-')}` |",
         "",
         "## Evidence Table",
         "",
@@ -370,9 +425,7 @@ def emit_markdown(packet: dict[str, Any]) -> str:
             "",
             "## Interpretation",
             "",
-            "1. ngtcp2 should stay above source-only status because public migration APIs and focused local migration/path-validation tests are already present.",
-            "2. The current local runtime blocker is dependency readiness for the official HTTP/3 examples, especially `libev`, not evidence that ngtcp2 lacks migration behavior.",
-            "3. The new runner makes the next upgrade concrete: install the missing dependency, run with `REQUIRE_READY=1`, and promote only if qlog/log-derived path-validation evidence appears with a successful client exit.",
+            *interpretation,
         ]
     )
     markdown = "\n".join(lines).rstrip() + "\n"

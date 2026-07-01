@@ -16,7 +16,7 @@ Chapter 2는 CM이 잘 보이지 않는 이유가 여러 계층에 흩어져 있
 
 > quic-go, quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, XQUIC 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했고, LSQUIC은 preferred-address 및 NAT rebinding 기반 HTTP/3 app demo까지, nginx는 HTTP/3 server runtime active-client-migration demo까지 재현했다.
 
-2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. 이후 LSQUIC은 `http_client`/`http_server` preferred-address app demo와 local UDP proxy NAT rebinding app demo로, nginx는 quiche client active migration을 받는 HTTP/3 server runtime demo로 추가 보강했다. quicly는 build와 migration-related unit evidence를 확보했지만 full test/e2e는 partial로 분리했다. 다만 이 결론은 library/client-server/server-runtime positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
+2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. 이후 LSQUIC은 `http_client`/`http_server` preferred-address app demo와 local UDP proxy NAT rebinding app demo로, nginx는 quiche client active migration을 받는 HTTP/3 server runtime demo로, ngtcp2는 공식 `osslclient/osslserver` local HTTP/3 migration runtime row로 추가 보강했다. quicly는 build와 migration-related unit evidence를 확보했지만 full test/e2e는 partial로 분리했다. 다만 이 결론은 library/client-server/server-runtime positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
 
 ## 3. 현재 repo에서 재실행한 검수
 
@@ -70,7 +70,7 @@ quic-go 편중을 줄이기 위해 2026-06-30에 다음 구현체를 현재 HEAD
 | LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS | server-stack plus two app-level path-transition evidence chains; OpenLiteSpeed still follow-up |
 | nginx QUIC | `072f6fdbac3323fab257280b7119224027b01315` | HTTP/3 server runtime demo, quiche active migration, 1MiB response, server path seq:1 validation | PASS | web-server runtime evidence; browser/production deployment still follow-up |
 | MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | NAT rebind and path-validation selected gtests, v4/v6 | PASS | production-relevant library evidence with LB caveat |
-| ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | client migration, path validation, disable active migration, frame encode | PASS | C library primitive evidence |
+| ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | client migration/path validation tests + official `osslclient/osslserver` local HTTP/3 migration runtime row | PASS | C-library runtime positive control; browser/deployment still follow-up |
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable active migration tests | PASS | readable passive/path-validation reference |
 | Quinn | `953b466747e667a9dfda0596b8051a0644f8333d` | `quinn-proto` migration, endpoint rebind | PASS | Rust stack migration/rebind evidence |
 | Neqo | `3ba227d37f46a5684e984ead831b73344d9fec63` | `neqo-transport` migration suite | PASS | Firefox-adjacent broad migration evidence |
@@ -104,7 +104,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 | nginx QUIC | 2026-06-30 runtime demo PASS | `GET /file-1M`, quiche active migration, nginx path seq:1 created/validated, PATH_CHALLENGE/PATH_RESPONSE | web server가 active client migration을 처리하는 server-side runtime 근거. browser/production deployment는 후속 |
 | MsQuic | 2026-06-30 fresh rerun PASS | NAT port/address rebind, path validation timeout, last path close, v4/v6 | production relevance는 높지만 LB caveat 유지 |
 | aioquic | 2026-06-30 fresh rerun PASS | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable_active_migration parsing | readable passive reference |
-| ngtcp2 | 2026-06-30 fresh rerun PASS | client migration test, path validation, disable active migration, frame encode | C library primitive 비교군 |
+| ngtcp2 | 2026-06-30 fresh rerun PASS + 2026-07-01 runtime PASS | client migration test, path validation, disable active migration, frame encode, official HTTP/3 example local migration | C-library runtime positive control |
 | Quinn | 2026-06-30 fresh rerun PASS | proto migration, PATH_CHALLENGE/PATH_RESPONSE, rebind receive path | Rust stack 비교군 |
 | Neqo | 2026-06-30 fresh rerun PASS | rebind, graceful/immediate migration, preferred address, disabled migration, ECN/PMTUD migration | Firefox-adjacent 비교군 |
 | XQUIC | 2026-06-30 NAT rebinding demo PASS | client/server NAT rebinding, PATH_CHALLENGE/PATH_RESPONSE, pass marker | full suite는 macOS QPACK `-Werror` build caveat |
@@ -112,7 +112,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 
 주의:
 
-> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. LSQUIC preferred-address/NAT-rebinding app demo artifact와 quicly partial artifact도 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
+> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. LSQUIC preferred-address/NAT-rebinding app demo, ngtcp2 official-example runtime row, quicly partial artifact도 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
 
 ## 6. 논문에서 쓸 수 있는 주장
 

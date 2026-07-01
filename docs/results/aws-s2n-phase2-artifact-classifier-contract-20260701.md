@@ -1,6 +1,6 @@
 # AWS s2n Phase-2 Artifact Classifier Contract
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe document defines how future AWS NLB+s2n forwarding-echo and NAT-rebinding proxy artifacts must be classified before they are used in the paper.
 

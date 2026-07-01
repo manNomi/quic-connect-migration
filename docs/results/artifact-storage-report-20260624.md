@@ -1,13 +1,13 @@
 # Artifact Storage Report
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 ## Summary
 
 | metric | value |
 | --- | --- |
-| disk free | `14.4 GiB` |
-| disk free GiB | `14.39` |
+| disk free | `13.8 GiB` |
+| disk free GiB | `13.77` |
 | local artifact roots total | `36.3 GiB` |
 
 ## Artifact Roots
@@ -15,7 +15,7 @@ Generated: `2026-06-30`
 | path | exists | size | files | directories |
 | --- | --- | ---: | ---: | ---: |
 | `repro/quic-go-min-repro/artifacts` | `true` | `36.2 GiB` | 75825 | 29180 |
-| `harness/results` | `true` | `83.5 MiB` | 528 | 257 |
+| `harness/results` | `true` | `113.3 MiB` | 546 | 262 |
 
 ## Largest Artifact Directories
 

@@ -1,6 +1,6 @@
 # Artifact Cleanup Apply Report
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This report is public-safe. It never prints qlog, NetLog, pcap, keylog, credential, domain, or device contents.
 
@@ -15,8 +15,8 @@ This report is public-safe. It never prints qlog, NetLog, pcap, keylog, credenti
 | selected candidates | `0` |
 | selected reclaimable | `0 B` |
 | remaining gap before cleanup | `0 B` |
-| disk free before | `14.5 GiB` |
-| disk free after | `14.5 GiB` |
+| disk free before | `13.8 GiB` |
+| disk free after | `13.8 GiB` |
 | deleted count | `0` |
 | confirm required | `DELETE-REVIEW-UNREFERENCED` |
 | confirm ok | `no` |

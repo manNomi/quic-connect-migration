@@ -35,6 +35,7 @@ DEPTH_BY_STATUS = {
     "fresh_rerun_20260630": "local_test_suite_rerun",
     "fresh_app_demo_20260630": "local_runtime_or_app_demo",
     "fresh_runtime_20260630": "local_runtime_or_app_demo",
+    "fresh_runtime_20260701": "local_runtime_or_app_demo",
     "fresh_rebind_demo_20260630": "focused_partial_runtime",
     "fresh_focused_e2e_20260630": "focused_partial_runtime",
     "fresh_focused_e2e_full_gate_20260701": "focused_partial_runtime",
@@ -50,7 +51,7 @@ DEPTH_BY_STATUS = {
 WHY_NOT_QUIC_GO_DEPTH = {
     "Cloudflare quiche": "Local migration tests and sample evidence are strong, but the target question for Cloudflare's managed edge is a separate deployment-layer claim.",
     "AWS s2n-quic": "Library tests and the local AWS-NLB-compatible CID proof are positive, but live forwarding still depends on the AWS identity gate.",
-    "ngtcp2": "The library exposes migration/path-validation primitives, but this study did not need a second quic-go-style custom AddPath/Probe/Switch positive control.",
+    "ngtcp2": "The library exposes migration/path-validation primitives, and the official osslclient/osslserver example now provides a local HTTP/3 runtime migration positive row; it still is not a browser or managed-deployment proof.",
     "LiteSpeed lsquic": "Runtime demos reached app-level evidence, but production-like OpenLiteSpeed deployment needs a Linux/EC2 follow-up.",
     "MsQuic": "Selected NAT rebinding and path-validation tests passed, and the focused API audit shows constrained local-address control plus a QUIC-aware LB boundary rather than quic-go-style AddPath/Probe/Switch control.",
     "Quinn": "Rust test evidence is useful for maturity comparison, but the active migration surface is less direct than quic-go's controlled API in this corpus.",
@@ -71,7 +72,7 @@ WHY_NOT_QUIC_GO_DEPTH = {
 NEXT_NON_IPHONE_GATE = {
     "Cloudflare quiche": "Keep as cross-implementation evidence; only promote Cloudflare managed edge after a separate public edge experiment.",
     "AWS s2n-quic": "Refresh AWS credentials, rerun the s2n NLB readiness gate, then run forwarding echo before any path-change variant.",
-    "ngtcp2": "Optional: build a focused ngtcp2 HTTP/3 migration runner if a second C-library positive control becomes necessary.",
+    "ngtcp2": "Use the ngtcp2 runtime packet as a second C-library positive control; repeat on a clean host only if reviewers require independent replication.",
     "LiteSpeed lsquic": "Run the OpenLiteSpeed or LSQUIC production-like demo on Linux/EC2.",
     "MsQuic": "Optional: build a small MsQuic runtime harness that changes QUIC_PARAM_CONN_LOCAL_ADDRESS after handshake confirmation and verifies peer-address-change plus payload continuity.",
     "Quinn": "Optional: add a small Quinn HTTP/3 or echo migration harness if Rust-stack runtime depth becomes reviewer-critical.",

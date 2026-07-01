@@ -1,6 +1,6 @@
 # Quinn Migration API Boundary Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit narrows Quinn's role in the implementation survey. It explains why Quinn is strong Rust-stack migration/rebind evidence while still not being the same positive-control shape as quic-go.
 

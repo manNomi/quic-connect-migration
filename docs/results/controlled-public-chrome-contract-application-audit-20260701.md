@@ -1,6 +1,6 @@
 # Controlled Public Chrome Contract Application Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit applies the controlled-public Chrome artifact classifier contract to the tracked bridge synthesis rows. It does not inspect raw qlogs, NetLogs, pcaps, hostnames, IP addresses, credentials, or untracked local notes.
 

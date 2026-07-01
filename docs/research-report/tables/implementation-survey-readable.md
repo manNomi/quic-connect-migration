@@ -53,7 +53,7 @@
 | 1 | quic-go | library/server | O | O | O | `qlog` | O | `manual` | `L4` | `fresh_rerun_20260630` | Maintain as strong AddPath/Probe/Switch positive control |
 | 2 | Cloudflare quiche | library/server | O | O | O | `qlog/logs` | O | `library_yes_cloud_unclear` | `L4` | `fresh_rerun_20260630` | Use as cross-implementation client/server migration evidence |
 | 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `fresh_rerun_20260630` | Custom AWS NLB CID provider proof restored and rerun; live AWS NLB+s2n target test remains follow-up |
-| 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4` | `fresh_rerun_20260630` | Use as C library primitive/path-validation comparison |
+| 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4_runtime_example` | `fresh_runtime_20260701` | Use as C library primitive/path-validation comparison plus official osslclient/osslserver local HTTP/3 runtime positive control |
 | 5 | LiteSpeed lsquic | server | O | O | O | `logs` | O | `likely` | `L4_L5_candidate` | `fresh_app_demo_20260630` | Use as preferred-address and NAT-rebinding app-level positive control; OpenLiteSpeed production-like demo remains follow-up |
 | 6 | MsQuic | library/server | O | O | policy | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `fresh_rerun_20260630` | Use as production-relevant NAT rebinding/path-validation evidence; API audit shows constrained local-address control rather than quic-go-style AddPath/Probe/Switch |
 | 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Rust migration/rebind comparison |

@@ -1,6 +1,6 @@
 # Controlled Public Chrome Artifact Classifier Contract
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe contract defines how future controlled-public Chrome HTTP/3 workload artifacts must be interpreted before they are used as paper evidence.
 

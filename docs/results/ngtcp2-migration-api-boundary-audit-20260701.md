@@ -1,6 +1,6 @@
 # ngtcp2 Migration API Boundary Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit narrows ngtcp2's role in the implementation survey. It explains why ngtcp2 is strong C-library migration/path-validation evidence while still not being browser or managed-deployment continuity evidence.
 
@@ -23,6 +23,7 @@ This public-safe audit narrows ngtcp2's role in the implementation survey. It ex
 | path validation | `begin_result_callbacks_plus_PATH_CHALLENGE_RESPONSE` |
 | observability | `qlog_transport_params_and_path_frames` |
 | fresh local tests | `focused_ngtcp2_migration_path_validation_tests_passed_in_corpus` |
+| local http3 runtime row | `present_in_companion_runtime_trial_packet` |
 | browser or deployment runtime row | `absent` |
 
 ## Conclusion
@@ -31,7 +32,7 @@ This public-safe audit narrows ngtcp2's role in the implementation survey. It ex
 | --- | --- |
 | implementation status | `mature_C_library_for_client_migration_path_validation_and_rebinding` |
 | api boundary | `direct_ngtcp2_path_api_but_no_browser_or_managed_deployment_claim` |
-| paper use | `Use ngtcp2 as source-linked C-library maturity evidence and optional second positive-control candidate, not as browser or cloud deployment continuity proof.` |
+| paper use | `Use ngtcp2 as source-linked C-library maturity evidence plus companion local HTTP/3 runtime positive control, not as browser or cloud deployment continuity proof.` |
 
 ## Evidence Table
 
@@ -66,12 +67,12 @@ This public-safe audit narrows ngtcp2's role in the implementation survey. It ex
 
 ## Reporting Boundary
 
-- Safe claim: ngtcp2 exposes public immediate and validation-gated client migration APIs, path-validation callbacks, disable-active-migration/preferred-address policy handling, qlog observability, example controls, and focused local test evidence.
-- Unsafe claim: ngtcp2 currently proves Chrome/Safari/Android browser handover, managed-CDN/LB continuity, or application-level HTTP/3 workload continuity in this study.
-- Next non-iPhone gap: If reviewers require a second C-library runtime positive control, build a small ngtcp2/nghttp3 echo or HTTP/3 harness that changes local address mid-stream and records qlog path validation plus payload continuity.
+- Safe claim: ngtcp2 exposes public immediate and validation-gated client migration APIs, path-validation callbacks, disable-active-migration/preferred-address policy handling, qlog observability, example controls, focused local test evidence, and a companion official-example local HTTP/3 runtime row.
+- Unsafe claim: ngtcp2 currently proves Chrome/Safari/Android browser handover, managed-CDN/LB continuity, or production application continuity in this study.
+- Next non-iPhone gap: Use the companion runtime packet as the second C-library positive control; repeat it on a clean host only if reviewers require independent replication.
 
 ## Paper Interpretation
 
 1. ngtcp2 weakens an implementation-absence explanation because active client migration, passive rebinding validation, preferred-address policy, and qlog evidence are present.
-2. ngtcp2 strengthens the API-shape explanation because it exposes direct path-based APIs, but the current study still lacks a custom ngtcp2 HTTP/3 workload row.
-3. ngtcp2 is the best next candidate if the paper needs a second C-library positive control beyond quic-go.
+2. ngtcp2 strengthens the API-shape explanation because it exposes direct path-based APIs, while the companion runtime packet shows the official examples can complete a local HTTP/3 migration row.
+3. ngtcp2 is now the second C-library positive control beyond quic-go, but browser and managed-deployment claims remain separate gates.

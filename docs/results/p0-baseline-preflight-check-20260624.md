@@ -1,6 +1,6 @@
 # P0 Baseline Preflight Check
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This check is public-safe. It decides whether the P0 controlled-public Chrome baseline may start server/client artifact capture.
 

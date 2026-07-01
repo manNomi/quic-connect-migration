@@ -1,6 +1,6 @@
 # non-iPhone Reviewer Risk and Validity Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This audit is public-safe. It converts the current non-iPhone claim dashboard and professor decision packet into reviewer-facing risks, defensive wording, and remaining evidence gaps.
 

@@ -163,7 +163,7 @@ scanner로 찾은 파일을 바탕으로 다음을 수동으로 확인했다.
 | picoquic | NAT rebinding/migration/preferred-address 등 13개 test | PASS |
 | s2n-quic | connection migration tests | PASS |
 | aioquic | path challenge/response unit tests | PASS |
-| ngtcp2 | client migration/path validation tests | PASS |
+| ngtcp2 | client migration/path validation tests + official `osslclient/osslserver` local HTTP/3 runtime migration row | PASS |
 | Quinn | migration/rebind tests | PASS |
 | Neqo | migration test suite | PASS |
 | MsQuic | NAT rebind/path-validation selected gtests, IPv4/IPv6 | PASS |

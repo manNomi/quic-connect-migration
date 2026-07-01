@@ -1,6 +1,6 @@
 # Reproducibility Manifest
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This manifest is public-safe. It summarizes reproducibility state without printing domains, credentials, private keys, device IDs, qlogs, keylogs, pcaps, or NetLogs.
 
@@ -8,12 +8,12 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `038ab67` |
+| source commit at generation | `129fd75` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
-| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 9, 'fresh_runtime_20260630': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
+| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 8, 'fresh_runtime_20260630': 1, 'fresh_runtime_20260701': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
 | experiment matrix items | `163` |
 | latest experiment matrix item | `ngtcp2-runtime-trial-packet` |
 | verification | `157/157 passed; ok=yes` |

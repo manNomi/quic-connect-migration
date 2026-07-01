@@ -1,13 +1,13 @@
 # Artifact Cleanup Safety Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 ## Summary
 
 | metric | value |
 | --- | --- |
 | experiments CSV | `data/experiment-results.csv` |
-| disk free | `14.5 GiB` |
+| disk free | `13.8 GiB` |
 | target free GiB | `7.0` |
 | artifact roots total | `36.3 GiB` |
 | extra artifact reference CSVs | `['data/chrome-h3-rebinding-repetition-summary-20260624.csv', 'data/chrome-h3-rebinding-upload-summary-20260624.csv', 'data/chrome-h3-rebinding-timing-sensitivity-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-20260624.csv', 'data/chrome-h3-rebinding-old-path-drop-stress-20260624.csv', 'data/chrome-h3-rebinding-return-path-drop-controls-20260624.csv', 'data/chrome-h3-rebinding-transient-return-path-sweep-20260624.csv', 'data/chrome-h3-rebinding-transient-boundary-repetition-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-fine-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-downlink-wait-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-poll-long-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-long-outage-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry-stress-boundary-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-15000ms-20260624.csv', 'data/chrome-h3-rebinding-transient-upload-retry2-stress-boundary-20260624.csv', 'data/quic-go-h3-midflight-repetition-summary-20260624.csv']` |
@@ -17,7 +17,7 @@ Generated: `2026-06-30`
 | review-unreferenced candidates | `133` |
 | review-unreferenced size | `8.1 GiB` |
 | protected referenced/planned size | `25.8 GiB` |
-| projected free if review-unreferenced removed | `22.6 GiB` |
+| projected free if review-unreferenced removed | `21.9 GiB` |
 | target met if review-unreferenced removed | `yes` |
 | remaining gap then | `0 B` |
 
@@ -146,6 +146,7 @@ Generated: `2026-06-30`
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-timing-late-20260624` | `32.6 MiB` | noheartbeat-r1, noheartbeat-r2, heartbeat-r1, heartbeat-r2 | artifact path is referenced by a tracked artifact reference CSV |
 | `keep-referenced` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-downlink-boundary8000-32kb-trigger4s-iphone-usb-network-change-002` | `31.6 MiB` | controlled-public-chrome-downlink-boundary8000-32kb-trigger4s-iphone-usb-network-change-002 | artifact path is referenced by a tracked artifact reference CSV |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-media-rep1-drop3000-retry0-20260629` | `29.8 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
+| `review-unreferenced` | `harness/results/ngtcp2-example-migration-demo-local-20260701` | `29.7 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-musiclike-rep2-drop6000-retry0-20260629` | `28.2 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-musiclike-rep1-drop6000-retry0-20260629` | `27.9 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `repro/quic-go-min-repro/artifacts/chrome-h3-rebinding-media-rep2-drop6000-retry0-20260629` | `27.3 MiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
@@ -318,7 +319,6 @@ Generated: `2026-06-30`
 | `review-controlled-public` | `repro/quic-go-min-repro/artifacts/controlled-public-chrome-fresh-origin-smoke-20260629-003-server` | `2.3 KiB` | - | controlled-public artifact may be related to public-origin preflight or final-trial preparation |
 | `review-unreferenced` | `harness/results/browser-cm-observability-20260701-after-safaridriver-enable` | `2.2 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/browser-cm-observability-20260701-gate` | `2.2 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
-| `review-unreferenced` | `harness/results/ngtcp2-example-migration-demo-local-20260701` | `2.1 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-readiness-local-20260630-commitcheck` | `2.0 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-readiness-current-20260630` | `2.0 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |
 | `review-unreferenced` | `harness/results/nginx-quic-bpf-readiness-local-20260630` | `1.9 KiB` | - | artifact path is not referenced by tracked artifact CSVs or planned final-trial ids |

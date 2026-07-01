@@ -1,6 +1,6 @@
 # non-iPhone Claim Readiness Dashboard
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This dashboard is public-safe. It maps current evidence to paper wording boundaries without copying raw qlogs, pcaps, keylogs, NetLogs, private hosts, device IDs, account IDs, or credentials.
 

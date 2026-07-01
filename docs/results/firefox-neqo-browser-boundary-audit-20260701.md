@@ -1,6 +1,6 @@
 # Firefox/Neqo Browser Boundary Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit tightens the Mozilla/Firefox part of the implementation survey. Neqo is important because it is Firefox-adjacent, but Neqo transport tests are not the same as a Firefox browser network-change experiment.
 

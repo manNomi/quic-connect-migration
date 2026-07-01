@@ -1,6 +1,6 @@
 # AWS s2n Phase-2 Path-Change Design
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe design fixes the next AWS NLB + s2n-quic experiment sequence after the live forwarding echo. It does not include credentials, account IDs, hostnames, IP addresses, key material, qlogs, keylogs, pcaps, or NetLogs.
 

@@ -43,7 +43,7 @@ def classify(row: dict[str, str]) -> str:
 
     if "negative" in status or name == "HAProxy QUIC":
         return "negative_control"
-    if status in {"fresh_app_demo_20260630", "fresh_runtime_20260630"}:
+    if status in {"fresh_app_demo_20260630", "fresh_runtime_20260630", "fresh_runtime_20260701"}:
         return "server_or_app_runtime_positive"
     if status in {
         "fresh_rebind_demo_20260630",
@@ -68,6 +68,8 @@ def risk_note(row: dict[str, str]) -> str:
         return "Library/sample evidence is strong, but Cloudflare managed edge behavior is a separate deployment claim."
     if name == "AWS s2n-quic":
         return "Library tests are positive; live AWS NLB forwarding and active source migration remain separate phases."
+    if name == "ngtcp2":
+        return "Official osslclient/osslserver local HTTP/3 runtime row is positive; browser handover and managed deployment remain separate claims."
     if name == "LiteSpeed lsquic":
         return "Example app demos are positive; OpenLiteSpeed production-like deployment is still follow-up."
     if name == "MsQuic":

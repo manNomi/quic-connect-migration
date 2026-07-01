@@ -1,6 +1,6 @@
 # XQUIC Full-suite Linux Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit closes the XQUIC gap left by the non-quic-go execution-depth audit. It separates the already-observed NAT rebinding demo from the still-pending Linux full-suite replay.
 

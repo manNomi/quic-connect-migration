@@ -1,6 +1,6 @@
 # Non-quic-go Implementation Findings
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe report answers the narrow question: what did we find outside quic-go? It uses `data/implementation-survey.csv` as the source of truth and intentionally separates implementation maturity from browser, CDN, LB, and application-continuity claims.
 
@@ -9,8 +9,8 @@ This public-safe report answers the narrow question: what did we find outside qu
 | field | value |
 | --- | --- |
 | survey rows excluding quic-go | `17` |
-| claim class counts | `{'strong_cross_implementation_positive': 8, 'server_or_app_runtime_positive': 2, 'focused_or_partial_positive': 2, 'source_or_readiness_only': 2, 'negative_control': 1, 'managed_or_deployment_pending': 2}` |
-| evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 8, 'fresh_runtime_20260630': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
+| claim class counts | `{'strong_cross_implementation_positive': 7, 'server_or_app_runtime_positive': 3, 'focused_or_partial_positive': 2, 'source_or_readiness_only': 2, 'negative_control': 1, 'managed_or_deployment_pending': 2}` |
+| evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 7, 'fresh_runtime_20260630': 1, 'fresh_runtime_20260701': 1, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
 | active migration API yes | `7` |
 | passive migration yes | `13` |
 | tests yes | `13` |
@@ -31,7 +31,7 @@ We used quic-go as the deepest controllable positive control, then added non-qui
 | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2 | Cloudflare quiche | `strong_cross_implementation_positive` | `fresh_rerun_20260630` | `L4` | `yes` | `yes` | `yes` | Library/sample evidence is strong, but Cloudflare managed edge behavior is a separate deployment claim. | Use as cross-implementation client/server migration evidence |
 | 3 | AWS s2n-quic | `strong_cross_implementation_positive` | `fresh_rerun_20260630` | `L4_AWS_L5_candidate` | `likely` | `yes` | `yes` | Library tests are positive; live AWS NLB forwarding and active source migration remain separate phases. | Custom AWS NLB CID provider proof restored and rerun; live AWS NLB+s2n target test remains follow-up |
-| 4 | ngtcp2 | `strong_cross_implementation_positive` | `fresh_rerun_20260630` | `L4` | `yes` | `yes` | `yes` | Use as implementation maturity evidence, not as browser or managed-deployment proof. | Use as C library primitive/path-validation comparison |
+| 4 | ngtcp2 | `server_or_app_runtime_positive` | `fresh_runtime_20260701` | `L4_runtime_example` | `yes` | `yes` | `yes` | Official osslclient/osslserver local HTTP/3 runtime row is positive; browser handover and managed deployment remain separate claims. | Use as C library primitive/path-validation comparison plus official osslclient/osslserver local HTTP/3 runtime positive control |
 | 5 | LiteSpeed lsquic | `server_or_app_runtime_positive` | `fresh_app_demo_20260630` | `L4_L5_candidate` | `yes` | `yes` | `yes` | Example app demos are positive; OpenLiteSpeed production-like deployment is still follow-up. | Use as preferred-address and NAT-rebinding app-level positive control; OpenLiteSpeed production-like demo remains follow-up |
 | 6 | MsQuic | `strong_cross_implementation_positive` | `fresh_rerun_20260630` | `L4_L5_caveat` | `policy_constrained` | `yes` | `yes` | NAT rebind/path validation tests are positive; API audit shows constrained local-address control, while QUIC-aware load balancing remains a deployment boundary. | Use as production-relevant NAT rebinding/path-validation evidence; API audit shows constrained local-address control rather than quic-go-style AddPath/Probe/Switch |
 | 7 | Quinn | `strong_cross_implementation_positive` | `fresh_rerun_20260630` | `L3_L4` | `partial` | `yes` | `yes` | Use as implementation maturity evidence, not as browser or managed-deployment proof. | Use as Rust migration/rebind comparison |

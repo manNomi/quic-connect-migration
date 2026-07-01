@@ -1,6 +1,6 @@
 # mvfst Focused Linux Runner Audit
 
-Generated: `2026-06-30`
+Generated: `2026-07-01`
 
 This public-safe audit narrows the mvfst gap from source/test-map evidence to a runnable Linux focused-test gate. It does not claim local mvfst execution success.
 

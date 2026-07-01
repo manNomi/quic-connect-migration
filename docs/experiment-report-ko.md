@@ -162,7 +162,7 @@ HTTP/3 client mode:
 
 | 분류 | 구현체/환경 |
 | --- | --- |
-| 직접 local test 실행 | quic-go, quiche, picoquic, s2n-quic, aioquic, ngtcp2, Quinn, Neqo |
+| 직접 local test/runtime 실행 | quic-go, quiche, picoquic, s2n-quic, aioquic, ngtcp2, Quinn, Neqo |
 | source/docs 조사 | mvfst, MsQuic, lsquic, nginx QUIC, quicly, XQUIC, Chromium/Cronet, HAProxy |
 | 배포 환경 | AWS NLB, CloudFront, Cloudflare HTTP/3, reverse proxy |
 
@@ -180,7 +180,7 @@ HTTP/3 client mode:
 | quiche | PathEvent, qlog, active migration sample | migration lifecycle 관찰 |
 | picoquic | NAT rebinding, false migration, preferred address 등 edge-case test 풍부 | edge-case maturity |
 | s2n-quic | rebinding/migration policy test, CID provider 가능성 | AWS/NLB 연계 후보 |
-| ngtcp2 | RFC guardrail test | 표준 동작 기준선 |
+| ngtcp2 | focused migration/path-validation tests + 공식 `osslclient/osslserver` local HTTP/3 migration runtime PASS | C-library runtime positive control |
 | Quinn/Neqo/aioquic | migration 관련 test evidence | 추가 구현체 근거 |
 | HAProxy | HTTP/3는 지원하지만 QUIC CM은 제한/미지원 | negative control |
 | Chromium/Cronet | migration policy hook 존재 | 후속 browser/client 실험 대상 |
