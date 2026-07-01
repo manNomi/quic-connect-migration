@@ -31,9 +31,11 @@ def test_findings_exclude_quic_go_and_preserve_boundaries() -> None:
     assert findings["summary"]["passive_migration_yes"] >= 13
     assert findings["summary"]["tests_yes"] >= 13
     classes = findings["summary"]["claim_class_counts"]
-    assert classes["strong_cross_implementation_positive"] >= 6
-    assert classes["server_or_app_runtime_positive"] >= 4
+    assert classes["strong_cross_implementation_positive"] >= 5
+    assert classes["server_or_app_runtime_positive"] >= 5
     assert classes["negative_control"] == 1
+    msquic = next(row for row in findings["implementations"] if row["name"] == "MsQuic")
+    assert msquic["claim_class"] == "server_or_app_runtime_positive"
     quinn = next(row for row in findings["implementations"] if row["name"] == "Quinn")
     assert quinn["claim_class"] == "server_or_app_runtime_positive"
     assert "unsafe_claim" in findings["reporting_boundary"]

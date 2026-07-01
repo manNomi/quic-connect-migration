@@ -16,7 +16,7 @@ Chapter 2는 CM이 잘 보이지 않는 이유가 여러 계층에 흩어져 있
 
 > quic-go, quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, Quinn, XQUIC 등 주요 구현체에서는 path validation, active/passive migration, NAT rebinding, migration failure, preferred address, disabled migration 같은 primitive와 test/runtime evidence가 확인되었다. 특히 quic-go는 현재 repo의 재현 코드로 `AddPath -> Probe -> Switch` 흐름을 다시 실행해 PASS를 확인했고, LSQUIC은 preferred-address 및 NAT rebinding 기반 HTTP/3 app demo까지, nginx는 HTTP/3 server runtime active-client-migration demo까지, Quinn은 endpoint-wide rebind runtime row까지 재현했다.
 
-2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. 이후 LSQUIC은 `http_client`/`http_server` preferred-address app demo와 local UDP proxy NAT rebinding app demo로, nginx는 quiche client active migration을 받는 HTTP/3 server runtime demo로, ngtcp2는 공식 `osslclient/osslserver` local HTTP/3 migration runtime row로, Quinn은 `rebind_recv`와 `quinn-proto` migration을 묶은 endpoint-rebind runtime packet으로 추가 보강했다. quicly는 build와 migration-related unit evidence를 확보했지만 full test/e2e는 partial로 분리했다. 다만 이 결론은 library/client-server/server-runtime positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
+2026-06-30 추가 재검수에서는 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, nginx QUIC, ngtcp2, aioquic, Quinn, Neqo도 현재 HEAD 기준으로 다시 실행해 PASS evidence를 확보했고, XQUIC은 NAT rebinding demo PASS evidence를 확보했다. 이후 LSQUIC은 `http_client`/`http_server` preferred-address app demo와 local UDP proxy NAT rebinding app demo로, nginx는 quiche client active migration을 받는 HTTP/3 server runtime demo로, ngtcp2는 공식 `osslclient/osslserver` local HTTP/3 migration runtime row로, Quinn은 `rebind_recv`와 `quinn-proto` migration을 묶은 endpoint-rebind runtime packet으로, MsQuic은 selected v4/v6 rebind/path-validation runtime-test packet으로 추가 보강했다. quicly는 build와 migration-related unit evidence를 확보했지만 full test/e2e는 partial로 분리했다. 다만 이 결론은 library/client-server/server-runtime positive control이다. Chrome/Safari/Android browser HTTP/3 handover 성공을 의미하지 않는다.
 
 ## 3. 현재 repo에서 재실행한 검수
 
@@ -69,7 +69,7 @@ quic-go 편중을 줄이기 위해 2026-06-30에 다음 구현체를 현재 HEAD
 | s2n-quic | `0f5a4f8ae4163f1b84e72cd29ad110ad99d7efd1` | `connection_migration` test suite, PathChallenge/PathResponse events | PASS | AWS-relevant library evidence |
 | LiteSpeed LSQUIC | `f8ebaf838d2f4db836bda1182ee35b05d5191cee` | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS | server-stack plus two app-level path-transition evidence chains; OpenLiteSpeed still follow-up |
 | nginx QUIC | `072f6fdbac3323fab257280b7119224027b01315` | HTTP/3 server runtime demo, quiche active migration, 1MiB response, server path seq:1 validation | PASS | web-server runtime evidence; browser/production deployment still follow-up |
-| MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | NAT rebind and path-validation selected gtests, v4/v6 | PASS | production-relevant library evidence with LB caveat |
+| MsQuic | `51d449b7d2deb553d6503591f72a8e62d1071054` | dedicated selected v4/v6 RebindPort/RebindAddr/PathValidationTimeout/PathValidationLastPathClose packet | PASS | selected runtime-test positive control with app/LB caveat |
 | ngtcp2 | `c24b12690c5bdf7ad2715ae427504e76bf5c6ffc` | client migration/path validation tests + official `osslclient/osslserver` local HTTP/3 migration runtime row | PASS | C-library runtime positive control; browser/deployment still follow-up |
 | aioquic | `6d36838d008c2202c337142fa07e8bf80e96bac8` | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable active migration tests | PASS | readable passive/path-validation reference |
 | Quinn | `953b466747e667a9dfda0596b8051a0644f8333d` | `quinn-proto` migration, endpoint rebind, dedicated rebind runtime packet | PASS | Rust endpoint-wide rebind runtime positive control; browser/HTTP/3 app/deployment still follow-up |
@@ -102,7 +102,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 | s2n-quic | 2026-06-30 fresh rerun PASS | IP/port rebinding, PathChallenge/PathResponse, active path update | AWS/NLB 후보 |
 | LiteSpeed LSQUIC | 2026-06-30 fresh rerun + app demos PASS | full CTest 79/79, selected qlog/parser/packet/trans-param tests, preferred-address `GET /file-1M` app demo, local UDP proxy NAT rebinding app demo | 서버 스택 단위 테스트와 preferred-address/NAT-rebinding app-level 근거. OpenLiteSpeed production-like demo는 후속 필요 |
 | nginx QUIC | 2026-06-30 runtime demo PASS | `GET /file-1M`, quiche active migration, nginx path seq:1 created/validated, PATH_CHALLENGE/PATH_RESPONSE | web server가 active client migration을 처리하는 server-side runtime 근거. browser/production deployment는 후속 |
-| MsQuic | 2026-06-30 fresh rerun PASS | NAT port/address rebind, path validation timeout, last path close, v4/v6 | production relevance는 높지만 LB caveat 유지 |
+| MsQuic | 2026-07-01 selected runtime-test packet PASS | NAT port/address rebind, path validation timeout, last path close, v4/v6, `total_ok_count=8` | production relevance는 높지만 HTTP/3 application/LB caveat 유지 |
 | aioquic | 2026-06-30 fresh rerun PASS | PATH_CHALLENGE/PATH_RESPONSE, preferred address, disable_active_migration parsing | readable passive reference |
 | ngtcp2 | 2026-06-30 fresh rerun PASS + 2026-07-01 runtime PASS | client migration test, path validation, disable active migration, frame encode, official HTTP/3 example local migration | C-library runtime positive control |
 | Quinn | 2026-06-30 fresh rerun PASS + 2026-07-01 runtime PASS | proto migration, PATH_CHALLENGE/PATH_RESPONSE, rebind receive path, connected/got-conn/rebound logs, new path validated | Rust endpoint-wide rebind positive control |
@@ -112,7 +112,7 @@ quic-go fresh run 기준으로 evidence chain은 다음과 같다.
 
 주의:
 
-> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. LSQUIC preferred-address/NAT-rebinding app demo, ngtcp2 official-example runtime row, Quinn endpoint-rebind runtime row, quicly partial artifact도 ignored path에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
+> 2026-06-30 fresh rerun으로 quiche, picoquic, s2n-quic, MsQuic, LSQUIC, ngtcp2, aioquic, Quinn, Neqo와 XQUIC NAT rebinding demo의 raw execution artifact는 로컬 ignored path에 존재한다. LSQUIC preferred-address/NAT-rebinding app demo, ngtcp2 official-example runtime row, Quinn endpoint-rebind runtime row, MsQuic selected rebind/path-validation packet, quicly partial artifact도 ignored path 또는 public-safe packet에 존재한다. 다만 공개 repo에는 큰 raw log를 그대로 커밋하지 않았으므로, 논문 제출 전에는 sanitized evidence bundle을 만들거나 명령/commit/result 중심으로 인용해야 한다.
 
 ## 6. 논문에서 쓸 수 있는 주장
 
@@ -149,7 +149,7 @@ controlled implementation positive control이 확인되면, 다음 질문은 dep
 | s2n-quic fresh rerun | PASS |
 | LiteSpeed LSQUIC fresh rerun + preferred-address/NAT-rebinding app demos | PASS |
 | nginx QUIC active migration runtime demo | PASS |
-| MsQuic fresh rerun | PASS |
+| MsQuic fresh rerun + selected rebind/path-validation packet | PASS |
 | ngtcp2 fresh rerun | PASS |
 | aioquic fresh rerun | PASS |
 | Quinn fresh rerun + endpoint rebind runtime packet | PASS |

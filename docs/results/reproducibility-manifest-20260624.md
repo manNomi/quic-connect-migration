@@ -8,15 +8,15 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 
 | field | value |
 | --- | --- |
-| source commit at generation | `7dbb29b` |
+| source commit at generation | `c8bb7e1` |
 | branch | `docs/quinn-neqo-rerun-20260630` |
 | total trials | `99` |
 | status counts | `{'PASS': 33, 'PASS_FEASIBILITY': 6, 'PASS_NEGATIVE_CONTROL': 60}` |
 | implementation survey rows | `18` |
-| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 7, 'fresh_runtime_20260630': 1, 'fresh_runtime_20260701': 2, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
-| experiment matrix items | `163` |
-| latest experiment matrix item | `ngtcp2-runtime-trial-packet` |
-| verification | `159/159 passed; ok=yes` |
+| implementation evidence status counts | `{'fresh_app_demo_20260630': 1, 'fresh_focused_e2e_full_gate_20260701': 1, 'fresh_negative_control_20260630': 1, 'fresh_rebind_demo_20260630': 1, 'fresh_rerun_20260630': 6, 'fresh_runtime_20260630': 1, 'fresh_runtime_20260701': 3, 'partial_deferred': 1, 'source_edge_boundary_audit_20260701': 1, 'source_inspected': 1, 'source_policy_audit_20260701': 1}` |
+| experiment matrix items | `164` |
+| latest experiment matrix item | `msquic-rebind-pathvalidation-packet` |
+| verification | `161/161 passed; ok=yes` |
 | final browser handover | `3/6` |
 | goal complete | `no` |
 | next trial | `controlled-public-chrome-downlink-noheartbeat-network-change-001` |
@@ -98,6 +98,9 @@ This manifest is public-safe. It summarizes reproducibility state without printi
 | `non_quicgo_execution_depth_audit_csv` | `data/non-quicgo-execution-depth-audit-20260701.csv` | `yes` |
 | `msquic_migration_api_boundary_audit` | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | `yes` |
 | `msquic_migration_api_boundary_audit_json` | `data/msquic-migration-api-boundary-audit-20260701.json` | `yes` |
+| `msquic_rebind_pathvalidation_packet` | `docs/results/msquic-rebind-pathvalidation-packet-20260701.md` | `yes` |
+| `msquic_rebind_pathvalidation_packet_json` | `data/msquic-rebind-pathvalidation-packet-20260701.json` | `yes` |
+| `msquic_rebind_pathvalidation_runner` | `harness/scripts/run-msquic-rebind-pathvalidation-demo.sh` | `yes` |
 | `ngtcp2_migration_api_boundary_audit` | `docs/results/ngtcp2-migration-api-boundary-audit-20260701.md` | `yes` |
 | `ngtcp2_migration_api_boundary_audit_json` | `data/ngtcp2-migration-api-boundary-audit-20260701.json` | `yes` |
 | `ngtcp2_runtime_trial_packet` | `docs/results/ngtcp2-runtime-trial-packet-20260701.md` | `yes` |

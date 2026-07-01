@@ -35,7 +35,7 @@
 | 총 조사 대상 | 18 |
 | local test/demo까지 실행한 구현체 | 14 |
 | 2026-06-30 fresh rerun/demo/negative-control/focused-e2e artifact 확보 | 14 |
-| fresh app-level/runtime demo artifact 확보 | 4 |
+| fresh app-level/runtime demo artifact 확보 | 5 |
 | fresh negative-control artifact 확보 | 1 |
 | fresh focused e2e/full-gate artifact 확보 | 1 |
 | fresh partial build/test artifact 확보 | 0 |
@@ -56,7 +56,7 @@
 | 3 | AWS s2n-quic | library/server | O | O | △ likely | `events_qlog_likely` | O | `yes_with_custom_cid` | `L4_AWS_L5_candidate` | `fresh_rerun_20260630` | Custom AWS NLB CID provider proof restored and rerun; live AWS NLB+s2n target test remains follow-up |
 | 4 | ngtcp2 | library/tooling | O | O | O | `qlog/logs` | O | `manual` | `L4_runtime_example` | `fresh_runtime_20260701` | Use as C library primitive/path-validation comparison plus official osslclient/osslserver local HTTP/3 runtime positive control |
 | 5 | LiteSpeed lsquic | server | O | O | O | `logs` | O | `likely` | `L4_L5_candidate` | `fresh_app_demo_20260630` | Use as preferred-address and NAT-rebinding app-level positive control; OpenLiteSpeed production-like demo remains follow-up |
-| 6 | MsQuic | library/server | O | O | policy | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_L5_caveat` | `fresh_rerun_20260630` | Use as production-relevant NAT rebinding/path-validation evidence; API audit shows constrained local-address control rather than quic-go-style AddPath/Probe/Switch |
+| 6 | MsQuic | library/server | O | O | policy | `ETW/logs` | O | `yes_with_QUIC_aware_LB` | `L4_selected_runtime_tests` | `fresh_runtime_20260701` | Use as selected v4/v6 NAT rebind/path-validation runtime-test positive control; live QUIC-aware LB and app payload continuity remain follow-up |
 | 7 | Quinn | library/server | O | O | △ | `tracing/qlog` | O | `manual` | `L4_runtime_rebind` | `fresh_runtime_20260701` | Use as Rust endpoint-rebind runtime positive control; HTTP/3/browser/deployment rows remain follow-up |
 | 8 | Neqo | library/server | O | O | O | `qlog/events` | O | `manual` | `L3_L4` | `fresh_rerun_20260630` | Use as Firefox-adjacent transport maturity evidence; Firefox browser runtime proof remains a separate gate |
 | 9 | XQUIC | library/server | O | O | ? | `logs` | O | `manual` | `L3_L4_partial` | `fresh_rebind_demo_20260630` | Use as NAT rebinding demo evidence; Linux full-suite replay runner is packaged in harness/scripts/run-xquic-full-suite-linux.sh because macOS AppleClang Werror blocks QPACK unit build |
@@ -83,7 +83,7 @@
 | LiteSpeed lsquic | full CTest 79/79와 preferred-address/NAT-rebinding HTTP/3 app demo 근거를 확보함 |
 | nginx QUIC | quiche client active migration 중 1MiB HTTP/3 response, server path seq:1 validation evidence 확보 |
 | Quinn | endpoint-wide `Endpoint::rebind` runtime runner에서 stream receive, proto migration, PATH_CHALLENGE/PATH_RESPONSE, new path validation evidence를 확보함 |
-| MsQuic | production-relevant NAT rebind/path validation gtest가 v4/v6에서 통과함 |
+| MsQuic | dedicated fail-closed packet에서 production-relevant NAT rebind/path validation gtest가 v4/v6에서 통과함 |
 | XQUIC | NAT rebinding demo가 실제 client/server로 통과했고 full suite는 Linux replay runner로 재실행 가능 |
 | quicly | full e2e 전체는 `slow-start` 실패로 PASS가 아니지만 `path-migration` e2e subtest와 CID seq 1 first path probe check는 통과했고, Linux full-e2e fail-closed runner/audit가 추가됨 |
 
@@ -91,7 +91,7 @@
 
 | 후보 | 이유 |
 | --- | --- |
-| MsQuic | NAT rebinding/path validation은 fresh rerun 통과, API boundary audit에서 constrained local-address control과 QUIC-aware LB deployment boundary를 확인함 |
+| MsQuic | selected v4/v6 rebind/path-validation packet은 PASS, API boundary audit에서 constrained local-address control과 QUIC-aware LB deployment boundary를 확인함 |
 | LiteSpeed lsquic | preferred-address와 NAT-rebinding app-level positive control까지 확보했으며 OpenLiteSpeed/서버 배포 논의에 연결 가능 |
 | mvfst | 대규모 deployment 후보이며 source audit appendix, focused readiness map, Linux runner에서 path manager/client/server migration test 구조 및 BUCK target을 고정함. build/test cost가 큼 |
 | nginx QUIC | 실제 web server deployment와 연결 가능하며 local runtime demo에서 server-side path creation/validation evidence를 확보함. browser/production deployment는 후속 |
@@ -110,7 +110,7 @@
 ## 이 표에서 바로 말할 수 있는 결론
 
 1. 조사 대상 18개 중 다수가 RFC primitive와 passive migration 근거를 갖고 있다.
-2. active migration API가 명확한 구현체는 더 적지만, quic-go/quiche/picoquic/Neqo 등에서 실험 후보가 확인됐고 MsQuic은 selected gtest와 API boundary audit, LSQUIC은 preferred-address 및 NAT-rebinding app demo, nginx는 server-side runtime demo, Quinn은 endpoint-wide rebind runtime 근거가 보강됐다. Neqo는 Firefox-adjacent maturity evidence로 쓰되 Firefox browser runtime handover와 분리한다. quicly는 full e2e caveat를 유지하되 focused `path-migration` e2e evidence와 Linux full-e2e gate를 확보했다.
+2. active migration API가 명확한 구현체는 더 적지만, quic-go/quiche/picoquic/Neqo 등에서 실험 후보가 확인됐고 MsQuic은 selected v4/v6 runtime-test packet과 API boundary audit, LSQUIC은 preferred-address 및 NAT-rebinding app demo, nginx는 server-side runtime demo, Quinn은 endpoint-wide rebind runtime 근거가 보강됐다. Neqo는 Firefox-adjacent maturity evidence로 쓰되 Firefox browser runtime handover와 분리한다. quicly는 full e2e caveat를 유지하되 focused `path-migration` e2e evidence와 Linux full-e2e gate를 확보했다.
 3. qlog, PathEvent, NetLog, tracing 등 관찰성이 구현체별로 다르다.
 4. HTTP/3 지원과 Connection Migration 지원은 같은 말이 아니다.
 5. L4 library maturity는 browser 또는 CDN deployment maturity와 다르다.

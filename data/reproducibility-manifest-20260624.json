@@ -3,7 +3,7 @@
   "public_safe": true,
   "tracked_manifest_note": "The source commit is the commit used when generating this tracked manifest. Regenerate the manifest after checkout to bind it to a later commit.",
   "git": {
-    "commit": "7dbb29b",
+    "commit": "c8bb7e1",
     "branch": "docs/quinn-neqo-rerun-20260630"
   },
   "experiment_corpus": {
@@ -22,9 +22,9 @@
       "fresh_focused_e2e_full_gate_20260701": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
-      "fresh_rerun_20260630": 7,
+      "fresh_rerun_20260630": 6,
       "fresh_runtime_20260630": 1,
-      "fresh_runtime_20260701": 2,
+      "fresh_runtime_20260701": 3,
       "partial_deferred": 1,
       "source_edge_boundary_audit_20260701": 1,
       "source_inspected": 1,
@@ -40,10 +40,10 @@
       "L4_AWS_L5_candidate": 1,
       "L4_L5": 1,
       "L4_L5_candidate": 1,
-      "L4_L5_caveat": 1,
       "L4_client_policy_boundary_audit": 1,
       "L4_runtime_example": 1,
       "L4_runtime_rebind": 1,
+      "L4_selected_runtime_tests": 1,
       "L4_server_runtime": 1,
       "L5_candidate": 1,
       "L5_deployment_candidate": 1,
@@ -58,16 +58,16 @@
     ]
   },
   "experiment_matrix": {
-    "total_items": 163,
+    "total_items": 164,
     "status_counts": {
-      "done": 159,
+      "done": 160,
       "planned": 4
     },
-    "latest_item": "ngtcp2-runtime-trial-packet"
+    "latest_item": "msquic-rebind-pathvalidation-packet"
   },
   "verification": {
-    "checks": "159",
-    "passed": "159",
+    "checks": "161",
+    "passed": "161",
     "ok": "yes"
   },
   "research_audit": {
@@ -275,6 +275,18 @@
     },
     "msquic_migration_api_boundary_audit_json": {
       "path": "data/msquic-migration-api-boundary-audit-20260701.json",
+      "exists": true
+    },
+    "msquic_rebind_pathvalidation_packet": {
+      "path": "docs/results/msquic-rebind-pathvalidation-packet-20260701.md",
+      "exists": true
+    },
+    "msquic_rebind_pathvalidation_packet_json": {
+      "path": "data/msquic-rebind-pathvalidation-packet-20260701.json",
+      "exists": true
+    },
+    "msquic_rebind_pathvalidation_runner": {
+      "path": "harness/scripts/run-msquic-rebind-pathvalidation-demo.sh",
       "exists": true
     },
     "ngtcp2_migration_api_boundary_audit": {

@@ -54,6 +54,7 @@ def test_markdown_is_public_safe_and_names_boundaries() -> None:
     assert "Safe claim" in markdown
     assert "Unsafe claim" in markdown
     assert "deployment friction" in markdown
+    assert "companion selected v4/v6 rebind/path-validation runtime-test PASS artifact" in markdown
     assert "same direct application-triggered active migration API shape as quic-go" in markdown
 
 

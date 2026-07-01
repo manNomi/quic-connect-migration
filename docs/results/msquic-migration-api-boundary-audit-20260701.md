@@ -29,7 +29,7 @@ This public-safe audit narrows the remaining MsQuic question from the non-quic-g
 | active API boundary | `policy_constrained_local_address_control_not_quic_go_style_addpath_probe_switch` |
 | deployment boundary | `requires_no_load_balancer_or_cooperative_quic_aware_load_balancer` |
 | observability | `public_address_changed_events_and_internal_logs_available` |
-| paper use | Use MsQuic as production-relevant NAT rebinding and deployment-boundary evidence, not as the deepest controllable active-migration positive control. |
+| paper use | Use MsQuic as production-relevant selected rebind/path-validation runtime-test and deployment-boundary evidence, not as the deepest controllable active-migration positive control. |
 
 ## Evidence Table
 
@@ -50,12 +50,12 @@ This public-safe audit narrows the remaining MsQuic question from the non-quic-g
 
 ## Reporting Boundary
 
-- Safe claim: MsQuic exposes migration settings, address-change events, constrained local-address control, and NAT rebinding tests.
+- Safe claim: MsQuic exposes migration settings, address-change events, constrained local-address control, NAT rebinding tests, and a companion selected v4/v6 rebind/path-validation runtime-test PASS artifact.
 - Unsafe claim: MsQuic has the same direct application-triggered active migration API shape as quic-go or proves managed-LB continuity without a QUIC-aware routing experiment.
-- Next non-iPhone gate: If MsQuic must be promoted beyond maturity evidence, build a small client/server runtime harness that changes QUIC_PARAM_CONN_LOCAL_ADDRESS after handshake confirmation and captures peer-address-change plus payload continuity.
+- Next non-iPhone gate: Use the companion selected runtime-test packet for MsQuic implementation evidence; build a small payload-continuity harness or live QUIC-aware LB row only if reviewers require it.
 
 ## Paper Interpretation
 
 1. MsQuic weakens an `implementation absence` explanation because client migration is enabled by default and NAT rebind tests exist.
 2. MsQuic strengthens the `deployment friction` explanation because load-balancing support requires explicit mode selection and cooperative routing.
-3. MsQuic should not replace quic-go as the deepest controlled positive control unless a focused runtime harness proves local-address switching, peer-address-change observation, and payload continuity in one artifact.
+3. MsQuic now has a companion selected rebind/path-validation runtime-test packet, but payload continuity and managed-LB claims remain separate gates.

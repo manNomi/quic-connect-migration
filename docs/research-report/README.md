@@ -76,6 +76,7 @@
 | controlled-public Chrome contract application audit. 기존 public Chrome row contract 적용 결과 | 작성 완료 | `../results/controlled-public-chrome-contract-application-audit-20260701.md` |
 | quic-go 외 구현체 실행 깊이 감사. 왜 quic-go만 가장 깊은 positive control인지 | 작성 완료 | `../results/non-quicgo-execution-depth-audit-20260701.md` |
 | MsQuic migration API boundary audit. active API와 QUIC-aware LB claim boundary | 작성 완료 | `../results/msquic-migration-api-boundary-audit-20260701.md` |
+| MsQuic rebind/path-validation packet. selected v4/v6 runtime-test PASS와 app/browser/LB claim boundary | 작성 완료 | `../results/msquic-rebind-pathvalidation-packet-20260701.md` |
 | ngtcp2 migration API boundary audit. C library direct migration API와 browser/deployment claim boundary | 작성 완료 | `../results/ngtcp2-migration-api-boundary-audit-20260701.md` |
 | ngtcp2 runtime trial packet. 공식 HTTP/3 example migration runner의 local runtime PASS와 browser/deployment claim boundary | 작성 완료 | `../results/ngtcp2-runtime-trial-packet-20260701.md` |
 | Quinn migration API boundary audit. Rust stack endpoint rebind와 quic-go식 per-connection active control 경계 | 작성 완료 | `../results/quinn-migration-api-boundary-audit-20260701.md` |
@@ -126,6 +127,8 @@
 | `tools/build_chromium_cronet_policy_boundary_audit.py` | Chapter 1/5 Chromium/Cronet source policy boundary audit builder |
 | `tools/build_firefox_neqo_browser_boundary_audit.py` | Chapter 1/5 Firefox-adjacent Neqo transport maturity와 Firefox runtime claim boundary audit builder |
 | `tools/build_firefox_desktop_runtime_trial_packet.py` | Chapter 5/7 Firefox desktop runtime trial packet builder |
+| `tools/build_msquic_rebind_pathvalidation_packet.py` | Chapter 1 MsQuic selected v4/v6 rebind/path-validation runtime-test packet builder |
+| `harness/scripts/run-msquic-rebind-pathvalidation-demo.sh` | MsQuic `msquictest` selected v4/v6 rebind/path-validation tests를 fail-closed로 재실행하는 runner |
 | `tools/build_quinn_migration_api_boundary_audit.py` | Chapter 1 Quinn endpoint rebind/API boundary audit builder |
 | `tools/build_quinn_rebind_runtime_packet.py` | Chapter 1/3 Quinn endpoint-rebind runtime packet builder |
 | `harness/scripts/run-quinn-rebind-runtime-demo.sh` | Quinn upstream `rebind_recv`와 `quinn-proto` migration test를 fail-closed로 재실행하는 runner |
@@ -223,6 +226,7 @@
 | `docs/results/non-quicgo-implementation-findings-20260701.md` | quic-go를 제외한 17개 구현체/스택의 검수 결과와 claim boundary |
 | `docs/results/non-quicgo-execution-depth-audit-20260701.md` | quic-go 외 구현체의 실행 깊이 차이, 남은 deepening 후보, AWS gate 최신 상태 |
 | `docs/results/msquic-migration-api-boundary-audit-20260701.md` | MsQuic public API, NAT rebinding tests, QUIC-aware LB deployment boundary를 source link로 고정 |
+| `docs/results/msquic-rebind-pathvalidation-packet-20260701.md` | MsQuic selected v4/v6 `RebindPort`/`RebindAddr`/`PathValidationTimeout`/`PathValidationLastPathClose` runtime-test PASS와 claim boundary를 고정 |
 | `docs/results/ngtcp2-runtime-trial-packet-20260701.md` | ngtcp2 example client/server local runtime PASS와 browser/deployment claim boundary를 고정 |
 | `docs/results/quinn-migration-api-boundary-audit-20260701.md` | Quinn server migration policy, endpoint rebind, preferred-address, path validation, test evidence와 quic-go API shape 차이를 고정 |
 | `docs/results/quinn-rebind-runtime-packet-20260701.md` | Quinn endpoint-wide rebind runtime PASS, proto migration/path-validation evidence, browser/HTTP/3 application/deployment claim boundary를 고정 |

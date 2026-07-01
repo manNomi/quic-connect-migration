@@ -5,8 +5,8 @@
   "summary": {
     "survey_rows_excluding_quic_go": 17,
     "claim_class_counts": {
-      "strong_cross_implementation_positive": 6,
-      "server_or_app_runtime_positive": 4,
+      "strong_cross_implementation_positive": 5,
+      "server_or_app_runtime_positive": 5,
       "focused_or_partial_positive": 2,
       "source_or_readiness_only": 2,
       "negative_control": 1,
@@ -17,9 +17,9 @@
       "fresh_focused_e2e_full_gate_20260701": 1,
       "fresh_negative_control_20260630": 1,
       "fresh_rebind_demo_20260630": 1,
-      "fresh_rerun_20260630": 6,
+      "fresh_rerun_20260630": 5,
       "fresh_runtime_20260630": 1,
-      "fresh_runtime_20260701": 2,
+      "fresh_runtime_20260701": 3,
       "partial_deferred": 1,
       "source_edge_boundary_audit_20260701": 1,
       "source_inspected": 1,
@@ -120,11 +120,11 @@
       "tests": "yes",
       "lb_or_cloud_deployability": "yes_with_QUIC_aware_LB",
       "aws_suitability": "medium",
-      "current_level": "L4_L5_caveat",
-      "evidence_status": "fresh_rerun_20260630",
-      "next_action": "Use as production-relevant NAT rebinding/path-validation evidence; API audit shows constrained local-address control rather than quic-go-style AddPath/Probe/Switch",
-      "claim_class": "strong_cross_implementation_positive",
-      "risk_note": "NAT rebind/path validation tests are positive; API audit shows constrained local-address control, while QUIC-aware load balancing remains a deployment boundary."
+      "current_level": "L4_selected_runtime_tests",
+      "evidence_status": "fresh_runtime_20260701",
+      "next_action": "Use as selected v4/v6 NAT rebind/path-validation runtime-test positive control; live QUIC-aware LB and app payload continuity remain follow-up",
+      "claim_class": "server_or_app_runtime_positive",
+      "risk_note": "Selected v4/v6 rebind/path-validation runtime-test row is positive; QUIC-aware load balancing and application payload continuity remain separate gates."
     },
     {
       "priority": "7",

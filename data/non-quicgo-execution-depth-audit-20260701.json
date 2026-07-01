@@ -16,8 +16,8 @@
   "summary": {
     "survey_rows_excluding_quic_go": 17,
     "depth_counts": {
-      "local_test_suite_rerun": 6,
-      "local_runtime_or_app_demo": 4,
+      "local_test_suite_rerun": 5,
+      "local_runtime_or_app_demo": 5,
       "focused_partial_runtime": 2,
       "client_policy_source_plus_local_baseline": 1,
       "source_test_map_only": 1,
@@ -30,8 +30,8 @@
       "negative_control": 1,
       "policy_dependent_client_evidence": 1,
       "source_level_active_and_passive_evidence": 1,
-      "strong_implementation_or_runtime_evidence": 6,
-      "strong_runtime_or_app_evidence": 4
+      "strong_implementation_or_runtime_evidence": 5,
+      "strong_runtime_or_app_evidence": 5
     },
     "remaining_deepening_candidates": [
       "XQUIC",
@@ -105,15 +105,15 @@
       "priority": "6",
       "name": "MsQuic",
       "category": "library/server",
-      "current_level": "L4_L5_caveat",
-      "evidence_status": "fresh_rerun_20260630",
-      "depth_class": "local_test_suite_rerun",
-      "evidence_strength": "strong_implementation_or_runtime_evidence",
+      "current_level": "L4_selected_runtime_tests",
+      "evidence_status": "fresh_runtime_20260701",
+      "depth_class": "local_runtime_or_app_demo",
+      "evidence_strength": "strong_runtime_or_app_evidence",
       "active_migration_api": "policy_constrained",
       "passive_migration": "yes",
       "tests": "yes",
-      "why_not_quic_go_depth": "Selected NAT rebinding and path-validation tests passed, and the focused API audit shows constrained local-address control plus a QUIC-aware LB boundary rather than quic-go-style AddPath/Probe/Switch control.",
-      "next_non_iphone_gate": "Optional: build a small MsQuic runtime harness that changes QUIC_PARAM_CONN_LOCAL_ADDRESS after handshake confirmation and verifies peer-address-change plus payload continuity."
+      "why_not_quic_go_depth": "Selected v4/v6 NAT rebinding and path-validation runtime tests now have a dedicated fail-closed packet, and the focused API audit still shows constrained local-address control plus a QUIC-aware LB boundary rather than quic-go-style AddPath/Probe/Switch control.",
+      "next_non_iphone_gate": "Use the MsQuic rebind/path-validation packet as selected runtime-test evidence; build a separate payload-continuity harness or live QUIC-aware LB row only if reviewers require it."
     },
     {
       "priority": "7",

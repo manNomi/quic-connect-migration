@@ -30,9 +30,11 @@ def test_audit_preserves_quic_go_boundary_and_depth_counts() -> None:
     assert "quic-go" not in names
     assert "Cloudflare quiche" in names
     assert "HAProxy QUIC" in names
-    assert audit["summary"]["depth_counts"]["local_test_suite_rerun"] >= 6
-    assert audit["summary"]["depth_counts"]["local_runtime_or_app_demo"] >= 4
+    assert audit["summary"]["depth_counts"]["local_test_suite_rerun"] >= 5
+    assert audit["summary"]["depth_counts"]["local_runtime_or_app_demo"] >= 5
     assert audit["summary"]["depth_counts"]["negative_control_runtime"] == 1
+    msquic = next(row for row in audit["implementations"] if row["name"] == "MsQuic")
+    assert msquic["depth_class"] == "local_runtime_or_app_demo"
     ngtcp2 = next(row for row in audit["implementations"] if row["name"] == "ngtcp2")
     assert ngtcp2["depth_class"] == "local_runtime_or_app_demo"
     quinn = next(row for row in audit["implementations"] if row["name"] == "Quinn")

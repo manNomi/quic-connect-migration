@@ -172,7 +172,7 @@ Chapter 1에서 가장 강한 근거는 실제 로컬 테스트를 돌린 구현
 | ngtcp2 | client migration/path validation/disable migration tests | PASS | C library primitive 비교군 |
 | Quinn | endpoint-wide rebind runtime packet + proto migration/path-validation tests | PASS | Rust endpoint-rebind runtime positive control |
 | Neqo | migration test suite | PASS | Mozilla/browser-adjacent 비교군 |
-| MsQuic | NAT rebind/path-validation selected gtests, IPv4/IPv6 | PASS | production-relevant library evidence |
+| MsQuic | dedicated selected v4/v6 NAT rebind/path-validation runtime-test packet | PASS | production-relevant selected runtime-test evidence |
 | XQUIC | loopback client/server NAT rebinding demo | PASS demo, full suite partial | NAT rebinding implementation evidence |
 | LiteSpeed LSQUIC | full CTest 79/79, selected primitive tests, preferred-address 및 NAT-rebinding HTTP/3 app demo | PASS | server-stack unit and app-level path-transition evidence |
 | nginx QUIC | HTTP/3 server runtime demo, quiche active migration, server path seq:1 validation | PASS | web server runtime path-validation evidence |
@@ -334,7 +334,7 @@ ngtcp2는 C library primitive 비교군으로 확인했다.
 | 대상 | 처리 방식 | 이유 |
 | --- | --- | --- |
 | Chromium/Cronet | source/API/docs + Chrome baseline | 전체 Chromium 빌드보다 browser NetLog 실험이 더 중요 |
-| MsQuic | fresh selected gtest로 승격 | production 중요도가 높고 NAT rebind/path-validation v4/v6 selected tests가 통과함 |
+| MsQuic | dedicated selected runtime-test packet으로 승격 | production 중요도가 높고 NAT rebind/path-validation v4/v6 selected tests가 `validation=ok`, `total_ok_count=8`로 통과함. 다만 app payload continuity와 live QUIC-aware LB는 후속 |
 | mvfst | source/docs audit | Folly/Fizz 등 의존성이 커서 source maturity evidence로 유지 |
 | LiteSpeed LSQUIC | fresh full CTest와 preferred-address/NAT-rebinding app demo로 승격 | 서버 스택 단위 테스트와 example HTTP/3 app-level positive control은 통과했지만 OpenLiteSpeed demo는 후속 필요 |
 | XQUIC | fresh NAT rebinding demo로 승격 | client/server NAT rebinding demo는 통과했지만 full suite는 macOS build caveat가 있음 |
@@ -353,7 +353,7 @@ ngtcp2는 C library primitive 비교군으로 확인했다.
 | 총 조사 대상 | 18 |
 | local test/demo/partial build/negative-control까지 실행한 구현체 | 14 |
 | 2026-06-30/2026-07-01 fresh rerun/demo/negative-control/focused-e2e artifact 확보 | 14 |
-| fresh app-level/runtime demo artifact 확보 | 4 |
+| fresh app-level/runtime demo artifact 확보 | 5 |
 | fresh negative-control artifact 확보 | 1 |
 | fresh focused e2e artifact 확보 | 1 |
 | fresh partial build/test artifact 확보 | 0 |

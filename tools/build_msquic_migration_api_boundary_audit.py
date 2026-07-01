@@ -181,7 +181,7 @@ def build_audit(msquic_dir: Path) -> dict[str, Any]:
         "active_api_boundary": "policy_constrained_local_address_control_not_quic_go_style_addpath_probe_switch",
         "deployment_boundary": "requires_no_load_balancer_or_cooperative_quic_aware_load_balancer",
         "observability_status": "public_address_changed_events_and_internal_logs_available",
-        "paper_use": "Use MsQuic as production-relevant NAT rebinding and deployment-boundary evidence, not as the deepest controllable active-migration positive control.",
+        "paper_use": "Use MsQuic as production-relevant selected rebind/path-validation runtime-test and deployment-boundary evidence, not as the deepest controllable active-migration positive control.",
     }
     return {
         "generated": utc_date_iso(),
@@ -203,9 +203,9 @@ def build_audit(msquic_dir: Path) -> dict[str, Any]:
         "conclusion": conclusion,
         "evidence": evidence,
         "reporting_boundary": {
-            "safe_claim": "MsQuic exposes migration settings, address-change events, constrained local-address control, and NAT rebinding tests.",
+            "safe_claim": "MsQuic exposes migration settings, address-change events, constrained local-address control, NAT rebinding tests, and a companion selected v4/v6 rebind/path-validation runtime-test PASS artifact.",
             "unsafe_claim": "MsQuic has the same direct application-triggered active migration API shape as quic-go or proves managed-LB continuity without a QUIC-aware routing experiment.",
-            "next_non_iphone_gate": "If MsQuic must be promoted beyond maturity evidence, build a small client/server runtime harness that changes QUIC_PARAM_CONN_LOCAL_ADDRESS after handshake confirmation and captures peer-address-change plus payload continuity.",
+            "next_non_iphone_gate": "Use the companion selected runtime-test packet for MsQuic implementation evidence; build a small payload-continuity harness or live QUIC-aware LB row only if reviewers require it.",
         },
     }
 
@@ -273,7 +273,7 @@ def emit_markdown(audit: dict[str, Any]) -> str:
             "",
             "1. MsQuic weakens an `implementation absence` explanation because client migration is enabled by default and NAT rebind tests exist.",
             "2. MsQuic strengthens the `deployment friction` explanation because load-balancing support requires explicit mode selection and cooperative routing.",
-            "3. MsQuic should not replace quic-go as the deepest controlled positive control unless a focused runtime harness proves local-address switching, peer-address-change observation, and payload continuity in one artifact.",
+            "3. MsQuic now has a companion selected rebind/path-validation runtime-test packet, but payload continuity and managed-LB claims remain separate gates.",
         ]
     )
     text = "\n".join(lines).rstrip() + "\n"
